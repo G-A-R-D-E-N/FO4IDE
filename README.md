@@ -1,6 +1,23 @@
 # FO4IDE
 
-[Discord](https://discord.gg/cPmT8SmW4D)
+<p align="center">
+  Fallout 4 plugin editor and MCP server for AI-assisted modding
+</p>
+
+<p align="center">
+  <a href="https://discord.gg/cPmT8SmW4D">
+    <img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white" alt="Join the FO4IDE Discord community">
+  </a>
+  <a href="https://github.com/NomadsReach">
+    <img src="https://img.shields.io/badge/GitHub-NomadsReach-181717?logo=github&logoColor=white" alt="NomadsReach on GitHub">
+  </a>
+  <a href="https://www.nexusmods.com/profile/NomadsReach">
+    <img src="https://img.shields.io/badge/Nexus%20Mods-NomadsReach-E6832B?logo=nexusmods&logoColor=white" alt="NomadsReach on Nexus Mods">
+  </a>
+  <a href="https://ko-fi.com/falloutanomaly">
+    <img src="https://img.shields.io/badge/Ko--fi-Support%20the%20project-FF5E5B?logo=kofi&logoColor=white" alt="Support FO4IDE on Ko-fi">
+  </a>
+</p>
 
 FO4IDE is a Fallout 4 plugin IDE that reads and writes real `.esp`/`.esm`/`.esl` files. Two things
 live in one executable:
@@ -64,6 +81,18 @@ The editor speaks [MCP](https://modelcontextprotocol.io) over stdio. The full pi
 every tool and the rules that keep an assistant from corrupting plugins, is in
 **[the MCP setup guide](https://github.com/G-A-R-D-E-N/FO4IDE/wiki/MCP_SETUP)**. The short version: drop a `.mcp.json` in your project
 folder (a sample sits next to the exe as `mcp.sample.json`):
+
+### AI use and safety
+
+FO4IDE provides an MCP server that an external AI client can connect to. The AI assistant can then
+call FO4IDE tools to inspect records, make edits, validate changes, and write Fallout 4 plugins.
+FO4IDE is the editing tool and MCP server. It is not an autonomous agent and it does not decide
+what to change without an AI client request.
+
+AI-generated instructions and edits can be incorrect or destructive. Review every proposed change,
+keep backups of your plugins, use disposable copies while testing, and verify the resulting records
+and load order before using a modified plugin in a real mod list. Connecting an AI client to FO4IDE
+gives that client the ability to invoke the configured MCP operations.
 
 ```jsonc
 {
