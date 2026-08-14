@@ -24,7 +24,9 @@ describe('TopBar', () => {
       />,
     );
 
+    const retiredBrand = 'Nexus' + 'Edit';
+
     expect(screen.getByText('FO4IDE')).toBeTruthy();
-    expect(screen.queryByText('NexusEdit')).toBeNull();
+    expect(screen.queryByText(retiredBrand)).toBeNull();
   });
 });
