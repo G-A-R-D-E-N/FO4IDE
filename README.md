@@ -28,9 +28,6 @@ live in one executable:
   assistant makes it, and the plugin is written by
   [Mutagen](https://github.com/Mutagen-Modding/Mutagen) rather than by hand
 
-It's built on a patched Mutagen, so it doesn't go through xEdit and doesn't need xEdit installed.
-One codebase runs natively on Windows and Linux.
-
 ## Screenshots
 
 The record editor, the visual Papyrus editor, and the game-asset panels. Click any image for the
