@@ -12,7 +12,16 @@ one executable:
 It's built on a patched Mutagen, so it doesn't go through xEdit and doesn't need xEdit installed.
 One codebase runs natively on Windows and Linux.
 
-![The record editor, with the Claude assistant panel on the right](images/editor.png)
+## Screenshots
+
+The record editor, the visual Papyrus editor, and the game-asset panels. Click any image for the
+full-size version.
+
+| | | |
+|---|---|---|
+| [<img src="images/editor.png" alt="The record editor, with the Claude assistant panel on the right" width="300">](images/editor.png)<br>Record editor | [<img src="images/blueprint.png" alt="The blueprint editor: a Papyrus script as a node graph" width="300">](images/blueprint.png)<br>Blueprint editor | [<img src="images/audio-panel.png" alt="The audio panel: convert to XWM, and make or extract FUZ files" width="300">](images/audio-panel.png)<br>Audio panel |
+| [<img src="images/archive-panel.png" alt="The archive panel: list, compare, and pack BA2/BSA archives" width="300">](images/archive-panel.png)<br>Archive panel | [<img src="images/nif-viewer.png" alt="The NIF viewer: view, edit, and verify meshes in a live 3D viewport" width="300">](images/nif-viewer.png)<br>NIF viewer | [<img src="images/papyrus-decompile.png" alt="The Papyrus panel: decompile .pex back to source, or compile .psc" width="300">](images/papyrus-decompile.png)<br>Papyrus panel |
+| [<img src="images/cell-viewer.png" alt="The cell viewer: inspect placed references in a 3D viewport" width="300">](images/cell-viewer.png)<br>Cell viewer | | |
 
 ## Install (Windows)
 
@@ -70,22 +79,6 @@ Use one or the other, then restart your AI client (or `/mcp reconnect` in Claude
 
 Papyrus scripts edit as node graphs: events, branches, calls and variables wired together instead
 of text. Scripts open from compiled `.pex` files and compile back to them.
-
-![The blueprint editor: a Papyrus script as a node graph](images/blueprint.png)
-
-## The panels
-
-The editor ships with a set of focused panels for game-asset work:
-
-![The audio panel: convert to XWM, and make or extract FUZ files](images/audio-panel.png)
-
-![The archive panel: list, compare, and pack BA2/BSA archives](images/archive-panel.png)
-
-![The NIF viewer: view, edit, and verify meshes in a live 3D viewport](images/nif-viewer.png)
-
-![The Papyrus panel: decompile .pex back to source, or compile .psc](images/papyrus-decompile.png)
-
-![The cell viewer: inspect placed references in a 3D viewport](images/cell-viewer.png)
 
 ## Configuration
 
