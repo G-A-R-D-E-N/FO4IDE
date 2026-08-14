@@ -89,7 +89,7 @@ call FO4IDE tools to inspect records, make edits, validate changes, and write Fa
 FO4IDE is the editing tool and MCP server. It is not an autonomous agent and it does not decide
 what to change without an AI client request.
 
-AI-generated instructions and edits can be incorrect or destructive. Review every proposed change,
+Instructions and edits produced through an AI client can be incorrect or destructive. Review every proposed change,
 keep backups of your plugins, use disposable copies while testing, and verify the resulting records
 and load order before using a modified plugin in a real mod list. Connecting an AI client to FO4IDE
 gives that client the ability to invoke the configured MCP operations.
