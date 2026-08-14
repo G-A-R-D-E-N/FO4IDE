@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Link and manifest check for the FO4-IDE GitHub wiki.
+"""Link and manifest check for the FO4IDE GitHub wiki.
 
 Every relative markdown link on every page must resolve to another page in
 the wiki. GitHub resolves wiki page names case- and separator-insensitively

@@ -92,7 +92,6 @@ jobs:
 
 
     runs-on: [self-hosted, Linux, X64, wine, msvc]
-    # The runner service account is shared, so Wine state must not overlap.
     concurrency:
       group: fo4-ide-wine-build
       cancel-in-progress: false

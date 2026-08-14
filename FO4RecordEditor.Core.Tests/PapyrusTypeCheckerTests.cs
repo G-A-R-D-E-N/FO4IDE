@@ -78,7 +78,6 @@ EndFunction");
             .Which.Code.Should().Be(PapyrusDiagnosticCodes.TypeMismatch);
     }
 
-    // "Cast to Int -- Compiler auto-cast from: Nothing."
     [Fact]
     public void Assigning_a_float_to_an_int_is_rejected_because_it_would_truncate()
     {
@@ -91,7 +90,6 @@ EndFunction");
             .Which.Message.Should().Contain("float").And.Contain("int");
     }
 
-    // "Cast to Float -- Compiler auto-cast from: Int."
     [Fact]
     public void Assigning_an_int_to_a_float_is_fine()
     {
@@ -103,7 +101,6 @@ EndFunction");
         Check("A").Should().BeEmpty();
     }
 
-    // "Cast to Object -- Compiler auto-cast from: Child object."
     [Fact]
     public void Assigning_a_child_object_to_a_parent_is_fine_but_not_the_reverse()
     {
@@ -129,8 +126,6 @@ EndFunction");
 
         Check("A").Should().BeEmpty();
     }
-
-    // ---- returns --------------------------------------------------------------------------------
 
     [Fact]
     public void Returning_the_wrong_type_is_rejected()
@@ -170,8 +165,6 @@ EndFunction");
         Check("A").Should().BeEmpty();
     }
 
-    // ---- calls ----------------------------------------------------------------------------------
-
     private const string Callee = @"
 Function Takes(int a, string b, float c = 1.0)
 EndFunction";
@@ -194,7 +187,6 @@ EndFunction";
             .Which.Code.Should().Be(PapyrusDiagnosticCodes.ArgumentCount);
     }
 
-    // "If a parameter is optional, it does not have to be passed."
     [Fact]
     public void Omitting_an_optional_argument_is_fine()
     {
@@ -203,7 +195,6 @@ EndFunction";
         Check("A").Should().BeEmpty();
     }
 
-    // "You may specify parameters out of order by prefixing the expression with the identifier."
     [Fact]
     public void A_named_argument_may_skip_an_earlier_optional_one()
     {
@@ -232,8 +223,6 @@ EndFunction";
             .Which.Message.Should().Contain("pass to 'a'");
     }
 
-    // Array members are real, but they are not declared in any .psc, so there is no signature to
-    // check against and the checker must not invent one.
     [Fact]
     public void Array_builtin_arguments_are_left_unchecked_rather_than_wrongly_checked()
     {
@@ -244,10 +233,6 @@ EndFunction";
         Check("A").Should().BeEmpty();
     }
 
-    // ---- casts ----------------------------------------------------------------------------------
-
-    // Eleven vanilla scripts do this and the Creation Kit compiled every one, even though the Cast
-    // Reference's "Floats, strings, and vars can be cast to integers" omits bool.
     [Theory]
     [InlineData("int")]
     [InlineData("float")]
@@ -260,7 +245,6 @@ EndFunction";
         Check("A").Should().BeEmpty();
     }
 
-    // "Cast to Struct -- Nothing can be cast to a struct."
     [Fact]
     public void Casting_to_a_struct_is_rejected()
     {
@@ -288,10 +272,6 @@ EndFunction");
         Check("A").Should().BeEmpty();
     }
 
-    // ---- declarations ---------------------------------------------------------------------------
-
-    // "If the identifier matches a function in the parent script, then the return type and
-    // parameters much match the parent script's version."
     [Fact]
     public void An_override_with_a_different_parameter_count_is_rejected()
     {
@@ -328,7 +308,6 @@ EndFunction");
         Check("Child").Should().BeEmpty();
     }
 
-    // "If a parameter has a default value, every parameter after it must also have a default value."
     [Fact]
     public void A_required_parameter_after_an_optional_one_is_rejected()
     {
@@ -341,9 +320,6 @@ EndFunction");
             .Which.Code.Should().Be(PapyrusDiagnosticCodes.ParameterOrder);
     }
 
-    // ---- staying quiet --------------------------------------------------------------------------
-
-    // The rule that makes the whole thing usable: judge nothing when the sources were incomplete.
     [Fact]
     public void Nothing_is_reported_when_the_sources_are_incomplete()
     {
@@ -356,7 +332,6 @@ EndFunction");
         Check("Child").Should().BeEmpty();
     }
 
-    // Papyrus is case-insensitive, so a call can accidentally match a local. It is still a call.
     [Fact]
     public void A_call_does_not_bind_to_a_same_named_local()
     {

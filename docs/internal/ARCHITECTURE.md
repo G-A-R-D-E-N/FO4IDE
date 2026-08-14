@@ -23,7 +23,7 @@ depends on. Contributor-facing; user documentation lives in the [README](README.
   to resolve.
 - **React is not unit-tested.** UI changes are manual-verify only.
 - **Do not run `publish.bat` / `package.ps1` while the editor or an MCP server is open**: the exe and
-  its DLLs are locked. See the MSB3021 note in [KNOWLEDGE.md](https://github.com/G-A-R-D-E-N/FO4-IDE/blob/main/docs/internal/KNOWLEDGE.md).
+  its DLLs are locked. See the MSB3021 note in [KNOWLEDGE.md](https://github.com/G-A-R-D-E-N/FO4IDE/blob/main/docs/internal/KNOWLEDGE.md).
 
 ### Dead code you will trip over
 

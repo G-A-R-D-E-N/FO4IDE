@@ -1,6 +1,6 @@
 # Wiki map: which docs/internal files have wiki pages
 
-Relationship between the FO4-IDE wiki (`github.com/G-A-R-D-E-N/FO4-IDE/wiki`)
+Relationship between the FO4IDE wiki (`github.com/G-A-R-D-E-N/FO4IDE/wiki`)
 and this `docs/internal` tree. Update this file whenever a page is added,
 removed, or re-homed.
 
