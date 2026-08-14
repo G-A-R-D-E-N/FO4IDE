@@ -17,7 +17,7 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.17.0",
+    "react-router-dom": "^7.18.2",
     "remark-gfm": "^4.0.1",
     "three": "^0.180.0"
   },
@@ -38,5 +38,10 @@
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "brace-expansion": "5.0.9",
+    "nanoid": "3.3.18",
+    "postcss": "8.5.26"
   }
 }
