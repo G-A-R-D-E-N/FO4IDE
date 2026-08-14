@@ -1,7 +1,7 @@
-# FO4RecordEditor
+# FO4IDE
 
-A Fallout 4 plugin IDE that reads and writes real `.esp`/`.esm`/`.esl` files. Two things live in
-one executable:
+FO4IDE is a Fallout 4 plugin IDE that reads and writes real `.esp`/`.esm`/`.esl` files. Two things
+live in one executable:
 
 - a **desktop editor** for browsing records across your load order, diffing and editing them,
   scanning conflicts, compiling and decompiling Papyrus, and inspecting NIFs
@@ -29,6 +29,9 @@ full-size version.
 2. Unzip the package anywhere, keeping the folder together (the exe loads `web\dist\` and `tools\`
    from beside itself).
 3. Run `FO4RecordEditor.exe`.
+
+FO4IDE retains the `FO4RecordEditor.exe` executable and configuration paths for compatibility with
+existing installs and MCP client settings.
 
 If you're editing a plugin that overrides mods, launch it **through Mod Organizer 2**
 (Settings → Executables → Add from file). That's what lets it see your modlist's virtual Data
