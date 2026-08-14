@@ -1,0 +1,329 @@
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using Loqui;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Noggog;
+
+namespace Mutagen.Bethesda.Plugins.Cache.Internals.Implementations.Internal;
+
+internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
+    where TKey : notnull
+{
+    private readonly GameCategory _gameCategory;
+    private readonly bool _hasAny;
+    private readonly bool _simple;
+    private readonly IReadOnlyList<IModGetter> _listedOrder;
+    private readonly IMetaInterfaceMapGetter _metaInterfaceMapGetter;
+    private readonly Func<IMajorRecordGetter, TryGet<TKey>> _keyGetter;
+    private readonly Func<TKey, bool> _shortCircuit;
+    private readonly IEqualityComparer<TKey>? _equalityComparer;
+    private readonly Dictionary<Type, DepthCache<TKey, LinkCacheItem>> _winningRecords = new();
+    private readonly Dictionary<Type, DepthCache<TKey, ImmutableList<LinkCacheItem>>> _allRecords = new();
+
+    static ImmutableLoadOrderLinkCacheCategory()
+    {
+        Plugins.Warmup.Init();
+    }
+
+    public ImmutableLoadOrderLinkCacheCategory(
+        GameCategory gameCategory,
+        bool hasAny,
+        bool simple,
+        IReadOnlyList<IModGetter> listedOrder,
+        IMetaInterfaceMapGetter metaInterfaceMapGetter,
+        Func<IMajorRecordGetter, TryGet<TKey>> keyGetter,
+        Func<TKey, bool> shortCircuit,
+        IEqualityComparer<TKey>? equalityComparer)
+    {
+        _gameCategory = gameCategory;
+        _hasAny = hasAny;
+        _simple = simple;
+        _listedOrder = listedOrder;
+        _metaInterfaceMapGetter = metaInterfaceMapGetter;
+        _keyGetter = keyGetter;
+        _shortCircuit = shortCircuit;
+        _equalityComparer = equalityComparer;
+    }
+
+    private DepthCache<TKey, LinkCacheItem> GetTypeCache(Type type)
+    {
+        lock (_winningRecords)
+        {
+
+            if (!_winningRecords.TryGetValue(type, out var cache))
+            {
+                cache = new DepthCache<TKey, LinkCacheItem>(_equalityComparer);
+                if (type == typeof(IMajorRecord)
+                    || type == typeof(IMajorRecordGetter))
+                {
+                    _winningRecords[typeof(IMajorRecord)] = cache;
+                    _winningRecords[typeof(IMajorRecordGetter)] = cache;
+                }
+                else if (LoquiRegistration.TryGetRegister(type, out var registration))
+                {
+                    _winningRecords[registration.ClassType] = cache;
+                    _winningRecords[registration.GetterType] = cache;
+                    _winningRecords[registration.SetterType] = cache;
+                    if (registration.InternalGetterType != null)
+                    {
+                        _winningRecords[registration.InternalGetterType] = cache;
+                    }
+                    if (registration.InternalSetterType != null)
+                    {
+                        _winningRecords[registration.InternalSetterType] = cache;
+                    }
+                }
+                else
+                {
+                    if (!_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_gameCategory, type, out _))
+                    {
+                        throw new ArgumentException($"A lookup was queried for an unregistered type: {type.Name}");
+                    }
+                    _winningRecords[type] = cache;
+                }
+            }
+            return cache;
+        }
+    }
+
+    private void FillNextCacheDepth(DepthCache<TKey, LinkCacheItem> cache, Type type)
+    {
+
+        var targetIndex = _listedOrder.Count - cache.Depth - 1;
+        var targetMod = _listedOrder[targetIndex];
+        cache.Depth++;
+        cache.PassedMods.Add(targetMod.ModKey);
+
+        void AddRecords(IModGetter mod, Type type, bool throwIfUnknown)
+        {
+            foreach (var record in mod.EnumerateMajorRecords(type, throwIfUnknown: throwIfUnknown)
+
+                         .Catch((Exception ex) => { }))
+            {
+                var key = _keyGetter(record);
+                if (key.Failed) continue;
+                cache.AddIfMissing(key.Value, LinkCacheItem.Factory(record, _simple));
+            }
+        }
+
+        if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_gameCategory, type, out var objs))
+        {
+            foreach (var regis in objs.Registrations)
+            {
+                AddRecords(targetMod, regis.GetterType, throwIfUnknown: false);
+            }
+        }
+        else
+        {
+            AddRecords(targetMod, type, throwIfUnknown: true);
+        }
+    }
+
+    public bool TryResolve(
+        TKey key,
+        ModKey? modKey,
+        Type type,
+        [MaybeNullWhen(false)] out LinkCacheItem majorRec)
+    {
+        if (!_hasAny || _shortCircuit(key))
+        {
+            majorRec = default;
+            return false;
+        }
+
+        DepthCache<TKey, LinkCacheItem> cache = GetTypeCache(type);
+
+        if (cache.Done)
+        {
+            return cache.TryGetValue(key, out majorRec);
+        }
+
+        lock (cache)
+        {
+
+            if (cache.TryGetValue(key, out majorRec))
+            {
+                return true;
+            }
+            if (InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache))
+            {
+                majorRec = default;
+                return false;
+            }
+
+            while (!InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache))
+            {
+                FillNextCacheDepth(cache, type);
+
+                if (cache.TryGetValue(key, out majorRec))
+                {
+                    return true;
+                }
+            }
+
+            majorRec = default;
+            return false;
+        }
+    }
+
+    public IEnumerable<LinkCacheItem> ResolveAll(
+        TKey key,
+        ModKey? modKey,
+        Type type)
+    {
+        if (!_hasAny || _shortCircuit(key))
+        {
+            yield break;
+        }
+
+        DepthCache<TKey, ImmutableList<LinkCacheItem>> cache;
+        lock (_allRecords)
+        {
+            cache = _allRecords.GetOrAdd(type, () => new DepthCache<TKey, ImmutableList<LinkCacheItem>>(_equalityComparer));
+        }
+
+        if (cache.Done)
+        {
+            if (cache.TryGetValue(key, out var doneList))
+            {
+                foreach (var val in doneList)
+                {
+                    yield return val;
+                }
+            }
+            yield break;
+        }
+
+        ImmutableList<LinkCacheItem>? list;
+        int consideredDepth;
+        int iteratedCount;
+        bool more;
+        lock (cache)
+        {
+            if (!cache.TryGetValue(key, out list))
+            {
+                list = ImmutableList<LinkCacheItem>.Empty;
+                cache.Add(key, list);
+            }
+            consideredDepth = cache.Depth;
+            iteratedCount = list.Count;
+            more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
+        }
+
+        foreach (var item in list)
+        {
+            yield return item;
+        }
+
+        while (more)
+        {
+
+            lock (cache)
+            {
+
+                if (consideredDepth == cache.Depth)
+                {
+
+                    var targetIndex = _listedOrder.Count - cache.Depth - 1;
+                    var targetMod = _listedOrder[targetIndex];
+                    cache.Depth++;
+                    cache.PassedMods.Add(targetMod.ModKey);
+
+                    void AddRecords(IModGetter mod, Type type, bool throwIfUnknown)
+                    {
+                        foreach (var item in mod.EnumerateMajorRecords(type, throwIfUnknown: throwIfUnknown)
+
+                                     .Catch((Exception ex) => { }))
+                        {
+                            var iterKey = _keyGetter(item);
+                            if (iterKey.Failed) continue;
+                            if (!cache.TryGetValue(iterKey.Value, out var targetList))
+                            {
+                                targetList = ImmutableList<LinkCacheItem>.Empty;
+                            }
+                            cache.Set(iterKey.Value, targetList.Add(LinkCacheItem.Factory(item, _simple)));
+                        }
+                        if (cache.TryGetValue(key, out var requeriedList))
+                        {
+                            list = requeriedList;
+                        }
+                    }
+
+                    if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_gameCategory, type, out var objs))
+                    {
+                        foreach (var regis in objs.Registrations)
+                        {
+                            AddRecords(targetMod, regis.GetterType, throwIfUnknown: false);
+                        }
+                    }
+                    else
+                    {
+                        AddRecords(targetMod, type, throwIfUnknown: true);
+                    }
+                }
+                else
+                {
+                    if (cache.TryGetValue(key, out var requeriedList))
+                    {
+                        list = requeriedList;
+                    }
+                }
+                consideredDepth = cache.Depth;
+                more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
+            }
+
+            for (int i = iteratedCount; i < list.Count; i++)
+            {
+                yield return list[i];
+            }
+            iteratedCount = list.Count;
+        }
+    }
+
+    public IEnumerable<LinkCacheItem> AllIdentifiers(Type type, CancellationToken? cancel)
+    {
+        if (!_hasAny || (cancel?.IsCancellationRequested ?? false))
+        {
+            return [];
+        }
+
+        DepthCache<TKey, LinkCacheItem> cache = GetTypeCache(type);
+        if (cancel?.IsCancellationRequested ?? false)
+        {
+            return [];
+        }
+
+        if (cache.Done)
+        {
+            return cache.Values;
+        }
+
+        lock (cache)
+        {
+
+            while (!InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey: null, _listedOrder.Count, cache))
+            {
+                if (cancel?.IsCancellationRequested ?? false) return [];
+                FillNextCacheDepth(cache, type);
+            }
+        }
+
+        if (cancel?.IsCancellationRequested ?? false) return [];
+        return cache.Values;
+    }
+
+    public void Warmup(Type type)
+    {
+        DepthCache<TKey, LinkCacheItem> cache = GetTypeCache(type);
+
+        lock (cache)
+        {
+
+            while (!InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey: null, _listedOrder.Count, cache))
+            {
+                FillNextCacheDepth(cache, type);
+            }
+        }
+    }
+}

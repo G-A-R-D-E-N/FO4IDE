@@ -1,0 +1,1464 @@
+
+#region Usings
+using Loqui;
+using Loqui.Internal;
+using Mutagen.Bethesda.Pex;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using System.Diagnostics;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Pex
+{
+    #region Class
+    public partial class PexObjectFunction :
+        IEquatable<IPexObjectFunctionGetter>,
+        ILoquiObjectSetter<PexObjectFunction>,
+        IPexObjectFunction
+    {
+        #region Ctor
+        public PexObjectFunction()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region ReturnTypeName
+        public String? ReturnTypeName { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? IPexObjectFunctionGetter.ReturnTypeName => this.ReturnTypeName;
+        #endregion
+        #region DocString
+        public String? DocString { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? IPexObjectFunctionGetter.DocString => this.DocString;
+        #endregion
+        #region Flags
+        public FunctionFlags Flags { get; set; } = default(FunctionFlags);
+        #endregion
+        #region Parameters
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<PexObjectFunctionVariable> _Parameters = new ExtendedList<PexObjectFunctionVariable>();
+        public ExtendedList<PexObjectFunctionVariable> Parameters
+        {
+            get => this._Parameters;
+            init => this._Parameters = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IPexObjectFunctionVariableGetter> IPexObjectFunctionGetter.Parameters => _Parameters;
+        #endregion
+
+        #endregion
+        #region Locals
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<PexObjectFunctionVariable> _Locals = new ExtendedList<PexObjectFunctionVariable>();
+        public ExtendedList<PexObjectFunctionVariable> Locals
+        {
+            get => this._Locals;
+            init => this._Locals = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IPexObjectFunctionVariableGetter> IPexObjectFunctionGetter.Locals => _Locals;
+        #endregion
+
+        #endregion
+        #region Instructions
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<PexObjectFunctionInstruction> _Instructions = new ExtendedList<PexObjectFunctionInstruction>();
+        public ExtendedList<PexObjectFunctionInstruction> Instructions
+        {
+            get => this._Instructions;
+            init => this._Instructions = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IPexObjectFunctionInstructionGetter> IPexObjectFunctionGetter.Instructions => _Instructions;
+        #endregion
+
+        #endregion
+        #region RawUserFlags
+        public UInt32 RawUserFlags { get; set; } = default(UInt32);
+        #endregion
+
+        #region To String
+
+        public void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            PexObjectFunctionMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is not IPexObjectFunctionGetter rhs) return false;
+            return ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IPexObjectFunctionGetter? obj)
+        {
+            return ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #region Mask
+        public class Mask<TItem> :
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            {
+                this.ReturnTypeName = initialValue;
+                this.DocString = initialValue;
+                this.Flags = initialValue;
+                this.Parameters = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionVariable.Mask<TItem>?>>?>(initialValue, []);
+                this.Locals = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionVariable.Mask<TItem>?>>?>(initialValue, []);
+                this.Instructions = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionInstruction.Mask<TItem>?>>?>(initialValue, []);
+                this.RawUserFlags = initialValue;
+            }
+
+            public Mask(
+                TItem ReturnTypeName,
+                TItem DocString,
+                TItem Flags,
+                TItem Parameters,
+                TItem Locals,
+                TItem Instructions,
+                TItem RawUserFlags)
+            {
+                this.ReturnTypeName = ReturnTypeName;
+                this.DocString = DocString;
+                this.Flags = Flags;
+                this.Parameters = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionVariable.Mask<TItem>?>>?>(Parameters, []);
+                this.Locals = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionVariable.Mask<TItem>?>>?>(Locals, []);
+                this.Instructions = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionInstruction.Mask<TItem>?>>?>(Instructions, []);
+                this.RawUserFlags = RawUserFlags;
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public TItem ReturnTypeName;
+            public TItem DocString;
+            public TItem Flags;
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionVariable.Mask<TItem>?>>?>? Parameters;
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionVariable.Mask<TItem>?>>?>? Locals;
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, PexObjectFunctionInstruction.Mask<TItem>?>>?>? Instructions;
+            public TItem RawUserFlags;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!object.Equals(this.ReturnTypeName, rhs.ReturnTypeName)) return false;
+                if (!object.Equals(this.DocString, rhs.DocString)) return false;
+                if (!object.Equals(this.Flags, rhs.Flags)) return false;
+                if (!object.Equals(this.Parameters, rhs.Parameters)) return false;
+                if (!object.Equals(this.Locals, rhs.Locals)) return false;
+                if (!object.Equals(this.Instructions, rhs.Instructions)) return false;
+                if (!object.Equals(this.RawUserFlags, rhs.RawUserFlags)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.ReturnTypeName);
+                hash.Add(this.DocString);
+                hash.Add(this.Flags);
+                hash.Add(this.Parameters);
+                hash.Add(this.Locals);
+                hash.Add(this.Instructions);
+                hash.Add(this.RawUserFlags);
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public bool All(Func<TItem, bool> eval)
+            {
+                if (!eval(this.ReturnTypeName)) return false;
+                if (!eval(this.DocString)) return false;
+                if (!eval(this.Flags)) return false;
+                if (this.Parameters != null)
+                {
+                    if (!eval(this.Parameters.Overall)) return false;
+                    if (this.Parameters.Specific != null)
+                    {
+                        foreach (var item in this.Parameters.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (this.Locals != null)
+                {
+                    if (!eval(this.Locals.Overall)) return false;
+                    if (this.Locals.Specific != null)
+                    {
+                        foreach (var item in this.Locals.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (this.Instructions != null)
+                {
+                    if (!eval(this.Instructions.Overall)) return false;
+                    if (this.Instructions.Specific != null)
+                    {
+                        foreach (var item in this.Instructions.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (!eval(this.RawUserFlags)) return false;
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public bool Any(Func<TItem, bool> eval)
+            {
+                if (eval(this.ReturnTypeName)) return true;
+                if (eval(this.DocString)) return true;
+                if (eval(this.Flags)) return true;
+                if (this.Parameters != null)
+                {
+                    if (eval(this.Parameters.Overall)) return true;
+                    if (this.Parameters.Specific != null)
+                    {
+                        foreach (var item in this.Parameters.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (this.Locals != null)
+                {
+                    if (eval(this.Locals.Overall)) return true;
+                    if (this.Locals.Specific != null)
+                    {
+                        foreach (var item in this.Locals.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (this.Instructions != null)
+                {
+                    if (eval(this.Instructions.Overall)) return true;
+                    if (this.Instructions.Specific != null)
+                    {
+                        foreach (var item in this.Instructions.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (eval(this.RawUserFlags)) return true;
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new PexObjectFunction.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                obj.ReturnTypeName = eval(this.ReturnTypeName);
+                obj.DocString = eval(this.DocString);
+                obj.Flags = eval(this.Flags);
+                if (Parameters != null)
+                {
+                    obj.Parameters = new MaskItem<R, IEnumerable<MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>>?>(eval(this.Parameters.Overall), []);
+                    if (Parameters.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>>();
+                        obj.Parameters.Specific = l;
+                        foreach (var item in Parameters.Specific)
+                        {
+                            MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+                if (Locals != null)
+                {
+                    obj.Locals = new MaskItem<R, IEnumerable<MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>>?>(eval(this.Locals.Overall), []);
+                    if (Locals.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>>();
+                        obj.Locals.Specific = l;
+                        foreach (var item in Locals.Specific)
+                        {
+                            MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, PexObjectFunctionVariable.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+                if (Instructions != null)
+                {
+                    obj.Instructions = new MaskItem<R, IEnumerable<MaskItemIndexed<R, PexObjectFunctionInstruction.Mask<R>?>>?>(eval(this.Instructions.Overall), []);
+                    if (Instructions.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, PexObjectFunctionInstruction.Mask<R>?>>();
+                        obj.Instructions.Specific = l;
+                        foreach (var item in Instructions.Specific)
+                        {
+                            MaskItemIndexed<R, PexObjectFunctionInstruction.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, PexObjectFunctionInstruction.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+                obj.RawUserFlags = eval(this.RawUserFlags);
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(PexObjectFunction.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, PexObjectFunction.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(PexObjectFunction.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.ReturnTypeName ?? true)
+                    {
+                        sb.AppendItem(ReturnTypeName, "ReturnTypeName");
+                    }
+                    if (printMask?.DocString ?? true)
+                    {
+                        sb.AppendItem(DocString, "DocString");
+                    }
+                    if (printMask?.Flags ?? true)
+                    {
+                        sb.AppendItem(Flags, "Flags");
+                    }
+                    if ((printMask?.Parameters?.Overall ?? true)
+                        && Parameters is {} ParametersItem)
+                    {
+                        sb.AppendLine("Parameters =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(ParametersItem.Overall);
+                            if (ParametersItem.Specific != null)
+                            {
+                                foreach (var subItem in ParametersItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if ((printMask?.Locals?.Overall ?? true)
+                        && Locals is {} LocalsItem)
+                    {
+                        sb.AppendLine("Locals =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(LocalsItem.Overall);
+                            if (LocalsItem.Specific != null)
+                            {
+                                foreach (var subItem in LocalsItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if ((printMask?.Instructions?.Overall ?? true)
+                        && Instructions is {} InstructionsItem)
+                    {
+                        sb.AppendLine("Instructions =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(InstructionsItem.Overall);
+                            if (InstructionsItem.Specific != null)
+                            {
+                                foreach (var subItem in InstructionsItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (printMask?.RawUserFlags ?? true)
+                    {
+                        sb.AppendItem(RawUserFlags, "RawUserFlags");
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public class ErrorMask :
+            IErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public Exception? Overall { get; set; }
+            private List<string>? _warnings;
+            public List<string> Warnings
+            {
+                get
+                {
+                    if (_warnings == null)
+                    {
+                        _warnings = new List<string>();
+                    }
+                    return _warnings;
+                }
+            }
+            public Exception? ReturnTypeName;
+            public Exception? DocString;
+            public Exception? Flags;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>? Parameters;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>? Locals;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionInstruction.ErrorMask?>>?>? Instructions;
+            public Exception? RawUserFlags;
+            #endregion
+
+            #region IErrorMask
+            public object? GetNthMask(int index)
+            {
+                PexObjectFunction_FieldIndex enu = (PexObjectFunction_FieldIndex)index;
+                switch (enu)
+                {
+                    case PexObjectFunction_FieldIndex.ReturnTypeName:
+                        return ReturnTypeName;
+                    case PexObjectFunction_FieldIndex.DocString:
+                        return DocString;
+                    case PexObjectFunction_FieldIndex.Flags:
+                        return Flags;
+                    case PexObjectFunction_FieldIndex.Parameters:
+                        return Parameters;
+                    case PexObjectFunction_FieldIndex.Locals:
+                        return Locals;
+                    case PexObjectFunction_FieldIndex.Instructions:
+                        return Instructions;
+                    case PexObjectFunction_FieldIndex.RawUserFlags:
+                        return RawUserFlags;
+                    default:
+                        throw new ArgumentException($"Index is out of range: {index}");
+                }
+            }
+
+            public void SetNthException(int index, Exception ex)
+            {
+                PexObjectFunction_FieldIndex enu = (PexObjectFunction_FieldIndex)index;
+                switch (enu)
+                {
+                    case PexObjectFunction_FieldIndex.ReturnTypeName:
+                        this.ReturnTypeName = ex;
+                        break;
+                    case PexObjectFunction_FieldIndex.DocString:
+                        this.DocString = ex;
+                        break;
+                    case PexObjectFunction_FieldIndex.Flags:
+                        this.Flags = ex;
+                        break;
+                    case PexObjectFunction_FieldIndex.Parameters:
+                        this.Parameters = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>(ex, null);
+                        break;
+                    case PexObjectFunction_FieldIndex.Locals:
+                        this.Locals = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>(ex, null);
+                        break;
+                    case PexObjectFunction_FieldIndex.Instructions:
+                        this.Instructions = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionInstruction.ErrorMask?>>?>(ex, null);
+                        break;
+                    case PexObjectFunction_FieldIndex.RawUserFlags:
+                        this.RawUserFlags = ex;
+                        break;
+                    default:
+                        throw new ArgumentException($"Index is out of range: {index}");
+                }
+            }
+
+            public void SetNthMask(int index, object obj)
+            {
+                PexObjectFunction_FieldIndex enu = (PexObjectFunction_FieldIndex)index;
+                switch (enu)
+                {
+                    case PexObjectFunction_FieldIndex.ReturnTypeName:
+                        this.ReturnTypeName = (Exception?)obj;
+                        break;
+                    case PexObjectFunction_FieldIndex.DocString:
+                        this.DocString = (Exception?)obj;
+                        break;
+                    case PexObjectFunction_FieldIndex.Flags:
+                        this.Flags = (Exception?)obj;
+                        break;
+                    case PexObjectFunction_FieldIndex.Parameters:
+                        this.Parameters = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>)obj;
+                        break;
+                    case PexObjectFunction_FieldIndex.Locals:
+                        this.Locals = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>)obj;
+                        break;
+                    case PexObjectFunction_FieldIndex.Instructions:
+                        this.Instructions = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionInstruction.ErrorMask?>>?>)obj;
+                        break;
+                    case PexObjectFunction_FieldIndex.RawUserFlags:
+                        this.RawUserFlags = (Exception?)obj;
+                        break;
+                    default:
+                        throw new ArgumentException($"Index is out of range: {index}");
+                }
+            }
+
+            public bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (ReturnTypeName != null) return true;
+                if (DocString != null) return true;
+                if (Flags != null) return true;
+                if (Parameters != null) return true;
+                if (Locals != null) return true;
+                if (Instructions != null) return true;
+                if (RawUserFlags != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                {
+                    sb.AppendItem(ReturnTypeName, "ReturnTypeName");
+                }
+                {
+                    sb.AppendItem(DocString, "DocString");
+                }
+                {
+                    sb.AppendItem(Flags, "Flags");
+                }
+                if (Parameters is {} ParametersItem)
+                {
+                    sb.AppendLine("Parameters =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(ParametersItem.Overall);
+                        if (ParametersItem.Specific != null)
+                        {
+                            foreach (var subItem in ParametersItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Locals is {} LocalsItem)
+                {
+                    sb.AppendLine("Locals =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(LocalsItem.Overall);
+                        if (LocalsItem.Specific != null)
+                        {
+                            foreach (var subItem in LocalsItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Instructions is {} InstructionsItem)
+                {
+                    sb.AppendLine("Instructions =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(InstructionsItem.Overall);
+                        if (InstructionsItem.Specific != null)
+                        {
+                            foreach (var subItem in InstructionsItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+                {
+                    sb.AppendItem(RawUserFlags, "RawUserFlags");
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.ReturnTypeName = this.ReturnTypeName.Combine(rhs.ReturnTypeName);
+                ret.DocString = this.DocString.Combine(rhs.DocString);
+                ret.Flags = this.Flags.Combine(rhs.Flags);
+                ret.Parameters = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Parameters?.Overall, rhs.Parameters?.Overall), Noggog.ExceptionExt.Combine(this.Parameters?.Specific, rhs.Parameters?.Specific));
+                ret.Locals = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionVariable.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Locals?.Overall, rhs.Locals?.Overall), Noggog.ExceptionExt.Combine(this.Locals?.Specific, rhs.Locals?.Specific));
+                ret.Instructions = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, PexObjectFunctionInstruction.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Instructions?.Overall, rhs.Instructions?.Overall), Noggog.ExceptionExt.Combine(this.Instructions?.Specific, rhs.Instructions?.Specific));
+                ret.RawUserFlags = this.RawUserFlags.Combine(rhs.RawUserFlags);
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public class TranslationMask : ITranslationMask
+        {
+            #region Members
+            private TranslationCrystal? _crystal;
+            public readonly bool DefaultOn;
+            public bool OnOverall;
+            public bool ReturnTypeName;
+            public bool DocString;
+            public bool Flags;
+            public PexObjectFunctionVariable.TranslationMask? Parameters;
+            public PexObjectFunctionVariable.TranslationMask? Locals;
+            public PexObjectFunctionInstruction.TranslationMask? Instructions;
+            public bool RawUserFlags;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+            {
+                this.DefaultOn = defaultOn;
+                this.OnOverall = onOverall;
+                this.ReturnTypeName = defaultOn;
+                this.DocString = defaultOn;
+                this.Flags = defaultOn;
+                this.RawUserFlags = defaultOn;
+            }
+
+            #endregion
+
+            public TranslationCrystal GetCrystal()
+            {
+                if (_crystal != null) return _crystal;
+                var ret = new List<(bool On, TranslationCrystal? SubCrystal)>();
+                GetCrystal(ret);
+                _crystal = new TranslationCrystal(ret.ToArray());
+                return _crystal;
+            }
+
+            protected void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                ret.Add((ReturnTypeName, null));
+                ret.Add((DocString, null));
+                ret.Add((Flags, null));
+                ret.Add((Parameters == null ? DefaultOn : !Parameters.GetCrystal().CopyNothing, Parameters?.GetCrystal()));
+                ret.Add((Locals == null ? DefaultOn : !Locals.GetCrystal().CopyNothing, Locals?.GetCrystal()));
+                ret.Add((Instructions == null ? DefaultOn : !Instructions.GetCrystal().CopyNothing, Instructions?.GetCrystal()));
+                ret.Add((RawUserFlags, null));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((PexObjectFunctionSetterCommon)((IPexObjectFunctionGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static PexObjectFunction GetNew()
+        {
+            return new PexObjectFunction();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface IPexObjectFunction :
+        IHasUserFlags,
+        ILoquiObjectSetter<IPexObjectFunction>,
+        IPexObjectFunctionGetter
+    {
+        new String? ReturnTypeName { get; set; }
+        new String? DocString { get; set; }
+        new FunctionFlags Flags { get; set; }
+        new ExtendedList<PexObjectFunctionVariable> Parameters { get; }
+        new ExtendedList<PexObjectFunctionVariable> Locals { get; }
+        new ExtendedList<PexObjectFunctionInstruction> Instructions { get; }
+        new UInt32 RawUserFlags { get; set; }
+    }
+
+    public partial interface IPexObjectFunctionGetter :
+        ILoquiObject,
+        IHasUserFlagsGetter,
+        ILoquiObject<IPexObjectFunctionGetter>
+    {
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        object CommonInstance();
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        object? CommonSetterInstance();
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        object CommonSetterTranslationInstance();
+        static ILoquiRegistration StaticRegistration => PexObjectFunction_Registration.Instance;
+        String? ReturnTypeName { get; }
+        String? DocString { get; }
+        FunctionFlags Flags { get; }
+        IReadOnlyList<IPexObjectFunctionVariableGetter> Parameters { get; }
+        IReadOnlyList<IPexObjectFunctionVariableGetter> Locals { get; }
+        IReadOnlyList<IPexObjectFunctionInstructionGetter> Instructions { get; }
+        UInt32 RawUserFlags { get; }
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class PexObjectFunctionMixIn
+    {
+        public static void Clear(this IPexObjectFunction item)
+        {
+            ((PexObjectFunctionSetterCommon)((IPexObjectFunctionGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static PexObjectFunction.Mask<bool> GetEqualsMask(
+            this IPexObjectFunctionGetter item,
+            IPexObjectFunctionGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this IPexObjectFunctionGetter item,
+            string? name = null,
+            PexObjectFunction.Mask<bool>? printMask = null)
+        {
+            return ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this IPexObjectFunctionGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            PexObjectFunction.Mask<bool>? printMask = null)
+        {
+            ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this IPexObjectFunctionGetter item,
+            IPexObjectFunctionGetter rhs,
+            PexObjectFunction.TranslationMask? equalsMask = null)
+        {
+            return ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this IPexObjectFunction lhs,
+            IPexObjectFunctionGetter rhs)
+        {
+            ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: default,
+                copyMask: default,
+                deepCopy: false);
+        }
+
+        public static void DeepCopyIn(
+            this IPexObjectFunction lhs,
+            IPexObjectFunctionGetter rhs,
+            PexObjectFunction.TranslationMask? copyMask = null)
+        {
+            ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: default,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+        }
+
+        public static void DeepCopyIn(
+            this IPexObjectFunction lhs,
+            IPexObjectFunctionGetter rhs,
+            out PexObjectFunction.ErrorMask errorMask,
+            PexObjectFunction.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = PexObjectFunction.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this IPexObjectFunction lhs,
+            IPexObjectFunctionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static PexObjectFunction DeepCopy(
+            this IPexObjectFunctionGetter item,
+            PexObjectFunction.TranslationMask? copyMask = null)
+        {
+            return ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static PexObjectFunction DeepCopy(
+            this IPexObjectFunctionGetter item,
+            out PexObjectFunction.ErrorMask errorMask,
+            PexObjectFunction.TranslationMask? copyMask = null)
+        {
+            return ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static PexObjectFunction DeepCopy(
+            this IPexObjectFunctionGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Pex
+{
+    #region Field Index
+    internal enum PexObjectFunction_FieldIndex
+    {
+        ReturnTypeName = 0,
+        DocString = 1,
+        Flags = 2,
+        Parameters = 3,
+        Locals = 4,
+        Instructions = 5,
+        RawUserFlags = 6,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class PexObjectFunction_Registration : ILoquiRegistration
+    {
+        public static readonly PexObjectFunction_Registration Instance = new PexObjectFunction_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Pex.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 7;
+
+        public const ushort FieldCount = 7;
+
+        public static readonly Type MaskType = typeof(PexObjectFunction.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(PexObjectFunction.ErrorMask);
+
+        public static readonly Type ClassType = typeof(PexObjectFunction);
+
+        public static readonly Type GetterType = typeof(IPexObjectFunctionGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(IPexObjectFunction);
+
+        public static readonly Type? InternalSetterType = null;
+
+        public const string FullName = "Mutagen.Bethesda.Pex.PexObjectFunction";
+
+        public const string Name = "PexObjectFunction";
+
+        public const string Namespace = "Mutagen.Bethesda.Pex";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class PexObjectFunctionSetterCommon
+    {
+        public static readonly PexObjectFunctionSetterCommon Instance = new PexObjectFunctionSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(IPexObjectFunction item)
+        {
+            ClearPartial();
+            item.ReturnTypeName = default;
+            item.DocString = default;
+            item.Flags = default(FunctionFlags);
+            item.Parameters.Clear();
+            item.Locals.Clear();
+            item.Instructions.Clear();
+            item.RawUserFlags = default(UInt32);
+        }
+
+    }
+    internal partial class PexObjectFunctionCommon
+    {
+        public static readonly PexObjectFunctionCommon Instance = new PexObjectFunctionCommon();
+
+        public PexObjectFunction.Mask<bool> GetEqualsMask(
+            IPexObjectFunctionGetter item,
+            IPexObjectFunctionGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new PexObjectFunction.Mask<bool>(false);
+            ((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            IPexObjectFunctionGetter item,
+            IPexObjectFunctionGetter rhs,
+            PexObjectFunction.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.ReturnTypeName = string.Equals(item.ReturnTypeName, rhs.ReturnTypeName);
+            ret.DocString = string.Equals(item.DocString, rhs.DocString);
+            ret.Flags = item.Flags == rhs.Flags;
+            ret.Parameters = item.Parameters.CollectionEqualsHelper(
+                rhs.Parameters,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            ret.Locals = item.Locals.CollectionEqualsHelper(
+                rhs.Locals,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            ret.Instructions = item.Instructions.CollectionEqualsHelper(
+                rhs.Instructions,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            ret.RawUserFlags = item.RawUserFlags == rhs.RawUserFlags;
+        }
+
+        public string Print(
+            IPexObjectFunctionGetter item,
+            string? name = null,
+            PexObjectFunction.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            IPexObjectFunctionGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            PexObjectFunction.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"PexObjectFunction =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (PexObjectFunction) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            IPexObjectFunctionGetter item,
+            StructuredStringBuilder sb,
+            PexObjectFunction.Mask<bool>? printMask = null)
+        {
+            if ((printMask?.ReturnTypeName ?? true)
+                && item.ReturnTypeName is {} ReturnTypeNameItem)
+            {
+                sb.AppendItem(ReturnTypeNameItem, "ReturnTypeName");
+            }
+            if ((printMask?.DocString ?? true)
+                && item.DocString is {} DocStringItem)
+            {
+                sb.AppendItem(DocStringItem, "DocString");
+            }
+            if (printMask?.Flags ?? true)
+            {
+                sb.AppendItem(item.Flags, "Flags");
+            }
+            if (printMask?.Parameters?.Overall ?? true)
+            {
+                sb.AppendLine("Parameters =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in item.Parameters)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+            if (printMask?.Locals?.Overall ?? true)
+            {
+                sb.AppendLine("Locals =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in item.Locals)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+            if (printMask?.Instructions?.Overall ?? true)
+            {
+                sb.AppendLine("Instructions =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in item.Instructions)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+            if (printMask?.RawUserFlags ?? true)
+            {
+                sb.AppendItem(item.RawUserFlags, "RawUserFlags");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            IPexObjectFunctionGetter? lhs,
+            IPexObjectFunctionGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if ((equalsMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.ReturnTypeName) ?? true))
+            {
+                if (!string.Equals(lhs.ReturnTypeName, rhs.ReturnTypeName)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.DocString) ?? true))
+            {
+                if (!string.Equals(lhs.DocString, rhs.DocString)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Flags) ?? true))
+            {
+                if (lhs.Flags != rhs.Flags) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Parameters) ?? true))
+            {
+                if (!lhs.Parameters.SequenceEqual(rhs.Parameters, (l, r) => ((PexObjectFunctionVariableCommon)((IPexObjectFunctionVariableGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)PexObjectFunction_FieldIndex.Parameters)))) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Locals) ?? true))
+            {
+                if (!lhs.Locals.SequenceEqual(rhs.Locals, (l, r) => ((PexObjectFunctionVariableCommon)((IPexObjectFunctionVariableGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)PexObjectFunction_FieldIndex.Locals)))) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Instructions) ?? true))
+            {
+                if (!lhs.Instructions.SequenceEqual(rhs.Instructions, (l, r) => ((PexObjectFunctionInstructionCommon)((IPexObjectFunctionInstructionGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)PexObjectFunction_FieldIndex.Instructions)))) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.RawUserFlags) ?? true))
+            {
+                if (lhs.RawUserFlags != rhs.RawUserFlags) return false;
+            }
+            return true;
+        }
+
+        public virtual int GetHashCode(IPexObjectFunctionGetter item)
+        {
+            var hash = new HashCode();
+            if (item.ReturnTypeName is {} ReturnTypeNameitem)
+            {
+                hash.Add(ReturnTypeNameitem);
+            }
+            if (item.DocString is {} DocStringitem)
+            {
+                hash.Add(DocStringitem);
+            }
+            hash.Add(item.Flags);
+            hash.Add(item.Parameters);
+            hash.Add(item.Locals);
+            hash.Add(item.Instructions);
+            hash.Add(item.RawUserFlags);
+            return hash.ToHashCode();
+        }
+
+        #endregion
+
+        public object GetNew()
+        {
+            return PexObjectFunction.GetNew();
+        }
+
+    }
+    internal partial class PexObjectFunctionSetterTranslationCommon
+    {
+        public static readonly PexObjectFunctionSetterTranslationCommon Instance = new PexObjectFunctionSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            IPexObjectFunction item,
+            IPexObjectFunctionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            if ((copyMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.ReturnTypeName) ?? true))
+            {
+                item.ReturnTypeName = rhs.ReturnTypeName;
+            }
+            if ((copyMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.DocString) ?? true))
+            {
+                item.DocString = rhs.DocString;
+            }
+            if ((copyMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Flags) ?? true))
+            {
+                item.Flags = rhs.Flags;
+            }
+            if ((copyMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Parameters) ?? true))
+            {
+                errorMask?.PushIndex((int)PexObjectFunction_FieldIndex.Parameters);
+                try
+                {
+                    item.Parameters.SetTo(
+                        rhs.Parameters
+                        .Select(r =>
+                        {
+                            return r.DeepCopy(
+                                errorMask: errorMask,
+                                default(TranslationCrystal));
+                        }));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Locals) ?? true))
+            {
+                errorMask?.PushIndex((int)PexObjectFunction_FieldIndex.Locals);
+                try
+                {
+                    item.Locals.SetTo(
+                        rhs.Locals
+                        .Select(r =>
+                        {
+                            return r.DeepCopy(
+                                errorMask: errorMask,
+                                default(TranslationCrystal));
+                        }));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.Instructions) ?? true))
+            {
+                errorMask?.PushIndex((int)PexObjectFunction_FieldIndex.Instructions);
+                try
+                {
+                    item.Instructions.SetTo(
+                        rhs.Instructions
+                        .Select(r =>
+                        {
+                            return r.DeepCopy(
+                                errorMask: errorMask,
+                                default(TranslationCrystal));
+                        }));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)PexObjectFunction_FieldIndex.RawUserFlags) ?? true))
+            {
+                item.RawUserFlags = rhs.RawUserFlags;
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            IPexObjectFunction item,
+            IPexObjectFunctionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        #endregion
+
+        public PexObjectFunction DeepCopy(
+            IPexObjectFunctionGetter item,
+            PexObjectFunction.TranslationMask? copyMask = null)
+        {
+            PexObjectFunction ret = (PexObjectFunction)((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).GetNew();
+            ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public PexObjectFunction DeepCopy(
+            IPexObjectFunctionGetter item,
+            out PexObjectFunction.ErrorMask errorMask,
+            PexObjectFunction.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            PexObjectFunction ret = (PexObjectFunction)((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).GetNew();
+            ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = PexObjectFunction.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public PexObjectFunction DeepCopy(
+            IPexObjectFunctionGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            PexObjectFunction ret = (PexObjectFunction)((PexObjectFunctionCommon)((IPexObjectFunctionGetter)item).CommonInstance()!).GetNew();
+            ((PexObjectFunctionSetterTranslationCommon)((IPexObjectFunctionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Pex
+{
+    public partial class PexObjectFunction
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => PexObjectFunction_Registration.Instance;
+        public static ILoquiRegistration StaticRegistration => PexObjectFunction_Registration.Instance;
+        [DebuggerStepThrough]
+        protected object CommonInstance() => PexObjectFunctionCommon.Instance;
+        [DebuggerStepThrough]
+        protected object CommonSetterInstance()
+        {
+            return PexObjectFunctionSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected object CommonSetterTranslationInstance() => PexObjectFunctionSetterTranslationCommon.Instance;
+        [DebuggerStepThrough]
+        object IPexObjectFunctionGetter.CommonInstance() => this.CommonInstance();
+        [DebuggerStepThrough]
+        object IPexObjectFunctionGetter.CommonSetterInstance() => this.CommonSetterInstance();
+        [DebuggerStepThrough]
+        object IPexObjectFunctionGetter.CommonSetterTranslationInstance() => this.CommonSetterTranslationInstance();
+
+        #endregion
+
+    }
+}
+

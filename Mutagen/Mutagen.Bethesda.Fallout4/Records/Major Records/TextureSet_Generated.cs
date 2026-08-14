@@ -1,0 +1,2505 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Fallout4.Internals;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Aspects;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Fallout4.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Class
+    public partial class TextureSet :
+        Fallout4MajorRecord,
+        IEquatable<ITextureSetGetter>,
+        ILoquiObjectSetter<TextureSet>,
+        ITextureSetInternal
+    {
+        #region Ctor
+        protected TextureSet()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region ObjectBounds
+
+        public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter ITextureSetGetter.ObjectBounds => ObjectBounds;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ObjectBounds? IObjectBoundedOptional.ObjectBounds
+        {
+            get => this.ObjectBounds;
+            set => this.ObjectBounds = value ?? new ObjectBounds();
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter IObjectBoundedGetter.ObjectBounds => this.ObjectBounds;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter? IObjectBoundedOptionalGetter.ObjectBounds => this.ObjectBounds;
+        #endregion
+        #endregion
+        #region Diffuse
+        public String? Diffuse { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.Diffuse => this.Diffuse;
+        #endregion
+        #region NormalOrGloss
+        public String? NormalOrGloss { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.NormalOrGloss => this.NormalOrGloss;
+        #endregion
+        #region Glow
+        public String? Glow { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.Glow => this.Glow;
+        #endregion
+        #region Height
+        public String? Height { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.Height => this.Height;
+        #endregion
+        #region Environment
+        public String? Environment { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.Environment => this.Environment;
+        #endregion
+        #region Wrinkles
+        public String? Wrinkles { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.Wrinkles => this.Wrinkles;
+        #endregion
+        #region Multilayer
+        public String? Multilayer { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.Multilayer => this.Multilayer;
+        #endregion
+        #region SmoothSpec
+        public String? SmoothSpec { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.SmoothSpec => this.SmoothSpec;
+        #endregion
+        #region Decal
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Decal? _Decal;
+        public Decal? Decal
+        {
+            get => _Decal;
+            set => _Decal = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IDecalGetter? ITextureSetGetter.Decal => this.Decal;
+        #endregion
+        #region Flags
+        public TextureSet.Flag Flags { get; set; } = default(TextureSet.Flag);
+        #endregion
+        #region Material
+        public String? Material { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? ITextureSetGetter.Material => this.Material;
+        #endregion
+
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            TextureSetMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public new class Mask<TItem> :
+            Fallout4MajorRecord.Mask<TItem>,
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            : base(initialValue)
+            {
+                this.ObjectBounds = new MaskItem<TItem, ObjectBounds.Mask<TItem>?>(initialValue, new ObjectBounds.Mask<TItem>(initialValue));
+                this.Diffuse = initialValue;
+                this.NormalOrGloss = initialValue;
+                this.Glow = initialValue;
+                this.Height = initialValue;
+                this.Environment = initialValue;
+                this.Wrinkles = initialValue;
+                this.Multilayer = initialValue;
+                this.SmoothSpec = initialValue;
+                this.Decal = new MaskItem<TItem, Decal.Mask<TItem>?>(initialValue, new Decal.Mask<TItem>(initialValue));
+                this.Flags = initialValue;
+                this.Material = initialValue;
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID,
+                TItem FormVersion,
+                TItem Version2,
+                TItem Fallout4MajorRecordFlags,
+                TItem ObjectBounds,
+                TItem Diffuse,
+                TItem NormalOrGloss,
+                TItem Glow,
+                TItem Height,
+                TItem Environment,
+                TItem Wrinkles,
+                TItem Multilayer,
+                TItem SmoothSpec,
+                TItem Decal,
+                TItem Flags,
+                TItem Material)
+            : base(
+                MajorRecordFlagsRaw: MajorRecordFlagsRaw,
+                FormKey: FormKey,
+                VersionControl: VersionControl,
+                EditorID: EditorID,
+                FormVersion: FormVersion,
+                Version2: Version2,
+                Fallout4MajorRecordFlags: Fallout4MajorRecordFlags)
+            {
+                this.ObjectBounds = new MaskItem<TItem, ObjectBounds.Mask<TItem>?>(ObjectBounds, new ObjectBounds.Mask<TItem>(ObjectBounds));
+                this.Diffuse = Diffuse;
+                this.NormalOrGloss = NormalOrGloss;
+                this.Glow = Glow;
+                this.Height = Height;
+                this.Environment = Environment;
+                this.Wrinkles = Wrinkles;
+                this.Multilayer = Multilayer;
+                this.SmoothSpec = SmoothSpec;
+                this.Decal = new MaskItem<TItem, Decal.Mask<TItem>?>(Decal, new Decal.Mask<TItem>(Decal));
+                this.Flags = Flags;
+                this.Material = Material;
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public MaskItem<TItem, ObjectBounds.Mask<TItem>?>? ObjectBounds { get; set; }
+            public TItem Diffuse;
+            public TItem NormalOrGloss;
+            public TItem Glow;
+            public TItem Height;
+            public TItem Environment;
+            public TItem Wrinkles;
+            public TItem Multilayer;
+            public TItem SmoothSpec;
+            public MaskItem<TItem, Decal.Mask<TItem>?>? Decal { get; set; }
+            public TItem Flags;
+            public TItem Material;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!base.Equals(rhs)) return false;
+                if (!object.Equals(this.ObjectBounds, rhs.ObjectBounds)) return false;
+                if (!object.Equals(this.Diffuse, rhs.Diffuse)) return false;
+                if (!object.Equals(this.NormalOrGloss, rhs.NormalOrGloss)) return false;
+                if (!object.Equals(this.Glow, rhs.Glow)) return false;
+                if (!object.Equals(this.Height, rhs.Height)) return false;
+                if (!object.Equals(this.Environment, rhs.Environment)) return false;
+                if (!object.Equals(this.Wrinkles, rhs.Wrinkles)) return false;
+                if (!object.Equals(this.Multilayer, rhs.Multilayer)) return false;
+                if (!object.Equals(this.SmoothSpec, rhs.SmoothSpec)) return false;
+                if (!object.Equals(this.Decal, rhs.Decal)) return false;
+                if (!object.Equals(this.Flags, rhs.Flags)) return false;
+                if (!object.Equals(this.Material, rhs.Material)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.ObjectBounds);
+                hash.Add(this.Diffuse);
+                hash.Add(this.NormalOrGloss);
+                hash.Add(this.Glow);
+                hash.Add(this.Height);
+                hash.Add(this.Environment);
+                hash.Add(this.Wrinkles);
+                hash.Add(this.Multilayer);
+                hash.Add(this.SmoothSpec);
+                hash.Add(this.Decal);
+                hash.Add(this.Flags);
+                hash.Add(this.Material);
+                hash.Add(base.GetHashCode());
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public override bool All(Func<TItem, bool> eval)
+            {
+                if (!base.All(eval)) return false;
+                if (ObjectBounds != null)
+                {
+                    if (!eval(this.ObjectBounds.Overall)) return false;
+                    if (this.ObjectBounds.Specific != null && !this.ObjectBounds.Specific.All(eval)) return false;
+                }
+                if (!eval(this.Diffuse)) return false;
+                if (!eval(this.NormalOrGloss)) return false;
+                if (!eval(this.Glow)) return false;
+                if (!eval(this.Height)) return false;
+                if (!eval(this.Environment)) return false;
+                if (!eval(this.Wrinkles)) return false;
+                if (!eval(this.Multilayer)) return false;
+                if (!eval(this.SmoothSpec)) return false;
+                if (Decal != null)
+                {
+                    if (!eval(this.Decal.Overall)) return false;
+                    if (this.Decal.Specific != null && !this.Decal.Specific.All(eval)) return false;
+                }
+                if (!eval(this.Flags)) return false;
+                if (!eval(this.Material)) return false;
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public override bool Any(Func<TItem, bool> eval)
+            {
+                if (base.Any(eval)) return true;
+                if (ObjectBounds != null)
+                {
+                    if (eval(this.ObjectBounds.Overall)) return true;
+                    if (this.ObjectBounds.Specific != null && this.ObjectBounds.Specific.Any(eval)) return true;
+                }
+                if (eval(this.Diffuse)) return true;
+                if (eval(this.NormalOrGloss)) return true;
+                if (eval(this.Glow)) return true;
+                if (eval(this.Height)) return true;
+                if (eval(this.Environment)) return true;
+                if (eval(this.Wrinkles)) return true;
+                if (eval(this.Multilayer)) return true;
+                if (eval(this.SmoothSpec)) return true;
+                if (Decal != null)
+                {
+                    if (eval(this.Decal.Overall)) return true;
+                    if (this.Decal.Specific != null && this.Decal.Specific.Any(eval)) return true;
+                }
+                if (eval(this.Flags)) return true;
+                if (eval(this.Material)) return true;
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public new Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new TextureSet.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                base.Translate_InternalFill(obj, eval);
+                obj.ObjectBounds = this.ObjectBounds == null ? null : new MaskItem<R, ObjectBounds.Mask<R>?>(eval(this.ObjectBounds.Overall), this.ObjectBounds.Specific?.Translate(eval));
+                obj.Diffuse = eval(this.Diffuse);
+                obj.NormalOrGloss = eval(this.NormalOrGloss);
+                obj.Glow = eval(this.Glow);
+                obj.Height = eval(this.Height);
+                obj.Environment = eval(this.Environment);
+                obj.Wrinkles = eval(this.Wrinkles);
+                obj.Multilayer = eval(this.Multilayer);
+                obj.SmoothSpec = eval(this.SmoothSpec);
+                obj.Decal = this.Decal == null ? null : new MaskItem<R, Decal.Mask<R>?>(eval(this.Decal.Overall), this.Decal.Specific?.Translate(eval));
+                obj.Flags = eval(this.Flags);
+                obj.Material = eval(this.Material);
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(TextureSet.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, TextureSet.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(TextureSet.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.ObjectBounds?.Overall ?? true)
+                    {
+                        ObjectBounds?.Print(sb);
+                    }
+                    if (printMask?.Diffuse ?? true)
+                    {
+                        sb.AppendItem(Diffuse, "Diffuse");
+                    }
+                    if (printMask?.NormalOrGloss ?? true)
+                    {
+                        sb.AppendItem(NormalOrGloss, "NormalOrGloss");
+                    }
+                    if (printMask?.Glow ?? true)
+                    {
+                        sb.AppendItem(Glow, "Glow");
+                    }
+                    if (printMask?.Height ?? true)
+                    {
+                        sb.AppendItem(Height, "Height");
+                    }
+                    if (printMask?.Environment ?? true)
+                    {
+                        sb.AppendItem(Environment, "Environment");
+                    }
+                    if (printMask?.Wrinkles ?? true)
+                    {
+                        sb.AppendItem(Wrinkles, "Wrinkles");
+                    }
+                    if (printMask?.Multilayer ?? true)
+                    {
+                        sb.AppendItem(Multilayer, "Multilayer");
+                    }
+                    if (printMask?.SmoothSpec ?? true)
+                    {
+                        sb.AppendItem(SmoothSpec, "SmoothSpec");
+                    }
+                    if (printMask?.Decal?.Overall ?? true)
+                    {
+                        Decal?.Print(sb);
+                    }
+                    if (printMask?.Flags ?? true)
+                    {
+                        sb.AppendItem(Flags, "Flags");
+                    }
+                    if (printMask?.Material ?? true)
+                    {
+                        sb.AppendItem(Material, "Material");
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public new class ErrorMask :
+            Fallout4MajorRecord.ErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public MaskItem<Exception?, ObjectBounds.ErrorMask?>? ObjectBounds;
+            public Exception? Diffuse;
+            public Exception? NormalOrGloss;
+            public Exception? Glow;
+            public Exception? Height;
+            public Exception? Environment;
+            public Exception? Wrinkles;
+            public Exception? Multilayer;
+            public Exception? SmoothSpec;
+            public MaskItem<Exception?, Decal.ErrorMask?>? Decal;
+            public Exception? Flags;
+            public Exception? Material;
+            #endregion
+
+            #region IErrorMask
+            public override object? GetNthMask(int index)
+            {
+                TextureSet_FieldIndex enu = (TextureSet_FieldIndex)index;
+                switch (enu)
+                {
+                    case TextureSet_FieldIndex.ObjectBounds:
+                        return ObjectBounds;
+                    case TextureSet_FieldIndex.Diffuse:
+                        return Diffuse;
+                    case TextureSet_FieldIndex.NormalOrGloss:
+                        return NormalOrGloss;
+                    case TextureSet_FieldIndex.Glow:
+                        return Glow;
+                    case TextureSet_FieldIndex.Height:
+                        return Height;
+                    case TextureSet_FieldIndex.Environment:
+                        return Environment;
+                    case TextureSet_FieldIndex.Wrinkles:
+                        return Wrinkles;
+                    case TextureSet_FieldIndex.Multilayer:
+                        return Multilayer;
+                    case TextureSet_FieldIndex.SmoothSpec:
+                        return SmoothSpec;
+                    case TextureSet_FieldIndex.Decal:
+                        return Decal;
+                    case TextureSet_FieldIndex.Flags:
+                        return Flags;
+                    case TextureSet_FieldIndex.Material:
+                        return Material;
+                    default:
+                        return base.GetNthMask(index);
+                }
+            }
+
+            public override void SetNthException(int index, Exception ex)
+            {
+                TextureSet_FieldIndex enu = (TextureSet_FieldIndex)index;
+                switch (enu)
+                {
+                    case TextureSet_FieldIndex.ObjectBounds:
+                        this.ObjectBounds = new MaskItem<Exception?, ObjectBounds.ErrorMask?>(ex, null);
+                        break;
+                    case TextureSet_FieldIndex.Diffuse:
+                        this.Diffuse = ex;
+                        break;
+                    case TextureSet_FieldIndex.NormalOrGloss:
+                        this.NormalOrGloss = ex;
+                        break;
+                    case TextureSet_FieldIndex.Glow:
+                        this.Glow = ex;
+                        break;
+                    case TextureSet_FieldIndex.Height:
+                        this.Height = ex;
+                        break;
+                    case TextureSet_FieldIndex.Environment:
+                        this.Environment = ex;
+                        break;
+                    case TextureSet_FieldIndex.Wrinkles:
+                        this.Wrinkles = ex;
+                        break;
+                    case TextureSet_FieldIndex.Multilayer:
+                        this.Multilayer = ex;
+                        break;
+                    case TextureSet_FieldIndex.SmoothSpec:
+                        this.SmoothSpec = ex;
+                        break;
+                    case TextureSet_FieldIndex.Decal:
+                        this.Decal = new MaskItem<Exception?, Decal.ErrorMask?>(ex, null);
+                        break;
+                    case TextureSet_FieldIndex.Flags:
+                        this.Flags = ex;
+                        break;
+                    case TextureSet_FieldIndex.Material:
+                        this.Material = ex;
+                        break;
+                    default:
+                        base.SetNthException(index, ex);
+                        break;
+                }
+            }
+
+            public override void SetNthMask(int index, object obj)
+            {
+                TextureSet_FieldIndex enu = (TextureSet_FieldIndex)index;
+                switch (enu)
+                {
+                    case TextureSet_FieldIndex.ObjectBounds:
+                        this.ObjectBounds = (MaskItem<Exception?, ObjectBounds.ErrorMask?>?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Diffuse:
+                        this.Diffuse = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.NormalOrGloss:
+                        this.NormalOrGloss = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Glow:
+                        this.Glow = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Height:
+                        this.Height = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Environment:
+                        this.Environment = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Wrinkles:
+                        this.Wrinkles = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Multilayer:
+                        this.Multilayer = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.SmoothSpec:
+                        this.SmoothSpec = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Decal:
+                        this.Decal = (MaskItem<Exception?, Decal.ErrorMask?>?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Flags:
+                        this.Flags = (Exception?)obj;
+                        break;
+                    case TextureSet_FieldIndex.Material:
+                        this.Material = (Exception?)obj;
+                        break;
+                    default:
+                        base.SetNthMask(index, obj);
+                        break;
+                }
+            }
+
+            public override bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (ObjectBounds != null) return true;
+                if (Diffuse != null) return true;
+                if (NormalOrGloss != null) return true;
+                if (Glow != null) return true;
+                if (Height != null) return true;
+                if (Environment != null) return true;
+                if (Wrinkles != null) return true;
+                if (Multilayer != null) return true;
+                if (SmoothSpec != null) return true;
+                if (Decal != null) return true;
+                if (Flags != null) return true;
+                if (Material != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public override void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected override void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                base.PrintFillInternal(sb);
+                ObjectBounds?.Print(sb);
+                {
+                    sb.AppendItem(Diffuse, "Diffuse");
+                }
+                {
+                    sb.AppendItem(NormalOrGloss, "NormalOrGloss");
+                }
+                {
+                    sb.AppendItem(Glow, "Glow");
+                }
+                {
+                    sb.AppendItem(Height, "Height");
+                }
+                {
+                    sb.AppendItem(Environment, "Environment");
+                }
+                {
+                    sb.AppendItem(Wrinkles, "Wrinkles");
+                }
+                {
+                    sb.AppendItem(Multilayer, "Multilayer");
+                }
+                {
+                    sb.AppendItem(SmoothSpec, "SmoothSpec");
+                }
+                Decal?.Print(sb);
+                {
+                    sb.AppendItem(Flags, "Flags");
+                }
+                {
+                    sb.AppendItem(Material, "Material");
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.ObjectBounds = this.ObjectBounds.Combine(rhs.ObjectBounds, (l, r) => l.Combine(r));
+                ret.Diffuse = this.Diffuse.Combine(rhs.Diffuse);
+                ret.NormalOrGloss = this.NormalOrGloss.Combine(rhs.NormalOrGloss);
+                ret.Glow = this.Glow.Combine(rhs.Glow);
+                ret.Height = this.Height.Combine(rhs.Height);
+                ret.Environment = this.Environment.Combine(rhs.Environment);
+                ret.Wrinkles = this.Wrinkles.Combine(rhs.Wrinkles);
+                ret.Multilayer = this.Multilayer.Combine(rhs.Multilayer);
+                ret.SmoothSpec = this.SmoothSpec.Combine(rhs.SmoothSpec);
+                ret.Decal = this.Decal.Combine(rhs.Decal, (l, r) => l.Combine(r));
+                ret.Flags = this.Flags.Combine(rhs.Flags);
+                ret.Material = this.Material.Combine(rhs.Material);
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static new ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public new class TranslationMask :
+            Fallout4MajorRecord.TranslationMask,
+            ITranslationMask
+        {
+            #region Members
+            public ObjectBounds.TranslationMask? ObjectBounds;
+            public bool Diffuse;
+            public bool NormalOrGloss;
+            public bool Glow;
+            public bool Height;
+            public bool Environment;
+            public bool Wrinkles;
+            public bool Multilayer;
+            public bool SmoothSpec;
+            public Decal.TranslationMask? Decal;
+            public bool Flags;
+            public bool Material;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+                : base(defaultOn, onOverall)
+            {
+                this.Diffuse = defaultOn;
+                this.NormalOrGloss = defaultOn;
+                this.Glow = defaultOn;
+                this.Height = defaultOn;
+                this.Environment = defaultOn;
+                this.Wrinkles = defaultOn;
+                this.Multilayer = defaultOn;
+                this.SmoothSpec = defaultOn;
+                this.Flags = defaultOn;
+                this.Material = defaultOn;
+            }
+
+            #endregion
+
+            protected override void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                base.GetCrystal(ret);
+                ret.Add((ObjectBounds != null ? ObjectBounds.OnOverall : DefaultOn, ObjectBounds?.GetCrystal()));
+                ret.Add((Diffuse, null));
+                ret.Add((NormalOrGloss, null));
+                ret.Add((Glow, null));
+                ret.Add((Height, null));
+                ret.Add((Environment, null));
+                ret.Add((Wrinkles, null));
+                ret.Add((Multilayer, null));
+                ret.Add((SmoothSpec, null));
+                ret.Add((Decal != null ? Decal.OnOverall : DefaultOn, Decal?.GetCrystal()));
+                ret.Add((Flags, null));
+                ret.Add((Material, null));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public static readonly RecordType GrupRecordType = TextureSet_Registration.TriggeringRecordType;
+        public TextureSet(
+            FormKey formKey,
+            Fallout4Release gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease.ToGameRelease()).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        private TextureSet(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        internal TextureSet(
+            FormKey formKey,
+            ushort formVersion)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = formVersion;
+            CustomCtor();
+        }
+
+        public TextureSet(IFallout4Mod mod)
+            : this(
+                mod.GetNextFormKey(),
+                mod.Fallout4Release)
+        {
+        }
+
+        public TextureSet(IFallout4Mod mod, string editorID)
+            : this(
+                mod.GetNextFormKey(editorID),
+                mod.Fallout4Release)
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<TextureSet>.ToString(this);
+        }
+
+        protected override Type LinkType => typeof(ITextureSet);
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not ITextureSetGetter rhs) return false;
+            return ((TextureSetCommon)((ITextureSetGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(ITextureSetGetter? obj)
+        {
+            return ((TextureSetCommon)((ITextureSetGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((TextureSetCommon)((ITextureSetGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => TextureSetBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((TextureSetBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #region Binary Create
+        public new static TextureSet CreateFromBinary(
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            var ret = new TextureSet();
+            ((TextureSetSetterCommon)((ITextureSetGetter)ret).CommonSetterInstance()!).CopyInFromBinary(
+                item: ret,
+                frame: frame,
+                translationParams: translationParams);
+            return ret;
+        }
+
+        #endregion
+
+        public static bool TryCreateFromBinary(
+            MutagenFrame frame,
+            out TextureSet item,
+            TypedParseParams translationParams = default)
+        {
+            var startPos = frame.Position;
+            item = CreateFromBinary(
+                frame: frame,
+                translationParams: translationParams);
+            return startPos != frame.Position;
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((TextureSetSetterCommon)((ITextureSetGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static new TextureSet GetNew()
+        {
+            return new TextureSet();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface ITextureSet :
+        IExplodeSpawn,
+        IFallout4MajorRecordInternal,
+        ILoquiObjectSetter<ITextureSetInternal>,
+        IObjectBounded,
+        IObjectId,
+        IPlaceableObject,
+        IReferenceableObject,
+        ITextureSetGetter
+    {
+
+        new ObjectBounds ObjectBounds { get; set; }
+        new String? Diffuse { get; set; }
+        new String? NormalOrGloss { get; set; }
+        new String? Glow { get; set; }
+        new String? Height { get; set; }
+        new String? Environment { get; set; }
+        new String? Wrinkles { get; set; }
+        new String? Multilayer { get; set; }
+        new String? SmoothSpec { get; set; }
+        new Decal? Decal { get; set; }
+        new TextureSet.Flag Flags { get; set; }
+        new String? Material { get; set; }
+    }
+
+    public partial interface ITextureSetInternal :
+        IFallout4MajorRecordInternal,
+        ITextureSet,
+        ITextureSetGetter
+    {
+    }
+
+    [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.TXST)]
+    public partial interface ITextureSetGetter :
+        IFallout4MajorRecordGetter,
+        IBinaryItem,
+        IExplodeSpawnGetter,
+        ILoquiObject<ITextureSetGetter>,
+        IMapsToGetter<ITextureSetGetter>,
+        IObjectBoundedGetter,
+        IObjectIdGetter,
+        IPlaceableObjectGetter,
+        IReferenceableObjectGetter
+    {
+        static new ILoquiRegistration StaticRegistration => TextureSet_Registration.Instance;
+        #region ObjectBounds
+
+        IObjectBoundsGetter ObjectBounds { get; }
+        #endregion
+        String? Diffuse { get; }
+        String? NormalOrGloss { get; }
+        String? Glow { get; }
+        String? Height { get; }
+        String? Environment { get; }
+        String? Wrinkles { get; }
+        String? Multilayer { get; }
+        String? SmoothSpec { get; }
+        IDecalGetter? Decal { get; }
+        TextureSet.Flag Flags { get; }
+        String? Material { get; }
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class TextureSetMixIn
+    {
+        public static void Clear(this ITextureSetInternal item)
+        {
+            ((TextureSetSetterCommon)((ITextureSetGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static TextureSet.Mask<bool> GetEqualsMask(
+            this ITextureSetGetter item,
+            ITextureSetGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this ITextureSetGetter item,
+            string? name = null,
+            TextureSet.Mask<bool>? printMask = null)
+        {
+            return ((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this ITextureSetGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            TextureSet.Mask<bool>? printMask = null)
+        {
+            ((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this ITextureSetGetter item,
+            ITextureSetGetter rhs,
+            TextureSet.TranslationMask? equalsMask = null)
+        {
+            return ((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this ITextureSetInternal lhs,
+            ITextureSetGetter rhs,
+            out TextureSet.ErrorMask errorMask,
+            TextureSet.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((TextureSetSetterTranslationCommon)((ITextureSetGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = TextureSet.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this ITextureSetInternal lhs,
+            ITextureSetGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((TextureSetSetterTranslationCommon)((ITextureSetGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static TextureSet DeepCopy(
+            this ITextureSetGetter item,
+            TextureSet.TranslationMask? copyMask = null)
+        {
+            return ((TextureSetSetterTranslationCommon)((ITextureSetGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static TextureSet DeepCopy(
+            this ITextureSetGetter item,
+            out TextureSet.ErrorMask errorMask,
+            TextureSet.TranslationMask? copyMask = null)
+        {
+            return ((TextureSetSetterTranslationCommon)((ITextureSetGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static TextureSet DeepCopy(
+            this ITextureSetGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((TextureSetSetterTranslationCommon)((ITextureSetGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        public static TextureSet Duplicate(
+            this ITextureSetGetter item,
+            FormKey formKey,
+            TextureSet.TranslationMask? copyMask = null)
+        {
+            return ((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static TextureSet Duplicate(
+            this ITextureSetGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this ITextureSetInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((TextureSetSetterCommon)((ITextureSetGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Field Index
+    internal enum TextureSet_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+        FormVersion = 4,
+        Version2 = 5,
+        Fallout4MajorRecordFlags = 6,
+        ObjectBounds = 7,
+        Diffuse = 8,
+        NormalOrGloss = 9,
+        Glow = 10,
+        Height = 11,
+        Environment = 12,
+        Wrinkles = 13,
+        Multilayer = 14,
+        SmoothSpec = 15,
+        Decal = 16,
+        Flags = 17,
+        Material = 18,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class TextureSet_Registration : ILoquiRegistration
+    {
+        public static readonly TextureSet_Registration Instance = new TextureSet_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Fallout4.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 12;
+
+        public const ushort FieldCount = 19;
+
+        public static readonly Type MaskType = typeof(TextureSet.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(TextureSet.ErrorMask);
+
+        public static readonly Type ClassType = typeof(TextureSet);
+
+        public static readonly Type GetterType = typeof(ITextureSetGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(ITextureSet);
+
+        public static readonly Type? InternalSetterType = typeof(ITextureSetInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Fallout4.TextureSet";
+
+        public const string Name = "TextureSet";
+
+        public const string Namespace = "Mutagen.Bethesda.Fallout4";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly RecordType TriggeringRecordType = RecordTypes.TXST;
+        public static RecordTriggerSpecs TriggerSpecs => _recordSpecs.Value;
+        private static readonly Lazy<RecordTriggerSpecs> _recordSpecs = new Lazy<RecordTriggerSpecs>(() =>
+        {
+            var triggers = RecordCollection.Factory(RecordTypes.TXST);
+            var all = RecordCollection.Factory(
+                RecordTypes.TXST,
+                RecordTypes.OBND,
+                RecordTypes.TX00,
+                RecordTypes.TX01,
+                RecordTypes.TX03,
+                RecordTypes.TX04,
+                RecordTypes.TX05,
+                RecordTypes.TX02,
+                RecordTypes.TX06,
+                RecordTypes.TX07,
+                RecordTypes.DODT,
+                RecordTypes.DNAM,
+                RecordTypes.MNAM);
+            return new RecordTriggerSpecs(
+                allRecordTypes: all,
+                triggeringRecordTypes: triggers);
+        });
+        public static readonly Type BinaryWriteTranslation = typeof(TextureSetBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class TextureSetSetterCommon : Fallout4MajorRecordSetterCommon
+    {
+        public new static readonly TextureSetSetterCommon Instance = new TextureSetSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(ITextureSetInternal item)
+        {
+            ClearPartial();
+            item.ObjectBounds.Clear();
+            item.Diffuse = default;
+            item.NormalOrGloss = default;
+            item.Glow = default;
+            item.Height = default;
+            item.Environment = default;
+            item.Wrinkles = default;
+            item.Multilayer = default;
+            item.SmoothSpec = default;
+            item.Decal = null;
+            item.Flags = default(TextureSet.Flag);
+            item.Material = default;
+            base.Clear(item);
+        }
+
+        public override void Clear(IFallout4MajorRecordInternal item)
+        {
+            Clear(item: (ITextureSetInternal)item);
+        }
+
+        public override void Clear(IMajorRecordInternal item)
+        {
+            Clear(item: (ITextureSetInternal)item);
+        }
+
+        #region Mutagen
+        public void RemapLinks(ITextureSet obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+            base.RemapLinks(obj, mapping);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            ITextureSetInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<ITextureSetInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: TextureSetBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: TextureSetBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        public override void CopyInFromBinary(
+            IFallout4MajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (TextureSet)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (TextureSet)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    internal partial class TextureSetCommon : Fallout4MajorRecordCommon
+    {
+        public new static readonly TextureSetCommon Instance = new TextureSetCommon();
+
+        public TextureSet.Mask<bool> GetEqualsMask(
+            ITextureSetGetter item,
+            ITextureSetGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new TextureSet.Mask<bool>(false);
+            ((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            ITextureSetGetter item,
+            ITextureSetGetter rhs,
+            TextureSet.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.ObjectBounds = MaskItemExt.Factory(item.ObjectBounds.GetEqualsMask(rhs.ObjectBounds, include), include);
+            ret.Diffuse = string.Equals(item.Diffuse, rhs.Diffuse);
+            ret.NormalOrGloss = string.Equals(item.NormalOrGloss, rhs.NormalOrGloss);
+            ret.Glow = string.Equals(item.Glow, rhs.Glow);
+            ret.Height = string.Equals(item.Height, rhs.Height);
+            ret.Environment = string.Equals(item.Environment, rhs.Environment);
+            ret.Wrinkles = string.Equals(item.Wrinkles, rhs.Wrinkles);
+            ret.Multilayer = string.Equals(item.Multilayer, rhs.Multilayer);
+            ret.SmoothSpec = string.Equals(item.SmoothSpec, rhs.SmoothSpec);
+            ret.Decal = EqualsMaskHelper.EqualsHelper(
+                item.Decal,
+                rhs.Decal,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.Flags = item.Flags == rhs.Flags;
+            ret.Material = string.Equals(item.Material, rhs.Material);
+            base.FillEqualsMask(item, rhs, ret, include);
+        }
+
+        public string Print(
+            ITextureSetGetter item,
+            string? name = null,
+            TextureSet.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            ITextureSetGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            TextureSet.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"TextureSet =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (TextureSet) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            ITextureSetGetter item,
+            StructuredStringBuilder sb,
+            TextureSet.Mask<bool>? printMask = null)
+        {
+            Fallout4MajorRecordCommon.ToStringFields(
+                item: item,
+                sb: sb,
+                printMask: printMask);
+            if (printMask?.ObjectBounds?.Overall ?? true)
+            {
+                item.ObjectBounds?.Print(sb, "ObjectBounds");
+            }
+            if ((printMask?.Diffuse ?? true)
+                && item.Diffuse is {} DiffuseItem)
+            {
+                sb.AppendItem(DiffuseItem, "Diffuse");
+            }
+            if ((printMask?.NormalOrGloss ?? true)
+                && item.NormalOrGloss is {} NormalOrGlossItem)
+            {
+                sb.AppendItem(NormalOrGlossItem, "NormalOrGloss");
+            }
+            if ((printMask?.Glow ?? true)
+                && item.Glow is {} GlowItem)
+            {
+                sb.AppendItem(GlowItem, "Glow");
+            }
+            if ((printMask?.Height ?? true)
+                && item.Height is {} HeightItem)
+            {
+                sb.AppendItem(HeightItem, "Height");
+            }
+            if ((printMask?.Environment ?? true)
+                && item.Environment is {} EnvironmentItem)
+            {
+                sb.AppendItem(EnvironmentItem, "Environment");
+            }
+            if ((printMask?.Wrinkles ?? true)
+                && item.Wrinkles is {} WrinklesItem)
+            {
+                sb.AppendItem(WrinklesItem, "Wrinkles");
+            }
+            if ((printMask?.Multilayer ?? true)
+                && item.Multilayer is {} MultilayerItem)
+            {
+                sb.AppendItem(MultilayerItem, "Multilayer");
+            }
+            if ((printMask?.SmoothSpec ?? true)
+                && item.SmoothSpec is {} SmoothSpecItem)
+            {
+                sb.AppendItem(SmoothSpecItem, "SmoothSpec");
+            }
+            if ((printMask?.Decal?.Overall ?? true)
+                && item.Decal is {} DecalItem)
+            {
+                DecalItem?.Print(sb, "Decal");
+            }
+            if (printMask?.Flags ?? true)
+            {
+                sb.AppendItem(item.Flags, "Flags");
+            }
+            if ((printMask?.Material ?? true)
+                && item.Material is {} MaterialItem)
+            {
+                sb.AppendItem(MaterialItem, "Material");
+            }
+        }
+
+        public static TextureSet_FieldIndex ConvertFieldIndex(Fallout4MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case Fallout4MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (TextureSet_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormKey:
+                    return (TextureSet_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.VersionControl:
+                    return (TextureSet_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.EditorID:
+                    return (TextureSet_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormVersion:
+                    return (TextureSet_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Version2:
+                    return (TextureSet_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Fallout4MajorRecordFlags:
+                    return (TextureSet_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new TextureSet_FieldIndex ConvertFieldIndex(MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (TextureSet_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.FormKey:
+                    return (TextureSet_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.VersionControl:
+                    return (TextureSet_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.EditorID:
+                    return (TextureSet_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            ITextureSetGetter? lhs,
+            ITextureSetGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if (!base.Equals((IFallout4MajorRecordGetter)lhs, (IFallout4MajorRecordGetter)rhs, equalsMask)) return false;
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.ObjectBounds) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.ObjectBounds, rhs.ObjectBounds, out var lhsObjectBounds, out var rhsObjectBounds, out var isObjectBoundsEqual))
+                {
+                    if (!((ObjectBoundsCommon)((IObjectBoundsGetter)lhsObjectBounds).CommonInstance()!).Equals(lhsObjectBounds, rhsObjectBounds, equalsMask?.GetSubCrystal((int)TextureSet_FieldIndex.ObjectBounds))) return false;
+                }
+                else if (!isObjectBoundsEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Diffuse) ?? true))
+            {
+                if (!string.Equals(lhs.Diffuse, rhs.Diffuse)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.NormalOrGloss) ?? true))
+            {
+                if (!string.Equals(lhs.NormalOrGloss, rhs.NormalOrGloss)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Glow) ?? true))
+            {
+                if (!string.Equals(lhs.Glow, rhs.Glow)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Height) ?? true))
+            {
+                if (!string.Equals(lhs.Height, rhs.Height)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Environment) ?? true))
+            {
+                if (!string.Equals(lhs.Environment, rhs.Environment)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Wrinkles) ?? true))
+            {
+                if (!string.Equals(lhs.Wrinkles, rhs.Wrinkles)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Multilayer) ?? true))
+            {
+                if (!string.Equals(lhs.Multilayer, rhs.Multilayer)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.SmoothSpec) ?? true))
+            {
+                if (!string.Equals(lhs.SmoothSpec, rhs.SmoothSpec)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Decal) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.Decal, rhs.Decal, out var lhsDecal, out var rhsDecal, out var isDecalEqual))
+                {
+                    if (!((DecalCommon)((IDecalGetter)lhsDecal).CommonInstance()!).Equals(lhsDecal, rhsDecal, equalsMask?.GetSubCrystal((int)TextureSet_FieldIndex.Decal))) return false;
+                }
+                else if (!isDecalEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Flags) ?? true))
+            {
+                if (lhs.Flags != rhs.Flags) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Material) ?? true))
+            {
+                if (!string.Equals(lhs.Material, rhs.Material)) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(
+            IFallout4MajorRecordGetter? lhs,
+            IFallout4MajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (ITextureSetGetter?)lhs,
+                rhs: rhs as ITextureSetGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (ITextureSetGetter?)lhs,
+                rhs: rhs as ITextureSetGetter,
+                equalsMask: equalsMask);
+        }
+
+        public virtual int GetHashCode(ITextureSetGetter item)
+        {
+            var hash = new HashCode();
+            hash.Add(item.ObjectBounds);
+            if (item.Diffuse is {} Diffuseitem)
+            {
+                hash.Add(Diffuseitem);
+            }
+            if (item.NormalOrGloss is {} NormalOrGlossitem)
+            {
+                hash.Add(NormalOrGlossitem);
+            }
+            if (item.Glow is {} Glowitem)
+            {
+                hash.Add(Glowitem);
+            }
+            if (item.Height is {} Heightitem)
+            {
+                hash.Add(Heightitem);
+            }
+            if (item.Environment is {} Environmentitem)
+            {
+                hash.Add(Environmentitem);
+            }
+            if (item.Wrinkles is {} Wrinklesitem)
+            {
+                hash.Add(Wrinklesitem);
+            }
+            if (item.Multilayer is {} Multilayeritem)
+            {
+                hash.Add(Multilayeritem);
+            }
+            if (item.SmoothSpec is {} SmoothSpecitem)
+            {
+                hash.Add(SmoothSpecitem);
+            }
+            if (item.Decal is {} Decalitem)
+            {
+                hash.Add(Decalitem);
+            }
+            hash.Add(item.Flags);
+            if (item.Material is {} Materialitem)
+            {
+                hash.Add(Materialitem);
+            }
+            hash.Add(base.GetHashCode());
+            return hash.ToHashCode();
+        }
+
+        public override int GetHashCode(IFallout4MajorRecordGetter item)
+        {
+            return GetHashCode(item: (ITextureSetGetter)item);
+        }
+
+        public override int GetHashCode(IMajorRecordGetter item)
+        {
+            return GetHashCode(item: (ITextureSetGetter)item);
+        }
+
+        #endregion
+
+        public override object GetNew()
+        {
+            return TextureSet.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(ITextureSetGetter obj, bool iterateNestedRecords = true)
+        {
+            foreach (var item in base.EnumerateFormLinks(obj, iterateNestedRecords))
+            {
+                yield return item;
+            }
+            yield break;
+        }
+
+        #region Duplicate
+        public TextureSet Duplicate(
+            ITextureSetGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            var newRec = new TextureSet(formKey, item.FormVersion);
+            newRec.DeepCopyIn(item, default(ErrorMaskBuilder?), copyMask);
+            return newRec;
+        }
+
+        public override Fallout4MajorRecord Duplicate(
+            IFallout4MajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (ITextureSetGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (ITextureSetGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class TextureSetSetterTranslationCommon : Fallout4MajorRecordSetterTranslationCommon
+    {
+        public new static readonly TextureSetSetterTranslationCommon Instance = new TextureSetSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            ITextureSetInternal item,
+            ITextureSetGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                item,
+                rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public void DeepCopyIn(
+            ITextureSet item,
+            ITextureSetGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                (IFallout4MajorRecord)item,
+                (IFallout4MajorRecordGetter)rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.ObjectBounds) ?? true))
+            {
+                errorMask?.PushIndex((int)TextureSet_FieldIndex.ObjectBounds);
+                try
+                {
+                    if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.ObjectBounds) ?? true))
+                    {
+                        item.ObjectBounds = rhs.ObjectBounds.DeepCopy(
+                            copyMask: copyMask?.GetSubCrystal((int)TextureSet_FieldIndex.ObjectBounds),
+                            errorMask: errorMask);
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Diffuse) ?? true))
+            {
+                item.Diffuse = rhs.Diffuse;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.NormalOrGloss) ?? true))
+            {
+                item.NormalOrGloss = rhs.NormalOrGloss;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Glow) ?? true))
+            {
+                item.Glow = rhs.Glow;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Height) ?? true))
+            {
+                item.Height = rhs.Height;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Environment) ?? true))
+            {
+                item.Environment = rhs.Environment;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Wrinkles) ?? true))
+            {
+                item.Wrinkles = rhs.Wrinkles;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Multilayer) ?? true))
+            {
+                item.Multilayer = rhs.Multilayer;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.SmoothSpec) ?? true))
+            {
+                item.SmoothSpec = rhs.SmoothSpec;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Decal) ?? true))
+            {
+                errorMask?.PushIndex((int)TextureSet_FieldIndex.Decal);
+                try
+                {
+                    if(rhs.Decal is {} rhsDecal)
+                    {
+                        item.Decal = rhsDecal.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)TextureSet_FieldIndex.Decal));
+                    }
+                    else
+                    {
+                        item.Decal = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Flags) ?? true))
+            {
+                item.Flags = rhs.Flags;
+            }
+            if ((copyMask?.GetShouldTranslate((int)TextureSet_FieldIndex.Material) ?? true))
+            {
+                item.Material = rhs.Material;
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            ITextureSet item,
+            ITextureSetGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        public override void DeepCopyIn(
+            IFallout4MajorRecordInternal item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ITextureSetInternal)item,
+                rhs: (ITextureSetGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecord item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ITextureSet)item,
+                rhs: (ITextureSetGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ITextureSetInternal)item,
+                rhs: (ITextureSetGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ITextureSet)item,
+                rhs: (ITextureSetGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        #endregion
+
+        public TextureSet DeepCopy(
+            ITextureSetGetter item,
+            TextureSet.TranslationMask? copyMask = null)
+        {
+            TextureSet ret = (TextureSet)((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).GetNew();
+            ((TextureSetSetterTranslationCommon)((ITextureSetGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public TextureSet DeepCopy(
+            ITextureSetGetter item,
+            out TextureSet.ErrorMask errorMask,
+            TextureSet.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            TextureSet ret = (TextureSet)((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).GetNew();
+            ((TextureSetSetterTranslationCommon)((ITextureSetGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = TextureSet.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public TextureSet DeepCopy(
+            ITextureSetGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            TextureSet ret = (TextureSet)((TextureSetCommon)((ITextureSetGetter)item).CommonInstance()!).GetNew();
+            ((TextureSetSetterTranslationCommon)((ITextureSetGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class TextureSet
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => TextureSet_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => TextureSet_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => TextureSetCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterInstance()
+        {
+            return TextureSetSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => TextureSetSetterTranslationCommon.Instance;
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class TextureSetBinaryWriteTranslation :
+        Fallout4MajorRecordBinaryWriteTranslation,
+        IBinaryWriteTranslator
+    {
+        public new static readonly TextureSetBinaryWriteTranslation Instance = new();
+
+        public static void WriteRecordTypes(
+            ITextureSetGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            MajorRecordBinaryWriteTranslation.WriteRecordTypes(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+            var ObjectBoundsItem = item.ObjectBounds;
+            ((ObjectBoundsBinaryWriteTranslation)((IBinaryItem)ObjectBoundsItem).BinaryWriteTranslator).Write(
+                item: ObjectBoundsItem,
+                writer: writer,
+                translationParams: translationParams);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Diffuse,
+                header: translationParams.ConvertToCustom(RecordTypes.TX00),
+                binaryType: StringBinaryType.NullTerminate);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.NormalOrGloss,
+                header: translationParams.ConvertToCustom(RecordTypes.TX01),
+                binaryType: StringBinaryType.NullTerminate);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Glow,
+                header: translationParams.ConvertToCustom(RecordTypes.TX03),
+                binaryType: StringBinaryType.NullTerminate);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Height,
+                header: translationParams.ConvertToCustom(RecordTypes.TX04),
+                binaryType: StringBinaryType.NullTerminate);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Environment,
+                header: translationParams.ConvertToCustom(RecordTypes.TX05),
+                binaryType: StringBinaryType.NullTerminate);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Wrinkles,
+                header: translationParams.ConvertToCustom(RecordTypes.TX02),
+                binaryType: StringBinaryType.NullTerminate);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Multilayer,
+                header: translationParams.ConvertToCustom(RecordTypes.TX06),
+                binaryType: StringBinaryType.NullTerminate);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.SmoothSpec,
+                header: translationParams.ConvertToCustom(RecordTypes.TX07),
+                binaryType: StringBinaryType.NullTerminate);
+            if (item.Decal is {} DecalItem)
+            {
+                ((DecalBinaryWriteTranslation)((IBinaryItem)DecalItem).BinaryWriteTranslator).Write(
+                    item: DecalItem,
+                    writer: writer,
+                    translationParams: translationParams);
+            }
+            EnumBinaryTranslation<TextureSet.Flag, MutagenFrame, MutagenWriter>.Instance.Write(
+                writer,
+                item.Flags,
+                length: 2,
+                header: translationParams.ConvertToCustom(RecordTypes.DNAM));
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Material,
+                header: translationParams.ConvertToCustom(RecordTypes.MNAM),
+                binaryType: StringBinaryType.NullTerminate);
+        }
+
+        public void Write(
+            MutagenWriter writer,
+            ITextureSetGetter item,
+            TypedWriteParams translationParams)
+        {
+            PluginUtilityTranslation.WriteMajorRecord(
+                writer: writer,
+                item: item,
+                translationParams: translationParams,
+                type: RecordTypes.TXST,
+                writeEmbedded: Fallout4MajorRecordBinaryWriteTranslation.WriteEmbedded,
+                writeRecordTypes: WriteRecordTypes);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (ITextureSetGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IFallout4MajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (ITextureSetGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (ITextureSetGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class TextureSetBinaryCreateTranslation : Fallout4MajorRecordBinaryCreateTranslation
+    {
+        public new static readonly TextureSetBinaryCreateTranslation Instance = new TextureSetBinaryCreateTranslation();
+
+        public override RecordType RecordType => RecordTypes.TXST;
+        public static ParseResult FillBinaryRecordTypes(
+            ITextureSetInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.OBND:
+                {
+                    item.ObjectBounds = Mutagen.Bethesda.Fallout4.ObjectBounds.CreateFromBinary(frame: frame);
+                    return (int)TextureSet_FieldIndex.ObjectBounds;
+                }
+                case RecordTypeInts.TX00:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Diffuse = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.Diffuse;
+                }
+                case RecordTypeInts.TX01:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.NormalOrGloss = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.NormalOrGloss;
+                }
+                case RecordTypeInts.TX03:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Glow = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.Glow;
+                }
+                case RecordTypeInts.TX04:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Height = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.Height;
+                }
+                case RecordTypeInts.TX05:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Environment = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.Environment;
+                }
+                case RecordTypeInts.TX02:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Wrinkles = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.Wrinkles;
+                }
+                case RecordTypeInts.TX06:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Multilayer = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.Multilayer;
+                }
+                case RecordTypeInts.TX07:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.SmoothSpec = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.SmoothSpec;
+                }
+                case RecordTypeInts.DODT:
+                {
+                    item.Decal = Mutagen.Bethesda.Fallout4.Decal.CreateFromBinary(frame: frame);
+                    return (int)TextureSet_FieldIndex.Decal;
+                }
+                case RecordTypeInts.DNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Flags = EnumBinaryTranslation<TextureSet.Flag, MutagenFrame, MutagenWriter>.Instance.Parse(
+                        reader: frame,
+                        length: contentLength);
+                    return (int)TextureSet_FieldIndex.Flags;
+                }
+                case RecordTypeInts.MNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Material = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)TextureSet_FieldIndex.Material;
+                }
+                default:
+                    return Fallout4MajorRecordBinaryCreateTranslation.FillBinaryRecordTypes(
+                        item: item,
+                        frame: frame,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        nextRecordType: nextRecordType,
+                        contentLength: contentLength,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+
+    }
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Binary Write Mixins
+    public static class TextureSetBinaryTranslationMixIn
+    {
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    internal partial class TextureSetBinaryOverlay :
+        Fallout4MajorRecordBinaryOverlay,
+        ITextureSetGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => TextureSet_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => TextureSet_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => TextureSetCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => TextureSetSetterTranslationCommon.Instance;
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => TextureSetBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((TextureSetBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        protected override Type LinkType => typeof(ITextureSetGetter);
+
+        #region ObjectBounds
+        private RangeInt32? _ObjectBoundsLocation;
+        private IObjectBoundsGetter? _ObjectBounds => _ObjectBoundsLocation.HasValue ? ObjectBoundsBinaryOverlay.ObjectBoundsFactory(_recordData.Slice(_ObjectBoundsLocation!.Value.Min), _package) : default;
+        public IObjectBoundsGetter ObjectBounds => _ObjectBounds ?? new ObjectBounds();
+        #endregion
+        #region Diffuse
+        private int? _DiffuseLocation;
+        public String? Diffuse => _DiffuseLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _DiffuseLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region NormalOrGloss
+        private int? _NormalOrGlossLocation;
+        public String? NormalOrGloss => _NormalOrGlossLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _NormalOrGlossLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region Glow
+        private int? _GlowLocation;
+        public String? Glow => _GlowLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _GlowLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region Height
+        private int? _HeightLocation;
+        public String? Height => _HeightLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _HeightLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region Environment
+        private int? _EnvironmentLocation;
+        public String? Environment => _EnvironmentLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _EnvironmentLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region Wrinkles
+        private int? _WrinklesLocation;
+        public String? Wrinkles => _WrinklesLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _WrinklesLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region Multilayer
+        private int? _MultilayerLocation;
+        public String? Multilayer => _MultilayerLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _MultilayerLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region SmoothSpec
+        private int? _SmoothSpecLocation;
+        public String? SmoothSpec => _SmoothSpecLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _SmoothSpecLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        #region Decal
+        private RangeInt32? _DecalLocation;
+        public IDecalGetter? Decal => _DecalLocation.HasValue ? DecalBinaryOverlay.DecalFactory(_recordData.Slice(_DecalLocation!.Value.Min), _package) : default;
+        #endregion
+        #region Flags
+        private int? _FlagsLocation;
+        public TextureSet.Flag Flags => EnumBinaryTranslation<TextureSet.Flag, MutagenFrame, MutagenWriter>.Instance.ParseRecord(_FlagsLocation, _recordData, _package, 2);
+        #endregion
+        #region Material
+        private int? _MaterialLocation;
+        public String? Material => _MaterialLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _MaterialLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected TextureSetBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public static ITextureSetGetter TextureSetFactory(
+            OverlayStream stream,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            stream = Decompression.DecompressStream(stream);
+            stream = ExtractRecordMemory(
+                stream: stream,
+                meta: package.MetaData.Constants,
+                memoryPair: out var memoryPair,
+                offset: out var offset,
+                finalPos: out var finalPos);
+            var ret = new TextureSetBinaryOverlay(
+                memoryPair: memoryPair,
+                package: package);
+            ret._package.FormVersion = ret;
+            ret.CustomFactoryEnd(
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset);
+            ret.FillSubrecordTypes(
+                majorReference: ret,
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset,
+                translationParams: translationParams,
+                fill: ret.FillRecordType);
+            return ret;
+        }
+
+        public static ITextureSetGetter TextureSetFactory(
+            ReadOnlyMemorySlice<byte> slice,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            return TextureSetFactory(
+                stream: new OverlayStream(slice, package),
+                package: package,
+                translationParams: translationParams);
+        }
+
+        public override ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.OBND:
+                {
+                    _ObjectBoundsLocation = new RangeInt32((stream.Position - offset), finalPos - offset);
+                    return (int)TextureSet_FieldIndex.ObjectBounds;
+                }
+                case RecordTypeInts.TX00:
+                {
+                    _DiffuseLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Diffuse;
+                }
+                case RecordTypeInts.TX01:
+                {
+                    _NormalOrGlossLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.NormalOrGloss;
+                }
+                case RecordTypeInts.TX03:
+                {
+                    _GlowLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Glow;
+                }
+                case RecordTypeInts.TX04:
+                {
+                    _HeightLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Height;
+                }
+                case RecordTypeInts.TX05:
+                {
+                    _EnvironmentLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Environment;
+                }
+                case RecordTypeInts.TX02:
+                {
+                    _WrinklesLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Wrinkles;
+                }
+                case RecordTypeInts.TX06:
+                {
+                    _MultilayerLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Multilayer;
+                }
+                case RecordTypeInts.TX07:
+                {
+                    _SmoothSpecLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.SmoothSpec;
+                }
+                case RecordTypeInts.DODT:
+                {
+                    _DecalLocation = new RangeInt32((stream.Position - offset), finalPos - offset);
+                    return (int)TextureSet_FieldIndex.Decal;
+                }
+                case RecordTypeInts.DNAM:
+                {
+                    _FlagsLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Flags;
+                }
+                case RecordTypeInts.MNAM:
+                {
+                    _MaterialLocation = (stream.Position - offset);
+                    return (int)TextureSet_FieldIndex.Material;
+                }
+                default:
+                    return base.FillRecordType(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset,
+                        type: type,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            TextureSetMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<TextureSet>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not ITextureSetGetter rhs) return false;
+            return ((TextureSetCommon)((ITextureSetGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(ITextureSetGetter? obj)
+        {
+            return ((TextureSetCommon)((ITextureSetGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((TextureSetCommon)((ITextureSetGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

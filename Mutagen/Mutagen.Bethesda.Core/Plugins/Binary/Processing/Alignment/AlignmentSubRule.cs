@@ -1,0 +1,58 @@
+﻿using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Noggog;
+
+namespace Mutagen.Bethesda.Plugins.Binary.Processing.Alignment;
+
+public sealed class AlignmentSubRule : AlignmentRule
+{
+    public List<RecordType> SubTypes;
+
+    public AlignmentSubRule(
+        params RecordType[] types)
+    {
+        SubTypes = types.ToList();
+    }
+
+    public override IEnumerable<RecordType> RecordTypes => SubTypes;
+
+    public override ReadOnlyMemorySlice<byte> ReadBytes(IMutagenReadStream inputStream, int? lengthOverride)
+    {
+        if (lengthOverride != null)
+        {
+            throw new NotImplementedException();
+        }
+        Dictionary<RecordType, byte[]> dataDict = new Dictionary<RecordType, byte[]>();
+        MutagenWriter stream;
+        while (!inputStream.Complete)
+        {
+            var subType = HeaderTranslation.ReadNextSubrecordType(
+                inputStream,
+                out var subLen);
+            if (!SubTypes.Contains(subType))
+            {
+                inputStream.Position -= 6;
+                break;
+            }
+            var data = new byte[subLen + 6];
+            stream = new MutagenWriter(new MemoryStream(data), inputStream.MetaData.Constants);
+            using (HeaderExport.Subrecord(stream, subType))
+            {
+                inputStream.WriteTo(stream.BaseStream, subLen);
+            }
+            dataDict[subType] = data;
+        }
+        byte[] ret = new byte[dataDict.Values.Sum((d) => d.Length)];
+        stream = new MutagenWriter(new MemoryStream(ret), inputStream.MetaData.Constants);
+        foreach (var alignment in SubTypes)
+        {
+            if (dataDict.TryGetValue(
+                    alignment,
+                    out var data))
+            {
+                stream.Write(data);
+            }
+        }
+        return ret;
+    }
+}

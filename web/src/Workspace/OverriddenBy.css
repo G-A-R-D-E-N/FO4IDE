@@ -1,0 +1,47 @@
+.overridden-by {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.overridden-by-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.overridden-by-head {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.overridden-by-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.overridden-by-chevron {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  padding: 2px;
+}
+
+button.overridden-by-chevron {
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+button.overridden-by-chevron:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}

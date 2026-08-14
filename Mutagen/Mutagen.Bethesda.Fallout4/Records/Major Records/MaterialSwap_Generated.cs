@@ -1,0 +1,1828 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Fallout4.Internals;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Fallout4.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Class
+    public partial class MaterialSwap :
+        Fallout4MajorRecord,
+        IEquatable<IMaterialSwapGetter>,
+        ILoquiObjectSetter<MaterialSwap>,
+        IMaterialSwapInternal
+    {
+        #region Ctor
+        protected MaterialSwap()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region TreeFolder
+        public String? TreeFolder { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        String? IMaterialSwapGetter.TreeFolder => this.TreeFolder;
+        #endregion
+        #region Substitutions
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<MaterialSubstitution> _Substitutions = new ExtendedList<MaterialSubstitution>();
+        public ExtendedList<MaterialSubstitution> Substitutions
+        {
+            get => this._Substitutions;
+            init => this._Substitutions = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IMaterialSubstitutionGetter> IMaterialSwapGetter.Substitutions => _Substitutions;
+        #endregion
+
+        #endregion
+
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            MaterialSwapMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public new class Mask<TItem> :
+            Fallout4MajorRecord.Mask<TItem>,
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            : base(initialValue)
+            {
+                this.TreeFolder = initialValue;
+                this.Substitutions = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, MaterialSubstitution.Mask<TItem>?>>?>(initialValue, []);
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID,
+                TItem FormVersion,
+                TItem Version2,
+                TItem Fallout4MajorRecordFlags,
+                TItem TreeFolder,
+                TItem Substitutions)
+            : base(
+                MajorRecordFlagsRaw: MajorRecordFlagsRaw,
+                FormKey: FormKey,
+                VersionControl: VersionControl,
+                EditorID: EditorID,
+                FormVersion: FormVersion,
+                Version2: Version2,
+                Fallout4MajorRecordFlags: Fallout4MajorRecordFlags)
+            {
+                this.TreeFolder = TreeFolder;
+                this.Substitutions = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, MaterialSubstitution.Mask<TItem>?>>?>(Substitutions, []);
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public TItem TreeFolder;
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, MaterialSubstitution.Mask<TItem>?>>?>? Substitutions;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!base.Equals(rhs)) return false;
+                if (!object.Equals(this.TreeFolder, rhs.TreeFolder)) return false;
+                if (!object.Equals(this.Substitutions, rhs.Substitutions)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.TreeFolder);
+                hash.Add(this.Substitutions);
+                hash.Add(base.GetHashCode());
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public override bool All(Func<TItem, bool> eval)
+            {
+                if (!base.All(eval)) return false;
+                if (!eval(this.TreeFolder)) return false;
+                if (this.Substitutions != null)
+                {
+                    if (!eval(this.Substitutions.Overall)) return false;
+                    if (this.Substitutions.Specific != null)
+                    {
+                        foreach (var item in this.Substitutions.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public override bool Any(Func<TItem, bool> eval)
+            {
+                if (base.Any(eval)) return true;
+                if (eval(this.TreeFolder)) return true;
+                if (this.Substitutions != null)
+                {
+                    if (eval(this.Substitutions.Overall)) return true;
+                    if (this.Substitutions.Specific != null)
+                    {
+                        foreach (var item in this.Substitutions.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public new Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new MaterialSwap.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                base.Translate_InternalFill(obj, eval);
+                obj.TreeFolder = eval(this.TreeFolder);
+                if (Substitutions != null)
+                {
+                    obj.Substitutions = new MaskItem<R, IEnumerable<MaskItemIndexed<R, MaterialSubstitution.Mask<R>?>>?>(eval(this.Substitutions.Overall), []);
+                    if (Substitutions.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, MaterialSubstitution.Mask<R>?>>();
+                        obj.Substitutions.Specific = l;
+                        foreach (var item in Substitutions.Specific)
+                        {
+                            MaskItemIndexed<R, MaterialSubstitution.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, MaterialSubstitution.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(MaterialSwap.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, MaterialSwap.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(MaterialSwap.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.TreeFolder ?? true)
+                    {
+                        sb.AppendItem(TreeFolder, "TreeFolder");
+                    }
+                    if ((printMask?.Substitutions?.Overall ?? true)
+                        && Substitutions is {} SubstitutionsItem)
+                    {
+                        sb.AppendLine("Substitutions =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(SubstitutionsItem.Overall);
+                            if (SubstitutionsItem.Specific != null)
+                            {
+                                foreach (var subItem in SubstitutionsItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public new class ErrorMask :
+            Fallout4MajorRecord.ErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public Exception? TreeFolder;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MaterialSubstitution.ErrorMask?>>?>? Substitutions;
+            #endregion
+
+            #region IErrorMask
+            public override object? GetNthMask(int index)
+            {
+                MaterialSwap_FieldIndex enu = (MaterialSwap_FieldIndex)index;
+                switch (enu)
+                {
+                    case MaterialSwap_FieldIndex.TreeFolder:
+                        return TreeFolder;
+                    case MaterialSwap_FieldIndex.Substitutions:
+                        return Substitutions;
+                    default:
+                        return base.GetNthMask(index);
+                }
+            }
+
+            public override void SetNthException(int index, Exception ex)
+            {
+                MaterialSwap_FieldIndex enu = (MaterialSwap_FieldIndex)index;
+                switch (enu)
+                {
+                    case MaterialSwap_FieldIndex.TreeFolder:
+                        this.TreeFolder = ex;
+                        break;
+                    case MaterialSwap_FieldIndex.Substitutions:
+                        this.Substitutions = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MaterialSubstitution.ErrorMask?>>?>(ex, null);
+                        break;
+                    default:
+                        base.SetNthException(index, ex);
+                        break;
+                }
+            }
+
+            public override void SetNthMask(int index, object obj)
+            {
+                MaterialSwap_FieldIndex enu = (MaterialSwap_FieldIndex)index;
+                switch (enu)
+                {
+                    case MaterialSwap_FieldIndex.TreeFolder:
+                        this.TreeFolder = (Exception?)obj;
+                        break;
+                    case MaterialSwap_FieldIndex.Substitutions:
+                        this.Substitutions = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MaterialSubstitution.ErrorMask?>>?>)obj;
+                        break;
+                    default:
+                        base.SetNthMask(index, obj);
+                        break;
+                }
+            }
+
+            public override bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (TreeFolder != null) return true;
+                if (Substitutions != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public override void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected override void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                base.PrintFillInternal(sb);
+                {
+                    sb.AppendItem(TreeFolder, "TreeFolder");
+                }
+                if (Substitutions is {} SubstitutionsItem)
+                {
+                    sb.AppendLine("Substitutions =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(SubstitutionsItem.Overall);
+                        if (SubstitutionsItem.Specific != null)
+                        {
+                            foreach (var subItem in SubstitutionsItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.TreeFolder = this.TreeFolder.Combine(rhs.TreeFolder);
+                ret.Substitutions = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MaterialSubstitution.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Substitutions?.Overall, rhs.Substitutions?.Overall), Noggog.ExceptionExt.Combine(this.Substitutions?.Specific, rhs.Substitutions?.Specific));
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static new ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public new class TranslationMask :
+            Fallout4MajorRecord.TranslationMask,
+            ITranslationMask
+        {
+            #region Members
+            public bool TreeFolder;
+            public MaterialSubstitution.TranslationMask? Substitutions;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+                : base(defaultOn, onOverall)
+            {
+                this.TreeFolder = defaultOn;
+            }
+
+            #endregion
+
+            protected override void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                base.GetCrystal(ret);
+                ret.Add((TreeFolder, null));
+                ret.Add((Substitutions == null ? DefaultOn : !Substitutions.GetCrystal().CopyNothing, Substitutions?.GetCrystal()));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public static readonly RecordType GrupRecordType = MaterialSwap_Registration.TriggeringRecordType;
+        public MaterialSwap(
+            FormKey formKey,
+            Fallout4Release gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease.ToGameRelease()).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        private MaterialSwap(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        internal MaterialSwap(
+            FormKey formKey,
+            ushort formVersion)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = formVersion;
+            CustomCtor();
+        }
+
+        public MaterialSwap(IFallout4Mod mod)
+            : this(
+                mod.GetNextFormKey(),
+                mod.Fallout4Release)
+        {
+        }
+
+        public MaterialSwap(IFallout4Mod mod, string editorID)
+            : this(
+                mod.GetNextFormKey(editorID),
+                mod.Fallout4Release)
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<MaterialSwap>.ToString(this);
+        }
+
+        protected override Type LinkType => typeof(IMaterialSwap);
+
+        public MajorFlag MajorFlags
+        {
+            get => (MajorFlag)this.MajorRecordFlagsRaw;
+            set => this.MajorRecordFlagsRaw = (int)value;
+        }
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IMaterialSwapGetter rhs) return false;
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IMaterialSwapGetter? obj)
+        {
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((MaterialSwapCommon)((IMaterialSwapGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => MaterialSwapBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((MaterialSwapBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #region Binary Create
+        public new static MaterialSwap CreateFromBinary(
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            var ret = new MaterialSwap();
+            ((MaterialSwapSetterCommon)((IMaterialSwapGetter)ret).CommonSetterInstance()!).CopyInFromBinary(
+                item: ret,
+                frame: frame,
+                translationParams: translationParams);
+            return ret;
+        }
+
+        #endregion
+
+        public static bool TryCreateFromBinary(
+            MutagenFrame frame,
+            out MaterialSwap item,
+            TypedParseParams translationParams = default)
+        {
+            var startPos = frame.Position;
+            item = CreateFromBinary(
+                frame: frame,
+                translationParams: translationParams);
+            return startPos != frame.Position;
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((MaterialSwapSetterCommon)((IMaterialSwapGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static new MaterialSwap GetNew()
+        {
+            return new MaterialSwap();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface IMaterialSwap :
+        IFallout4MajorRecordInternal,
+        ILoquiObjectSetter<IMaterialSwapInternal>,
+        IMaterialSwapGetter
+    {
+        new String? TreeFolder { get; set; }
+        new ExtendedList<MaterialSubstitution> Substitutions { get; }
+        #region Mutagen
+        new MaterialSwap.MajorFlag MajorFlags { get; set; }
+        #endregion
+
+    }
+
+    public partial interface IMaterialSwapInternal :
+        IFallout4MajorRecordInternal,
+        IMaterialSwap,
+        IMaterialSwapGetter
+    {
+    }
+
+    [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.MSWP)]
+    public partial interface IMaterialSwapGetter :
+        IFallout4MajorRecordGetter,
+        IBinaryItem,
+        ILoquiObject<IMaterialSwapGetter>,
+        IMapsToGetter<IMaterialSwapGetter>
+    {
+        static new ILoquiRegistration StaticRegistration => MaterialSwap_Registration.Instance;
+        String? TreeFolder { get; }
+        IReadOnlyList<IMaterialSubstitutionGetter> Substitutions { get; }
+
+        #region Mutagen
+        MaterialSwap.MajorFlag MajorFlags { get; }
+        #endregion
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class MaterialSwapMixIn
+    {
+        public static void Clear(this IMaterialSwapInternal item)
+        {
+            ((MaterialSwapSetterCommon)((IMaterialSwapGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static MaterialSwap.Mask<bool> GetEqualsMask(
+            this IMaterialSwapGetter item,
+            IMaterialSwapGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this IMaterialSwapGetter item,
+            string? name = null,
+            MaterialSwap.Mask<bool>? printMask = null)
+        {
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this IMaterialSwapGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            MaterialSwap.Mask<bool>? printMask = null)
+        {
+            ((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this IMaterialSwapGetter item,
+            IMaterialSwapGetter rhs,
+            MaterialSwap.TranslationMask? equalsMask = null)
+        {
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this IMaterialSwapInternal lhs,
+            IMaterialSwapGetter rhs,
+            out MaterialSwap.ErrorMask errorMask,
+            MaterialSwap.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = MaterialSwap.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this IMaterialSwapInternal lhs,
+            IMaterialSwapGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static MaterialSwap DeepCopy(
+            this IMaterialSwapGetter item,
+            MaterialSwap.TranslationMask? copyMask = null)
+        {
+            return ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static MaterialSwap DeepCopy(
+            this IMaterialSwapGetter item,
+            out MaterialSwap.ErrorMask errorMask,
+            MaterialSwap.TranslationMask? copyMask = null)
+        {
+            return ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static MaterialSwap DeepCopy(
+            this IMaterialSwapGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        public static MaterialSwap Duplicate(
+            this IMaterialSwapGetter item,
+            FormKey formKey,
+            MaterialSwap.TranslationMask? copyMask = null)
+        {
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static MaterialSwap Duplicate(
+            this IMaterialSwapGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this IMaterialSwapInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((MaterialSwapSetterCommon)((IMaterialSwapGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Field Index
+    internal enum MaterialSwap_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+        FormVersion = 4,
+        Version2 = 5,
+        Fallout4MajorRecordFlags = 6,
+        TreeFolder = 7,
+        Substitutions = 8,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class MaterialSwap_Registration : ILoquiRegistration
+    {
+        public static readonly MaterialSwap_Registration Instance = new MaterialSwap_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Fallout4.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 2;
+
+        public const ushort FieldCount = 9;
+
+        public static readonly Type MaskType = typeof(MaterialSwap.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(MaterialSwap.ErrorMask);
+
+        public static readonly Type ClassType = typeof(MaterialSwap);
+
+        public static readonly Type GetterType = typeof(IMaterialSwapGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(IMaterialSwap);
+
+        public static readonly Type? InternalSetterType = typeof(IMaterialSwapInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Fallout4.MaterialSwap";
+
+        public const string Name = "MaterialSwap";
+
+        public const string Namespace = "Mutagen.Bethesda.Fallout4";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly RecordType TriggeringRecordType = RecordTypes.MSWP;
+        public static RecordTriggerSpecs TriggerSpecs => _recordSpecs.Value;
+        private static readonly Lazy<RecordTriggerSpecs> _recordSpecs = new Lazy<RecordTriggerSpecs>(() =>
+        {
+            var triggers = RecordCollection.Factory(RecordTypes.MSWP);
+            var all = RecordCollection.Factory(
+                RecordTypes.MSWP,
+                RecordTypes.FNAM,
+                RecordTypes.BNAM,
+                RecordTypes.SNAM,
+                RecordTypes.CNAM);
+            return new RecordTriggerSpecs(
+                allRecordTypes: all,
+                triggeringRecordTypes: triggers);
+        });
+        public static readonly Type BinaryWriteTranslation = typeof(MaterialSwapBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class MaterialSwapSetterCommon : Fallout4MajorRecordSetterCommon
+    {
+        public new static readonly MaterialSwapSetterCommon Instance = new MaterialSwapSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(IMaterialSwapInternal item)
+        {
+            ClearPartial();
+            item.TreeFolder = default;
+            item.Substitutions.Clear();
+            base.Clear(item);
+        }
+
+        public override void Clear(IFallout4MajorRecordInternal item)
+        {
+            Clear(item: (IMaterialSwapInternal)item);
+        }
+
+        public override void Clear(IMajorRecordInternal item)
+        {
+            Clear(item: (IMaterialSwapInternal)item);
+        }
+
+        #region Mutagen
+        public void RemapLinks(IMaterialSwap obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+            base.RemapLinks(obj, mapping);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            IMaterialSwapInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<IMaterialSwapInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: MaterialSwapBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: MaterialSwapBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        public override void CopyInFromBinary(
+            IFallout4MajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (MaterialSwap)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (MaterialSwap)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    internal partial class MaterialSwapCommon : Fallout4MajorRecordCommon
+    {
+        public new static readonly MaterialSwapCommon Instance = new MaterialSwapCommon();
+
+        public MaterialSwap.Mask<bool> GetEqualsMask(
+            IMaterialSwapGetter item,
+            IMaterialSwapGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new MaterialSwap.Mask<bool>(false);
+            ((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            IMaterialSwapGetter item,
+            IMaterialSwapGetter rhs,
+            MaterialSwap.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.TreeFolder = string.Equals(item.TreeFolder, rhs.TreeFolder);
+            ret.Substitutions = item.Substitutions.CollectionEqualsHelper(
+                rhs.Substitutions,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            base.FillEqualsMask(item, rhs, ret, include);
+        }
+
+        public string Print(
+            IMaterialSwapGetter item,
+            string? name = null,
+            MaterialSwap.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            IMaterialSwapGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            MaterialSwap.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"MaterialSwap =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (MaterialSwap) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            IMaterialSwapGetter item,
+            StructuredStringBuilder sb,
+            MaterialSwap.Mask<bool>? printMask = null)
+        {
+            Fallout4MajorRecordCommon.ToStringFields(
+                item: item,
+                sb: sb,
+                printMask: printMask);
+            if ((printMask?.TreeFolder ?? true)
+                && item.TreeFolder is {} TreeFolderItem)
+            {
+                sb.AppendItem(TreeFolderItem, "TreeFolder");
+            }
+            if (printMask?.Substitutions?.Overall ?? true)
+            {
+                sb.AppendLine("Substitutions =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in item.Substitutions)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+        }
+
+        public static MaterialSwap_FieldIndex ConvertFieldIndex(Fallout4MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case Fallout4MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormKey:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.VersionControl:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.EditorID:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormVersion:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Version2:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Fallout4MajorRecordFlags:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new MaterialSwap_FieldIndex ConvertFieldIndex(MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.FormKey:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.VersionControl:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.EditorID:
+                    return (MaterialSwap_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            IMaterialSwapGetter? lhs,
+            IMaterialSwapGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if (!base.Equals((IFallout4MajorRecordGetter)lhs, (IFallout4MajorRecordGetter)rhs, equalsMask)) return false;
+            if ((equalsMask?.GetShouldTranslate((int)MaterialSwap_FieldIndex.TreeFolder) ?? true))
+            {
+                if (!string.Equals(lhs.TreeFolder, rhs.TreeFolder)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MaterialSwap_FieldIndex.Substitutions) ?? true))
+            {
+                if (!lhs.Substitutions.SequenceEqual(rhs.Substitutions, (l, r) => ((MaterialSubstitutionCommon)((IMaterialSubstitutionGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)MaterialSwap_FieldIndex.Substitutions)))) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(
+            IFallout4MajorRecordGetter? lhs,
+            IFallout4MajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IMaterialSwapGetter?)lhs,
+                rhs: rhs as IMaterialSwapGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IMaterialSwapGetter?)lhs,
+                rhs: rhs as IMaterialSwapGetter,
+                equalsMask: equalsMask);
+        }
+
+        public virtual int GetHashCode(IMaterialSwapGetter item)
+        {
+            var hash = new HashCode();
+            if (item.TreeFolder is {} TreeFolderitem)
+            {
+                hash.Add(TreeFolderitem);
+            }
+            hash.Add(item.Substitutions);
+            hash.Add(base.GetHashCode());
+            return hash.ToHashCode();
+        }
+
+        public override int GetHashCode(IFallout4MajorRecordGetter item)
+        {
+            return GetHashCode(item: (IMaterialSwapGetter)item);
+        }
+
+        public override int GetHashCode(IMajorRecordGetter item)
+        {
+            return GetHashCode(item: (IMaterialSwapGetter)item);
+        }
+
+        #endregion
+
+        public override object GetNew()
+        {
+            return MaterialSwap.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(IMaterialSwapGetter obj, bool iterateNestedRecords = true)
+        {
+            foreach (var item in base.EnumerateFormLinks(obj, iterateNestedRecords))
+            {
+                yield return item;
+            }
+            yield break;
+        }
+
+        #region Duplicate
+        public MaterialSwap Duplicate(
+            IMaterialSwapGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            var newRec = new MaterialSwap(formKey, item.FormVersion);
+            newRec.DeepCopyIn(item, default(ErrorMaskBuilder?), copyMask);
+            return newRec;
+        }
+
+        public override Fallout4MajorRecord Duplicate(
+            IFallout4MajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IMaterialSwapGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IMaterialSwapGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class MaterialSwapSetterTranslationCommon : Fallout4MajorRecordSetterTranslationCommon
+    {
+        public new static readonly MaterialSwapSetterTranslationCommon Instance = new MaterialSwapSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            IMaterialSwapInternal item,
+            IMaterialSwapGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                item,
+                rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public void DeepCopyIn(
+            IMaterialSwap item,
+            IMaterialSwapGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                (IFallout4MajorRecord)item,
+                (IFallout4MajorRecordGetter)rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+            if ((copyMask?.GetShouldTranslate((int)MaterialSwap_FieldIndex.TreeFolder) ?? true))
+            {
+                item.TreeFolder = rhs.TreeFolder;
+            }
+            if ((copyMask?.GetShouldTranslate((int)MaterialSwap_FieldIndex.Substitutions) ?? true))
+            {
+                errorMask?.PushIndex((int)MaterialSwap_FieldIndex.Substitutions);
+                try
+                {
+                    item.Substitutions.SetTo(
+                        rhs.Substitutions
+                        .Select(r =>
+                        {
+                            return r.DeepCopy(
+                                errorMask: errorMask,
+                                default(TranslationCrystal));
+                        }));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            IMaterialSwap item,
+            IMaterialSwapGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        public override void DeepCopyIn(
+            IFallout4MajorRecordInternal item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMaterialSwapInternal)item,
+                rhs: (IMaterialSwapGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecord item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMaterialSwap)item,
+                rhs: (IMaterialSwapGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMaterialSwapInternal)item,
+                rhs: (IMaterialSwapGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMaterialSwap)item,
+                rhs: (IMaterialSwapGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        #endregion
+
+        public MaterialSwap DeepCopy(
+            IMaterialSwapGetter item,
+            MaterialSwap.TranslationMask? copyMask = null)
+        {
+            MaterialSwap ret = (MaterialSwap)((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).GetNew();
+            ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public MaterialSwap DeepCopy(
+            IMaterialSwapGetter item,
+            out MaterialSwap.ErrorMask errorMask,
+            MaterialSwap.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            MaterialSwap ret = (MaterialSwap)((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).GetNew();
+            ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = MaterialSwap.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public MaterialSwap DeepCopy(
+            IMaterialSwapGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            MaterialSwap ret = (MaterialSwap)((MaterialSwapCommon)((IMaterialSwapGetter)item).CommonInstance()!).GetNew();
+            ((MaterialSwapSetterTranslationCommon)((IMaterialSwapGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class MaterialSwap
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => MaterialSwap_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => MaterialSwap_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => MaterialSwapCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterInstance()
+        {
+            return MaterialSwapSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => MaterialSwapSetterTranslationCommon.Instance;
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class MaterialSwapBinaryWriteTranslation :
+        Fallout4MajorRecordBinaryWriteTranslation,
+        IBinaryWriteTranslator
+    {
+        public new static readonly MaterialSwapBinaryWriteTranslation Instance = new();
+
+        public static void WriteEmbedded(
+            IMaterialSwapGetter item,
+            MutagenWriter writer)
+        {
+            Fallout4MajorRecordBinaryWriteTranslation.WriteEmbedded(
+                item: item,
+                writer: writer);
+            MaterialSwapBinaryWriteTranslation.WriteBinaryFNAMParsing(
+                writer: writer,
+                item: item);
+        }
+
+        public static void WriteRecordTypes(
+            IMaterialSwapGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            MajorRecordBinaryWriteTranslation.WriteRecordTypes(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+            MaterialSwapBinaryWriteTranslation.WriteBinaryTreeFolder(
+                writer: writer,
+                item: item);
+            MaterialSwapBinaryWriteTranslation.WriteBinarySubstitutions(
+                writer: writer,
+                item: item);
+        }
+
+        public static partial void WriteBinaryFNAMParsingCustom(
+            MutagenWriter writer,
+            IMaterialSwapGetter item);
+
+        public static void WriteBinaryFNAMParsing(
+            MutagenWriter writer,
+            IMaterialSwapGetter item)
+        {
+            WriteBinaryFNAMParsingCustom(
+                writer: writer,
+                item: item);
+        }
+
+        public static partial void WriteBinaryTreeFolderCustom(
+            MutagenWriter writer,
+            IMaterialSwapGetter item);
+
+        public static void WriteBinaryTreeFolder(
+            MutagenWriter writer,
+            IMaterialSwapGetter item)
+        {
+            WriteBinaryTreeFolderCustom(
+                writer: writer,
+                item: item);
+        }
+
+        public static partial void WriteBinarySubstitutionsCustom(
+            MutagenWriter writer,
+            IMaterialSwapGetter item);
+
+        public static void WriteBinarySubstitutions(
+            MutagenWriter writer,
+            IMaterialSwapGetter item)
+        {
+            WriteBinarySubstitutionsCustom(
+                writer: writer,
+                item: item);
+        }
+
+        public void Write(
+            MutagenWriter writer,
+            IMaterialSwapGetter item,
+            TypedWriteParams translationParams)
+        {
+            PluginUtilityTranslation.WriteMajorRecord(
+                writer: writer,
+                item: item,
+                translationParams: translationParams,
+                type: RecordTypes.MSWP,
+                writeEmbedded: Fallout4MajorRecordBinaryWriteTranslation.WriteEmbedded,
+                writeRecordTypes: WriteRecordTypes);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (IMaterialSwapGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IFallout4MajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IMaterialSwapGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IMaterialSwapGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class MaterialSwapBinaryCreateTranslation : Fallout4MajorRecordBinaryCreateTranslation
+    {
+        public new static readonly MaterialSwapBinaryCreateTranslation Instance = new MaterialSwapBinaryCreateTranslation();
+
+        public override RecordType RecordType => RecordTypes.MSWP;
+        public static void FillBinaryStructs(
+            IMaterialSwapInternal item,
+            MutagenFrame frame)
+        {
+            Fallout4MajorRecordBinaryCreateTranslation.FillBinaryStructs(
+                item: item,
+                frame: frame);
+            MaterialSwapBinaryCreateTranslation.FillBinaryFNAMParsingCustom(
+                frame: frame,
+                item: item);
+        }
+
+        public static ParseResult FillBinaryRecordTypes(
+            IMaterialSwapInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.FNAM
+                    when frame.MetaData.FormVersion >= 112:
+                {
+                    MaterialSwapBinaryCreateTranslation.FillBinaryTreeFolderCustom(
+                        frame: frame.SpawnWithLength(frame.MetaData.Constants.SubConstants.HeaderLength + contentLength),
+                        item: item,
+                        lastParsed: lastParsed);
+                    return (int)MaterialSwap_FieldIndex.TreeFolder;
+                }
+                case RecordTypeInts.BNAM:
+                case RecordTypeInts.SNAM:
+                case RecordTypeInts.FNAM:
+                case RecordTypeInts.CNAM:
+                {
+                    MaterialSwapBinaryCreateTranslation.FillBinarySubstitutionsCustom(
+                        frame: frame.SpawnWithLength(frame.MetaData.Constants.SubConstants.HeaderLength + contentLength),
+                        item: item,
+                        lastParsed: lastParsed);
+                    return (int)MaterialSwap_FieldIndex.Substitutions;
+                }
+                default:
+                    return Fallout4MajorRecordBinaryCreateTranslation.FillBinaryRecordTypes(
+                        item: item,
+                        frame: frame,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        nextRecordType: nextRecordType,
+                        contentLength: contentLength,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+
+        public static partial void FillBinaryFNAMParsingCustom(
+            MutagenFrame frame,
+            IMaterialSwapInternal item);
+
+        public static partial void FillBinaryTreeFolderCustom(
+            MutagenFrame frame,
+            IMaterialSwapInternal item,
+            PreviousParse lastParsed);
+
+        public static partial void FillBinarySubstitutionsCustom(
+            MutagenFrame frame,
+            IMaterialSwapInternal item,
+            PreviousParse lastParsed);
+
+    }
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Binary Write Mixins
+    public static class MaterialSwapBinaryTranslationMixIn
+    {
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    internal partial class MaterialSwapBinaryOverlay :
+        Fallout4MajorRecordBinaryOverlay,
+        IMaterialSwapGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => MaterialSwap_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => MaterialSwap_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => MaterialSwapCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => MaterialSwapSetterTranslationCommon.Instance;
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => MaterialSwapBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((MaterialSwapBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        protected override Type LinkType => typeof(IMaterialSwapGetter);
+
+        public MaterialSwap.MajorFlag MajorFlags => (MaterialSwap.MajorFlag)this.MajorRecordFlagsRaw;
+
+        #region FNAMParsing
+        partial void FNAMParsingCustomParse(
+            OverlayStream stream,
+            int offset);
+        protected int FNAMParsingEndingPos;
+        #endregion
+        #region TreeFolder
+        partial void TreeFolderCustomParse(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+        public partial String? GetTreeFolderCustom();
+        public String? TreeFolder => GetTreeFolderCustom();
+        #endregion
+        public IReadOnlyList<IMaterialSubstitutionGetter> Substitutions { get; private set; } = [];
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected MaterialSwapBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public static IMaterialSwapGetter MaterialSwapFactory(
+            OverlayStream stream,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            stream = Decompression.DecompressStream(stream);
+            stream = ExtractRecordMemory(
+                stream: stream,
+                meta: package.MetaData.Constants,
+                memoryPair: out var memoryPair,
+                offset: out var offset,
+                finalPos: out var finalPos);
+            var ret = new MaterialSwapBinaryOverlay(
+                memoryPair: memoryPair,
+                package: package);
+            ret._package.FormVersion = ret;
+            ret.CustomFactoryEnd(
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset);
+            ret.FillSubrecordTypes(
+                majorReference: ret,
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset,
+                translationParams: translationParams,
+                fill: ret.FillRecordType);
+            return ret;
+        }
+
+        public static IMaterialSwapGetter MaterialSwapFactory(
+            ReadOnlyMemorySlice<byte> slice,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            return MaterialSwapFactory(
+                stream: new OverlayStream(slice, package),
+                package: package,
+                translationParams: translationParams);
+        }
+
+        public override ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.FNAM
+                    when stream.MetaData.FormVersion >= 112:
+                {
+                    TreeFolderCustomParse(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset);
+                    return (int)MaterialSwap_FieldIndex.TreeFolder;
+                }
+                case RecordTypeInts.BNAM:
+                case RecordTypeInts.SNAM:
+                case RecordTypeInts.FNAM:
+                case RecordTypeInts.CNAM:
+                {
+                    this.Substitutions = this.ParseRepeatedTypelessSubrecord<IMaterialSubstitutionGetter>(
+                        stream: stream,
+                        translationParams: translationParams,
+                        trigger: MaterialSubstitution_Registration.TriggerSpecs,
+                        factory: MaterialSubstitutionBinaryOverlay.MaterialSubstitutionFactory);
+                    return (int)MaterialSwap_FieldIndex.Substitutions;
+                }
+                default:
+                    return base.FillRecordType(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset,
+                        type: type,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            MaterialSwapMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<MaterialSwap>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IMaterialSwapGetter rhs) return false;
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IMaterialSwapGetter? obj)
+        {
+            return ((MaterialSwapCommon)((IMaterialSwapGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((MaterialSwapCommon)((IMaterialSwapGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

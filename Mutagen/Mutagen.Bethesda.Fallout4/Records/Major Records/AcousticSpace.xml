@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="AcousticSpace" recordType="ASPC" objType="Record" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <RefDirect name="ObjectBounds" refName="ObjectBounds" nullable="False" />
+      <FormLink name="LoopingSound" refName="SoundDescriptor" recordType="SNAM" />
+      <FormLink name="UseSoundFromRegion" refName="Region" recordType="RDAT" />
+      <FormLink name="EnvironmentType" refName="ReverbParameters" recordType="BNAM" />
+      <Bool name="IsInterior" byteLength="1" recordType="XTRI" />
+      <Float name="WeatherAttenuationDb" recordType="WNAM" integerType="UShort" divisor="100" />
+    </Fields>
+    <LinkInterface>IPlaceableObject</LinkInterface>
+    <LinkInterface>IReferenceableObject</LinkInterface>
+    <LinkInterface>IExplodeSpawn</LinkInterface>
+  </Object>
+</Loqui>

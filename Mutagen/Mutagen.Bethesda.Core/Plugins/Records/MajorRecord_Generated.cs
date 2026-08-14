@@ -1,0 +1,1867 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Assets;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Assets;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Cache;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Plugins.Records.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Plugins.Records.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Plugins.Records
+{
+    #region Class
+
+    public abstract partial class MajorRecord :
+        IEquatable<IMajorRecordGetter>,
+        ILoquiObjectSetter<MajorRecord>,
+        IMajorRecordInternal
+    {
+        #region Ctor
+        protected MajorRecord()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region MajorRecordFlagsRaw
+        public Int32 MajorRecordFlagsRaw { get; set; } = default(Int32);
+        #endregion
+        #region FormKey
+        public FormKey FormKey { get; protected set; } = FormKey.Null;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        FormKey IMajorRecordInternal.FormKey
+        {
+            get => this.FormKey;
+            set => this.FormKey = value;
+        }
+        #endregion
+        #region VersionControl
+        public UInt32 VersionControl { get; set; } = default(UInt32);
+        #endregion
+
+        #region To String
+
+        public virtual void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            MajorRecordMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public class Mask<TItem> :
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            {
+                this.MajorRecordFlagsRaw = initialValue;
+                this.FormKey = initialValue;
+                this.VersionControl = initialValue;
+                this.EditorID = initialValue;
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID)
+            {
+                this.MajorRecordFlagsRaw = MajorRecordFlagsRaw;
+                this.FormKey = FormKey;
+                this.VersionControl = VersionControl;
+                this.EditorID = EditorID;
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public TItem MajorRecordFlagsRaw;
+            public TItem FormKey;
+            public TItem VersionControl;
+            public TItem EditorID;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!object.Equals(this.MajorRecordFlagsRaw, rhs.MajorRecordFlagsRaw)) return false;
+                if (!object.Equals(this.FormKey, rhs.FormKey)) return false;
+                if (!object.Equals(this.VersionControl, rhs.VersionControl)) return false;
+                if (!object.Equals(this.EditorID, rhs.EditorID)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.MajorRecordFlagsRaw);
+                hash.Add(this.FormKey);
+                hash.Add(this.VersionControl);
+                hash.Add(this.EditorID);
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public virtual bool All(Func<TItem, bool> eval)
+            {
+                if (!eval(this.MajorRecordFlagsRaw)) return false;
+                if (!eval(this.FormKey)) return false;
+                if (!eval(this.VersionControl)) return false;
+                if (!eval(this.EditorID)) return false;
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public virtual bool Any(Func<TItem, bool> eval)
+            {
+                if (eval(this.MajorRecordFlagsRaw)) return true;
+                if (eval(this.FormKey)) return true;
+                if (eval(this.VersionControl)) return true;
+                if (eval(this.EditorID)) return true;
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new MajorRecord.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                obj.MajorRecordFlagsRaw = eval(this.MajorRecordFlagsRaw);
+                obj.FormKey = eval(this.FormKey);
+                obj.VersionControl = eval(this.VersionControl);
+                obj.EditorID = eval(this.EditorID);
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(MajorRecord.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, MajorRecord.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(MajorRecord.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.MajorRecordFlagsRaw ?? true)
+                    {
+                        sb.AppendItem(MajorRecordFlagsRaw, "MajorRecordFlagsRaw");
+                    }
+                    if (printMask?.FormKey ?? true)
+                    {
+                        sb.AppendItem(FormKey, "FormKey");
+                    }
+                    if (printMask?.VersionControl ?? true)
+                    {
+                        sb.AppendItem(VersionControl, "VersionControl");
+                    }
+                    if (printMask?.EditorID ?? true)
+                    {
+                        sb.AppendItem(EditorID, "EditorID");
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public class ErrorMask :
+            IErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public Exception? Overall { get; set; }
+            private List<string>? _warnings;
+            public List<string> Warnings
+            {
+                get
+                {
+                    if (_warnings == null)
+                    {
+                        _warnings = new List<string>();
+                    }
+                    return _warnings;
+                }
+            }
+            public Exception? MajorRecordFlagsRaw;
+            public Exception? FormKey;
+            public Exception? VersionControl;
+            public Exception? EditorID;
+            #endregion
+
+            #region IErrorMask
+            public virtual object? GetNthMask(int index)
+            {
+                MajorRecord_FieldIndex enu = (MajorRecord_FieldIndex)index;
+                switch (enu)
+                {
+                    case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                        return MajorRecordFlagsRaw;
+                    case MajorRecord_FieldIndex.FormKey:
+                        return FormKey;
+                    case MajorRecord_FieldIndex.VersionControl:
+                        return VersionControl;
+                    case MajorRecord_FieldIndex.EditorID:
+                        return EditorID;
+                    default:
+                        throw new ArgumentException($"Index is out of range: {index}");
+                }
+            }
+
+            public virtual void SetNthException(int index, Exception ex)
+            {
+                MajorRecord_FieldIndex enu = (MajorRecord_FieldIndex)index;
+                switch (enu)
+                {
+                    case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                        this.MajorRecordFlagsRaw = ex;
+                        break;
+                    case MajorRecord_FieldIndex.FormKey:
+                        this.FormKey = ex;
+                        break;
+                    case MajorRecord_FieldIndex.VersionControl:
+                        this.VersionControl = ex;
+                        break;
+                    case MajorRecord_FieldIndex.EditorID:
+                        this.EditorID = ex;
+                        break;
+                    default:
+                        throw new ArgumentException($"Index is out of range: {index}");
+                }
+            }
+
+            public virtual void SetNthMask(int index, object obj)
+            {
+                MajorRecord_FieldIndex enu = (MajorRecord_FieldIndex)index;
+                switch (enu)
+                {
+                    case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                        this.MajorRecordFlagsRaw = (Exception?)obj;
+                        break;
+                    case MajorRecord_FieldIndex.FormKey:
+                        this.FormKey = (Exception?)obj;
+                        break;
+                    case MajorRecord_FieldIndex.VersionControl:
+                        this.VersionControl = (Exception?)obj;
+                        break;
+                    case MajorRecord_FieldIndex.EditorID:
+                        this.EditorID = (Exception?)obj;
+                        break;
+                    default:
+                        throw new ArgumentException($"Index is out of range: {index}");
+                }
+            }
+
+            public virtual bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (MajorRecordFlagsRaw != null) return true;
+                if (FormKey != null) return true;
+                if (VersionControl != null) return true;
+                if (EditorID != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public virtual void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected virtual void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                {
+                    sb.AppendItem(MajorRecordFlagsRaw, "MajorRecordFlagsRaw");
+                }
+                {
+                    sb.AppendItem(FormKey, "FormKey");
+                }
+                {
+                    sb.AppendItem(VersionControl, "VersionControl");
+                }
+                {
+                    sb.AppendItem(EditorID, "EditorID");
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.MajorRecordFlagsRaw = this.MajorRecordFlagsRaw.Combine(rhs.MajorRecordFlagsRaw);
+                ret.FormKey = this.FormKey.Combine(rhs.FormKey);
+                ret.VersionControl = this.VersionControl.Combine(rhs.VersionControl);
+                ret.EditorID = this.EditorID.Combine(rhs.EditorID);
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public class TranslationMask : ITranslationMask
+        {
+            #region Members
+            private TranslationCrystal? _crystal;
+            public readonly bool DefaultOn;
+            public bool OnOverall;
+            public bool MajorRecordFlagsRaw;
+            public bool FormKey;
+            public bool VersionControl;
+            public bool EditorID;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+            {
+                this.DefaultOn = defaultOn;
+                this.OnOverall = onOverall;
+                this.MajorRecordFlagsRaw = defaultOn;
+                this.FormKey = defaultOn;
+                this.VersionControl = defaultOn;
+                this.EditorID = defaultOn;
+            }
+
+            #endregion
+
+            public TranslationCrystal GetCrystal()
+            {
+                if (_crystal != null) return _crystal;
+                var ret = new List<(bool On, TranslationCrystal? SubCrystal)>();
+                GetCrystal(ret);
+                _crystal = new TranslationCrystal(ret.ToArray());
+                return _crystal;
+            }
+
+            protected virtual void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                ret.Add((MajorRecordFlagsRaw, null));
+                ret.Add((FormKey, null));
+                ret.Add((VersionControl, null));
+                ret.Add((EditorID, null));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public virtual IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => MajorRecordCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        public virtual void RemapLinks(IReadOnlyDictionary<FormKey, FormKey> mapping) => MajorRecordSetterCommon.Instance.RemapLinks(this, mapping);
+        public MajorRecord(FormKey formKey)
+        {
+            this.FormKey = formKey;
+            CustomCtor();
+        }
+
+        private MajorRecord(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            CustomCtor();
+        }
+
+        public MajorRecord(IMod mod)
+            : this(mod.GetNextFormKey())
+        {
+        }
+
+        public MajorRecord(IMod mod, string editorID)
+            : this(mod.GetNextFormKey(editorID))
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<MajorRecord>.ToString(this);
+        }
+
+        [DebuggerStepThrough]
+        IEnumerable<IMajorRecordGetter> IMajorRecordGetterEnumerable.EnumerateMajorRecords() => this.EnumerateMajorRecords();
+        [DebuggerStepThrough]
+        IEnumerable<TMajor> IMajorRecordGetterEnumerable.EnumerateMajorRecords<TMajor>(bool throwIfUnknown) => this.EnumerateMajorRecords<TMajor>(throwIfUnknown: throwIfUnknown);
+        [DebuggerStepThrough]
+        IEnumerable<IMajorRecordGetter> IMajorRecordGetterEnumerable.EnumerateMajorRecords(Type type, bool throwIfUnknown) => this.EnumerateMajorRecords(type: type, throwIfUnknown: throwIfUnknown);
+        [DebuggerStepThrough]
+        IEnumerable<IMajorRecord> IMajorRecordEnumerable.EnumerateMajorRecords() => this.EnumerateMajorRecords();
+        [DebuggerStepThrough]
+        IEnumerable<TMajor> IMajorRecordEnumerable.EnumerateMajorRecords<TMajor>(bool throwIfUnknown) => this.EnumerateMajorRecords<TMajor>(throwIfUnknown: throwIfUnknown);
+        [DebuggerStepThrough]
+        IEnumerable<IMajorRecord> IMajorRecordEnumerable.EnumerateMajorRecords(Type? type, bool throwIfUnknown) => this.EnumerateMajorRecords(type: type, throwIfUnknown: throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove(FormKey formKey) => this.Remove(formKey);
+        #pragma warning disable CS0618
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove(HashSet<FormKey> formKeys) => this.Remove(formKeys);
+        #pragma warning restore CS0618
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove(IEnumerable<FormKey> formKeys) => this.Remove(formKeys);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove(IEnumerable<IFormLinkIdentifier> formLinks) => this.Remove(formLinks);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove(FormKey formKey, Type type, bool throwIfUnknown) => this.Remove(formKey, type, throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove(HashSet<FormKey> formKeys, Type type, bool throwIfUnknown) => this.Remove(formKeys, type, throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove(IEnumerable<FormKey> formKeys, Type type, bool throwIfUnknown) => this.Remove(formKeys, type, throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove<TMajor>(FormKey formKey, bool throwIfUnknown) => this.Remove<TMajor>(formKey, throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove<TMajor>(HashSet<FormKey> formKeys, bool throwIfUnknown) => this.Remove<TMajor>(formKeys, throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove<TMajor>(IEnumerable<FormKey> formKeys, bool throwIfUnknown) => this.Remove<TMajor>(formKeys, throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove<TMajor>(TMajor record, bool throwIfUnknown) => this.Remove<TMajor>(record, throwIfUnknown);
+        [DebuggerStepThrough]
+        void IMajorRecordEnumerable.Remove<TMajor>(IEnumerable<TMajor> records, bool throwIfUnknown) => this.Remove<TMajor>(records, throwIfUnknown);
+        public virtual IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(AssetLinkQuery queryCategories, IAssetLinkCache? linkCache, Type? assetType) => MajorRecordCommon.Instance.EnumerateAssetLinks(this, queryCategories, linkCache, assetType);
+        public virtual IEnumerable<IAssetLink> EnumerateListedAssetLinks() => MajorRecordSetterCommon.Instance.EnumerateListedAssetLinks(this);
+        public virtual void RemapAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping, AssetLinkQuery queryCategories, IAssetLinkCache? linkCache) => MajorRecordSetterCommon.Instance.RemapAssetLinks(this, mapping, linkCache, queryCategories);
+        public virtual void RemapListedAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping) => MajorRecordSetterCommon.Instance.RemapAssetLinks(this, mapping, null, AssetLinkQuery.Listed);
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IMajorRecordGetter rhs) return false;
+            return ((MajorRecordCommon)((IMajorRecordGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IMajorRecordGetter? obj)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((MajorRecordCommon)((IMajorRecordGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected virtual object BinaryWriteTranslator => MajorRecordBinaryWriteTranslation.Instance;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        object IBinaryItem.BinaryWriteTranslator => this.BinaryWriteTranslator;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((MajorRecordBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static MajorRecord GetNew()
+        {
+            throw new ArgumentException("New called on an abstract class.");
+        }
+
+    }
+    #endregion
+
+    #region Interface
+
+    public partial interface IMajorRecord :
+        IAssetLinkContainer,
+        IFormLinkContainer,
+        ILoquiObjectSetter<IMajorRecordInternal>,
+        IMajorRecordEnumerable,
+        IMajorRecordGetter
+    {
+        new Int32 MajorRecordFlagsRaw { get; set; }
+        new UInt32 VersionControl { get; set; }
+        new String? EditorID { get; set; }
+    }
+
+    public partial interface IMajorRecordInternal :
+        IMajorRecord,
+        IMajorRecordGetter
+    {
+    }
+
+    public partial interface IMajorRecordGetter :
+        ILoquiObject,
+        IAssetLinkContainerGetter,
+        IBinaryItem,
+        IFormLinkContainerGetter,
+        ILoquiObject<IMajorRecordGetter>,
+        IMajorRecordGetterEnumerable
+    {
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        object CommonInstance();
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        object? CommonSetterInstance();
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        object CommonSetterTranslationInstance();
+        static ILoquiRegistration StaticRegistration => MajorRecord_Registration.Instance;
+        Int32 MajorRecordFlagsRaw { get; }
+        UInt32 VersionControl { get; }
+        String? EditorID { get; }
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class MajorRecordMixIn
+    {
+        public static void Clear(this IMajorRecordInternal item)
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static MajorRecord.Mask<bool> GetEqualsMask(
+            this IMajorRecordGetter item,
+            IMajorRecordGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this IMajorRecordGetter item,
+            string? name = null,
+            MajorRecord.Mask<bool>? printMask = null)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this IMajorRecordGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            MajorRecord.Mask<bool>? printMask = null)
+        {
+            ((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this IMajorRecordGetter item,
+            IMajorRecordGetter rhs,
+            MajorRecord.TranslationMask? equalsMask = null)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this IMajorRecordInternal lhs,
+            IMajorRecordGetter rhs)
+        {
+            ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: default,
+                copyMask: default,
+                deepCopy: false);
+        }
+
+        public static void DeepCopyIn(
+            this IMajorRecordInternal lhs,
+            IMajorRecordGetter rhs,
+            MajorRecord.TranslationMask? copyMask = null)
+        {
+            ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: default,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+        }
+
+        public static void DeepCopyIn(
+            this IMajorRecordInternal lhs,
+            IMajorRecordGetter rhs,
+            out MajorRecord.ErrorMask errorMask,
+            MajorRecord.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = MajorRecord.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this IMajorRecordInternal lhs,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static MajorRecord DeepCopy(
+            this IMajorRecordGetter item,
+            MajorRecord.TranslationMask? copyMask = null)
+        {
+            return ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static MajorRecord DeepCopy(
+            this IMajorRecordGetter item,
+            out MajorRecord.ErrorMask errorMask,
+            MajorRecord.TranslationMask? copyMask = null)
+        {
+            return ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static MajorRecord DeepCopy(
+            this IMajorRecordGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        [DebuggerStepThrough]
+        public static IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(this IMajorRecordGetter obj)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)obj).CommonInstance()!).EnumerateMajorRecords(obj: obj);
+        }
+
+        [DebuggerStepThrough]
+        public static IEnumerable<TMajor> EnumerateMajorRecords<TMajor>(
+            this IMajorRecordGetter obj,
+            bool throwIfUnknown = true)
+            where TMajor : class, IMajorRecordQueryableGetter
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)obj).CommonInstance()!).EnumerateMajorRecords(
+                obj: obj,
+                type: typeof(TMajor),
+                throwIfUnknown: throwIfUnknown)
+                .Select(m => (TMajor)m);
+        }
+
+        [DebuggerStepThrough]
+        public static IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(
+            this IMajorRecordGetter obj,
+            Type type,
+            bool throwIfUnknown = true)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)obj).CommonInstance()!).EnumerateMajorRecords(
+                obj: obj,
+                type: type,
+                throwIfUnknown: throwIfUnknown)
+                .Select(m => (IMajorRecordGetter)m);
+        }
+
+        [DebuggerStepThrough]
+        public static IEnumerable<IMajorRecord> EnumerateMajorRecords(this IMajorRecordInternal obj)
+        {
+            return ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).EnumerateMajorRecords(obj: obj);
+        }
+
+        [DebuggerStepThrough]
+        public static IEnumerable<TMajor> EnumerateMajorRecords<TMajor>(this IMajorRecordInternal obj)
+            where TMajor : class, IMajorRecordQueryable
+        {
+            return ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).EnumerateMajorRecords(
+                obj: obj,
+                type: typeof(TMajor),
+                throwIfUnknown: true)
+                .Select(m => (TMajor)m);
+        }
+
+        [DebuggerStepThrough]
+        public static IEnumerable<IMajorRecord> EnumerateMajorRecords(
+            this IMajorRecordInternal obj,
+            Type? type,
+            bool throwIfUnknown = true)
+        {
+            return ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).EnumeratePotentiallyTypedMajorRecords(
+                obj: obj,
+                type: type,
+                throwIfUnknown: throwIfUnknown)
+                .Select(m => (IMajorRecord)m);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove(
+            this IMajorRecordInternal obj,
+            FormKey key)
+        {
+            var keys = new HashSet<FormKey>();
+            keys.Add(key);
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove(
+            this IMajorRecordInternal obj,
+            IEnumerable<FormKey> keys)
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys.ToHashSet());
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove(
+            this IMajorRecordInternal obj,
+            IEnumerable<IFormLinkIdentifier> keys)
+        {
+            foreach (var g in keys.GroupBy(x => x.Type))
+            {
+                Remove(
+                    obj: obj,
+                    keys: g.Select(x => x.FormKey),
+                    type: g.Key);
+            }
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove(
+            this IMajorRecordInternal obj,
+            HashSet<FormKey> keys)
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove(
+            this IMajorRecordInternal obj,
+            FormKey key,
+            Type type,
+            bool throwIfUnknown = true)
+        {
+            var keys = new HashSet<FormKey>();
+            keys.Add(key);
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys,
+                type: type,
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove(
+            this IMajorRecordInternal obj,
+            IEnumerable<FormKey> keys,
+            Type type,
+            bool throwIfUnknown = true)
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys.ToHashSet(),
+                type: type,
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove(
+            this IMajorRecordInternal obj,
+            HashSet<FormKey> keys,
+            Type type,
+            bool throwIfUnknown = true)
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys,
+                type: type,
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove<TMajor>(
+            this IMajorRecordInternal obj,
+            TMajor record,
+            bool throwIfUnknown = true)
+            where TMajor : IMajorRecordGetter
+        {
+            var keys = new HashSet<FormKey>();
+            keys.Add(record.FormKey);
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys,
+                type: typeof(TMajor),
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove<TMajor>(
+            this IMajorRecordInternal obj,
+            IEnumerable<TMajor> records,
+            bool throwIfUnknown = true)
+            where TMajor : IMajorRecordGetter
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: records.Select(m => m.FormKey).ToHashSet(),
+                type: typeof(TMajor),
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove<TMajor>(
+            this IMajorRecordInternal obj,
+            FormKey key,
+            bool throwIfUnknown = true)
+            where TMajor : IMajorRecordGetter
+        {
+            var keys = new HashSet<FormKey>();
+            keys.Add(key);
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys,
+                type: typeof(TMajor),
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove<TMajor>(
+            this IMajorRecordInternal obj,
+            IEnumerable<FormKey> keys,
+            bool throwIfUnknown = true)
+            where TMajor : IMajorRecordGetter
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys.ToHashSet(),
+                type: typeof(TMajor),
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        [DebuggerStepThrough]
+        public static void Remove<TMajor>(
+            this IMajorRecordInternal obj,
+            HashSet<FormKey> keys,
+            bool throwIfUnknown = true)
+            where TMajor : IMajorRecordGetter
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)obj).CommonSetterInstance()!).Remove(
+                obj: obj,
+                keys: keys,
+                type: typeof(TMajor),
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        public static MajorRecord Duplicate(
+            this IMajorRecordGetter item,
+            FormKey formKey,
+            MajorRecord.TranslationMask? copyMask = null)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static MajorRecord Duplicate(
+            this IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((MajorRecordSetterCommon)((IMajorRecordGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Plugins.Records
+{
+    #region Field Index
+    internal enum MajorRecord_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class MajorRecord_Registration : ILoquiRegistration
+    {
+        public static readonly MajorRecord_Registration Instance = new MajorRecord_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Bethesda.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 4;
+
+        public const ushort FieldCount = 4;
+
+        public static readonly Type MaskType = typeof(MajorRecord.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(MajorRecord.ErrorMask);
+
+        public static readonly Type ClassType = typeof(MajorRecord);
+
+        public static readonly Type GetterType = typeof(IMajorRecordGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(IMajorRecord);
+
+        public static readonly Type? InternalSetterType = typeof(IMajorRecordInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Plugins.Records.MajorRecord";
+
+        public const string Name = "MajorRecord";
+
+        public const string Namespace = "Mutagen.Bethesda.Plugins.Records";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly Type BinaryWriteTranslation = typeof(MajorRecordBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class MajorRecordSetterCommon
+    {
+        public static readonly MajorRecordSetterCommon Instance = new MajorRecordSetterCommon();
+
+        partial void ClearPartial();
+
+        public virtual void Clear(IMajorRecordInternal item)
+        {
+            ClearPartial();
+            item.MajorRecordFlagsRaw = default(Int32);
+            item.VersionControl = default(UInt32);
+            item.EditorID = default;
+        }
+
+        #region Mutagen
+        public void RemapLinks(IMajorRecord obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+        }
+
+        public virtual IEnumerable<IMajorRecord> EnumerateMajorRecords(IMajorRecordInternal obj)
+        {
+            return EnumerateMajorRecordsLoopLogic(obj: obj);
+        }
+
+        public virtual IEnumerable<IMajorRecord> EnumerateMajorRecordsLoopLogic(IMajorRecordInternal obj)
+        {
+            foreach (var item in MajorRecordCommon.Instance.EnumerateMajorRecords(obj))
+            {
+                yield return (item as IMajorRecord)!;
+            }
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumeratePotentiallyTypedMajorRecords(
+            IMajorRecordInternal obj,
+            Type? type,
+            bool throwIfUnknown)
+        {
+            if (type == null) return MajorRecordCommon.Instance.EnumerateMajorRecords(obj);
+            return MajorRecordCommon.Instance.EnumerateMajorRecords(obj, type, throwIfUnknown);
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(
+            IMajorRecordInternal obj,
+            Type type,
+            bool throwIfUnknown)
+        {
+            return EnumerateMajorRecordsLoopLogic(
+                obj: obj,
+                type: type,
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumerateMajorRecordsLoopLogic(
+            IMajorRecordInternal obj,
+            Type type,
+            bool throwIfUnknown)
+        {
+            foreach (var item in MajorRecordCommon.Instance.EnumerateMajorRecordsLoopLogic(obj, type, throwIfUnknown))
+            {
+                yield return item;
+            }
+        }
+
+        #pragma warning disable CS0618
+        public virtual void Remove(
+            IMajorRecordInternal obj,
+            HashSet<FormKey> keys)
+        {
+        }
+
+        public virtual void Remove(
+            IMajorRecordInternal obj,
+            HashSet<FormKey> keys,
+            Type type,
+            bool throwIfUnknown)
+        {
+            switch (type.Name)
+            {
+                case "IMajorRecord":
+                case "MajorRecord":
+                case "IMajorRecordGetter":
+                    if (!MajorRecord_Registration.SetterType.IsAssignableFrom(obj.GetType())) return;
+                    this.Remove(obj, keys);
+                    break;
+                default:
+                    if (throwIfUnknown)
+                    {
+                        throw new ArgumentException($"Unknown major record type: {type}");
+                    }
+                    else
+                    {
+                        break;
+                    }
+            }
+        }
+
+        #pragma warning restore CS0618
+        public IEnumerable<IAssetLink> EnumerateListedAssetLinks(IMajorRecord obj)
+        {
+            yield break;
+        }
+
+        public void RemapAssetLinks(
+            IMajorRecord obj,
+            IReadOnlyDictionary<IAssetLinkGetter, string> mapping,
+            IAssetLinkCache? linkCache,
+            AssetLinkQuery queryCategories)
+        {
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<IMajorRecordInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: MajorRecordBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: MajorRecordBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        #endregion
+
+    }
+    internal partial class MajorRecordCommon
+    {
+        public static readonly MajorRecordCommon Instance = new MajorRecordCommon();
+
+        public MajorRecord.Mask<bool> GetEqualsMask(
+            IMajorRecordGetter item,
+            IMajorRecordGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new MajorRecord.Mask<bool>(false);
+            ((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            IMajorRecordGetter item,
+            IMajorRecordGetter rhs,
+            MajorRecord.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.MajorRecordFlagsRaw = item.MajorRecordFlagsRaw == rhs.MajorRecordFlagsRaw;
+            ret.FormKey = item.FormKey == rhs.FormKey;
+            ret.VersionControl = item.VersionControl == rhs.VersionControl;
+            ret.EditorID = string.Equals(item.EditorID, rhs.EditorID);
+        }
+
+        public string Print(
+            IMajorRecordGetter item,
+            string? name = null,
+            MajorRecord.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            IMajorRecordGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            MajorRecord.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"MajorRecord =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (MajorRecord) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            IMajorRecordGetter item,
+            StructuredStringBuilder sb,
+            MajorRecord.Mask<bool>? printMask = null)
+        {
+            if (printMask?.MajorRecordFlagsRaw ?? true)
+            {
+                sb.AppendItem(item.MajorRecordFlagsRaw, "MajorRecordFlagsRaw");
+            }
+            if (printMask?.FormKey ?? true)
+            {
+                sb.AppendItem(item.FormKey, "FormKey");
+            }
+            if (printMask?.VersionControl ?? true)
+            {
+                sb.AppendItem(item.VersionControl, "VersionControl");
+            }
+            if ((printMask?.EditorID ?? true)
+                && item.EditorID is {} EditorIDItem)
+            {
+                sb.AppendItem(EditorIDItem, "EditorID");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if ((equalsMask?.GetShouldTranslate((int)MajorRecord_FieldIndex.MajorRecordFlagsRaw) ?? true))
+            {
+                if (lhs.MajorRecordFlagsRaw != rhs.MajorRecordFlagsRaw) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MajorRecord_FieldIndex.FormKey) ?? true))
+            {
+                if (lhs.FormKey != rhs.FormKey) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MajorRecord_FieldIndex.VersionControl) ?? true))
+            {
+                if (lhs.VersionControl != rhs.VersionControl) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MajorRecord_FieldIndex.EditorID) ?? true))
+            {
+                if (!string.Equals(lhs.EditorID, rhs.EditorID)) return false;
+            }
+            return true;
+        }
+
+        public virtual int GetHashCode(IMajorRecordGetter item)
+        {
+            var hash = new HashCode();
+            hash.Add(item.MajorRecordFlagsRaw);
+            hash.Add(item.FormKey);
+            hash.Add(item.VersionControl);
+            if (item.EditorID is {} EditorIDitem)
+            {
+                hash.Add(EditorIDitem);
+            }
+            return hash.ToHashCode();
+        }
+
+        #endregion
+
+        public virtual object GetNew()
+        {
+            return MajorRecord.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(IMajorRecordGetter obj, bool iterateNestedRecords = true)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(IMajorRecordGetter obj)
+        {
+            return EnumerateMajorRecordsLoopLogic(obj: obj);
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumerateMajorRecordsLoopLogic(IMajorRecordGetter obj)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumeratePotentiallyTypedMajorRecords(
+            IMajorRecordGetter obj,
+            Type? type,
+            bool throwIfUnknown)
+        {
+            if (type == null) return MajorRecordCommon.Instance.EnumerateMajorRecords(obj);
+            return MajorRecordCommon.Instance.EnumerateMajorRecords(obj, type, throwIfUnknown);
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(
+            IMajorRecordGetter obj,
+            Type type,
+            bool throwIfUnknown)
+        {
+            return EnumerateMajorRecordsLoopLogic(
+                obj: obj,
+                type: type,
+                throwIfUnknown: throwIfUnknown);
+        }
+
+        public virtual IEnumerable<IMajorRecordGetter> EnumerateMajorRecordsLoopLogic(
+            IMajorRecordGetter obj,
+            Type type,
+            bool throwIfUnknown)
+        {
+            switch (type.Name)
+            {
+                case "IMajorRecord":
+                case "MajorRecord":
+                    if (!MajorRecord_Registration.SetterType.IsAssignableFrom(obj.GetType())) yield break;
+                    foreach (var item in this.EnumerateMajorRecordsLoopLogic(obj))
+                    {
+                        yield return item;
+                    }
+                    yield break;
+                case "IMajorRecordGetter":
+                    foreach (var item in this.EnumerateMajorRecordsLoopLogic(obj))
+                    {
+                        yield return item;
+                    }
+                    yield break;
+                default:
+                    if (throwIfUnknown)
+                    {
+                        throw new ArgumentException($"Unknown major record type: {type}");
+                    }
+                    else
+                    {
+                        yield break;
+                    }
+            }
+        }
+
+        public IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(IMajorRecordGetter obj, AssetLinkQuery queryCategories, IAssetLinkCache? linkCache, Type? assetType)
+        {
+            yield break;
+        }
+
+        #region Duplicate
+        public virtual MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class MajorRecordSetterTranslationCommon
+    {
+        public static readonly MajorRecordSetterTranslationCommon Instance = new MajorRecordSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public virtual void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            if (deepCopy)
+            {
+                item.FormKey = rhs.FormKey;
+            }
+            DeepCopyIn(
+                (IMajorRecord)item,
+                (IMajorRecordGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public virtual void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            if ((copyMask?.GetShouldTranslate((int)MajorRecord_FieldIndex.MajorRecordFlagsRaw) ?? true))
+            {
+                item.MajorRecordFlagsRaw = rhs.MajorRecordFlagsRaw;
+            }
+            if ((copyMask?.GetShouldTranslate((int)MajorRecord_FieldIndex.VersionControl) ?? true))
+            {
+                item.VersionControl = rhs.VersionControl;
+            }
+            if ((copyMask?.GetShouldTranslate((int)MajorRecord_FieldIndex.EditorID) ?? true))
+            {
+                item.EditorID = rhs.EditorID;
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        #endregion
+
+        public MajorRecord DeepCopy(
+            IMajorRecordGetter item,
+            MajorRecord.TranslationMask? copyMask = null)
+        {
+            MajorRecord ret = (MajorRecord)((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).GetNew();
+            ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public MajorRecord DeepCopy(
+            IMajorRecordGetter item,
+            out MajorRecord.ErrorMask errorMask,
+            MajorRecord.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            MajorRecord ret = (MajorRecord)((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).GetNew();
+            ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = MajorRecord.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public MajorRecord DeepCopy(
+            IMajorRecordGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            MajorRecord ret = (MajorRecord)((MajorRecordCommon)((IMajorRecordGetter)item).CommonInstance()!).GetNew();
+            ((MajorRecordSetterTranslationCommon)((IMajorRecordGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Plugins.Records
+{
+    public partial class MajorRecord
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => MajorRecord_Registration.Instance;
+        public static ILoquiRegistration StaticRegistration => MajorRecord_Registration.Instance;
+        [DebuggerStepThrough]
+        protected virtual object CommonInstance() => MajorRecordCommon.Instance;
+        [DebuggerStepThrough]
+        protected virtual object CommonSetterInstance()
+        {
+            return MajorRecordSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected virtual object CommonSetterTranslationInstance() => MajorRecordSetterTranslationCommon.Instance;
+        [DebuggerStepThrough]
+        object IMajorRecordGetter.CommonInstance() => this.CommonInstance();
+        [DebuggerStepThrough]
+        object IMajorRecordGetter.CommonSetterInstance() => this.CommonSetterInstance();
+        [DebuggerStepThrough]
+        object IMajorRecordGetter.CommonSetterTranslationInstance() => this.CommonSetterTranslationInstance();
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Plugins.Records
+{
+    public partial class MajorRecordBinaryWriteTranslation : IBinaryWriteTranslator
+    {
+        public static readonly MajorRecordBinaryWriteTranslation Instance = new();
+
+        public static void WriteEmbedded(
+            IMajorRecordGetter item,
+            MutagenWriter writer)
+        {
+            writer.Write(item.MajorRecordFlagsRaw);
+            FormKeyBinaryTranslation.Instance.Write(
+                writer: writer,
+                item: item,
+                reference: false);
+            writer.Write(item.VersionControl);
+        }
+
+        public static void WriteRecordTypes(
+            IMajorRecordGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.EditorID,
+                header: translationParams.ConvertToCustom(RecordTypes.EDID),
+                binaryType: StringBinaryType.NullTerminate);
+        }
+
+        public virtual void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (IMajorRecordGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class MajorRecordBinaryCreateTranslation
+    {
+        public static readonly MajorRecordBinaryCreateTranslation Instance = new MajorRecordBinaryCreateTranslation();
+
+        public virtual RecordType RecordType => throw new ArgumentException();
+        public static void FillBinaryStructs(
+            IMajorRecordInternal item,
+            MutagenFrame frame)
+        {
+            item.MajorRecordFlagsRaw = frame.ReadInt32();
+            item.FormKey = FormKeyBinaryTranslation.Instance.Parse(
+                reader: frame,
+                reference: false);
+            item.VersionControl = frame.ReadUInt32();
+        }
+
+        public static ParseResult FillBinaryRecordTypes(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.EDID:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.EditorID = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)MajorRecord_FieldIndex.EditorID;
+                }
+                default:
+                    if (frame.MetaData.ThrowOnUnknown)
+                    {
+                        throw new SubrecordException(
+                            subRecord: nextRecordType,
+                            formKey: item.FormKey,
+                            majorRecordType: item.Registration.ClassType,
+                            modKey: frame.MetaData.ModKey,
+                            edid: item.EditorID,
+                            message: "Unexpected subrecord");
+                    }
+                    frame.Position += contentLength + frame.MetaData.Constants.SubConstants.HeaderLength;
+                    return default(int?);
+            }
+        }
+
+    }
+
+}
+namespace Mutagen.Bethesda.Plugins.Records
+{
+    #region Binary Write Mixins
+    public static class MajorRecordBinaryTranslationMixIn
+    {
+        public static void WriteToBinary(
+            this IMajorRecordGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((MajorRecordBinaryWriteTranslation)item.BinaryWriteTranslator).Write(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Plugins.Records
+{
+    internal abstract partial class MajorRecordBinaryOverlay :
+        PluginBinaryOverlay,
+        IMajorRecordGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => MajorRecord_Registration.Instance;
+        public static ILoquiRegistration StaticRegistration => MajorRecord_Registration.Instance;
+        [DebuggerStepThrough]
+        protected virtual object CommonInstance() => MajorRecordCommon.Instance;
+        [DebuggerStepThrough]
+        protected virtual object CommonSetterTranslationInstance() => MajorRecordSetterTranslationCommon.Instance;
+        [DebuggerStepThrough]
+        object IMajorRecordGetter.CommonInstance() => this.CommonInstance();
+        [DebuggerStepThrough]
+        object? IMajorRecordGetter.CommonSetterInstance() => null;
+        [DebuggerStepThrough]
+        object IMajorRecordGetter.CommonSetterTranslationInstance() => this.CommonSetterTranslationInstance();
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        public virtual IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => MajorRecordCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        public virtual IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(AssetLinkQuery queryCategories, IAssetLinkCache? linkCache, Type? assetType) => MajorRecordCommon.Instance.EnumerateAssetLinks(this, queryCategories, linkCache, assetType);
+        [DebuggerStepThrough]
+        IEnumerable<IMajorRecordGetter> IMajorRecordGetterEnumerable.EnumerateMajorRecords() => this.EnumerateMajorRecords();
+        [DebuggerStepThrough]
+        IEnumerable<TMajor> IMajorRecordGetterEnumerable.EnumerateMajorRecords<TMajor>(bool throwIfUnknown) => this.EnumerateMajorRecords<TMajor>(throwIfUnknown: throwIfUnknown);
+        [DebuggerStepThrough]
+        IEnumerable<IMajorRecordGetter> IMajorRecordGetterEnumerable.EnumerateMajorRecords(Type type, bool throwIfUnknown) => this.EnumerateMajorRecords(type: type, throwIfUnknown: throwIfUnknown);
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected virtual object BinaryWriteTranslator => MajorRecordBinaryWriteTranslation.Instance;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        object IBinaryItem.BinaryWriteTranslator => this.BinaryWriteTranslator;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((MajorRecordBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public Int32 MajorRecordFlagsRaw => BinaryPrimitives.ReadInt32LittleEndian(_structData.Slice(0x0, 0x4));
+        public FormKey FormKey => FormKeyBinaryTranslation.Instance.Parse(_structData.Span.Slice(0x4, 4), this._package.MetaData.MasterReferences, reference: false);
+        public UInt32 VersionControl => BinaryPrimitives.ReadUInt32LittleEndian(_structData.Slice(0x8, 0x4));
+        #region EditorID
+        private int? _EditorIDLocation;
+        public String? EditorID => _EditorIDLocation.HasValue ? BinaryStringUtility.ProcessWholeToZString(HeaderTranslation.ExtractSubrecordMemory(_recordData, _EditorIDLocation.Value, _package.MetaData.Constants), encoding: _package.MetaData.Encodings.NonTranslated) : default(string?);
+        #endregion
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected MajorRecordBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public virtual ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.EDID:
+                {
+                    _EditorIDLocation = (stream.Position - offset);
+                    return (int)MajorRecord_FieldIndex.EditorID;
+                }
+                default:
+                    if (_package.MetaData.ThrowOnUnknown)
+                    {
+                        throw new SubrecordException(
+                            subRecord: type,
+                            formKey: FormKey,
+                            majorRecordType: ((ILoquiObject)this).Registration.ClassType,
+                            modKey: _package.MetaData.ModKey,
+                            edid: EditorID,
+                            message: "Unexpected subrecord");
+                    }
+                    return default(int?);
+            }
+        }
+        #region To String
+
+        public virtual void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            MajorRecordMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<MajorRecord>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IMajorRecordGetter rhs) return false;
+            return ((MajorRecordCommon)((IMajorRecordGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IMajorRecordGetter? obj)
+        {
+            return ((MajorRecordCommon)((IMajorRecordGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((MajorRecordCommon)((IMajorRecordGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

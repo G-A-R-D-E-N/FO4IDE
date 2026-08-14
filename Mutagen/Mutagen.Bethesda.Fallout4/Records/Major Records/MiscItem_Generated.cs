@@ -1,0 +1,3443 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Fallout4.Internals;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Aspects;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Cache;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Strings;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Fallout4.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Class
+    public partial class MiscItem :
+        Fallout4MajorRecord,
+        IEquatable<IMiscItemGetter>,
+        ILoquiObjectSetter<MiscItem>,
+        IMiscItemInternal
+    {
+        #region Ctor
+        protected MiscItem()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region VirtualMachineAdapter
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private VirtualMachineAdapter? _VirtualMachineAdapter;
+
+        public VirtualMachineAdapter? VirtualMachineAdapter
+        {
+            get => _VirtualMachineAdapter;
+            set => _VirtualMachineAdapter = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IVirtualMachineAdapterGetter? IMiscItemGetter.VirtualMachineAdapter => this.VirtualMachineAdapter;
+        #region Aspects
+        IAVirtualMachineAdapterGetter? IHaveVirtualMachineAdapterGetter.VirtualMachineAdapter => this.VirtualMachineAdapter;
+        IAVirtualMachineAdapter? IHaveVirtualMachineAdapter.VirtualMachineAdapter => this.VirtualMachineAdapter;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IVirtualMachineAdapterGetter? IScriptedGetter.VirtualMachineAdapter => this.VirtualMachineAdapter;
+        #endregion
+        #endregion
+        #region ObjectBounds
+
+        public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter IMiscItemGetter.ObjectBounds => ObjectBounds;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ObjectBounds? IObjectBoundedOptional.ObjectBounds
+        {
+            get => this.ObjectBounds;
+            set => this.ObjectBounds = value ?? new ObjectBounds();
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter IObjectBoundedGetter.ObjectBounds => this.ObjectBounds;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter? IObjectBoundedOptionalGetter.ObjectBounds => this.ObjectBounds;
+        #endregion
+        #endregion
+        #region PreviewTransform
+        private readonly IFormLinkNullable<ITransformGetter> _PreviewTransform = new FormLinkNullable<ITransformGetter>();
+        public IFormLinkNullable<ITransformGetter> PreviewTransform
+        {
+            get => _PreviewTransform;
+            set => _PreviewTransform.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<ITransformGetter> IMiscItemGetter.PreviewTransform => this.PreviewTransform;
+        #endregion
+        #region Name
+
+        public TranslatedString? Name { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter? IMiscItemGetter.Name => this.Name;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequiredGetter.Name => this.Name?.String ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamedGetter.Name => this.Name?.String;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter? ITranslatedNamedGetter.Name => this.Name;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter ITranslatedNamedRequiredGetter.Name => this.Name ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamed.Name
+        {
+            get => this.Name?.String;
+            set => this.Name = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequired.Name
+        {
+            get => this.Name?.String ?? string.Empty;
+            set => this.Name = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        TranslatedString ITranslatedNamedRequired.Name
+        {
+            get => this.Name ?? string.Empty;
+            set => this.Name = value;
+        }
+        #endregion
+        #endregion
+        #region Model
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Model? _Model;
+
+        public Model? Model
+        {
+            get => _Model;
+            set => _Model = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IModelGetter? IMiscItemGetter.Model => this.Model;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IModelGetter? IModeledGetter.Model => this.Model;
+        #endregion
+        #endregion
+        #region Icons
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Icons? _Icons;
+
+        public Icons? Icons
+        {
+            get => _Icons;
+            set => _Icons = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IIconsGetter? IMiscItemGetter.Icons => this.Icons;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IIconsGetter? IHasIconsGetter.Icons => this.Icons;
+        #endregion
+        #endregion
+        #region Destructible
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Destructible? _Destructible;
+
+        public Destructible? Destructible
+        {
+            get => _Destructible;
+            set => _Destructible = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IDestructibleGetter? IMiscItemGetter.Destructible => this.Destructible;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IDestructibleGetter? IHasDestructibleGetter.Destructible => this.Destructible;
+        #endregion
+        #endregion
+        #region PickUpSound
+        private readonly IFormLinkNullable<ISoundDescriptorGetter> _PickUpSound = new FormLinkNullable<ISoundDescriptorGetter>();
+        public IFormLinkNullable<ISoundDescriptorGetter> PickUpSound
+        {
+            get => _PickUpSound;
+            set => _PickUpSound.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<ISoundDescriptorGetter> IMiscItemGetter.PickUpSound => this.PickUpSound;
+        #endregion
+        #region PutDownSound
+        private readonly IFormLinkNullable<ISoundDescriptorGetter> _PutDownSound = new FormLinkNullable<ISoundDescriptorGetter>();
+        public IFormLinkNullable<ISoundDescriptorGetter> PutDownSound
+        {
+            get => _PutDownSound;
+            set => _PutDownSound.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<ISoundDescriptorGetter> IMiscItemGetter.PutDownSound => this.PutDownSound;
+        #endregion
+        #region Keywords
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
+
+        public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
+        {
+            get => this._Keywords;
+            set => this._Keywords = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? IMiscItemGetter.Keywords => _Keywords;
+        #endregion
+
+        #region Aspects
+        IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? IKeywordedGetter<IKeywordGetter>.Keywords => this.Keywords;
+        IReadOnlyList<IFormLinkGetter<IKeywordCommonGetter>>? IKeywordedGetter.Keywords => this.Keywords;
+        #endregion
+        #endregion
+        #region FeaturedItemMessage
+        private readonly IFormLinkNullable<IMessageGetter> _FeaturedItemMessage = new FormLinkNullable<IMessageGetter>();
+        public IFormLinkNullable<IMessageGetter> FeaturedItemMessage
+        {
+            get => _FeaturedItemMessage;
+            set => _FeaturedItemMessage.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IMessageGetter> IMiscItemGetter.FeaturedItemMessage => this.FeaturedItemMessage;
+        #endregion
+        #region Value
+        public Int32 Value { get; set; } = default(Int32);
+        #endregion
+        #region Weight
+        public Single Weight { get; set; } = default(Single);
+        #endregion
+        #region Components
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<MiscItemComponent>? _Components;
+        public ExtendedList<MiscItemComponent>? Components
+        {
+            get => this._Components;
+            set => this._Components = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IMiscItemComponentGetter>? IMiscItemGetter.Components => _Components;
+        #endregion
+
+        #endregion
+        #region ComponentDisplayIndices
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<Byte>? _ComponentDisplayIndices;
+        public ExtendedList<Byte>? ComponentDisplayIndices
+        {
+            get => this._ComponentDisplayIndices;
+            set => this._ComponentDisplayIndices = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<Byte>? IMiscItemGetter.ComponentDisplayIndices => _ComponentDisplayIndices;
+        #endregion
+
+        #endregion
+
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            MiscItemMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public new class Mask<TItem> :
+            Fallout4MajorRecord.Mask<TItem>,
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            : base(initialValue)
+            {
+                this.VirtualMachineAdapter = new MaskItem<TItem, VirtualMachineAdapter.Mask<TItem>?>(initialValue, new VirtualMachineAdapter.Mask<TItem>(initialValue));
+                this.ObjectBounds = new MaskItem<TItem, ObjectBounds.Mask<TItem>?>(initialValue, new ObjectBounds.Mask<TItem>(initialValue));
+                this.PreviewTransform = initialValue;
+                this.Name = initialValue;
+                this.Model = new MaskItem<TItem, Model.Mask<TItem>?>(initialValue, new Model.Mask<TItem>(initialValue));
+                this.Icons = new MaskItem<TItem, Icons.Mask<TItem>?>(initialValue, new Icons.Mask<TItem>(initialValue));
+                this.Destructible = new MaskItem<TItem, Destructible.Mask<TItem>?>(initialValue, new Destructible.Mask<TItem>(initialValue));
+                this.PickUpSound = initialValue;
+                this.PutDownSound = initialValue;
+                this.Keywords = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(initialValue, []);
+                this.FeaturedItemMessage = initialValue;
+                this.Value = initialValue;
+                this.Weight = initialValue;
+                this.Components = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, MiscItemComponent.Mask<TItem>?>>?>(initialValue, []);
+                this.ComponentDisplayIndices = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(initialValue, []);
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID,
+                TItem FormVersion,
+                TItem Version2,
+                TItem Fallout4MajorRecordFlags,
+                TItem VirtualMachineAdapter,
+                TItem ObjectBounds,
+                TItem PreviewTransform,
+                TItem Name,
+                TItem Model,
+                TItem Icons,
+                TItem Destructible,
+                TItem PickUpSound,
+                TItem PutDownSound,
+                TItem Keywords,
+                TItem FeaturedItemMessage,
+                TItem Value,
+                TItem Weight,
+                TItem Components,
+                TItem ComponentDisplayIndices)
+            : base(
+                MajorRecordFlagsRaw: MajorRecordFlagsRaw,
+                FormKey: FormKey,
+                VersionControl: VersionControl,
+                EditorID: EditorID,
+                FormVersion: FormVersion,
+                Version2: Version2,
+                Fallout4MajorRecordFlags: Fallout4MajorRecordFlags)
+            {
+                this.VirtualMachineAdapter = new MaskItem<TItem, VirtualMachineAdapter.Mask<TItem>?>(VirtualMachineAdapter, new VirtualMachineAdapter.Mask<TItem>(VirtualMachineAdapter));
+                this.ObjectBounds = new MaskItem<TItem, ObjectBounds.Mask<TItem>?>(ObjectBounds, new ObjectBounds.Mask<TItem>(ObjectBounds));
+                this.PreviewTransform = PreviewTransform;
+                this.Name = Name;
+                this.Model = new MaskItem<TItem, Model.Mask<TItem>?>(Model, new Model.Mask<TItem>(Model));
+                this.Icons = new MaskItem<TItem, Icons.Mask<TItem>?>(Icons, new Icons.Mask<TItem>(Icons));
+                this.Destructible = new MaskItem<TItem, Destructible.Mask<TItem>?>(Destructible, new Destructible.Mask<TItem>(Destructible));
+                this.PickUpSound = PickUpSound;
+                this.PutDownSound = PutDownSound;
+                this.Keywords = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(Keywords, []);
+                this.FeaturedItemMessage = FeaturedItemMessage;
+                this.Value = Value;
+                this.Weight = Weight;
+                this.Components = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, MiscItemComponent.Mask<TItem>?>>?>(Components, []);
+                this.ComponentDisplayIndices = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(ComponentDisplayIndices, []);
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public MaskItem<TItem, VirtualMachineAdapter.Mask<TItem>?>? VirtualMachineAdapter { get; set; }
+            public MaskItem<TItem, ObjectBounds.Mask<TItem>?>? ObjectBounds { get; set; }
+            public TItem PreviewTransform;
+            public TItem Name;
+            public MaskItem<TItem, Model.Mask<TItem>?>? Model { get; set; }
+            public MaskItem<TItem, Icons.Mask<TItem>?>? Icons { get; set; }
+            public MaskItem<TItem, Destructible.Mask<TItem>?>? Destructible { get; set; }
+            public TItem PickUpSound;
+            public TItem PutDownSound;
+            public MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>? Keywords;
+            public TItem FeaturedItemMessage;
+            public TItem Value;
+            public TItem Weight;
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, MiscItemComponent.Mask<TItem>?>>?>? Components;
+            public MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>? ComponentDisplayIndices;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!base.Equals(rhs)) return false;
+                if (!object.Equals(this.VirtualMachineAdapter, rhs.VirtualMachineAdapter)) return false;
+                if (!object.Equals(this.ObjectBounds, rhs.ObjectBounds)) return false;
+                if (!object.Equals(this.PreviewTransform, rhs.PreviewTransform)) return false;
+                if (!object.Equals(this.Name, rhs.Name)) return false;
+                if (!object.Equals(this.Model, rhs.Model)) return false;
+                if (!object.Equals(this.Icons, rhs.Icons)) return false;
+                if (!object.Equals(this.Destructible, rhs.Destructible)) return false;
+                if (!object.Equals(this.PickUpSound, rhs.PickUpSound)) return false;
+                if (!object.Equals(this.PutDownSound, rhs.PutDownSound)) return false;
+                if (!object.Equals(this.Keywords, rhs.Keywords)) return false;
+                if (!object.Equals(this.FeaturedItemMessage, rhs.FeaturedItemMessage)) return false;
+                if (!object.Equals(this.Value, rhs.Value)) return false;
+                if (!object.Equals(this.Weight, rhs.Weight)) return false;
+                if (!object.Equals(this.Components, rhs.Components)) return false;
+                if (!object.Equals(this.ComponentDisplayIndices, rhs.ComponentDisplayIndices)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.VirtualMachineAdapter);
+                hash.Add(this.ObjectBounds);
+                hash.Add(this.PreviewTransform);
+                hash.Add(this.Name);
+                hash.Add(this.Model);
+                hash.Add(this.Icons);
+                hash.Add(this.Destructible);
+                hash.Add(this.PickUpSound);
+                hash.Add(this.PutDownSound);
+                hash.Add(this.Keywords);
+                hash.Add(this.FeaturedItemMessage);
+                hash.Add(this.Value);
+                hash.Add(this.Weight);
+                hash.Add(this.Components);
+                hash.Add(this.ComponentDisplayIndices);
+                hash.Add(base.GetHashCode());
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public override bool All(Func<TItem, bool> eval)
+            {
+                if (!base.All(eval)) return false;
+                if (VirtualMachineAdapter != null)
+                {
+                    if (!eval(this.VirtualMachineAdapter.Overall)) return false;
+                    if (this.VirtualMachineAdapter.Specific != null && !this.VirtualMachineAdapter.Specific.All(eval)) return false;
+                }
+                if (ObjectBounds != null)
+                {
+                    if (!eval(this.ObjectBounds.Overall)) return false;
+                    if (this.ObjectBounds.Specific != null && !this.ObjectBounds.Specific.All(eval)) return false;
+                }
+                if (!eval(this.PreviewTransform)) return false;
+                if (!eval(this.Name)) return false;
+                if (Model != null)
+                {
+                    if (!eval(this.Model.Overall)) return false;
+                    if (this.Model.Specific != null && !this.Model.Specific.All(eval)) return false;
+                }
+                if (Icons != null)
+                {
+                    if (!eval(this.Icons.Overall)) return false;
+                    if (this.Icons.Specific != null && !this.Icons.Specific.All(eval)) return false;
+                }
+                if (Destructible != null)
+                {
+                    if (!eval(this.Destructible.Overall)) return false;
+                    if (this.Destructible.Specific != null && !this.Destructible.Specific.All(eval)) return false;
+                }
+                if (!eval(this.PickUpSound)) return false;
+                if (!eval(this.PutDownSound)) return false;
+                if (this.Keywords != null)
+                {
+                    if (!eval(this.Keywords.Overall)) return false;
+                    if (this.Keywords.Specific != null)
+                    {
+                        foreach (var item in this.Keywords.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                if (!eval(this.FeaturedItemMessage)) return false;
+                if (!eval(this.Value)) return false;
+                if (!eval(this.Weight)) return false;
+                if (this.Components != null)
+                {
+                    if (!eval(this.Components.Overall)) return false;
+                    if (this.Components.Specific != null)
+                    {
+                        foreach (var item in this.Components.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (this.ComponentDisplayIndices != null)
+                {
+                    if (!eval(this.ComponentDisplayIndices.Overall)) return false;
+                    if (this.ComponentDisplayIndices.Specific != null)
+                    {
+                        foreach (var item in this.ComponentDisplayIndices.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public override bool Any(Func<TItem, bool> eval)
+            {
+                if (base.Any(eval)) return true;
+                if (VirtualMachineAdapter != null)
+                {
+                    if (eval(this.VirtualMachineAdapter.Overall)) return true;
+                    if (this.VirtualMachineAdapter.Specific != null && this.VirtualMachineAdapter.Specific.Any(eval)) return true;
+                }
+                if (ObjectBounds != null)
+                {
+                    if (eval(this.ObjectBounds.Overall)) return true;
+                    if (this.ObjectBounds.Specific != null && this.ObjectBounds.Specific.Any(eval)) return true;
+                }
+                if (eval(this.PreviewTransform)) return true;
+                if (eval(this.Name)) return true;
+                if (Model != null)
+                {
+                    if (eval(this.Model.Overall)) return true;
+                    if (this.Model.Specific != null && this.Model.Specific.Any(eval)) return true;
+                }
+                if (Icons != null)
+                {
+                    if (eval(this.Icons.Overall)) return true;
+                    if (this.Icons.Specific != null && this.Icons.Specific.Any(eval)) return true;
+                }
+                if (Destructible != null)
+                {
+                    if (eval(this.Destructible.Overall)) return true;
+                    if (this.Destructible.Specific != null && this.Destructible.Specific.Any(eval)) return true;
+                }
+                if (eval(this.PickUpSound)) return true;
+                if (eval(this.PutDownSound)) return true;
+                if (this.Keywords != null)
+                {
+                    if (eval(this.Keywords.Overall)) return true;
+                    if (this.Keywords.Specific != null)
+                    {
+                        foreach (var item in this.Keywords.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                if (eval(this.FeaturedItemMessage)) return true;
+                if (eval(this.Value)) return true;
+                if (eval(this.Weight)) return true;
+                if (this.Components != null)
+                {
+                    if (eval(this.Components.Overall)) return true;
+                    if (this.Components.Specific != null)
+                    {
+                        foreach (var item in this.Components.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (this.ComponentDisplayIndices != null)
+                {
+                    if (eval(this.ComponentDisplayIndices.Overall)) return true;
+                    if (this.ComponentDisplayIndices.Specific != null)
+                    {
+                        foreach (var item in this.ComponentDisplayIndices.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public new Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new MiscItem.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                base.Translate_InternalFill(obj, eval);
+                obj.VirtualMachineAdapter = this.VirtualMachineAdapter == null ? null : new MaskItem<R, VirtualMachineAdapter.Mask<R>?>(eval(this.VirtualMachineAdapter.Overall), this.VirtualMachineAdapter.Specific?.Translate(eval));
+                obj.ObjectBounds = this.ObjectBounds == null ? null : new MaskItem<R, ObjectBounds.Mask<R>?>(eval(this.ObjectBounds.Overall), this.ObjectBounds.Specific?.Translate(eval));
+                obj.PreviewTransform = eval(this.PreviewTransform);
+                obj.Name = eval(this.Name);
+                obj.Model = this.Model == null ? null : new MaskItem<R, Model.Mask<R>?>(eval(this.Model.Overall), this.Model.Specific?.Translate(eval));
+                obj.Icons = this.Icons == null ? null : new MaskItem<R, Icons.Mask<R>?>(eval(this.Icons.Overall), this.Icons.Specific?.Translate(eval));
+                obj.Destructible = this.Destructible == null ? null : new MaskItem<R, Destructible.Mask<R>?>(eval(this.Destructible.Overall), this.Destructible.Specific?.Translate(eval));
+                obj.PickUpSound = eval(this.PickUpSound);
+                obj.PutDownSound = eval(this.PutDownSound);
+                if (Keywords != null)
+                {
+                    obj.Keywords = new MaskItem<R, IEnumerable<(int Index, R Value)>?>(eval(this.Keywords.Overall), []);
+                    if (Keywords.Specific != null)
+                    {
+                        var l = new List<(int Index, R Item)>();
+                        obj.Keywords.Specific = l;
+                        foreach (var item in Keywords.Specific)
+                        {
+                            R mask = eval(item.Value);
+                            l.Add((item.Index, mask));
+                        }
+                    }
+                }
+                obj.FeaturedItemMessage = eval(this.FeaturedItemMessage);
+                obj.Value = eval(this.Value);
+                obj.Weight = eval(this.Weight);
+                if (Components != null)
+                {
+                    obj.Components = new MaskItem<R, IEnumerable<MaskItemIndexed<R, MiscItemComponent.Mask<R>?>>?>(eval(this.Components.Overall), []);
+                    if (Components.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, MiscItemComponent.Mask<R>?>>();
+                        obj.Components.Specific = l;
+                        foreach (var item in Components.Specific)
+                        {
+                            MaskItemIndexed<R, MiscItemComponent.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, MiscItemComponent.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+                if (ComponentDisplayIndices != null)
+                {
+                    obj.ComponentDisplayIndices = new MaskItem<R, IEnumerable<(int Index, R Value)>?>(eval(this.ComponentDisplayIndices.Overall), []);
+                    if (ComponentDisplayIndices.Specific != null)
+                    {
+                        var l = new List<(int Index, R Item)>();
+                        obj.ComponentDisplayIndices.Specific = l;
+                        foreach (var item in ComponentDisplayIndices.Specific)
+                        {
+                            R mask = eval(item.Value);
+                            l.Add((item.Index, mask));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(MiscItem.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, MiscItem.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(MiscItem.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.VirtualMachineAdapter?.Overall ?? true)
+                    {
+                        VirtualMachineAdapter?.Print(sb);
+                    }
+                    if (printMask?.ObjectBounds?.Overall ?? true)
+                    {
+                        ObjectBounds?.Print(sb);
+                    }
+                    if (printMask?.PreviewTransform ?? true)
+                    {
+                        sb.AppendItem(PreviewTransform, "PreviewTransform");
+                    }
+                    if (printMask?.Name ?? true)
+                    {
+                        sb.AppendItem(Name, "Name");
+                    }
+                    if (printMask?.Model?.Overall ?? true)
+                    {
+                        Model?.Print(sb);
+                    }
+                    if (printMask?.Icons?.Overall ?? true)
+                    {
+                        Icons?.Print(sb);
+                    }
+                    if (printMask?.Destructible?.Overall ?? true)
+                    {
+                        Destructible?.Print(sb);
+                    }
+                    if (printMask?.PickUpSound ?? true)
+                    {
+                        sb.AppendItem(PickUpSound, "PickUpSound");
+                    }
+                    if (printMask?.PutDownSound ?? true)
+                    {
+                        sb.AppendItem(PutDownSound, "PutDownSound");
+                    }
+                    if ((printMask?.Keywords?.Overall ?? true)
+                        && Keywords is {} KeywordsItem)
+                    {
+                        sb.AppendLine("Keywords =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(KeywordsItem.Overall);
+                            if (KeywordsItem.Specific != null)
+                            {
+                                foreach (var subItem in KeywordsItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        {
+                                            sb.AppendItem(subItem);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (printMask?.FeaturedItemMessage ?? true)
+                    {
+                        sb.AppendItem(FeaturedItemMessage, "FeaturedItemMessage");
+                    }
+                    if (printMask?.Value ?? true)
+                    {
+                        sb.AppendItem(Value, "Value");
+                    }
+                    if (printMask?.Weight ?? true)
+                    {
+                        sb.AppendItem(Weight, "Weight");
+                    }
+                    if ((printMask?.Components?.Overall ?? true)
+                        && Components is {} ComponentsItem)
+                    {
+                        sb.AppendLine("Components =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(ComponentsItem.Overall);
+                            if (ComponentsItem.Specific != null)
+                            {
+                                foreach (var subItem in ComponentsItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if ((printMask?.ComponentDisplayIndices?.Overall ?? true)
+                        && ComponentDisplayIndices is {} ComponentDisplayIndicesItem)
+                    {
+                        sb.AppendLine("ComponentDisplayIndices =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(ComponentDisplayIndicesItem.Overall);
+                            if (ComponentDisplayIndicesItem.Specific != null)
+                            {
+                                foreach (var subItem in ComponentDisplayIndicesItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        {
+                                            sb.AppendItem(subItem);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public new class ErrorMask :
+            Fallout4MajorRecord.ErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public MaskItem<Exception?, VirtualMachineAdapter.ErrorMask?>? VirtualMachineAdapter;
+            public MaskItem<Exception?, ObjectBounds.ErrorMask?>? ObjectBounds;
+            public Exception? PreviewTransform;
+            public Exception? Name;
+            public MaskItem<Exception?, Model.ErrorMask?>? Model;
+            public MaskItem<Exception?, Icons.ErrorMask?>? Icons;
+            public MaskItem<Exception?, Destructible.ErrorMask?>? Destructible;
+            public Exception? PickUpSound;
+            public Exception? PutDownSound;
+            public MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>? Keywords;
+            public Exception? FeaturedItemMessage;
+            public Exception? Value;
+            public Exception? Weight;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MiscItemComponent.ErrorMask?>>?>? Components;
+            public MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>? ComponentDisplayIndices;
+            #endregion
+
+            #region IErrorMask
+            public override object? GetNthMask(int index)
+            {
+                MiscItem_FieldIndex enu = (MiscItem_FieldIndex)index;
+                switch (enu)
+                {
+                    case MiscItem_FieldIndex.VirtualMachineAdapter:
+                        return VirtualMachineAdapter;
+                    case MiscItem_FieldIndex.ObjectBounds:
+                        return ObjectBounds;
+                    case MiscItem_FieldIndex.PreviewTransform:
+                        return PreviewTransform;
+                    case MiscItem_FieldIndex.Name:
+                        return Name;
+                    case MiscItem_FieldIndex.Model:
+                        return Model;
+                    case MiscItem_FieldIndex.Icons:
+                        return Icons;
+                    case MiscItem_FieldIndex.Destructible:
+                        return Destructible;
+                    case MiscItem_FieldIndex.PickUpSound:
+                        return PickUpSound;
+                    case MiscItem_FieldIndex.PutDownSound:
+                        return PutDownSound;
+                    case MiscItem_FieldIndex.Keywords:
+                        return Keywords;
+                    case MiscItem_FieldIndex.FeaturedItemMessage:
+                        return FeaturedItemMessage;
+                    case MiscItem_FieldIndex.Value:
+                        return Value;
+                    case MiscItem_FieldIndex.Weight:
+                        return Weight;
+                    case MiscItem_FieldIndex.Components:
+                        return Components;
+                    case MiscItem_FieldIndex.ComponentDisplayIndices:
+                        return ComponentDisplayIndices;
+                    default:
+                        return base.GetNthMask(index);
+                }
+            }
+
+            public override void SetNthException(int index, Exception ex)
+            {
+                MiscItem_FieldIndex enu = (MiscItem_FieldIndex)index;
+                switch (enu)
+                {
+                    case MiscItem_FieldIndex.VirtualMachineAdapter:
+                        this.VirtualMachineAdapter = new MaskItem<Exception?, VirtualMachineAdapter.ErrorMask?>(ex, null);
+                        break;
+                    case MiscItem_FieldIndex.ObjectBounds:
+                        this.ObjectBounds = new MaskItem<Exception?, ObjectBounds.ErrorMask?>(ex, null);
+                        break;
+                    case MiscItem_FieldIndex.PreviewTransform:
+                        this.PreviewTransform = ex;
+                        break;
+                    case MiscItem_FieldIndex.Name:
+                        this.Name = ex;
+                        break;
+                    case MiscItem_FieldIndex.Model:
+                        this.Model = new MaskItem<Exception?, Model.ErrorMask?>(ex, null);
+                        break;
+                    case MiscItem_FieldIndex.Icons:
+                        this.Icons = new MaskItem<Exception?, Icons.ErrorMask?>(ex, null);
+                        break;
+                    case MiscItem_FieldIndex.Destructible:
+                        this.Destructible = new MaskItem<Exception?, Destructible.ErrorMask?>(ex, null);
+                        break;
+                    case MiscItem_FieldIndex.PickUpSound:
+                        this.PickUpSound = ex;
+                        break;
+                    case MiscItem_FieldIndex.PutDownSound:
+                        this.PutDownSound = ex;
+                        break;
+                    case MiscItem_FieldIndex.Keywords:
+                        this.Keywords = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(ex, null);
+                        break;
+                    case MiscItem_FieldIndex.FeaturedItemMessage:
+                        this.FeaturedItemMessage = ex;
+                        break;
+                    case MiscItem_FieldIndex.Value:
+                        this.Value = ex;
+                        break;
+                    case MiscItem_FieldIndex.Weight:
+                        this.Weight = ex;
+                        break;
+                    case MiscItem_FieldIndex.Components:
+                        this.Components = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MiscItemComponent.ErrorMask?>>?>(ex, null);
+                        break;
+                    case MiscItem_FieldIndex.ComponentDisplayIndices:
+                        this.ComponentDisplayIndices = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(ex, null);
+                        break;
+                    default:
+                        base.SetNthException(index, ex);
+                        break;
+                }
+            }
+
+            public override void SetNthMask(int index, object obj)
+            {
+                MiscItem_FieldIndex enu = (MiscItem_FieldIndex)index;
+                switch (enu)
+                {
+                    case MiscItem_FieldIndex.VirtualMachineAdapter:
+                        this.VirtualMachineAdapter = (MaskItem<Exception?, VirtualMachineAdapter.ErrorMask?>?)obj;
+                        break;
+                    case MiscItem_FieldIndex.ObjectBounds:
+                        this.ObjectBounds = (MaskItem<Exception?, ObjectBounds.ErrorMask?>?)obj;
+                        break;
+                    case MiscItem_FieldIndex.PreviewTransform:
+                        this.PreviewTransform = (Exception?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Name:
+                        this.Name = (Exception?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Model:
+                        this.Model = (MaskItem<Exception?, Model.ErrorMask?>?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Icons:
+                        this.Icons = (MaskItem<Exception?, Icons.ErrorMask?>?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Destructible:
+                        this.Destructible = (MaskItem<Exception?, Destructible.ErrorMask?>?)obj;
+                        break;
+                    case MiscItem_FieldIndex.PickUpSound:
+                        this.PickUpSound = (Exception?)obj;
+                        break;
+                    case MiscItem_FieldIndex.PutDownSound:
+                        this.PutDownSound = (Exception?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Keywords:
+                        this.Keywords = (MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>)obj;
+                        break;
+                    case MiscItem_FieldIndex.FeaturedItemMessage:
+                        this.FeaturedItemMessage = (Exception?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Value:
+                        this.Value = (Exception?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Weight:
+                        this.Weight = (Exception?)obj;
+                        break;
+                    case MiscItem_FieldIndex.Components:
+                        this.Components = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MiscItemComponent.ErrorMask?>>?>)obj;
+                        break;
+                    case MiscItem_FieldIndex.ComponentDisplayIndices:
+                        this.ComponentDisplayIndices = (MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>)obj;
+                        break;
+                    default:
+                        base.SetNthMask(index, obj);
+                        break;
+                }
+            }
+
+            public override bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (VirtualMachineAdapter != null) return true;
+                if (ObjectBounds != null) return true;
+                if (PreviewTransform != null) return true;
+                if (Name != null) return true;
+                if (Model != null) return true;
+                if (Icons != null) return true;
+                if (Destructible != null) return true;
+                if (PickUpSound != null) return true;
+                if (PutDownSound != null) return true;
+                if (Keywords != null) return true;
+                if (FeaturedItemMessage != null) return true;
+                if (Value != null) return true;
+                if (Weight != null) return true;
+                if (Components != null) return true;
+                if (ComponentDisplayIndices != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public override void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected override void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                base.PrintFillInternal(sb);
+                VirtualMachineAdapter?.Print(sb);
+                ObjectBounds?.Print(sb);
+                {
+                    sb.AppendItem(PreviewTransform, "PreviewTransform");
+                }
+                {
+                    sb.AppendItem(Name, "Name");
+                }
+                Model?.Print(sb);
+                Icons?.Print(sb);
+                Destructible?.Print(sb);
+                {
+                    sb.AppendItem(PickUpSound, "PickUpSound");
+                }
+                {
+                    sb.AppendItem(PutDownSound, "PutDownSound");
+                }
+                if (Keywords is {} KeywordsItem)
+                {
+                    sb.AppendLine("Keywords =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(KeywordsItem.Overall);
+                        if (KeywordsItem.Specific != null)
+                        {
+                            foreach (var subItem in KeywordsItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    {
+                                        sb.AppendItem(subItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                {
+                    sb.AppendItem(FeaturedItemMessage, "FeaturedItemMessage");
+                }
+                {
+                    sb.AppendItem(Value, "Value");
+                }
+                {
+                    sb.AppendItem(Weight, "Weight");
+                }
+                if (Components is {} ComponentsItem)
+                {
+                    sb.AppendLine("Components =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(ComponentsItem.Overall);
+                        if (ComponentsItem.Specific != null)
+                        {
+                            foreach (var subItem in ComponentsItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (ComponentDisplayIndices is {} ComponentDisplayIndicesItem)
+                {
+                    sb.AppendLine("ComponentDisplayIndices =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(ComponentDisplayIndicesItem.Overall);
+                        if (ComponentDisplayIndicesItem.Specific != null)
+                        {
+                            foreach (var subItem in ComponentDisplayIndicesItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    {
+                                        sb.AppendItem(subItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.VirtualMachineAdapter = this.VirtualMachineAdapter.Combine(rhs.VirtualMachineAdapter, (l, r) => l.Combine(r));
+                ret.ObjectBounds = this.ObjectBounds.Combine(rhs.ObjectBounds, (l, r) => l.Combine(r));
+                ret.PreviewTransform = this.PreviewTransform.Combine(rhs.PreviewTransform);
+                ret.Name = this.Name.Combine(rhs.Name);
+                ret.Model = this.Model.Combine(rhs.Model, (l, r) => l.Combine(r));
+                ret.Icons = this.Icons.Combine(rhs.Icons, (l, r) => l.Combine(r));
+                ret.Destructible = this.Destructible.Combine(rhs.Destructible, (l, r) => l.Combine(r));
+                ret.PickUpSound = this.PickUpSound.Combine(rhs.PickUpSound);
+                ret.PutDownSound = this.PutDownSound.Combine(rhs.PutDownSound);
+                ret.Keywords = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(Noggog.ExceptionExt.Combine(this.Keywords?.Overall, rhs.Keywords?.Overall), Noggog.ExceptionExt.Combine(this.Keywords?.Specific, rhs.Keywords?.Specific));
+                ret.FeaturedItemMessage = this.FeaturedItemMessage.Combine(rhs.FeaturedItemMessage);
+                ret.Value = this.Value.Combine(rhs.Value);
+                ret.Weight = this.Weight.Combine(rhs.Weight);
+                ret.Components = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, MiscItemComponent.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Components?.Overall, rhs.Components?.Overall), Noggog.ExceptionExt.Combine(this.Components?.Specific, rhs.Components?.Specific));
+                ret.ComponentDisplayIndices = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(Noggog.ExceptionExt.Combine(this.ComponentDisplayIndices?.Overall, rhs.ComponentDisplayIndices?.Overall), Noggog.ExceptionExt.Combine(this.ComponentDisplayIndices?.Specific, rhs.ComponentDisplayIndices?.Specific));
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static new ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public new class TranslationMask :
+            Fallout4MajorRecord.TranslationMask,
+            ITranslationMask
+        {
+            #region Members
+            public VirtualMachineAdapter.TranslationMask? VirtualMachineAdapter;
+            public ObjectBounds.TranslationMask? ObjectBounds;
+            public bool PreviewTransform;
+            public bool Name;
+            public Model.TranslationMask? Model;
+            public Icons.TranslationMask? Icons;
+            public Destructible.TranslationMask? Destructible;
+            public bool PickUpSound;
+            public bool PutDownSound;
+            public bool Keywords;
+            public bool FeaturedItemMessage;
+            public bool Value;
+            public bool Weight;
+            public MiscItemComponent.TranslationMask? Components;
+            public bool ComponentDisplayIndices;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+                : base(defaultOn, onOverall)
+            {
+                this.PreviewTransform = defaultOn;
+                this.Name = defaultOn;
+                this.PickUpSound = defaultOn;
+                this.PutDownSound = defaultOn;
+                this.Keywords = defaultOn;
+                this.FeaturedItemMessage = defaultOn;
+                this.Value = defaultOn;
+                this.Weight = defaultOn;
+                this.ComponentDisplayIndices = defaultOn;
+            }
+
+            #endregion
+
+            protected override void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                base.GetCrystal(ret);
+                ret.Add((VirtualMachineAdapter != null ? VirtualMachineAdapter.OnOverall : DefaultOn, VirtualMachineAdapter?.GetCrystal()));
+                ret.Add((ObjectBounds != null ? ObjectBounds.OnOverall : DefaultOn, ObjectBounds?.GetCrystal()));
+                ret.Add((PreviewTransform, null));
+                ret.Add((Name, null));
+                ret.Add((Model != null ? Model.OnOverall : DefaultOn, Model?.GetCrystal()));
+                ret.Add((Icons != null ? Icons.OnOverall : DefaultOn, Icons?.GetCrystal()));
+                ret.Add((Destructible != null ? Destructible.OnOverall : DefaultOn, Destructible?.GetCrystal()));
+                ret.Add((PickUpSound, null));
+                ret.Add((PutDownSound, null));
+                ret.Add((Keywords, null));
+                ret.Add((FeaturedItemMessage, null));
+                ret.Add((Value, null));
+                ret.Add((Weight, null));
+                ret.Add((Components == null ? DefaultOn : !Components.GetCrystal().CopyNothing, Components?.GetCrystal()));
+                ret.Add((ComponentDisplayIndices, null));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public static readonly RecordType GrupRecordType = MiscItem_Registration.TriggeringRecordType;
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => MiscItemCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        public override void RemapLinks(IReadOnlyDictionary<FormKey, FormKey> mapping) => MiscItemSetterCommon.Instance.RemapLinks(this, mapping);
+        public MiscItem(
+            FormKey formKey,
+            Fallout4Release gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease.ToGameRelease()).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        private MiscItem(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        internal MiscItem(
+            FormKey formKey,
+            ushort formVersion)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = formVersion;
+            CustomCtor();
+        }
+
+        public MiscItem(IFallout4Mod mod)
+            : this(
+                mod.GetNextFormKey(),
+                mod.Fallout4Release)
+        {
+        }
+
+        public MiscItem(IFallout4Mod mod, string editorID)
+            : this(
+                mod.GetNextFormKey(editorID),
+                mod.Fallout4Release)
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<MiscItem>.ToString(this);
+        }
+
+        protected override Type LinkType => typeof(IMiscItem);
+
+        public MajorFlag MajorFlags
+        {
+            get => (MajorFlag)this.MajorRecordFlagsRaw;
+            set => this.MajorRecordFlagsRaw = (int)value;
+        }
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IMiscItemGetter rhs) return false;
+            return ((MiscItemCommon)((IMiscItemGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IMiscItemGetter? obj)
+        {
+            return ((MiscItemCommon)((IMiscItemGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((MiscItemCommon)((IMiscItemGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => MiscItemBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((MiscItemBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #region Binary Create
+        public new static MiscItem CreateFromBinary(
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            var ret = new MiscItem();
+            ((MiscItemSetterCommon)((IMiscItemGetter)ret).CommonSetterInstance()!).CopyInFromBinary(
+                item: ret,
+                frame: frame,
+                translationParams: translationParams);
+            return ret;
+        }
+
+        #endregion
+
+        public static bool TryCreateFromBinary(
+            MutagenFrame frame,
+            out MiscItem item,
+            TypedParseParams translationParams = default)
+        {
+            var startPos = frame.Position;
+            item = CreateFromBinary(
+                frame: frame,
+                translationParams: translationParams);
+            return startPos != frame.Position;
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((MiscItemSetterCommon)((IMiscItemGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static new MiscItem GetNew()
+        {
+            return new MiscItem();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface IMiscItem :
+        IConstructible,
+        IConstructibleObjectTarget,
+        IExplodeSpawn,
+        IFallout4MajorRecordInternal,
+        IFormLinkContainer,
+        IHarvestTarget,
+        IHasDestructible,
+        IHasIcons,
+        IHaveVirtualMachineAdapter,
+        IItem,
+        IKeyworded<IKeywordGetter>,
+        ILoquiObjectSetter<IMiscItemInternal>,
+        IMiscItemGetter,
+        IModeled,
+        INamed,
+        INamedRequired,
+        IObjectBounded,
+        IObjectId,
+        IPlaceableObject,
+        IReferenceableObject,
+        IScripted,
+        IStaticTarget,
+        ITranslatedNamed,
+        ITranslatedNamedRequired
+    {
+
+        new VirtualMachineAdapter? VirtualMachineAdapter { get; set; }
+
+        new ObjectBounds ObjectBounds { get; set; }
+        new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
+
+        new TranslatedString? Name { get; set; }
+
+        new Model? Model { get; set; }
+
+        new Icons? Icons { get; set; }
+
+        new Destructible? Destructible { get; set; }
+        new IFormLinkNullable<ISoundDescriptorGetter> PickUpSound { get; set; }
+        new IFormLinkNullable<ISoundDescriptorGetter> PutDownSound { get; set; }
+
+        new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
+        new IFormLinkNullable<IMessageGetter> FeaturedItemMessage { get; set; }
+        new Int32 Value { get; set; }
+        new Single Weight { get; set; }
+        new ExtendedList<MiscItemComponent>? Components { get; set; }
+        new ExtendedList<Byte>? ComponentDisplayIndices { get; set; }
+        #region Mutagen
+        new MiscItem.MajorFlag MajorFlags { get; set; }
+        #endregion
+
+    }
+
+    public partial interface IMiscItemInternal :
+        IFallout4MajorRecordInternal,
+        IMiscItem,
+        IMiscItemGetter
+    {
+    }
+
+    [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.MISC)]
+    public partial interface IMiscItemGetter :
+        IFallout4MajorRecordGetter,
+        IBinaryItem,
+        IConstructibleGetter,
+        IConstructibleObjectTargetGetter,
+        IExplodeSpawnGetter,
+        IFormLinkContainerGetter,
+        IHarvestTargetGetter,
+        IHasDestructibleGetter,
+        IHasIconsGetter,
+        IHaveVirtualMachineAdapterGetter,
+        IItemGetter,
+        IKeywordedGetter<IKeywordGetter>,
+        ILoquiObject<IMiscItemGetter>,
+        IMapsToGetter<IMiscItemGetter>,
+        IModeledGetter,
+        INamedGetter,
+        INamedRequiredGetter,
+        IObjectBoundedGetter,
+        IObjectIdGetter,
+        IPlaceableObjectGetter,
+        IReferenceableObjectGetter,
+        IScriptedGetter,
+        IStaticTargetGetter,
+        ITranslatedNamedGetter,
+        ITranslatedNamedRequiredGetter
+    {
+        static new ILoquiRegistration StaticRegistration => MiscItem_Registration.Instance;
+        #region VirtualMachineAdapter
+
+        IVirtualMachineAdapterGetter? VirtualMachineAdapter { get; }
+        #endregion
+        #region ObjectBounds
+
+        IObjectBoundsGetter ObjectBounds { get; }
+        #endregion
+        IFormLinkNullableGetter<ITransformGetter> PreviewTransform { get; }
+        #region Name
+
+        ITranslatedStringGetter? Name { get; }
+        #endregion
+        #region Model
+
+        IModelGetter? Model { get; }
+        #endregion
+        #region Icons
+
+        IIconsGetter? Icons { get; }
+        #endregion
+        #region Destructible
+
+        IDestructibleGetter? Destructible { get; }
+        #endregion
+        IFormLinkNullableGetter<ISoundDescriptorGetter> PickUpSound { get; }
+        IFormLinkNullableGetter<ISoundDescriptorGetter> PutDownSound { get; }
+        #region Keywords
+
+        IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
+        #endregion
+        IFormLinkNullableGetter<IMessageGetter> FeaturedItemMessage { get; }
+        Int32 Value { get; }
+        Single Weight { get; }
+        IReadOnlyList<IMiscItemComponentGetter>? Components { get; }
+        IReadOnlyList<Byte>? ComponentDisplayIndices { get; }
+
+        #region Mutagen
+        MiscItem.MajorFlag MajorFlags { get; }
+        #endregion
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class MiscItemMixIn
+    {
+        public static void Clear(this IMiscItemInternal item)
+        {
+            ((MiscItemSetterCommon)((IMiscItemGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static MiscItem.Mask<bool> GetEqualsMask(
+            this IMiscItemGetter item,
+            IMiscItemGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this IMiscItemGetter item,
+            string? name = null,
+            MiscItem.Mask<bool>? printMask = null)
+        {
+            return ((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this IMiscItemGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            MiscItem.Mask<bool>? printMask = null)
+        {
+            ((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this IMiscItemGetter item,
+            IMiscItemGetter rhs,
+            MiscItem.TranslationMask? equalsMask = null)
+        {
+            return ((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this IMiscItemInternal lhs,
+            IMiscItemGetter rhs,
+            out MiscItem.ErrorMask errorMask,
+            MiscItem.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((MiscItemSetterTranslationCommon)((IMiscItemGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = MiscItem.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this IMiscItemInternal lhs,
+            IMiscItemGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((MiscItemSetterTranslationCommon)((IMiscItemGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static MiscItem DeepCopy(
+            this IMiscItemGetter item,
+            MiscItem.TranslationMask? copyMask = null)
+        {
+            return ((MiscItemSetterTranslationCommon)((IMiscItemGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static MiscItem DeepCopy(
+            this IMiscItemGetter item,
+            out MiscItem.ErrorMask errorMask,
+            MiscItem.TranslationMask? copyMask = null)
+        {
+            return ((MiscItemSetterTranslationCommon)((IMiscItemGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static MiscItem DeepCopy(
+            this IMiscItemGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((MiscItemSetterTranslationCommon)((IMiscItemGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        public static MiscItem Duplicate(
+            this IMiscItemGetter item,
+            FormKey formKey,
+            MiscItem.TranslationMask? copyMask = null)
+        {
+            return ((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static MiscItem Duplicate(
+            this IMiscItemGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this IMiscItemInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((MiscItemSetterCommon)((IMiscItemGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Field Index
+    internal enum MiscItem_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+        FormVersion = 4,
+        Version2 = 5,
+        Fallout4MajorRecordFlags = 6,
+        VirtualMachineAdapter = 7,
+        ObjectBounds = 8,
+        PreviewTransform = 9,
+        Name = 10,
+        Model = 11,
+        Icons = 12,
+        Destructible = 13,
+        PickUpSound = 14,
+        PutDownSound = 15,
+        Keywords = 16,
+        FeaturedItemMessage = 17,
+        Value = 18,
+        Weight = 19,
+        Components = 20,
+        ComponentDisplayIndices = 21,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class MiscItem_Registration : ILoquiRegistration
+    {
+        public static readonly MiscItem_Registration Instance = new MiscItem_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Fallout4.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 15;
+
+        public const ushort FieldCount = 22;
+
+        public static readonly Type MaskType = typeof(MiscItem.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(MiscItem.ErrorMask);
+
+        public static readonly Type ClassType = typeof(MiscItem);
+
+        public static readonly Type GetterType = typeof(IMiscItemGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(IMiscItem);
+
+        public static readonly Type? InternalSetterType = typeof(IMiscItemInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Fallout4.MiscItem";
+
+        public const string Name = "MiscItem";
+
+        public const string Namespace = "Mutagen.Bethesda.Fallout4";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly RecordType TriggeringRecordType = RecordTypes.MISC;
+        public static RecordTriggerSpecs TriggerSpecs => _recordSpecs.Value;
+        private static readonly Lazy<RecordTriggerSpecs> _recordSpecs = new Lazy<RecordTriggerSpecs>(() =>
+        {
+            var triggers = RecordCollection.Factory(RecordTypes.MISC);
+            var all = RecordCollection.Factory(
+                RecordTypes.MISC,
+                RecordTypes.VMAD,
+                RecordTypes.XXXX,
+                RecordTypes.OBND,
+                RecordTypes.PTRN,
+                RecordTypes.FULL,
+                RecordTypes.MODL,
+                RecordTypes.MODC,
+                RecordTypes.MODT,
+                RecordTypes.MODS,
+                RecordTypes.ICON,
+                RecordTypes.MICO,
+                RecordTypes.DEST,
+                RecordTypes.DAMC,
+                RecordTypes.DSTD,
+                RecordTypes.YNAM,
+                RecordTypes.ZNAM,
+                RecordTypes.KWDA,
+                RecordTypes.KSIZ,
+                RecordTypes.FIMD,
+                RecordTypes.DATA,
+                RecordTypes.CVPA,
+                RecordTypes.CDIX);
+            return new RecordTriggerSpecs(
+                allRecordTypes: all,
+                triggeringRecordTypes: triggers);
+        });
+        public static readonly Type BinaryWriteTranslation = typeof(MiscItemBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class MiscItemSetterCommon : Fallout4MajorRecordSetterCommon
+    {
+        public new static readonly MiscItemSetterCommon Instance = new MiscItemSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(IMiscItemInternal item)
+        {
+            ClearPartial();
+            item.VirtualMachineAdapter = null;
+            item.ObjectBounds.Clear();
+            item.PreviewTransform.Clear();
+            item.Name = default;
+            item.Model = null;
+            item.Icons = null;
+            item.Destructible = null;
+            item.PickUpSound.Clear();
+            item.PutDownSound.Clear();
+            item.Keywords = null;
+            item.FeaturedItemMessage.Clear();
+            item.Value = default(Int32);
+            item.Weight = default(Single);
+            item.Components = null;
+            item.ComponentDisplayIndices = null;
+            base.Clear(item);
+        }
+
+        public override void Clear(IFallout4MajorRecordInternal item)
+        {
+            Clear(item: (IMiscItemInternal)item);
+        }
+
+        public override void Clear(IMajorRecordInternal item)
+        {
+            Clear(item: (IMiscItemInternal)item);
+        }
+
+        #region Mutagen
+        public void RemapLinks(IMiscItem obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+            base.RemapLinks(obj, mapping);
+            obj.VirtualMachineAdapter?.RemapLinks(mapping);
+            obj.PreviewTransform.Relink(mapping);
+            obj.Model?.RemapLinks(mapping);
+            obj.Destructible?.RemapLinks(mapping);
+            obj.PickUpSound.Relink(mapping);
+            obj.PutDownSound.Relink(mapping);
+            obj.Keywords?.RemapLinks(mapping);
+            obj.FeaturedItemMessage.Relink(mapping);
+            obj.Components?.RemapLinks(mapping);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            IMiscItemInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<IMiscItemInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: MiscItemBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: MiscItemBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        public override void CopyInFromBinary(
+            IFallout4MajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (MiscItem)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (MiscItem)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    internal partial class MiscItemCommon : Fallout4MajorRecordCommon
+    {
+        public new static readonly MiscItemCommon Instance = new MiscItemCommon();
+
+        public MiscItem.Mask<bool> GetEqualsMask(
+            IMiscItemGetter item,
+            IMiscItemGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new MiscItem.Mask<bool>(false);
+            ((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            IMiscItemGetter item,
+            IMiscItemGetter rhs,
+            MiscItem.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.VirtualMachineAdapter = EqualsMaskHelper.EqualsHelper(
+                item.VirtualMachineAdapter,
+                rhs.VirtualMachineAdapter,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.ObjectBounds = MaskItemExt.Factory(item.ObjectBounds.GetEqualsMask(rhs.ObjectBounds, include), include);
+            ret.PreviewTransform = item.PreviewTransform.Equals(rhs.PreviewTransform);
+            ret.Name = object.Equals(item.Name, rhs.Name);
+            ret.Model = EqualsMaskHelper.EqualsHelper(
+                item.Model,
+                rhs.Model,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.Icons = EqualsMaskHelper.EqualsHelper(
+                item.Icons,
+                rhs.Icons,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.Destructible = EqualsMaskHelper.EqualsHelper(
+                item.Destructible,
+                rhs.Destructible,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.PickUpSound = item.PickUpSound.Equals(rhs.PickUpSound);
+            ret.PutDownSound = item.PutDownSound.Equals(rhs.PutDownSound);
+            ret.Keywords = item.Keywords.CollectionEqualsHelper(
+                rhs.Keywords,
+                (l, r) => object.Equals(l, r),
+                include);
+            ret.FeaturedItemMessage = item.FeaturedItemMessage.Equals(rhs.FeaturedItemMessage);
+            ret.Value = item.Value == rhs.Value;
+            ret.Weight = item.Weight.EqualsWithin(rhs.Weight);
+            ret.Components = item.Components.CollectionEqualsHelper(
+                rhs.Components,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            ret.ComponentDisplayIndices = item.ComponentDisplayIndices.CollectionEqualsHelper(
+                rhs.ComponentDisplayIndices,
+                (l, r) => l == r,
+                include);
+            base.FillEqualsMask(item, rhs, ret, include);
+        }
+
+        public string Print(
+            IMiscItemGetter item,
+            string? name = null,
+            MiscItem.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            IMiscItemGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            MiscItem.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"MiscItem =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (MiscItem) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            IMiscItemGetter item,
+            StructuredStringBuilder sb,
+            MiscItem.Mask<bool>? printMask = null)
+        {
+            Fallout4MajorRecordCommon.ToStringFields(
+                item: item,
+                sb: sb,
+                printMask: printMask);
+            if ((printMask?.VirtualMachineAdapter?.Overall ?? true)
+                && item.VirtualMachineAdapter is {} VirtualMachineAdapterItem)
+            {
+                VirtualMachineAdapterItem?.Print(sb, "VirtualMachineAdapter");
+            }
+            if (printMask?.ObjectBounds?.Overall ?? true)
+            {
+                item.ObjectBounds?.Print(sb, "ObjectBounds");
+            }
+            if (printMask?.PreviewTransform ?? true)
+            {
+                sb.AppendItem(item.PreviewTransform.FormKeyNullable, "PreviewTransform");
+            }
+            if ((printMask?.Name ?? true)
+                && item.Name is {} NameItem)
+            {
+                sb.AppendItem(NameItem, "Name");
+            }
+            if ((printMask?.Model?.Overall ?? true)
+                && item.Model is {} ModelItem)
+            {
+                ModelItem?.Print(sb, "Model");
+            }
+            if ((printMask?.Icons?.Overall ?? true)
+                && item.Icons is {} IconsItem)
+            {
+                IconsItem?.Print(sb, "Icons");
+            }
+            if ((printMask?.Destructible?.Overall ?? true)
+                && item.Destructible is {} DestructibleItem)
+            {
+                DestructibleItem?.Print(sb, "Destructible");
+            }
+            if (printMask?.PickUpSound ?? true)
+            {
+                sb.AppendItem(item.PickUpSound.FormKeyNullable, "PickUpSound");
+            }
+            if (printMask?.PutDownSound ?? true)
+            {
+                sb.AppendItem(item.PutDownSound.FormKeyNullable, "PutDownSound");
+            }
+            if ((printMask?.Keywords?.Overall ?? true)
+                && item.Keywords is {} KeywordsItem)
+            {
+                sb.AppendLine("Keywords =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in KeywordsItem)
+                    {
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(subItem.FormKey);
+                        }
+                    }
+                }
+            }
+            if (printMask?.FeaturedItemMessage ?? true)
+            {
+                sb.AppendItem(item.FeaturedItemMessage.FormKeyNullable, "FeaturedItemMessage");
+            }
+            if (printMask?.Value ?? true)
+            {
+                sb.AppendItem(item.Value, "Value");
+            }
+            if (printMask?.Weight ?? true)
+            {
+                sb.AppendItem(item.Weight, "Weight");
+            }
+            if ((printMask?.Components?.Overall ?? true)
+                && item.Components is {} ComponentsItem)
+            {
+                sb.AppendLine("Components =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in ComponentsItem)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+            if ((printMask?.ComponentDisplayIndices?.Overall ?? true)
+                && item.ComponentDisplayIndices is {} ComponentDisplayIndicesItem)
+            {
+                sb.AppendLine("ComponentDisplayIndices =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in ComponentDisplayIndicesItem)
+                    {
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(subItem);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static MiscItem_FieldIndex ConvertFieldIndex(Fallout4MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case Fallout4MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (MiscItem_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormKey:
+                    return (MiscItem_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.VersionControl:
+                    return (MiscItem_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.EditorID:
+                    return (MiscItem_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormVersion:
+                    return (MiscItem_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Version2:
+                    return (MiscItem_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Fallout4MajorRecordFlags:
+                    return (MiscItem_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new MiscItem_FieldIndex ConvertFieldIndex(MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (MiscItem_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.FormKey:
+                    return (MiscItem_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.VersionControl:
+                    return (MiscItem_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.EditorID:
+                    return (MiscItem_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            IMiscItemGetter? lhs,
+            IMiscItemGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if (!base.Equals((IFallout4MajorRecordGetter)lhs, (IFallout4MajorRecordGetter)rhs, equalsMask)) return false;
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.VirtualMachineAdapter) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.VirtualMachineAdapter, rhs.VirtualMachineAdapter, out var lhsVirtualMachineAdapter, out var rhsVirtualMachineAdapter, out var isVirtualMachineAdapterEqual))
+                {
+                    if (!((VirtualMachineAdapterCommon)((IVirtualMachineAdapterGetter)lhsVirtualMachineAdapter).CommonInstance()!).Equals(lhsVirtualMachineAdapter, rhsVirtualMachineAdapter, equalsMask?.GetSubCrystal((int)MiscItem_FieldIndex.VirtualMachineAdapter))) return false;
+                }
+                else if (!isVirtualMachineAdapterEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.ObjectBounds) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.ObjectBounds, rhs.ObjectBounds, out var lhsObjectBounds, out var rhsObjectBounds, out var isObjectBoundsEqual))
+                {
+                    if (!((ObjectBoundsCommon)((IObjectBoundsGetter)lhsObjectBounds).CommonInstance()!).Equals(lhsObjectBounds, rhsObjectBounds, equalsMask?.GetSubCrystal((int)MiscItem_FieldIndex.ObjectBounds))) return false;
+                }
+                else if (!isObjectBoundsEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.PreviewTransform) ?? true))
+            {
+                if (!lhs.PreviewTransform.Equals(rhs.PreviewTransform)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Name) ?? true))
+            {
+                if (!object.Equals(lhs.Name, rhs.Name)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Model) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.Model, rhs.Model, out var lhsModel, out var rhsModel, out var isModelEqual))
+                {
+                    if (!((ModelCommon)((IModelGetter)lhsModel).CommonInstance()!).Equals(lhsModel, rhsModel, equalsMask?.GetSubCrystal((int)MiscItem_FieldIndex.Model))) return false;
+                }
+                else if (!isModelEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Icons) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.Icons, rhs.Icons, out var lhsIcons, out var rhsIcons, out var isIconsEqual))
+                {
+                    if (!((IconsCommon)((IIconsGetter)lhsIcons).CommonInstance()!).Equals(lhsIcons, rhsIcons, equalsMask?.GetSubCrystal((int)MiscItem_FieldIndex.Icons))) return false;
+                }
+                else if (!isIconsEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Destructible) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.Destructible, rhs.Destructible, out var lhsDestructible, out var rhsDestructible, out var isDestructibleEqual))
+                {
+                    if (!((DestructibleCommon)((IDestructibleGetter)lhsDestructible).CommonInstance()!).Equals(lhsDestructible, rhsDestructible, equalsMask?.GetSubCrystal((int)MiscItem_FieldIndex.Destructible))) return false;
+                }
+                else if (!isDestructibleEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.PickUpSound) ?? true))
+            {
+                if (!lhs.PickUpSound.Equals(rhs.PickUpSound)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.PutDownSound) ?? true))
+            {
+                if (!lhs.PutDownSound.Equals(rhs.PutDownSound)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Keywords) ?? true))
+            {
+                if (!lhs.Keywords.SequenceEqualNullable(rhs.Keywords)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.FeaturedItemMessage) ?? true))
+            {
+                if (!lhs.FeaturedItemMessage.Equals(rhs.FeaturedItemMessage)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Value) ?? true))
+            {
+                if (lhs.Value != rhs.Value) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Weight) ?? true))
+            {
+                if (!lhs.Weight.EqualsWithin(rhs.Weight)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Components) ?? true))
+            {
+                if (!lhs.Components.SequenceEqualNullable(rhs.Components, (l, r) => ((MiscItemComponentCommon)((IMiscItemComponentGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)MiscItem_FieldIndex.Components)))) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)MiscItem_FieldIndex.ComponentDisplayIndices) ?? true))
+            {
+                if (!lhs.ComponentDisplayIndices.SequenceEqualNullable(rhs.ComponentDisplayIndices)) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(
+            IFallout4MajorRecordGetter? lhs,
+            IFallout4MajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IMiscItemGetter?)lhs,
+                rhs: rhs as IMiscItemGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IMiscItemGetter?)lhs,
+                rhs: rhs as IMiscItemGetter,
+                equalsMask: equalsMask);
+        }
+
+        public virtual int GetHashCode(IMiscItemGetter item)
+        {
+            var hash = new HashCode();
+            if (item.VirtualMachineAdapter is {} VirtualMachineAdapteritem)
+            {
+                hash.Add(VirtualMachineAdapteritem);
+            }
+            hash.Add(item.ObjectBounds);
+            hash.Add(item.PreviewTransform);
+            if (item.Name is {} Nameitem)
+            {
+                hash.Add(Nameitem);
+            }
+            if (item.Model is {} Modelitem)
+            {
+                hash.Add(Modelitem);
+            }
+            if (item.Icons is {} Iconsitem)
+            {
+                hash.Add(Iconsitem);
+            }
+            if (item.Destructible is {} Destructibleitem)
+            {
+                hash.Add(Destructibleitem);
+            }
+            hash.Add(item.PickUpSound);
+            hash.Add(item.PutDownSound);
+            hash.Add(item.Keywords);
+            hash.Add(item.FeaturedItemMessage);
+            hash.Add(item.Value);
+            hash.Add(item.Weight);
+            hash.Add(item.Components);
+            hash.Add(item.ComponentDisplayIndices);
+            hash.Add(base.GetHashCode());
+            return hash.ToHashCode();
+        }
+
+        public override int GetHashCode(IFallout4MajorRecordGetter item)
+        {
+            return GetHashCode(item: (IMiscItemGetter)item);
+        }
+
+        public override int GetHashCode(IMajorRecordGetter item)
+        {
+            return GetHashCode(item: (IMiscItemGetter)item);
+        }
+
+        #endregion
+
+        public override object GetNew()
+        {
+            return MiscItem.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(IMiscItemGetter obj, bool iterateNestedRecords = true)
+        {
+            foreach (var item in base.EnumerateFormLinks(obj, iterateNestedRecords))
+            {
+                yield return item;
+            }
+            if (obj.VirtualMachineAdapter is IFormLinkContainerGetter VirtualMachineAdapterlinkCont)
+            {
+                foreach (var item in VirtualMachineAdapterlinkCont.EnumerateFormLinks(iterateNestedRecords))
+                {
+                    yield return item;
+                }
+            }
+            if (FormLinkInformation.TryFactory(obj.PreviewTransform, out var PreviewTransformInfo))
+            {
+                yield return PreviewTransformInfo;
+            }
+            if (obj.Model is {} ModelItems)
+            {
+                foreach (var item in ModelItems.EnumerateFormLinks(iterateNestedRecords))
+                {
+                    yield return item;
+                }
+            }
+            if (obj.Destructible is {} DestructibleItems)
+            {
+                foreach (var item in DestructibleItems.EnumerateFormLinks(iterateNestedRecords))
+                {
+                    yield return item;
+                }
+            }
+            if (FormLinkInformation.TryFactory(obj.PickUpSound, out var PickUpSoundInfo))
+            {
+                yield return PickUpSoundInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.PutDownSound, out var PutDownSoundInfo))
+            {
+                yield return PutDownSoundInfo;
+            }
+            if (obj.Keywords is {} KeywordsItem)
+            {
+                foreach (var item in KeywordsItem)
+                {
+                    yield return FormLinkInformation.Factory(item);
+                }
+            }
+            if (FormLinkInformation.TryFactory(obj.FeaturedItemMessage, out var FeaturedItemMessageInfo))
+            {
+                yield return FeaturedItemMessageInfo;
+            }
+            if (obj.Components is {} ComponentsItem)
+            {
+                foreach (var item in ComponentsItem.SelectMany(f => f.EnumerateFormLinks(iterateNestedRecords)))
+                {
+                    yield return FormLinkInformation.Factory(item);
+                }
+            }
+            yield break;
+        }
+
+        #region Duplicate
+        public MiscItem Duplicate(
+            IMiscItemGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            var newRec = new MiscItem(formKey, item.FormVersion);
+            newRec.DeepCopyIn(item, default(ErrorMaskBuilder?), copyMask);
+            return newRec;
+        }
+
+        public override Fallout4MajorRecord Duplicate(
+            IFallout4MajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IMiscItemGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IMiscItemGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class MiscItemSetterTranslationCommon : Fallout4MajorRecordSetterTranslationCommon
+    {
+        public new static readonly MiscItemSetterTranslationCommon Instance = new MiscItemSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            IMiscItemInternal item,
+            IMiscItemGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                item,
+                rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public void DeepCopyIn(
+            IMiscItem item,
+            IMiscItemGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                (IFallout4MajorRecord)item,
+                (IFallout4MajorRecordGetter)rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.VirtualMachineAdapter) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.VirtualMachineAdapter);
+                try
+                {
+                    if(rhs.VirtualMachineAdapter is {} rhsVirtualMachineAdapter)
+                    {
+                        item.VirtualMachineAdapter = rhsVirtualMachineAdapter.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)MiscItem_FieldIndex.VirtualMachineAdapter));
+                    }
+                    else
+                    {
+                        item.VirtualMachineAdapter = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.ObjectBounds) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.ObjectBounds);
+                try
+                {
+                    if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.ObjectBounds) ?? true))
+                    {
+                        item.ObjectBounds = rhs.ObjectBounds.DeepCopy(
+                            copyMask: copyMask?.GetSubCrystal((int)MiscItem_FieldIndex.ObjectBounds),
+                            errorMask: errorMask);
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.PreviewTransform) ?? true))
+            {
+                item.PreviewTransform.SetTo(rhs.PreviewTransform.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Name) ?? true))
+            {
+                item.Name = rhs.Name?.DeepCopy();
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Model) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.Model);
+                try
+                {
+                    if(rhs.Model is {} rhsModel)
+                    {
+                        item.Model = rhsModel.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)MiscItem_FieldIndex.Model));
+                    }
+                    else
+                    {
+                        item.Model = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Icons) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.Icons);
+                try
+                {
+                    if(rhs.Icons is {} rhsIcons)
+                    {
+                        item.Icons = rhsIcons.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)MiscItem_FieldIndex.Icons));
+                    }
+                    else
+                    {
+                        item.Icons = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Destructible) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.Destructible);
+                try
+                {
+                    if(rhs.Destructible is {} rhsDestructible)
+                    {
+                        item.Destructible = rhsDestructible.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)MiscItem_FieldIndex.Destructible));
+                    }
+                    else
+                    {
+                        item.Destructible = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.PickUpSound) ?? true))
+            {
+                item.PickUpSound.SetTo(rhs.PickUpSound.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.PutDownSound) ?? true))
+            {
+                item.PutDownSound.SetTo(rhs.PutDownSound.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Keywords) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.Keywords);
+                try
+                {
+                    if ((rhs.Keywords != null))
+                    {
+                        item.Keywords =
+                            rhs.Keywords
+                                .Select(b => (IFormLinkGetter<IKeywordGetter>)new FormLink<IKeywordGetter>(b.FormKey))
+                            .ToExtendedList<IFormLinkGetter<IKeywordGetter>>();
+                    }
+                    else
+                    {
+                        item.Keywords = null;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.FeaturedItemMessage) ?? true))
+            {
+                item.FeaturedItemMessage.SetTo(rhs.FeaturedItemMessage.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Value) ?? true))
+            {
+                item.Value = rhs.Value;
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Weight) ?? true))
+            {
+                item.Weight = rhs.Weight;
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.Components) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.Components);
+                try
+                {
+                    if ((rhs.Components != null))
+                    {
+                        item.Components =
+                            rhs.Components
+                            .Select(r =>
+                            {
+                                return r.DeepCopy(
+                                    errorMask: errorMask,
+                                    default(TranslationCrystal));
+                            })
+                            .ToExtendedList<MiscItemComponent>();
+                    }
+                    else
+                    {
+                        item.Components = null;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)MiscItem_FieldIndex.ComponentDisplayIndices) ?? true))
+            {
+                errorMask?.PushIndex((int)MiscItem_FieldIndex.ComponentDisplayIndices);
+                try
+                {
+                    if ((rhs.ComponentDisplayIndices != null))
+                    {
+                        item.ComponentDisplayIndices =
+                            rhs.ComponentDisplayIndices
+                            .ToExtendedList<Byte>();
+                    }
+                    else
+                    {
+                        item.ComponentDisplayIndices = null;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            IMiscItem item,
+            IMiscItemGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        public override void DeepCopyIn(
+            IFallout4MajorRecordInternal item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMiscItemInternal)item,
+                rhs: (IMiscItemGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecord item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMiscItem)item,
+                rhs: (IMiscItemGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMiscItemInternal)item,
+                rhs: (IMiscItemGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IMiscItem)item,
+                rhs: (IMiscItemGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        #endregion
+
+        public MiscItem DeepCopy(
+            IMiscItemGetter item,
+            MiscItem.TranslationMask? copyMask = null)
+        {
+            MiscItem ret = (MiscItem)((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).GetNew();
+            ((MiscItemSetterTranslationCommon)((IMiscItemGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public MiscItem DeepCopy(
+            IMiscItemGetter item,
+            out MiscItem.ErrorMask errorMask,
+            MiscItem.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            MiscItem ret = (MiscItem)((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).GetNew();
+            ((MiscItemSetterTranslationCommon)((IMiscItemGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = MiscItem.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public MiscItem DeepCopy(
+            IMiscItemGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            MiscItem ret = (MiscItem)((MiscItemCommon)((IMiscItemGetter)item).CommonInstance()!).GetNew();
+            ((MiscItemSetterTranslationCommon)((IMiscItemGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class MiscItem
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => MiscItem_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => MiscItem_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => MiscItemCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterInstance()
+        {
+            return MiscItemSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => MiscItemSetterTranslationCommon.Instance;
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class MiscItemBinaryWriteTranslation :
+        Fallout4MajorRecordBinaryWriteTranslation,
+        IBinaryWriteTranslator
+    {
+        public new static readonly MiscItemBinaryWriteTranslation Instance = new();
+
+        public static void WriteRecordTypes(
+            IMiscItemGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            MajorRecordBinaryWriteTranslation.WriteRecordTypes(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+            if (item.VirtualMachineAdapter is {} VirtualMachineAdapterItem)
+            {
+                ((VirtualMachineAdapterBinaryWriteTranslation)((IBinaryItem)VirtualMachineAdapterItem).BinaryWriteTranslator).Write(
+                    item: VirtualMachineAdapterItem,
+                    writer: writer,
+                    translationParams: translationParams.With(RecordTypes.XXXX));
+            }
+            var ObjectBoundsItem = item.ObjectBounds;
+            ((ObjectBoundsBinaryWriteTranslation)((IBinaryItem)ObjectBoundsItem).BinaryWriteTranslator).Write(
+                item: ObjectBoundsItem,
+                writer: writer,
+                translationParams: translationParams);
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.PreviewTransform,
+                header: translationParams.ConvertToCustom(RecordTypes.PTRN));
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Name,
+                header: translationParams.ConvertToCustom(RecordTypes.FULL),
+                binaryType: StringBinaryType.NullTerminate,
+                source: StringsSource.Normal);
+            if (item.Model is {} ModelItem)
+            {
+                ((ModelBinaryWriteTranslation)((IBinaryItem)ModelItem).BinaryWriteTranslator).Write(
+                    item: ModelItem,
+                    writer: writer,
+                    translationParams: translationParams);
+            }
+            if (item.Icons is {} IconsItem)
+            {
+                ((IconsBinaryWriteTranslation)((IBinaryItem)IconsItem).BinaryWriteTranslator).Write(
+                    item: IconsItem,
+                    writer: writer,
+                    translationParams: translationParams);
+            }
+            if (item.Destructible is {} DestructibleItem)
+            {
+                ((DestructibleBinaryWriteTranslation)((IBinaryItem)DestructibleItem).BinaryWriteTranslator).Write(
+                    item: DestructibleItem,
+                    writer: writer,
+                    translationParams: translationParams);
+            }
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.PickUpSound,
+                header: translationParams.ConvertToCustom(RecordTypes.YNAM));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.PutDownSound,
+                header: translationParams.ConvertToCustom(RecordTypes.ZNAM));
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IFormLinkGetter<IKeywordGetter>>.Instance.WriteWithCounter(
+                writer: writer,
+                items: item.Keywords,
+                counterType: RecordTypes.KSIZ,
+                counterLength: 4,
+                recordType: translationParams.ConvertToCustom(RecordTypes.KWDA),
+                transl: (MutagenWriter subWriter, IFormLinkGetter<IKeywordGetter> subItem, TypedWriteParams conv) =>
+                {
+                    FormLinkBinaryTranslation.Instance.Write(
+                        writer: subWriter,
+                        item: subItem);
+                });
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.FeaturedItemMessage,
+                header: translationParams.ConvertToCustom(RecordTypes.FIMD));
+            using (HeaderExport.Subrecord(writer, translationParams.ConvertToCustom(RecordTypes.DATA)))
+            {
+                writer.Write(item.Value);
+                FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer: writer,
+                    item: item.Weight);
+            }
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IMiscItemComponentGetter>.Instance.Write(
+                writer: writer,
+                items: item.Components,
+                recordType: translationParams.ConvertToCustom(RecordTypes.CVPA),
+                transl: (MutagenWriter subWriter, IMiscItemComponentGetter subItem, TypedWriteParams conv) =>
+                {
+                    var Item = subItem;
+                    ((MiscItemComponentBinaryWriteTranslation)((IBinaryItem)Item).BinaryWriteTranslator).Write(
+                        item: Item,
+                        writer: subWriter,
+                        translationParams: conv);
+                });
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<Byte>.Instance.Write(
+                writer: writer,
+                items: item.ComponentDisplayIndices,
+                recordType: translationParams.ConvertToCustom(RecordTypes.CDIX),
+                transl: ByteBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write);
+        }
+
+        public void Write(
+            MutagenWriter writer,
+            IMiscItemGetter item,
+            TypedWriteParams translationParams)
+        {
+            PluginUtilityTranslation.WriteMajorRecord(
+                writer: writer,
+                item: item,
+                translationParams: translationParams,
+                type: RecordTypes.MISC,
+                writeEmbedded: Fallout4MajorRecordBinaryWriteTranslation.WriteEmbedded,
+                writeRecordTypes: WriteRecordTypes);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (IMiscItemGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IFallout4MajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IMiscItemGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IMiscItemGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class MiscItemBinaryCreateTranslation : Fallout4MajorRecordBinaryCreateTranslation
+    {
+        public new static readonly MiscItemBinaryCreateTranslation Instance = new MiscItemBinaryCreateTranslation();
+
+        public override RecordType RecordType => RecordTypes.MISC;
+        public static ParseResult FillBinaryRecordTypes(
+            IMiscItemInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.VMAD:
+                {
+                    item.VirtualMachineAdapter = Mutagen.Bethesda.Fallout4.VirtualMachineAdapter.CreateFromBinary(
+                        frame: frame,
+                        translationParams: translationParams.With(lastParsed.LengthOverride).DoNotShortCircuit());
+                    return (int)MiscItem_FieldIndex.VirtualMachineAdapter;
+                }
+                case RecordTypeInts.OBND:
+                {
+                    item.ObjectBounds = Mutagen.Bethesda.Fallout4.ObjectBounds.CreateFromBinary(frame: frame);
+                    return (int)MiscItem_FieldIndex.ObjectBounds;
+                }
+                case RecordTypeInts.PTRN:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.PreviewTransform.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)MiscItem_FieldIndex.PreviewTransform;
+                }
+                case RecordTypeInts.FULL:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Name = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        eager: true,
+                        source: StringsSource.Normal,
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)MiscItem_FieldIndex.Name;
+                }
+                case RecordTypeInts.MODL:
+                case RecordTypeInts.MODC:
+                case RecordTypeInts.MODT:
+                case RecordTypeInts.MODS:
+                {
+                    item.Model = Mutagen.Bethesda.Fallout4.Model.CreateFromBinary(
+                        frame: frame,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)MiscItem_FieldIndex.Model;
+                }
+                case RecordTypeInts.ICON:
+                case RecordTypeInts.MICO:
+                {
+                    item.Icons = Mutagen.Bethesda.Fallout4.Icons.CreateFromBinary(
+                        frame: frame,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)MiscItem_FieldIndex.Icons;
+                }
+                case RecordTypeInts.DEST:
+                case RecordTypeInts.DAMC:
+                case RecordTypeInts.DSTD:
+                {
+                    item.Destructible = Mutagen.Bethesda.Fallout4.Destructible.CreateFromBinary(
+                        frame: frame,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)MiscItem_FieldIndex.Destructible;
+                }
+                case RecordTypeInts.YNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.PickUpSound.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)MiscItem_FieldIndex.PickUpSound;
+                }
+                case RecordTypeInts.ZNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.PutDownSound.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)MiscItem_FieldIndex.PutDownSound;
+                }
+                case RecordTypeInts.KSIZ:
+                case RecordTypeInts.KWDA:
+                {
+                    item.Keywords =
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IFormLinkGetter<IKeywordGetter>>.Instance.Parse(
+                            reader: frame,
+                            countLengthLength: 4,
+                            countRecord: translationParams.ConvertToCustom(RecordTypes.KSIZ),
+                            triggeringRecord: translationParams.ConvertToCustom(RecordTypes.KWDA),
+                            transl: FormLinkBinaryTranslation.Instance.Parse)
+                        .CastExtendedList<IFormLinkGetter<IKeywordGetter>>();
+                    return (int)MiscItem_FieldIndex.Keywords;
+                }
+                case RecordTypeInts.FIMD:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.FeaturedItemMessage.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)MiscItem_FieldIndex.FeaturedItemMessage;
+                }
+                case RecordTypeInts.DATA:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    var dataFrame = frame.SpawnWithLength(contentLength);
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Value = dataFrame.ReadInt32();
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Weight = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    return (int)MiscItem_FieldIndex.Weight;
+                }
+                case RecordTypeInts.CVPA:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Components =
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<MiscItemComponent>.Instance.Parse(
+                            reader: frame.SpawnWithLength(contentLength),
+                            transl: MiscItemComponent.TryCreateFromBinary)
+                        .CastExtendedList<MiscItemComponent>();
+                    return (int)MiscItem_FieldIndex.Components;
+                }
+                case RecordTypeInts.CDIX:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.ComponentDisplayIndices =
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<Byte>.Instance.Parse(
+                            reader: frame.SpawnWithLength(contentLength),
+                            transl: ByteBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse)
+                        .CastExtendedList<Byte>();
+                    return (int)MiscItem_FieldIndex.ComponentDisplayIndices;
+                }
+                case RecordTypeInts.XXXX:
+                {
+                    var overflowHeader = frame.ReadSubrecord();
+                    return ParseResult.OverrideLength(lastParsed, BinaryPrimitives.ReadUInt32LittleEndian(overflowHeader.Content));
+                }
+                default:
+                    return Fallout4MajorRecordBinaryCreateTranslation.FillBinaryRecordTypes(
+                        item: item,
+                        frame: frame,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        nextRecordType: nextRecordType,
+                        contentLength: contentLength,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+
+    }
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Binary Write Mixins
+    public static class MiscItemBinaryTranslationMixIn
+    {
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    internal partial class MiscItemBinaryOverlay :
+        Fallout4MajorRecordBinaryOverlay,
+        IMiscItemGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => MiscItem_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => MiscItem_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => MiscItemCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => MiscItemSetterTranslationCommon.Instance;
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => MiscItemCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => MiscItemBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((MiscItemBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        protected override Type LinkType => typeof(IMiscItemGetter);
+
+        public MiscItem.MajorFlag MajorFlags => (MiscItem.MajorFlag)this.MajorRecordFlagsRaw;
+
+        #region VirtualMachineAdapter
+        private int? _VirtualMachineAdapterLengthOverride;
+        private RangeInt32? _VirtualMachineAdapterLocation;
+        public IVirtualMachineAdapterGetter? VirtualMachineAdapter => _VirtualMachineAdapterLocation.HasValue ? VirtualMachineAdapterBinaryOverlay.VirtualMachineAdapterFactory(_recordData.Slice(_VirtualMachineAdapterLocation!.Value.Min), _package, TypedParseParams.FromLengthOverride(_VirtualMachineAdapterLengthOverride)) : default;
+        IAVirtualMachineAdapterGetter? IHaveVirtualMachineAdapterGetter.VirtualMachineAdapter => this.VirtualMachineAdapter;
+        #endregion
+        #region ObjectBounds
+        private RangeInt32? _ObjectBoundsLocation;
+        private IObjectBoundsGetter? _ObjectBounds => _ObjectBoundsLocation.HasValue ? ObjectBoundsBinaryOverlay.ObjectBoundsFactory(_recordData.Slice(_ObjectBoundsLocation!.Value.Min), _package) : default;
+        public IObjectBoundsGetter ObjectBounds => _ObjectBounds ?? new ObjectBounds();
+        #endregion
+        #region PreviewTransform
+        private int? _PreviewTransformLocation;
+        public IFormLinkNullableGetter<ITransformGetter> PreviewTransform => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<ITransformGetter>(_package, _recordData, _PreviewTransformLocation);
+        #endregion
+        #region Name
+        private int? _NameLocation;
+        public ITranslatedStringGetter? Name => _NameLocation.HasValue ? StringBinaryTranslation.Instance.Parse(HeaderTranslation.ExtractSubrecordMemory(_recordData, _NameLocation.Value, _package.MetaData.Constants), StringsSource.Normal, parsingBundle: _package.MetaData, eager: false) : default(TranslatedString?);
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequiredGetter.Name => this.Name?.String ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamedGetter.Name => this.Name?.String;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter ITranslatedNamedRequiredGetter.Name => this.Name ?? TranslatedString.Empty;
+        #endregion
+        #endregion
+        public IModelGetter? Model { get; private set; }
+        public IIconsGetter? Icons { get; private set; }
+        public IDestructibleGetter? Destructible { get; private set; }
+        #region PickUpSound
+        private int? _PickUpSoundLocation;
+        public IFormLinkNullableGetter<ISoundDescriptorGetter> PickUpSound => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<ISoundDescriptorGetter>(_package, _recordData, _PickUpSoundLocation);
+        #endregion
+        #region PutDownSound
+        private int? _PutDownSoundLocation;
+        public IFormLinkNullableGetter<ISoundDescriptorGetter> PutDownSound => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<ISoundDescriptorGetter>(_package, _recordData, _PutDownSoundLocation);
+        #endregion
+        #region Keywords
+        public IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; private set; }
+        IReadOnlyList<IFormLinkGetter<IKeywordCommonGetter>>? IKeywordedGetter.Keywords => this.Keywords;
+        #endregion
+        #region FeaturedItemMessage
+        private int? _FeaturedItemMessageLocation;
+        public IFormLinkNullableGetter<IMessageGetter> FeaturedItemMessage => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IMessageGetter>(_package, _recordData, _FeaturedItemMessageLocation);
+        #endregion
+        private RangeInt32? _DATALocation;
+        #region Value
+        private int _ValueLocation => _DATALocation!.Value.Min;
+        private bool _Value_IsSet => _DATALocation.HasValue;
+        public Int32 Value => _Value_IsSet ? BinaryPrimitives.ReadInt32LittleEndian(_recordData.Slice(_ValueLocation, 4)) : default(Int32);
+        #endregion
+        #region Weight
+        private int _WeightLocation => _DATALocation!.Value.Min + 0x4;
+        private bool _Weight_IsSet => _DATALocation.HasValue;
+        public Single Weight => _Weight_IsSet ? _recordData.Slice(_WeightLocation, 4).Float() : default(Single);
+        #endregion
+        public IReadOnlyList<IMiscItemComponentGetter>? Components { get; private set; }
+        public IReadOnlyList<Byte>? ComponentDisplayIndices { get; private set; }
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected MiscItemBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public static IMiscItemGetter MiscItemFactory(
+            OverlayStream stream,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            stream = Decompression.DecompressStream(stream);
+            stream = ExtractRecordMemory(
+                stream: stream,
+                meta: package.MetaData.Constants,
+                memoryPair: out var memoryPair,
+                offset: out var offset,
+                finalPos: out var finalPos);
+            var ret = new MiscItemBinaryOverlay(
+                memoryPair: memoryPair,
+                package: package);
+            ret._package.FormVersion = ret;
+            ret.CustomFactoryEnd(
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset);
+            ret.FillSubrecordTypes(
+                majorReference: ret,
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset,
+                translationParams: translationParams,
+                fill: ret.FillRecordType);
+            return ret;
+        }
+
+        public static IMiscItemGetter MiscItemFactory(
+            ReadOnlyMemorySlice<byte> slice,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            return MiscItemFactory(
+                stream: new OverlayStream(slice, package),
+                package: package,
+                translationParams: translationParams);
+        }
+
+        public override ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.VMAD:
+                {
+                    _VirtualMachineAdapterLocation = new RangeInt32((stream.Position - offset), finalPos - offset);
+                    _VirtualMachineAdapterLengthOverride = lastParsed.LengthOverride;
+                    if (lastParsed.LengthOverride.HasValue)
+                    {
+                        stream.Position += lastParsed.LengthOverride.Value;
+                    }
+                    return (int)MiscItem_FieldIndex.VirtualMachineAdapter;
+                }
+                case RecordTypeInts.OBND:
+                {
+                    _ObjectBoundsLocation = new RangeInt32((stream.Position - offset), finalPos - offset);
+                    return (int)MiscItem_FieldIndex.ObjectBounds;
+                }
+                case RecordTypeInts.PTRN:
+                {
+                    _PreviewTransformLocation = (stream.Position - offset);
+                    return (int)MiscItem_FieldIndex.PreviewTransform;
+                }
+                case RecordTypeInts.FULL:
+                {
+                    _NameLocation = (stream.Position - offset);
+                    return (int)MiscItem_FieldIndex.Name;
+                }
+                case RecordTypeInts.MODL:
+                case RecordTypeInts.MODC:
+                case RecordTypeInts.MODT:
+                case RecordTypeInts.MODS:
+                {
+                    this.Model = ModelBinaryOverlay.ModelFactory(
+                        stream: stream,
+                        package: _package,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)MiscItem_FieldIndex.Model;
+                }
+                case RecordTypeInts.ICON:
+                case RecordTypeInts.MICO:
+                {
+                    this.Icons = IconsBinaryOverlay.IconsFactory(
+                        stream: stream,
+                        package: _package,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)MiscItem_FieldIndex.Icons;
+                }
+                case RecordTypeInts.DEST:
+                case RecordTypeInts.DAMC:
+                case RecordTypeInts.DSTD:
+                {
+                    this.Destructible = DestructibleBinaryOverlay.DestructibleFactory(
+                        stream: stream,
+                        package: _package,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)MiscItem_FieldIndex.Destructible;
+                }
+                case RecordTypeInts.YNAM:
+                {
+                    _PickUpSoundLocation = (stream.Position - offset);
+                    return (int)MiscItem_FieldIndex.PickUpSound;
+                }
+                case RecordTypeInts.ZNAM:
+                {
+                    _PutDownSoundLocation = (stream.Position - offset);
+                    return (int)MiscItem_FieldIndex.PutDownSound;
+                }
+                case RecordTypeInts.KSIZ:
+                case RecordTypeInts.KWDA:
+                {
+                    this.Keywords = BinaryOverlayList.FactoryByCount<IFormLinkGetter<IKeywordGetter>>(
+                        stream: stream,
+                        package: _package,
+                        itemLength: 0x4,
+                        countLength: 4,
+                        countType: RecordTypes.KSIZ,
+                        trigger: RecordTypes.KWDA,
+                        getter: (s, p) => FormLinkBinaryTranslation.Instance.OverlayFactory<IKeywordGetter>(p, s));
+                    return (int)MiscItem_FieldIndex.Keywords;
+                }
+                case RecordTypeInts.FIMD:
+                {
+                    _FeaturedItemMessageLocation = (stream.Position - offset);
+                    return (int)MiscItem_FieldIndex.FeaturedItemMessage;
+                }
+                case RecordTypeInts.DATA:
+                {
+                    _DATALocation = new((stream.Position - offset) + _package.MetaData.Constants.SubConstants.TypeAndLengthLength, finalPos - offset - 1);
+                    return (int)MiscItem_FieldIndex.Weight;
+                }
+                case RecordTypeInts.CVPA:
+                {
+                    this.Components = BinaryOverlayList.FactoryByStartIndexWithTrigger<IMiscItemComponentGetter>(
+                        stream: stream,
+                        package: _package,
+                        finalPos: finalPos,
+                        itemLength: 8,
+                        getter: (s, p) => MiscItemComponentBinaryOverlay.MiscItemComponentFactory(s, p));
+                    return (int)MiscItem_FieldIndex.Components;
+                }
+                case RecordTypeInts.CDIX:
+                {
+                    this.ComponentDisplayIndices = BinaryOverlayList.FactoryByStartIndexWithTrigger<Byte>(
+                        stream: stream,
+                        package: _package,
+                        finalPos: finalPos,
+                        itemLength: 1,
+                        getter: (s, p) => s[0]);
+                    return (int)MiscItem_FieldIndex.ComponentDisplayIndices;
+                }
+                case RecordTypeInts.XXXX:
+                {
+                    var overflowHeader = stream.ReadSubrecord();
+                    return ParseResult.OverrideLength(lastParsed, BinaryPrimitives.ReadUInt32LittleEndian(overflowHeader.Content));
+                }
+                default:
+                    return base.FillRecordType(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset,
+                        type: type,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            MiscItemMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<MiscItem>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IMiscItemGetter rhs) return false;
+            return ((MiscItemCommon)((IMiscItemGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IMiscItemGetter? obj)
+        {
+            return ((MiscItemCommon)((IMiscItemGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((MiscItemCommon)((IMiscItemGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="SoundOutputModel" recordType="SOPM" objType="Record" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <RefDirect name="Data" refName="SoundOutputData" />
+      <Enum name="Type" enumName="SoundOutputModel.TypeEnum" byteLength="4" recordType="MNAM" />
+      <Float name="StaticAttenuation" divisor="100" recordType="VNAM" integerType="UShort" />
+      <RefDirect name="OutputChannels" refName="SoundOutputChannels" />
+      <RefDirect name="DynamicAttentuation" refName="DynamicAttentuationValues" />
+      <FormLink name="EffectChain" recordType="ENAM" refName="AudioEffectChain" />
+    </Fields>
+  </Object>
+  <Object name="SoundOutputData" objType="Subrecord" recordType="NAM1">
+    <Fields>
+      <Enum name="Flags" enumName="SoundOutputModel.Flag" byteLength="1" />
+      <UInt16 name="Unknown" />
+      <Percent name="ReverbSendPercent" integerType="Byte" />
+    </Fields>
+  </Object>
+  <Object name="SoundOutputChannels" objType="Subrecord" recordType="ONAM">
+    <Fields>
+      <RefDirect name="Channel0" refName="SoundOutputChannel" />
+      <RefDirect name="Channel1" refName="SoundOutputChannel" />
+      <RefDirect name="Channel2" refName="SoundOutputChannel" />
+    </Fields>
+  </Object>
+  <Object name="SoundOutputChannel" objType="Subrecord">
+    <Fields>
+      <UInt8 name="L" />
+      <UInt8 name="R" />
+      <UInt8 name="C" />
+      <UInt8 name="LFE" />
+      <UInt8 name="RL" />
+      <UInt8 name="RR" />
+      <UInt8 name="BL" />
+      <UInt8 name="BR" />
+    </Fields>
+  </Object>
+  <Object name="DynamicAttentuationValues" objType="Subrecord" recordType="ATTN">
+    <Fields>
+      <Float name="FadeInDistanceStart" />
+      <Float name="FadeInDistanceEnd" />
+      <Float name="FadeOutDistanceStart" />
+      <Float name="FadeOutDistanceEnd" />
+      <UInt8 name="FadeInCurveValue1" />
+      <UInt8 name="FadeInCurveValue2" />
+      <UInt8 name="FadeInCurveValue3" />
+      <UInt8 name="FadeInCurveValue4" />
+      <UInt8 name="FadeOutCurveValue1" />
+      <UInt8 name="FadeOutCurveValue2" />
+      <UInt8 name="FadeOutCurveValue3" />
+      <UInt8 name="FadeOutCurveValue4" />
+    </Fields>
+  </Object>
+</Loqui>

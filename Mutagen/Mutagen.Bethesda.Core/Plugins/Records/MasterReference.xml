@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="MasterReference" objType="Subrecord">
+    <Fields>
+      <ModKey name="Master" recordType="MAST" nullable="False" />
+      <UInt64 name="FileSize" recordType="DATA" />
+    </Fields>
+  </Object>
+</Loqui>

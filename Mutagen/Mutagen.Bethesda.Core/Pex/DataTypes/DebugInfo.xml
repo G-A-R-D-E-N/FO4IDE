@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="DebugInfo">
+    <Fields>
+      <DateTime name="ModificationTime" />
+      <RefList name="Functions" refName="DebugFunction" />
+      <RefList name="PropertyGroups" refName="DebugPropertyGroup" />
+      <RefList name="StructOrders" refName="DebugStructOrder" />
+    </Fields>
+  </Object>
+  <Object name="DebugFunction">
+    <Fields>
+      <String name="ObjectName" />
+      <String name="StateName" />
+      <String name="FunctionName" />
+      <Enum name="FunctionType" enumName="DebugFunctionType" />
+      <List name="Instructions">
+        <UInt16 />
+      </List>
+    </Fields>
+  </Object>
+  <Object name="DebugPropertyGroup">
+    <Fields>
+      <String name="ObjectName" />
+      <String name="GroupName" />
+      <List name="PropertyNames">
+        <String />
+      </List>
+    </Fields>
+  </Object>
+  <Object name="DebugStructOrder">
+    <Fields>
+      <String name="ObjectName" />
+      <String name="OrderName" />
+      <List name="Names">
+        <String />
+      </List>
+    </Fields>
+  </Object>
+</Loqui>

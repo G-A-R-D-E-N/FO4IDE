@@ -1,0 +1,115 @@
+﻿using System.IO.Abstractions;
+using Noggog;
+
+namespace Mutagen.Bethesda.Plugins.IO.DI;
+
+public interface IModFilesMover
+{
+
+    void MoveModTo(
+        ModPath pathToPlugin,
+        DirectoryPath newDirectory,
+        bool overwrite = false,
+        AssociatedModFileCategory? categories = null);
+
+    void CopyModTo(
+        ModPath pathToPlugin,
+        DirectoryPath newDirectory,
+        bool overwrite = false,
+        AssociatedModFileCategory? categories = null);
+}
+
+public class ModFilesMover : IModFilesMover
+{
+    private readonly IFileSystem _fileSystem;
+    private readonly IAssociatedFilesLocator _associatedFilesLocator;
+
+    public ModFilesMover(
+        IFileSystem fileSystem,
+        IAssociatedFilesLocator associatedFilesLocator)
+    {
+        _fileSystem = fileSystem;
+        _associatedFilesLocator = associatedFilesLocator;
+    }
+
+    public void MoveModTo(
+        ModPath pathToPlugin,
+        DirectoryPath newDirectory,
+        bool overwrite = false,
+        AssociatedModFileCategory? categories = null)
+    {
+        MoveOrCopyModTo(
+            pathToPlugin: pathToPlugin,
+            newDirectory: newDirectory,
+            move: true,
+            overwrite: overwrite,
+            categories: categories);
+    }
+
+    public void CopyModTo(
+        ModPath pathToPlugin,
+        DirectoryPath newDirectory,
+        bool overwrite = false,
+        AssociatedModFileCategory? categories = null)
+    {
+        MoveOrCopyModTo(
+            pathToPlugin: pathToPlugin,
+            newDirectory: newDirectory,
+            move: false,
+            overwrite: overwrite,
+            categories: categories);
+    }
+
+    private void MoveOrCopyModTo(
+        ModPath pathToPlugin,
+        DirectoryPath newDirectory,
+        bool move,
+        bool overwrite = false,
+        AssociatedModFileCategory? categories = null)
+    {
+        var associatedSourceFiles = _associatedFilesLocator
+            .GetAssociatedFiles(pathToPlugin, categories)
+            .ToArray();
+        var pathToNewPlugin = Path.Combine(newDirectory, pathToPlugin.Path.Name);
+        var associatedTargetFiles = _associatedFilesLocator
+            .GetAssociatedFiles(pathToNewPlugin, categories)
+            .ToHashSet();
+
+        if (!overwrite)
+        {
+            var associatedFile = associatedTargetFiles
+                .Select<FilePath, FilePath?>(x => x)
+                .FirstOrDefault();
+            if (associatedFile != null)
+            {
+                throw new IOException($"Mod file already exists: {associatedFile}");
+            }
+        }
+
+        foreach (var sourceFile in associatedSourceFiles)
+        {
+            var relPath = sourceFile.GetRelativePathTo(pathToPlugin.Path.Directory!.Value);
+            FilePath newPath = Path.Combine(newDirectory, relPath);
+            newPath.Directory?.Create(_fileSystem);
+            if (move)
+            {
+                _fileSystem.File.Move(sourceFile, newPath, overwrite: true);
+            }
+            else
+            {
+                _fileSystem.File.Copy(sourceFile, newPath, overwrite: true);
+            }
+            associatedTargetFiles.Remove(newPath);
+        }
+
+        foreach (var oldTargetFile in associatedTargetFiles)
+        {
+            _fileSystem.File.Delete(oldTargetFile);
+            var dir = oldTargetFile.Directory;
+            if (dir != null && !dir.Value.EnumerateFiles(recursive: true, fileSystem: _fileSystem).Any())
+            {
+                _fileSystem.Directory.Delete(dir);
+            }
+        }
+    }
+}

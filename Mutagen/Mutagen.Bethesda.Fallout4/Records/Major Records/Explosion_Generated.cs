@@ -1,0 +1,3314 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Fallout4.Internals;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Aspects;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Cache;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Strings;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Fallout4.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Class
+    public partial class Explosion :
+        Fallout4MajorRecord,
+        IEquatable<IExplosionGetter>,
+        IExplosionInternal,
+        ILoquiObjectSetter<Explosion>
+    {
+        #region Ctor
+        protected Explosion()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region ObjectBounds
+
+        public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter IExplosionGetter.ObjectBounds => ObjectBounds;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ObjectBounds? IObjectBoundedOptional.ObjectBounds
+        {
+            get => this.ObjectBounds;
+            set => this.ObjectBounds = value ?? new ObjectBounds();
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter IObjectBoundedGetter.ObjectBounds => this.ObjectBounds;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IObjectBoundsGetter? IObjectBoundedOptionalGetter.ObjectBounds => this.ObjectBounds;
+        #endregion
+        #endregion
+        #region Name
+
+        public TranslatedString? Name { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter? IExplosionGetter.Name => this.Name;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequiredGetter.Name => this.Name?.String ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamedGetter.Name => this.Name?.String;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter? ITranslatedNamedGetter.Name => this.Name;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter ITranslatedNamedRequiredGetter.Name => this.Name ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamed.Name
+        {
+            get => this.Name?.String;
+            set => this.Name = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequired.Name
+        {
+            get => this.Name?.String ?? string.Empty;
+            set => this.Name = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        TranslatedString ITranslatedNamedRequired.Name
+        {
+            get => this.Name ?? string.Empty;
+            set => this.Name = value;
+        }
+        #endregion
+        #endregion
+        #region Model
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Model? _Model;
+
+        public Model? Model
+        {
+            get => _Model;
+            set => _Model = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IModelGetter? IExplosionGetter.Model => this.Model;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IModelGetter? IModeledGetter.Model => this.Model;
+        #endregion
+        #endregion
+        #region ObjectEffect
+        private readonly IFormLinkNullable<IObjectEffectGetter> _ObjectEffect = new FormLinkNullable<IObjectEffectGetter>();
+        public IFormLinkNullable<IObjectEffectGetter> ObjectEffect
+        {
+            get => _ObjectEffect;
+            set => _ObjectEffect.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IObjectEffectGetter> IExplosionGetter.ObjectEffect => this.ObjectEffect;
+        #endregion
+        #region ImageSpaceModifier
+        private readonly IFormLinkNullable<IImageSpaceAdapterGetter> _ImageSpaceModifier = new FormLinkNullable<IImageSpaceAdapterGetter>();
+        public IFormLinkNullable<IImageSpaceAdapterGetter> ImageSpaceModifier
+        {
+            get => _ImageSpaceModifier;
+            set => _ImageSpaceModifier.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IImageSpaceAdapterGetter> IExplosionGetter.ImageSpaceModifier => this.ImageSpaceModifier;
+        #endregion
+        #region Light
+        private readonly IFormLink<ILightGetter> _Light = new FormLink<ILightGetter>();
+        public IFormLink<ILightGetter> Light
+        {
+            get => _Light;
+            set => _Light.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkGetter<ILightGetter> IExplosionGetter.Light => this.Light;
+        #endregion
+        #region Sound1
+        private readonly IFormLink<ISoundDescriptorGetter> _Sound1 = new FormLink<ISoundDescriptorGetter>();
+        public IFormLink<ISoundDescriptorGetter> Sound1
+        {
+            get => _Sound1;
+            set => _Sound1.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkGetter<ISoundDescriptorGetter> IExplosionGetter.Sound1 => this.Sound1;
+        #endregion
+        #region Sound2
+        private readonly IFormLink<ISoundDescriptorGetter> _Sound2 = new FormLink<ISoundDescriptorGetter>();
+        public IFormLink<ISoundDescriptorGetter> Sound2
+        {
+            get => _Sound2;
+            set => _Sound2.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkGetter<ISoundDescriptorGetter> IExplosionGetter.Sound2 => this.Sound2;
+        #endregion
+        #region ImpactDataSet
+        private readonly IFormLink<IImpactDataSetGetter> _ImpactDataSet = new FormLink<IImpactDataSetGetter>();
+        public IFormLink<IImpactDataSetGetter> ImpactDataSet
+        {
+            get => _ImpactDataSet;
+            set => _ImpactDataSet.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkGetter<IImpactDataSetGetter> IExplosionGetter.ImpactDataSet => this.ImpactDataSet;
+        #endregion
+        #region PlacedObject
+        private readonly IFormLink<IExplodeSpawnGetter> _PlacedObject = new FormLink<IExplodeSpawnGetter>();
+        public IFormLink<IExplodeSpawnGetter> PlacedObject
+        {
+            get => _PlacedObject;
+            set => _PlacedObject.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkGetter<IExplodeSpawnGetter> IExplosionGetter.PlacedObject => this.PlacedObject;
+        #endregion
+        #region SpawnProjectile
+        private readonly IFormLink<IProjectileGetter> _SpawnProjectile = new FormLink<IProjectileGetter>();
+        public IFormLink<IProjectileGetter> SpawnProjectile
+        {
+            get => _SpawnProjectile;
+            set => _SpawnProjectile.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkGetter<IProjectileGetter> IExplosionGetter.SpawnProjectile => this.SpawnProjectile;
+        #endregion
+        #region Force
+        public Single Force { get; set; } = default(Single);
+        #endregion
+        #region Damage
+        public Single Damage { get; set; } = default(Single);
+        #endregion
+        #region InnerRadius
+        public Single InnerRadius { get; set; } = default(Single);
+        #endregion
+        #region OuterRadius
+        public Single OuterRadius { get; set; } = default(Single);
+        #endregion
+        #region ISRadius
+        public Single ISRadius { get; set; } = default(Single);
+        #endregion
+        #region VerticalOffsetMult
+        public Single VerticalOffsetMult { get; set; } = default(Single);
+        #endregion
+        #region Flags
+        public Explosion.Flag Flags { get; set; } = default(Explosion.Flag);
+        #endregion
+        #region SoundLevel
+        public SoundLevel SoundLevel { get; set; } = default(SoundLevel);
+        #endregion
+        #region PlacedObjectAutoFadeDelay
+        public Single PlacedObjectAutoFadeDelay { get; set; } = default(Single);
+        #endregion
+        #region Stagger
+        public Explosion.StaggerAmount Stagger { get; set; } = default(Explosion.StaggerAmount);
+        #endregion
+        #region SpawnPosition
+        public P3Float SpawnPosition { get; set; } = default(P3Float);
+        #endregion
+        #region SpawnSpreadDegrees
+        public Single SpawnSpreadDegrees { get; set; } = default(Single);
+        #endregion
+        #region SpawnCount
+        public UInt32 SpawnCount { get; set; } = default(UInt32);
+        #endregion
+
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            ExplosionMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public new class Mask<TItem> :
+            Fallout4MajorRecord.Mask<TItem>,
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            : base(initialValue)
+            {
+                this.ObjectBounds = new MaskItem<TItem, ObjectBounds.Mask<TItem>?>(initialValue, new ObjectBounds.Mask<TItem>(initialValue));
+                this.Name = initialValue;
+                this.Model = new MaskItem<TItem, Model.Mask<TItem>?>(initialValue, new Model.Mask<TItem>(initialValue));
+                this.ObjectEffect = initialValue;
+                this.ImageSpaceModifier = initialValue;
+                this.Light = initialValue;
+                this.Sound1 = initialValue;
+                this.Sound2 = initialValue;
+                this.ImpactDataSet = initialValue;
+                this.PlacedObject = initialValue;
+                this.SpawnProjectile = initialValue;
+                this.Force = initialValue;
+                this.Damage = initialValue;
+                this.InnerRadius = initialValue;
+                this.OuterRadius = initialValue;
+                this.ISRadius = initialValue;
+                this.VerticalOffsetMult = initialValue;
+                this.Flags = initialValue;
+                this.SoundLevel = initialValue;
+                this.PlacedObjectAutoFadeDelay = initialValue;
+                this.Stagger = initialValue;
+                this.SpawnPosition = initialValue;
+                this.SpawnSpreadDegrees = initialValue;
+                this.SpawnCount = initialValue;
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID,
+                TItem FormVersion,
+                TItem Version2,
+                TItem Fallout4MajorRecordFlags,
+                TItem ObjectBounds,
+                TItem Name,
+                TItem Model,
+                TItem ObjectEffect,
+                TItem ImageSpaceModifier,
+                TItem Light,
+                TItem Sound1,
+                TItem Sound2,
+                TItem ImpactDataSet,
+                TItem PlacedObject,
+                TItem SpawnProjectile,
+                TItem Force,
+                TItem Damage,
+                TItem InnerRadius,
+                TItem OuterRadius,
+                TItem ISRadius,
+                TItem VerticalOffsetMult,
+                TItem Flags,
+                TItem SoundLevel,
+                TItem PlacedObjectAutoFadeDelay,
+                TItem Stagger,
+                TItem SpawnPosition,
+                TItem SpawnSpreadDegrees,
+                TItem SpawnCount)
+            : base(
+                MajorRecordFlagsRaw: MajorRecordFlagsRaw,
+                FormKey: FormKey,
+                VersionControl: VersionControl,
+                EditorID: EditorID,
+                FormVersion: FormVersion,
+                Version2: Version2,
+                Fallout4MajorRecordFlags: Fallout4MajorRecordFlags)
+            {
+                this.ObjectBounds = new MaskItem<TItem, ObjectBounds.Mask<TItem>?>(ObjectBounds, new ObjectBounds.Mask<TItem>(ObjectBounds));
+                this.Name = Name;
+                this.Model = new MaskItem<TItem, Model.Mask<TItem>?>(Model, new Model.Mask<TItem>(Model));
+                this.ObjectEffect = ObjectEffect;
+                this.ImageSpaceModifier = ImageSpaceModifier;
+                this.Light = Light;
+                this.Sound1 = Sound1;
+                this.Sound2 = Sound2;
+                this.ImpactDataSet = ImpactDataSet;
+                this.PlacedObject = PlacedObject;
+                this.SpawnProjectile = SpawnProjectile;
+                this.Force = Force;
+                this.Damage = Damage;
+                this.InnerRadius = InnerRadius;
+                this.OuterRadius = OuterRadius;
+                this.ISRadius = ISRadius;
+                this.VerticalOffsetMult = VerticalOffsetMult;
+                this.Flags = Flags;
+                this.SoundLevel = SoundLevel;
+                this.PlacedObjectAutoFadeDelay = PlacedObjectAutoFadeDelay;
+                this.Stagger = Stagger;
+                this.SpawnPosition = SpawnPosition;
+                this.SpawnSpreadDegrees = SpawnSpreadDegrees;
+                this.SpawnCount = SpawnCount;
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public MaskItem<TItem, ObjectBounds.Mask<TItem>?>? ObjectBounds { get; set; }
+            public TItem Name;
+            public MaskItem<TItem, Model.Mask<TItem>?>? Model { get; set; }
+            public TItem ObjectEffect;
+            public TItem ImageSpaceModifier;
+            public TItem Light;
+            public TItem Sound1;
+            public TItem Sound2;
+            public TItem ImpactDataSet;
+            public TItem PlacedObject;
+            public TItem SpawnProjectile;
+            public TItem Force;
+            public TItem Damage;
+            public TItem InnerRadius;
+            public TItem OuterRadius;
+            public TItem ISRadius;
+            public TItem VerticalOffsetMult;
+            public TItem Flags;
+            public TItem SoundLevel;
+            public TItem PlacedObjectAutoFadeDelay;
+            public TItem Stagger;
+            public TItem SpawnPosition;
+            public TItem SpawnSpreadDegrees;
+            public TItem SpawnCount;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!base.Equals(rhs)) return false;
+                if (!object.Equals(this.ObjectBounds, rhs.ObjectBounds)) return false;
+                if (!object.Equals(this.Name, rhs.Name)) return false;
+                if (!object.Equals(this.Model, rhs.Model)) return false;
+                if (!object.Equals(this.ObjectEffect, rhs.ObjectEffect)) return false;
+                if (!object.Equals(this.ImageSpaceModifier, rhs.ImageSpaceModifier)) return false;
+                if (!object.Equals(this.Light, rhs.Light)) return false;
+                if (!object.Equals(this.Sound1, rhs.Sound1)) return false;
+                if (!object.Equals(this.Sound2, rhs.Sound2)) return false;
+                if (!object.Equals(this.ImpactDataSet, rhs.ImpactDataSet)) return false;
+                if (!object.Equals(this.PlacedObject, rhs.PlacedObject)) return false;
+                if (!object.Equals(this.SpawnProjectile, rhs.SpawnProjectile)) return false;
+                if (!object.Equals(this.Force, rhs.Force)) return false;
+                if (!object.Equals(this.Damage, rhs.Damage)) return false;
+                if (!object.Equals(this.InnerRadius, rhs.InnerRadius)) return false;
+                if (!object.Equals(this.OuterRadius, rhs.OuterRadius)) return false;
+                if (!object.Equals(this.ISRadius, rhs.ISRadius)) return false;
+                if (!object.Equals(this.VerticalOffsetMult, rhs.VerticalOffsetMult)) return false;
+                if (!object.Equals(this.Flags, rhs.Flags)) return false;
+                if (!object.Equals(this.SoundLevel, rhs.SoundLevel)) return false;
+                if (!object.Equals(this.PlacedObjectAutoFadeDelay, rhs.PlacedObjectAutoFadeDelay)) return false;
+                if (!object.Equals(this.Stagger, rhs.Stagger)) return false;
+                if (!object.Equals(this.SpawnPosition, rhs.SpawnPosition)) return false;
+                if (!object.Equals(this.SpawnSpreadDegrees, rhs.SpawnSpreadDegrees)) return false;
+                if (!object.Equals(this.SpawnCount, rhs.SpawnCount)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.ObjectBounds);
+                hash.Add(this.Name);
+                hash.Add(this.Model);
+                hash.Add(this.ObjectEffect);
+                hash.Add(this.ImageSpaceModifier);
+                hash.Add(this.Light);
+                hash.Add(this.Sound1);
+                hash.Add(this.Sound2);
+                hash.Add(this.ImpactDataSet);
+                hash.Add(this.PlacedObject);
+                hash.Add(this.SpawnProjectile);
+                hash.Add(this.Force);
+                hash.Add(this.Damage);
+                hash.Add(this.InnerRadius);
+                hash.Add(this.OuterRadius);
+                hash.Add(this.ISRadius);
+                hash.Add(this.VerticalOffsetMult);
+                hash.Add(this.Flags);
+                hash.Add(this.SoundLevel);
+                hash.Add(this.PlacedObjectAutoFadeDelay);
+                hash.Add(this.Stagger);
+                hash.Add(this.SpawnPosition);
+                hash.Add(this.SpawnSpreadDegrees);
+                hash.Add(this.SpawnCount);
+                hash.Add(base.GetHashCode());
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public override bool All(Func<TItem, bool> eval)
+            {
+                if (!base.All(eval)) return false;
+                if (ObjectBounds != null)
+                {
+                    if (!eval(this.ObjectBounds.Overall)) return false;
+                    if (this.ObjectBounds.Specific != null && !this.ObjectBounds.Specific.All(eval)) return false;
+                }
+                if (!eval(this.Name)) return false;
+                if (Model != null)
+                {
+                    if (!eval(this.Model.Overall)) return false;
+                    if (this.Model.Specific != null && !this.Model.Specific.All(eval)) return false;
+                }
+                if (!eval(this.ObjectEffect)) return false;
+                if (!eval(this.ImageSpaceModifier)) return false;
+                if (!eval(this.Light)) return false;
+                if (!eval(this.Sound1)) return false;
+                if (!eval(this.Sound2)) return false;
+                if (!eval(this.ImpactDataSet)) return false;
+                if (!eval(this.PlacedObject)) return false;
+                if (!eval(this.SpawnProjectile)) return false;
+                if (!eval(this.Force)) return false;
+                if (!eval(this.Damage)) return false;
+                if (!eval(this.InnerRadius)) return false;
+                if (!eval(this.OuterRadius)) return false;
+                if (!eval(this.ISRadius)) return false;
+                if (!eval(this.VerticalOffsetMult)) return false;
+                if (!eval(this.Flags)) return false;
+                if (!eval(this.SoundLevel)) return false;
+                if (!eval(this.PlacedObjectAutoFadeDelay)) return false;
+                if (!eval(this.Stagger)) return false;
+                if (!eval(this.SpawnPosition)) return false;
+                if (!eval(this.SpawnSpreadDegrees)) return false;
+                if (!eval(this.SpawnCount)) return false;
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public override bool Any(Func<TItem, bool> eval)
+            {
+                if (base.Any(eval)) return true;
+                if (ObjectBounds != null)
+                {
+                    if (eval(this.ObjectBounds.Overall)) return true;
+                    if (this.ObjectBounds.Specific != null && this.ObjectBounds.Specific.Any(eval)) return true;
+                }
+                if (eval(this.Name)) return true;
+                if (Model != null)
+                {
+                    if (eval(this.Model.Overall)) return true;
+                    if (this.Model.Specific != null && this.Model.Specific.Any(eval)) return true;
+                }
+                if (eval(this.ObjectEffect)) return true;
+                if (eval(this.ImageSpaceModifier)) return true;
+                if (eval(this.Light)) return true;
+                if (eval(this.Sound1)) return true;
+                if (eval(this.Sound2)) return true;
+                if (eval(this.ImpactDataSet)) return true;
+                if (eval(this.PlacedObject)) return true;
+                if (eval(this.SpawnProjectile)) return true;
+                if (eval(this.Force)) return true;
+                if (eval(this.Damage)) return true;
+                if (eval(this.InnerRadius)) return true;
+                if (eval(this.OuterRadius)) return true;
+                if (eval(this.ISRadius)) return true;
+                if (eval(this.VerticalOffsetMult)) return true;
+                if (eval(this.Flags)) return true;
+                if (eval(this.SoundLevel)) return true;
+                if (eval(this.PlacedObjectAutoFadeDelay)) return true;
+                if (eval(this.Stagger)) return true;
+                if (eval(this.SpawnPosition)) return true;
+                if (eval(this.SpawnSpreadDegrees)) return true;
+                if (eval(this.SpawnCount)) return true;
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public new Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new Explosion.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                base.Translate_InternalFill(obj, eval);
+                obj.ObjectBounds = this.ObjectBounds == null ? null : new MaskItem<R, ObjectBounds.Mask<R>?>(eval(this.ObjectBounds.Overall), this.ObjectBounds.Specific?.Translate(eval));
+                obj.Name = eval(this.Name);
+                obj.Model = this.Model == null ? null : new MaskItem<R, Model.Mask<R>?>(eval(this.Model.Overall), this.Model.Specific?.Translate(eval));
+                obj.ObjectEffect = eval(this.ObjectEffect);
+                obj.ImageSpaceModifier = eval(this.ImageSpaceModifier);
+                obj.Light = eval(this.Light);
+                obj.Sound1 = eval(this.Sound1);
+                obj.Sound2 = eval(this.Sound2);
+                obj.ImpactDataSet = eval(this.ImpactDataSet);
+                obj.PlacedObject = eval(this.PlacedObject);
+                obj.SpawnProjectile = eval(this.SpawnProjectile);
+                obj.Force = eval(this.Force);
+                obj.Damage = eval(this.Damage);
+                obj.InnerRadius = eval(this.InnerRadius);
+                obj.OuterRadius = eval(this.OuterRadius);
+                obj.ISRadius = eval(this.ISRadius);
+                obj.VerticalOffsetMult = eval(this.VerticalOffsetMult);
+                obj.Flags = eval(this.Flags);
+                obj.SoundLevel = eval(this.SoundLevel);
+                obj.PlacedObjectAutoFadeDelay = eval(this.PlacedObjectAutoFadeDelay);
+                obj.Stagger = eval(this.Stagger);
+                obj.SpawnPosition = eval(this.SpawnPosition);
+                obj.SpawnSpreadDegrees = eval(this.SpawnSpreadDegrees);
+                obj.SpawnCount = eval(this.SpawnCount);
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(Explosion.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, Explosion.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(Explosion.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.ObjectBounds?.Overall ?? true)
+                    {
+                        ObjectBounds?.Print(sb);
+                    }
+                    if (printMask?.Name ?? true)
+                    {
+                        sb.AppendItem(Name, "Name");
+                    }
+                    if (printMask?.Model?.Overall ?? true)
+                    {
+                        Model?.Print(sb);
+                    }
+                    if (printMask?.ObjectEffect ?? true)
+                    {
+                        sb.AppendItem(ObjectEffect, "ObjectEffect");
+                    }
+                    if (printMask?.ImageSpaceModifier ?? true)
+                    {
+                        sb.AppendItem(ImageSpaceModifier, "ImageSpaceModifier");
+                    }
+                    if (printMask?.Light ?? true)
+                    {
+                        sb.AppendItem(Light, "Light");
+                    }
+                    if (printMask?.Sound1 ?? true)
+                    {
+                        sb.AppendItem(Sound1, "Sound1");
+                    }
+                    if (printMask?.Sound2 ?? true)
+                    {
+                        sb.AppendItem(Sound2, "Sound2");
+                    }
+                    if (printMask?.ImpactDataSet ?? true)
+                    {
+                        sb.AppendItem(ImpactDataSet, "ImpactDataSet");
+                    }
+                    if (printMask?.PlacedObject ?? true)
+                    {
+                        sb.AppendItem(PlacedObject, "PlacedObject");
+                    }
+                    if (printMask?.SpawnProjectile ?? true)
+                    {
+                        sb.AppendItem(SpawnProjectile, "SpawnProjectile");
+                    }
+                    if (printMask?.Force ?? true)
+                    {
+                        sb.AppendItem(Force, "Force");
+                    }
+                    if (printMask?.Damage ?? true)
+                    {
+                        sb.AppendItem(Damage, "Damage");
+                    }
+                    if (printMask?.InnerRadius ?? true)
+                    {
+                        sb.AppendItem(InnerRadius, "InnerRadius");
+                    }
+                    if (printMask?.OuterRadius ?? true)
+                    {
+                        sb.AppendItem(OuterRadius, "OuterRadius");
+                    }
+                    if (printMask?.ISRadius ?? true)
+                    {
+                        sb.AppendItem(ISRadius, "ISRadius");
+                    }
+                    if (printMask?.VerticalOffsetMult ?? true)
+                    {
+                        sb.AppendItem(VerticalOffsetMult, "VerticalOffsetMult");
+                    }
+                    if (printMask?.Flags ?? true)
+                    {
+                        sb.AppendItem(Flags, "Flags");
+                    }
+                    if (printMask?.SoundLevel ?? true)
+                    {
+                        sb.AppendItem(SoundLevel, "SoundLevel");
+                    }
+                    if (printMask?.PlacedObjectAutoFadeDelay ?? true)
+                    {
+                        sb.AppendItem(PlacedObjectAutoFadeDelay, "PlacedObjectAutoFadeDelay");
+                    }
+                    if (printMask?.Stagger ?? true)
+                    {
+                        sb.AppendItem(Stagger, "Stagger");
+                    }
+                    if (printMask?.SpawnPosition ?? true)
+                    {
+                        sb.AppendItem(SpawnPosition, "SpawnPosition");
+                    }
+                    if (printMask?.SpawnSpreadDegrees ?? true)
+                    {
+                        sb.AppendItem(SpawnSpreadDegrees, "SpawnSpreadDegrees");
+                    }
+                    if (printMask?.SpawnCount ?? true)
+                    {
+                        sb.AppendItem(SpawnCount, "SpawnCount");
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public new class ErrorMask :
+            Fallout4MajorRecord.ErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public MaskItem<Exception?, ObjectBounds.ErrorMask?>? ObjectBounds;
+            public Exception? Name;
+            public MaskItem<Exception?, Model.ErrorMask?>? Model;
+            public Exception? ObjectEffect;
+            public Exception? ImageSpaceModifier;
+            public Exception? Light;
+            public Exception? Sound1;
+            public Exception? Sound2;
+            public Exception? ImpactDataSet;
+            public Exception? PlacedObject;
+            public Exception? SpawnProjectile;
+            public Exception? Force;
+            public Exception? Damage;
+            public Exception? InnerRadius;
+            public Exception? OuterRadius;
+            public Exception? ISRadius;
+            public Exception? VerticalOffsetMult;
+            public Exception? Flags;
+            public Exception? SoundLevel;
+            public Exception? PlacedObjectAutoFadeDelay;
+            public Exception? Stagger;
+            public Exception? SpawnPosition;
+            public Exception? SpawnSpreadDegrees;
+            public Exception? SpawnCount;
+            #endregion
+
+            #region IErrorMask
+            public override object? GetNthMask(int index)
+            {
+                Explosion_FieldIndex enu = (Explosion_FieldIndex)index;
+                switch (enu)
+                {
+                    case Explosion_FieldIndex.ObjectBounds:
+                        return ObjectBounds;
+                    case Explosion_FieldIndex.Name:
+                        return Name;
+                    case Explosion_FieldIndex.Model:
+                        return Model;
+                    case Explosion_FieldIndex.ObjectEffect:
+                        return ObjectEffect;
+                    case Explosion_FieldIndex.ImageSpaceModifier:
+                        return ImageSpaceModifier;
+                    case Explosion_FieldIndex.Light:
+                        return Light;
+                    case Explosion_FieldIndex.Sound1:
+                        return Sound1;
+                    case Explosion_FieldIndex.Sound2:
+                        return Sound2;
+                    case Explosion_FieldIndex.ImpactDataSet:
+                        return ImpactDataSet;
+                    case Explosion_FieldIndex.PlacedObject:
+                        return PlacedObject;
+                    case Explosion_FieldIndex.SpawnProjectile:
+                        return SpawnProjectile;
+                    case Explosion_FieldIndex.Force:
+                        return Force;
+                    case Explosion_FieldIndex.Damage:
+                        return Damage;
+                    case Explosion_FieldIndex.InnerRadius:
+                        return InnerRadius;
+                    case Explosion_FieldIndex.OuterRadius:
+                        return OuterRadius;
+                    case Explosion_FieldIndex.ISRadius:
+                        return ISRadius;
+                    case Explosion_FieldIndex.VerticalOffsetMult:
+                        return VerticalOffsetMult;
+                    case Explosion_FieldIndex.Flags:
+                        return Flags;
+                    case Explosion_FieldIndex.SoundLevel:
+                        return SoundLevel;
+                    case Explosion_FieldIndex.PlacedObjectAutoFadeDelay:
+                        return PlacedObjectAutoFadeDelay;
+                    case Explosion_FieldIndex.Stagger:
+                        return Stagger;
+                    case Explosion_FieldIndex.SpawnPosition:
+                        return SpawnPosition;
+                    case Explosion_FieldIndex.SpawnSpreadDegrees:
+                        return SpawnSpreadDegrees;
+                    case Explosion_FieldIndex.SpawnCount:
+                        return SpawnCount;
+                    default:
+                        return base.GetNthMask(index);
+                }
+            }
+
+            public override void SetNthException(int index, Exception ex)
+            {
+                Explosion_FieldIndex enu = (Explosion_FieldIndex)index;
+                switch (enu)
+                {
+                    case Explosion_FieldIndex.ObjectBounds:
+                        this.ObjectBounds = new MaskItem<Exception?, ObjectBounds.ErrorMask?>(ex, null);
+                        break;
+                    case Explosion_FieldIndex.Name:
+                        this.Name = ex;
+                        break;
+                    case Explosion_FieldIndex.Model:
+                        this.Model = new MaskItem<Exception?, Model.ErrorMask?>(ex, null);
+                        break;
+                    case Explosion_FieldIndex.ObjectEffect:
+                        this.ObjectEffect = ex;
+                        break;
+                    case Explosion_FieldIndex.ImageSpaceModifier:
+                        this.ImageSpaceModifier = ex;
+                        break;
+                    case Explosion_FieldIndex.Light:
+                        this.Light = ex;
+                        break;
+                    case Explosion_FieldIndex.Sound1:
+                        this.Sound1 = ex;
+                        break;
+                    case Explosion_FieldIndex.Sound2:
+                        this.Sound2 = ex;
+                        break;
+                    case Explosion_FieldIndex.ImpactDataSet:
+                        this.ImpactDataSet = ex;
+                        break;
+                    case Explosion_FieldIndex.PlacedObject:
+                        this.PlacedObject = ex;
+                        break;
+                    case Explosion_FieldIndex.SpawnProjectile:
+                        this.SpawnProjectile = ex;
+                        break;
+                    case Explosion_FieldIndex.Force:
+                        this.Force = ex;
+                        break;
+                    case Explosion_FieldIndex.Damage:
+                        this.Damage = ex;
+                        break;
+                    case Explosion_FieldIndex.InnerRadius:
+                        this.InnerRadius = ex;
+                        break;
+                    case Explosion_FieldIndex.OuterRadius:
+                        this.OuterRadius = ex;
+                        break;
+                    case Explosion_FieldIndex.ISRadius:
+                        this.ISRadius = ex;
+                        break;
+                    case Explosion_FieldIndex.VerticalOffsetMult:
+                        this.VerticalOffsetMult = ex;
+                        break;
+                    case Explosion_FieldIndex.Flags:
+                        this.Flags = ex;
+                        break;
+                    case Explosion_FieldIndex.SoundLevel:
+                        this.SoundLevel = ex;
+                        break;
+                    case Explosion_FieldIndex.PlacedObjectAutoFadeDelay:
+                        this.PlacedObjectAutoFadeDelay = ex;
+                        break;
+                    case Explosion_FieldIndex.Stagger:
+                        this.Stagger = ex;
+                        break;
+                    case Explosion_FieldIndex.SpawnPosition:
+                        this.SpawnPosition = ex;
+                        break;
+                    case Explosion_FieldIndex.SpawnSpreadDegrees:
+                        this.SpawnSpreadDegrees = ex;
+                        break;
+                    case Explosion_FieldIndex.SpawnCount:
+                        this.SpawnCount = ex;
+                        break;
+                    default:
+                        base.SetNthException(index, ex);
+                        break;
+                }
+            }
+
+            public override void SetNthMask(int index, object obj)
+            {
+                Explosion_FieldIndex enu = (Explosion_FieldIndex)index;
+                switch (enu)
+                {
+                    case Explosion_FieldIndex.ObjectBounds:
+                        this.ObjectBounds = (MaskItem<Exception?, ObjectBounds.ErrorMask?>?)obj;
+                        break;
+                    case Explosion_FieldIndex.Name:
+                        this.Name = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Model:
+                        this.Model = (MaskItem<Exception?, Model.ErrorMask?>?)obj;
+                        break;
+                    case Explosion_FieldIndex.ObjectEffect:
+                        this.ObjectEffect = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.ImageSpaceModifier:
+                        this.ImageSpaceModifier = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Light:
+                        this.Light = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Sound1:
+                        this.Sound1 = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Sound2:
+                        this.Sound2 = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.ImpactDataSet:
+                        this.ImpactDataSet = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.PlacedObject:
+                        this.PlacedObject = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.SpawnProjectile:
+                        this.SpawnProjectile = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Force:
+                        this.Force = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Damage:
+                        this.Damage = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.InnerRadius:
+                        this.InnerRadius = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.OuterRadius:
+                        this.OuterRadius = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.ISRadius:
+                        this.ISRadius = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.VerticalOffsetMult:
+                        this.VerticalOffsetMult = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Flags:
+                        this.Flags = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.SoundLevel:
+                        this.SoundLevel = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.PlacedObjectAutoFadeDelay:
+                        this.PlacedObjectAutoFadeDelay = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.Stagger:
+                        this.Stagger = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.SpawnPosition:
+                        this.SpawnPosition = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.SpawnSpreadDegrees:
+                        this.SpawnSpreadDegrees = (Exception?)obj;
+                        break;
+                    case Explosion_FieldIndex.SpawnCount:
+                        this.SpawnCount = (Exception?)obj;
+                        break;
+                    default:
+                        base.SetNthMask(index, obj);
+                        break;
+                }
+            }
+
+            public override bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (ObjectBounds != null) return true;
+                if (Name != null) return true;
+                if (Model != null) return true;
+                if (ObjectEffect != null) return true;
+                if (ImageSpaceModifier != null) return true;
+                if (Light != null) return true;
+                if (Sound1 != null) return true;
+                if (Sound2 != null) return true;
+                if (ImpactDataSet != null) return true;
+                if (PlacedObject != null) return true;
+                if (SpawnProjectile != null) return true;
+                if (Force != null) return true;
+                if (Damage != null) return true;
+                if (InnerRadius != null) return true;
+                if (OuterRadius != null) return true;
+                if (ISRadius != null) return true;
+                if (VerticalOffsetMult != null) return true;
+                if (Flags != null) return true;
+                if (SoundLevel != null) return true;
+                if (PlacedObjectAutoFadeDelay != null) return true;
+                if (Stagger != null) return true;
+                if (SpawnPosition != null) return true;
+                if (SpawnSpreadDegrees != null) return true;
+                if (SpawnCount != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public override void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected override void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                base.PrintFillInternal(sb);
+                ObjectBounds?.Print(sb);
+                {
+                    sb.AppendItem(Name, "Name");
+                }
+                Model?.Print(sb);
+                {
+                    sb.AppendItem(ObjectEffect, "ObjectEffect");
+                }
+                {
+                    sb.AppendItem(ImageSpaceModifier, "ImageSpaceModifier");
+                }
+                {
+                    sb.AppendItem(Light, "Light");
+                }
+                {
+                    sb.AppendItem(Sound1, "Sound1");
+                }
+                {
+                    sb.AppendItem(Sound2, "Sound2");
+                }
+                {
+                    sb.AppendItem(ImpactDataSet, "ImpactDataSet");
+                }
+                {
+                    sb.AppendItem(PlacedObject, "PlacedObject");
+                }
+                {
+                    sb.AppendItem(SpawnProjectile, "SpawnProjectile");
+                }
+                {
+                    sb.AppendItem(Force, "Force");
+                }
+                {
+                    sb.AppendItem(Damage, "Damage");
+                }
+                {
+                    sb.AppendItem(InnerRadius, "InnerRadius");
+                }
+                {
+                    sb.AppendItem(OuterRadius, "OuterRadius");
+                }
+                {
+                    sb.AppendItem(ISRadius, "ISRadius");
+                }
+                {
+                    sb.AppendItem(VerticalOffsetMult, "VerticalOffsetMult");
+                }
+                {
+                    sb.AppendItem(Flags, "Flags");
+                }
+                {
+                    sb.AppendItem(SoundLevel, "SoundLevel");
+                }
+                {
+                    sb.AppendItem(PlacedObjectAutoFadeDelay, "PlacedObjectAutoFadeDelay");
+                }
+                {
+                    sb.AppendItem(Stagger, "Stagger");
+                }
+                {
+                    sb.AppendItem(SpawnPosition, "SpawnPosition");
+                }
+                {
+                    sb.AppendItem(SpawnSpreadDegrees, "SpawnSpreadDegrees");
+                }
+                {
+                    sb.AppendItem(SpawnCount, "SpawnCount");
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.ObjectBounds = this.ObjectBounds.Combine(rhs.ObjectBounds, (l, r) => l.Combine(r));
+                ret.Name = this.Name.Combine(rhs.Name);
+                ret.Model = this.Model.Combine(rhs.Model, (l, r) => l.Combine(r));
+                ret.ObjectEffect = this.ObjectEffect.Combine(rhs.ObjectEffect);
+                ret.ImageSpaceModifier = this.ImageSpaceModifier.Combine(rhs.ImageSpaceModifier);
+                ret.Light = this.Light.Combine(rhs.Light);
+                ret.Sound1 = this.Sound1.Combine(rhs.Sound1);
+                ret.Sound2 = this.Sound2.Combine(rhs.Sound2);
+                ret.ImpactDataSet = this.ImpactDataSet.Combine(rhs.ImpactDataSet);
+                ret.PlacedObject = this.PlacedObject.Combine(rhs.PlacedObject);
+                ret.SpawnProjectile = this.SpawnProjectile.Combine(rhs.SpawnProjectile);
+                ret.Force = this.Force.Combine(rhs.Force);
+                ret.Damage = this.Damage.Combine(rhs.Damage);
+                ret.InnerRadius = this.InnerRadius.Combine(rhs.InnerRadius);
+                ret.OuterRadius = this.OuterRadius.Combine(rhs.OuterRadius);
+                ret.ISRadius = this.ISRadius.Combine(rhs.ISRadius);
+                ret.VerticalOffsetMult = this.VerticalOffsetMult.Combine(rhs.VerticalOffsetMult);
+                ret.Flags = this.Flags.Combine(rhs.Flags);
+                ret.SoundLevel = this.SoundLevel.Combine(rhs.SoundLevel);
+                ret.PlacedObjectAutoFadeDelay = this.PlacedObjectAutoFadeDelay.Combine(rhs.PlacedObjectAutoFadeDelay);
+                ret.Stagger = this.Stagger.Combine(rhs.Stagger);
+                ret.SpawnPosition = this.SpawnPosition.Combine(rhs.SpawnPosition);
+                ret.SpawnSpreadDegrees = this.SpawnSpreadDegrees.Combine(rhs.SpawnSpreadDegrees);
+                ret.SpawnCount = this.SpawnCount.Combine(rhs.SpawnCount);
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static new ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public new class TranslationMask :
+            Fallout4MajorRecord.TranslationMask,
+            ITranslationMask
+        {
+            #region Members
+            public ObjectBounds.TranslationMask? ObjectBounds;
+            public bool Name;
+            public Model.TranslationMask? Model;
+            public bool ObjectEffect;
+            public bool ImageSpaceModifier;
+            public bool Light;
+            public bool Sound1;
+            public bool Sound2;
+            public bool ImpactDataSet;
+            public bool PlacedObject;
+            public bool SpawnProjectile;
+            public bool Force;
+            public bool Damage;
+            public bool InnerRadius;
+            public bool OuterRadius;
+            public bool ISRadius;
+            public bool VerticalOffsetMult;
+            public bool Flags;
+            public bool SoundLevel;
+            public bool PlacedObjectAutoFadeDelay;
+            public bool Stagger;
+            public bool SpawnPosition;
+            public bool SpawnSpreadDegrees;
+            public bool SpawnCount;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+                : base(defaultOn, onOverall)
+            {
+                this.Name = defaultOn;
+                this.ObjectEffect = defaultOn;
+                this.ImageSpaceModifier = defaultOn;
+                this.Light = defaultOn;
+                this.Sound1 = defaultOn;
+                this.Sound2 = defaultOn;
+                this.ImpactDataSet = defaultOn;
+                this.PlacedObject = defaultOn;
+                this.SpawnProjectile = defaultOn;
+                this.Force = defaultOn;
+                this.Damage = defaultOn;
+                this.InnerRadius = defaultOn;
+                this.OuterRadius = defaultOn;
+                this.ISRadius = defaultOn;
+                this.VerticalOffsetMult = defaultOn;
+                this.Flags = defaultOn;
+                this.SoundLevel = defaultOn;
+                this.PlacedObjectAutoFadeDelay = defaultOn;
+                this.Stagger = defaultOn;
+                this.SpawnPosition = defaultOn;
+                this.SpawnSpreadDegrees = defaultOn;
+                this.SpawnCount = defaultOn;
+            }
+
+            #endregion
+
+            protected override void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                base.GetCrystal(ret);
+                ret.Add((ObjectBounds != null ? ObjectBounds.OnOverall : DefaultOn, ObjectBounds?.GetCrystal()));
+                ret.Add((Name, null));
+                ret.Add((Model != null ? Model.OnOverall : DefaultOn, Model?.GetCrystal()));
+                ret.Add((ObjectEffect, null));
+                ret.Add((ImageSpaceModifier, null));
+                ret.Add((Light, null));
+                ret.Add((Sound1, null));
+                ret.Add((Sound2, null));
+                ret.Add((ImpactDataSet, null));
+                ret.Add((PlacedObject, null));
+                ret.Add((SpawnProjectile, null));
+                ret.Add((Force, null));
+                ret.Add((Damage, null));
+                ret.Add((InnerRadius, null));
+                ret.Add((OuterRadius, null));
+                ret.Add((ISRadius, null));
+                ret.Add((VerticalOffsetMult, null));
+                ret.Add((Flags, null));
+                ret.Add((SoundLevel, null));
+                ret.Add((PlacedObjectAutoFadeDelay, null));
+                ret.Add((Stagger, null));
+                ret.Add((SpawnPosition, null));
+                ret.Add((SpawnSpreadDegrees, null));
+                ret.Add((SpawnCount, null));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public static readonly RecordType GrupRecordType = Explosion_Registration.TriggeringRecordType;
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => ExplosionCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        public override void RemapLinks(IReadOnlyDictionary<FormKey, FormKey> mapping) => ExplosionSetterCommon.Instance.RemapLinks(this, mapping);
+        public Explosion(
+            FormKey formKey,
+            Fallout4Release gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease.ToGameRelease()).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        private Explosion(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        internal Explosion(
+            FormKey formKey,
+            ushort formVersion)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = formVersion;
+            CustomCtor();
+        }
+
+        public Explosion(IFallout4Mod mod)
+            : this(
+                mod.GetNextFormKey(),
+                mod.Fallout4Release)
+        {
+        }
+
+        public Explosion(IFallout4Mod mod, string editorID)
+            : this(
+                mod.GetNextFormKey(editorID),
+                mod.Fallout4Release)
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<Explosion>.ToString(this);
+        }
+
+        protected override Type LinkType => typeof(IExplosion);
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IExplosionGetter rhs) return false;
+            return ((ExplosionCommon)((IExplosionGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IExplosionGetter? obj)
+        {
+            return ((ExplosionCommon)((IExplosionGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((ExplosionCommon)((IExplosionGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => ExplosionBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((ExplosionBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #region Binary Create
+        public new static Explosion CreateFromBinary(
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            var ret = new Explosion();
+            ((ExplosionSetterCommon)((IExplosionGetter)ret).CommonSetterInstance()!).CopyInFromBinary(
+                item: ret,
+                frame: frame,
+                translationParams: translationParams);
+            return ret;
+        }
+
+        #endregion
+
+        public static bool TryCreateFromBinary(
+            MutagenFrame frame,
+            out Explosion item,
+            TypedParseParams translationParams = default)
+        {
+            var startPos = frame.Position;
+            item = CreateFromBinary(
+                frame: frame,
+                translationParams: translationParams);
+            return startPos != frame.Position;
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((ExplosionSetterCommon)((IExplosionGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static new Explosion GetNew()
+        {
+            return new Explosion();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface IExplosion :
+        IExplodeSpawn,
+        IExplosionGetter,
+        IFallout4MajorRecordInternal,
+        IFormLinkContainer,
+        ILoquiObjectSetter<IExplosionInternal>,
+        IModeled,
+        INamed,
+        INamedRequired,
+        IObjectBounded,
+        IPlaceableObject,
+        IReferenceableObject,
+        ITranslatedNamed,
+        ITranslatedNamedRequired
+    {
+
+        new ObjectBounds ObjectBounds { get; set; }
+
+        new TranslatedString? Name { get; set; }
+
+        new Model? Model { get; set; }
+        new IFormLinkNullable<IObjectEffectGetter> ObjectEffect { get; set; }
+        new IFormLinkNullable<IImageSpaceAdapterGetter> ImageSpaceModifier { get; set; }
+        new IFormLink<ILightGetter> Light { get; set; }
+        new IFormLink<ISoundDescriptorGetter> Sound1 { get; set; }
+        new IFormLink<ISoundDescriptorGetter> Sound2 { get; set; }
+        new IFormLink<IImpactDataSetGetter> ImpactDataSet { get; set; }
+        new IFormLink<IExplodeSpawnGetter> PlacedObject { get; set; }
+        new IFormLink<IProjectileGetter> SpawnProjectile { get; set; }
+        new Single Force { get; set; }
+        new Single Damage { get; set; }
+        new Single InnerRadius { get; set; }
+        new Single OuterRadius { get; set; }
+        new Single ISRadius { get; set; }
+        new Single VerticalOffsetMult { get; set; }
+        new Explosion.Flag Flags { get; set; }
+        new SoundLevel SoundLevel { get; set; }
+        new Single PlacedObjectAutoFadeDelay { get; set; }
+        new Explosion.StaggerAmount Stagger { get; set; }
+        new P3Float SpawnPosition { get; set; }
+        new Single SpawnSpreadDegrees { get; set; }
+        new UInt32 SpawnCount { get; set; }
+    }
+
+    public partial interface IExplosionInternal :
+        IFallout4MajorRecordInternal,
+        IExplosion,
+        IExplosionGetter
+    {
+    }
+
+    [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.EXPL)]
+    public partial interface IExplosionGetter :
+        IFallout4MajorRecordGetter,
+        IBinaryItem,
+        IExplodeSpawnGetter,
+        IFormLinkContainerGetter,
+        ILoquiObject<IExplosionGetter>,
+        IMapsToGetter<IExplosionGetter>,
+        IModeledGetter,
+        INamedGetter,
+        INamedRequiredGetter,
+        IObjectBoundedGetter,
+        IPlaceableObjectGetter,
+        IReferenceableObjectGetter,
+        ITranslatedNamedGetter,
+        ITranslatedNamedRequiredGetter
+    {
+        static new ILoquiRegistration StaticRegistration => Explosion_Registration.Instance;
+        #region ObjectBounds
+
+        IObjectBoundsGetter ObjectBounds { get; }
+        #endregion
+        #region Name
+
+        ITranslatedStringGetter? Name { get; }
+        #endregion
+        #region Model
+
+        IModelGetter? Model { get; }
+        #endregion
+        IFormLinkNullableGetter<IObjectEffectGetter> ObjectEffect { get; }
+        IFormLinkNullableGetter<IImageSpaceAdapterGetter> ImageSpaceModifier { get; }
+        IFormLinkGetter<ILightGetter> Light { get; }
+        IFormLinkGetter<ISoundDescriptorGetter> Sound1 { get; }
+        IFormLinkGetter<ISoundDescriptorGetter> Sound2 { get; }
+        IFormLinkGetter<IImpactDataSetGetter> ImpactDataSet { get; }
+        IFormLinkGetter<IExplodeSpawnGetter> PlacedObject { get; }
+        IFormLinkGetter<IProjectileGetter> SpawnProjectile { get; }
+        Single Force { get; }
+        Single Damage { get; }
+        Single InnerRadius { get; }
+        Single OuterRadius { get; }
+        Single ISRadius { get; }
+        Single VerticalOffsetMult { get; }
+        Explosion.Flag Flags { get; }
+        SoundLevel SoundLevel { get; }
+        Single PlacedObjectAutoFadeDelay { get; }
+        Explosion.StaggerAmount Stagger { get; }
+        P3Float SpawnPosition { get; }
+        Single SpawnSpreadDegrees { get; }
+        UInt32 SpawnCount { get; }
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class ExplosionMixIn
+    {
+        public static void Clear(this IExplosionInternal item)
+        {
+            ((ExplosionSetterCommon)((IExplosionGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static Explosion.Mask<bool> GetEqualsMask(
+            this IExplosionGetter item,
+            IExplosionGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this IExplosionGetter item,
+            string? name = null,
+            Explosion.Mask<bool>? printMask = null)
+        {
+            return ((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this IExplosionGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            Explosion.Mask<bool>? printMask = null)
+        {
+            ((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this IExplosionGetter item,
+            IExplosionGetter rhs,
+            Explosion.TranslationMask? equalsMask = null)
+        {
+            return ((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this IExplosionInternal lhs,
+            IExplosionGetter rhs,
+            out Explosion.ErrorMask errorMask,
+            Explosion.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((ExplosionSetterTranslationCommon)((IExplosionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = Explosion.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this IExplosionInternal lhs,
+            IExplosionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((ExplosionSetterTranslationCommon)((IExplosionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static Explosion DeepCopy(
+            this IExplosionGetter item,
+            Explosion.TranslationMask? copyMask = null)
+        {
+            return ((ExplosionSetterTranslationCommon)((IExplosionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static Explosion DeepCopy(
+            this IExplosionGetter item,
+            out Explosion.ErrorMask errorMask,
+            Explosion.TranslationMask? copyMask = null)
+        {
+            return ((ExplosionSetterTranslationCommon)((IExplosionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static Explosion DeepCopy(
+            this IExplosionGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((ExplosionSetterTranslationCommon)((IExplosionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        public static Explosion Duplicate(
+            this IExplosionGetter item,
+            FormKey formKey,
+            Explosion.TranslationMask? copyMask = null)
+        {
+            return ((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static Explosion Duplicate(
+            this IExplosionGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this IExplosionInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((ExplosionSetterCommon)((IExplosionGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Field Index
+    internal enum Explosion_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+        FormVersion = 4,
+        Version2 = 5,
+        Fallout4MajorRecordFlags = 6,
+        ObjectBounds = 7,
+        Name = 8,
+        Model = 9,
+        ObjectEffect = 10,
+        ImageSpaceModifier = 11,
+        Light = 12,
+        Sound1 = 13,
+        Sound2 = 14,
+        ImpactDataSet = 15,
+        PlacedObject = 16,
+        SpawnProjectile = 17,
+        Force = 18,
+        Damage = 19,
+        InnerRadius = 20,
+        OuterRadius = 21,
+        ISRadius = 22,
+        VerticalOffsetMult = 23,
+        Flags = 24,
+        SoundLevel = 25,
+        PlacedObjectAutoFadeDelay = 26,
+        Stagger = 27,
+        SpawnPosition = 28,
+        SpawnSpreadDegrees = 29,
+        SpawnCount = 30,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class Explosion_Registration : ILoquiRegistration
+    {
+        public static readonly Explosion_Registration Instance = new Explosion_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Fallout4.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 24;
+
+        public const ushort FieldCount = 31;
+
+        public static readonly Type MaskType = typeof(Explosion.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(Explosion.ErrorMask);
+
+        public static readonly Type ClassType = typeof(Explosion);
+
+        public static readonly Type GetterType = typeof(IExplosionGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(IExplosion);
+
+        public static readonly Type? InternalSetterType = typeof(IExplosionInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Fallout4.Explosion";
+
+        public const string Name = "Explosion";
+
+        public const string Namespace = "Mutagen.Bethesda.Fallout4";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly RecordType TriggeringRecordType = RecordTypes.EXPL;
+        public static RecordTriggerSpecs TriggerSpecs => _recordSpecs.Value;
+        private static readonly Lazy<RecordTriggerSpecs> _recordSpecs = new Lazy<RecordTriggerSpecs>(() =>
+        {
+            var triggers = RecordCollection.Factory(RecordTypes.EXPL);
+            var all = RecordCollection.Factory(
+                RecordTypes.EXPL,
+                RecordTypes.OBND,
+                RecordTypes.FULL,
+                RecordTypes.MODL,
+                RecordTypes.MODC,
+                RecordTypes.MODT,
+                RecordTypes.MODS,
+                RecordTypes.EITM,
+                RecordTypes.MNAM,
+                RecordTypes.DATA);
+            return new RecordTriggerSpecs(
+                allRecordTypes: all,
+                triggeringRecordTypes: triggers);
+        });
+        public static readonly Type BinaryWriteTranslation = typeof(ExplosionBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class ExplosionSetterCommon : Fallout4MajorRecordSetterCommon
+    {
+        public new static readonly ExplosionSetterCommon Instance = new ExplosionSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(IExplosionInternal item)
+        {
+            ClearPartial();
+            item.ObjectBounds.Clear();
+            item.Name = default;
+            item.Model = null;
+            item.ObjectEffect.Clear();
+            item.ImageSpaceModifier.Clear();
+            item.Light.Clear();
+            item.Sound1.Clear();
+            item.Sound2.Clear();
+            item.ImpactDataSet.Clear();
+            item.PlacedObject.Clear();
+            item.SpawnProjectile.Clear();
+            item.Force = default(Single);
+            item.Damage = default(Single);
+            item.InnerRadius = default(Single);
+            item.OuterRadius = default(Single);
+            item.ISRadius = default(Single);
+            item.VerticalOffsetMult = default(Single);
+            item.Flags = default(Explosion.Flag);
+            item.SoundLevel = default(SoundLevel);
+            item.PlacedObjectAutoFadeDelay = default(Single);
+            item.Stagger = default(Explosion.StaggerAmount);
+            item.SpawnPosition = default(P3Float);
+            item.SpawnSpreadDegrees = default(Single);
+            item.SpawnCount = default(UInt32);
+            base.Clear(item);
+        }
+
+        public override void Clear(IFallout4MajorRecordInternal item)
+        {
+            Clear(item: (IExplosionInternal)item);
+        }
+
+        public override void Clear(IMajorRecordInternal item)
+        {
+            Clear(item: (IExplosionInternal)item);
+        }
+
+        #region Mutagen
+        public void RemapLinks(IExplosion obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+            base.RemapLinks(obj, mapping);
+            obj.Model?.RemapLinks(mapping);
+            obj.ObjectEffect.Relink(mapping);
+            obj.ImageSpaceModifier.Relink(mapping);
+            obj.Light.Relink(mapping);
+            obj.Sound1.Relink(mapping);
+            obj.Sound2.Relink(mapping);
+            obj.ImpactDataSet.Relink(mapping);
+            obj.PlacedObject.Relink(mapping);
+            obj.SpawnProjectile.Relink(mapping);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            IExplosionInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<IExplosionInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: ExplosionBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: ExplosionBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        public override void CopyInFromBinary(
+            IFallout4MajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (Explosion)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (Explosion)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    internal partial class ExplosionCommon : Fallout4MajorRecordCommon
+    {
+        public new static readonly ExplosionCommon Instance = new ExplosionCommon();
+
+        public Explosion.Mask<bool> GetEqualsMask(
+            IExplosionGetter item,
+            IExplosionGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new Explosion.Mask<bool>(false);
+            ((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            IExplosionGetter item,
+            IExplosionGetter rhs,
+            Explosion.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.ObjectBounds = MaskItemExt.Factory(item.ObjectBounds.GetEqualsMask(rhs.ObjectBounds, include), include);
+            ret.Name = object.Equals(item.Name, rhs.Name);
+            ret.Model = EqualsMaskHelper.EqualsHelper(
+                item.Model,
+                rhs.Model,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.ObjectEffect = item.ObjectEffect.Equals(rhs.ObjectEffect);
+            ret.ImageSpaceModifier = item.ImageSpaceModifier.Equals(rhs.ImageSpaceModifier);
+            ret.Light = item.Light.Equals(rhs.Light);
+            ret.Sound1 = item.Sound1.Equals(rhs.Sound1);
+            ret.Sound2 = item.Sound2.Equals(rhs.Sound2);
+            ret.ImpactDataSet = item.ImpactDataSet.Equals(rhs.ImpactDataSet);
+            ret.PlacedObject = item.PlacedObject.Equals(rhs.PlacedObject);
+            ret.SpawnProjectile = item.SpawnProjectile.Equals(rhs.SpawnProjectile);
+            ret.Force = item.Force.EqualsWithin(rhs.Force);
+            ret.Damage = item.Damage.EqualsWithin(rhs.Damage);
+            ret.InnerRadius = item.InnerRadius.EqualsWithin(rhs.InnerRadius);
+            ret.OuterRadius = item.OuterRadius.EqualsWithin(rhs.OuterRadius);
+            ret.ISRadius = item.ISRadius.EqualsWithin(rhs.ISRadius);
+            ret.VerticalOffsetMult = item.VerticalOffsetMult.EqualsWithin(rhs.VerticalOffsetMult);
+            ret.Flags = item.Flags == rhs.Flags;
+            ret.SoundLevel = item.SoundLevel == rhs.SoundLevel;
+            ret.PlacedObjectAutoFadeDelay = item.PlacedObjectAutoFadeDelay.EqualsWithin(rhs.PlacedObjectAutoFadeDelay);
+            ret.Stagger = item.Stagger == rhs.Stagger;
+            ret.SpawnPosition = item.SpawnPosition.Equals(rhs.SpawnPosition);
+            ret.SpawnSpreadDegrees = item.SpawnSpreadDegrees.EqualsWithin(rhs.SpawnSpreadDegrees);
+            ret.SpawnCount = item.SpawnCount == rhs.SpawnCount;
+            base.FillEqualsMask(item, rhs, ret, include);
+        }
+
+        public string Print(
+            IExplosionGetter item,
+            string? name = null,
+            Explosion.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            IExplosionGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            Explosion.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"Explosion =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (Explosion) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            IExplosionGetter item,
+            StructuredStringBuilder sb,
+            Explosion.Mask<bool>? printMask = null)
+        {
+            Fallout4MajorRecordCommon.ToStringFields(
+                item: item,
+                sb: sb,
+                printMask: printMask);
+            if (printMask?.ObjectBounds?.Overall ?? true)
+            {
+                item.ObjectBounds?.Print(sb, "ObjectBounds");
+            }
+            if ((printMask?.Name ?? true)
+                && item.Name is {} NameItem)
+            {
+                sb.AppendItem(NameItem, "Name");
+            }
+            if ((printMask?.Model?.Overall ?? true)
+                && item.Model is {} ModelItem)
+            {
+                ModelItem?.Print(sb, "Model");
+            }
+            if (printMask?.ObjectEffect ?? true)
+            {
+                sb.AppendItem(item.ObjectEffect.FormKeyNullable, "ObjectEffect");
+            }
+            if (printMask?.ImageSpaceModifier ?? true)
+            {
+                sb.AppendItem(item.ImageSpaceModifier.FormKeyNullable, "ImageSpaceModifier");
+            }
+            if (printMask?.Light ?? true)
+            {
+                sb.AppendItem(item.Light.FormKey, "Light");
+            }
+            if (printMask?.Sound1 ?? true)
+            {
+                sb.AppendItem(item.Sound1.FormKey, "Sound1");
+            }
+            if (printMask?.Sound2 ?? true)
+            {
+                sb.AppendItem(item.Sound2.FormKey, "Sound2");
+            }
+            if (printMask?.ImpactDataSet ?? true)
+            {
+                sb.AppendItem(item.ImpactDataSet.FormKey, "ImpactDataSet");
+            }
+            if (printMask?.PlacedObject ?? true)
+            {
+                sb.AppendItem(item.PlacedObject.FormKey, "PlacedObject");
+            }
+            if (printMask?.SpawnProjectile ?? true)
+            {
+                sb.AppendItem(item.SpawnProjectile.FormKey, "SpawnProjectile");
+            }
+            if (printMask?.Force ?? true)
+            {
+                sb.AppendItem(item.Force, "Force");
+            }
+            if (printMask?.Damage ?? true)
+            {
+                sb.AppendItem(item.Damage, "Damage");
+            }
+            if (printMask?.InnerRadius ?? true)
+            {
+                sb.AppendItem(item.InnerRadius, "InnerRadius");
+            }
+            if (printMask?.OuterRadius ?? true)
+            {
+                sb.AppendItem(item.OuterRadius, "OuterRadius");
+            }
+            if (printMask?.ISRadius ?? true)
+            {
+                sb.AppendItem(item.ISRadius, "ISRadius");
+            }
+            if (printMask?.VerticalOffsetMult ?? true)
+            {
+                sb.AppendItem(item.VerticalOffsetMult, "VerticalOffsetMult");
+            }
+            if (printMask?.Flags ?? true)
+            {
+                sb.AppendItem(item.Flags, "Flags");
+            }
+            if (printMask?.SoundLevel ?? true)
+            {
+                sb.AppendItem(item.SoundLevel, "SoundLevel");
+            }
+            if (printMask?.PlacedObjectAutoFadeDelay ?? true)
+            {
+                sb.AppendItem(item.PlacedObjectAutoFadeDelay, "PlacedObjectAutoFadeDelay");
+            }
+            if (printMask?.Stagger ?? true)
+            {
+                sb.AppendItem(item.Stagger, "Stagger");
+            }
+            if (printMask?.SpawnPosition ?? true)
+            {
+                sb.AppendItem(item.SpawnPosition, "SpawnPosition");
+            }
+            if (printMask?.SpawnSpreadDegrees ?? true)
+            {
+                sb.AppendItem(item.SpawnSpreadDegrees, "SpawnSpreadDegrees");
+            }
+            if (printMask?.SpawnCount ?? true)
+            {
+                sb.AppendItem(item.SpawnCount, "SpawnCount");
+            }
+        }
+
+        public static Explosion_FieldIndex ConvertFieldIndex(Fallout4MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case Fallout4MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (Explosion_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormKey:
+                    return (Explosion_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.VersionControl:
+                    return (Explosion_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.EditorID:
+                    return (Explosion_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormVersion:
+                    return (Explosion_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Version2:
+                    return (Explosion_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Fallout4MajorRecordFlags:
+                    return (Explosion_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new Explosion_FieldIndex ConvertFieldIndex(MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (Explosion_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.FormKey:
+                    return (Explosion_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.VersionControl:
+                    return (Explosion_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.EditorID:
+                    return (Explosion_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            IExplosionGetter? lhs,
+            IExplosionGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if (!base.Equals((IFallout4MajorRecordGetter)lhs, (IFallout4MajorRecordGetter)rhs, equalsMask)) return false;
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.ObjectBounds) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.ObjectBounds, rhs.ObjectBounds, out var lhsObjectBounds, out var rhsObjectBounds, out var isObjectBoundsEqual))
+                {
+                    if (!((ObjectBoundsCommon)((IObjectBoundsGetter)lhsObjectBounds).CommonInstance()!).Equals(lhsObjectBounds, rhsObjectBounds, equalsMask?.GetSubCrystal((int)Explosion_FieldIndex.ObjectBounds))) return false;
+                }
+                else if (!isObjectBoundsEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Name) ?? true))
+            {
+                if (!object.Equals(lhs.Name, rhs.Name)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Model) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.Model, rhs.Model, out var lhsModel, out var rhsModel, out var isModelEqual))
+                {
+                    if (!((ModelCommon)((IModelGetter)lhsModel).CommonInstance()!).Equals(lhsModel, rhsModel, equalsMask?.GetSubCrystal((int)Explosion_FieldIndex.Model))) return false;
+                }
+                else if (!isModelEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.ObjectEffect) ?? true))
+            {
+                if (!lhs.ObjectEffect.Equals(rhs.ObjectEffect)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.ImageSpaceModifier) ?? true))
+            {
+                if (!lhs.ImageSpaceModifier.Equals(rhs.ImageSpaceModifier)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Light) ?? true))
+            {
+                if (!lhs.Light.Equals(rhs.Light)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Sound1) ?? true))
+            {
+                if (!lhs.Sound1.Equals(rhs.Sound1)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Sound2) ?? true))
+            {
+                if (!lhs.Sound2.Equals(rhs.Sound2)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.ImpactDataSet) ?? true))
+            {
+                if (!lhs.ImpactDataSet.Equals(rhs.ImpactDataSet)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.PlacedObject) ?? true))
+            {
+                if (!lhs.PlacedObject.Equals(rhs.PlacedObject)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnProjectile) ?? true))
+            {
+                if (!lhs.SpawnProjectile.Equals(rhs.SpawnProjectile)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Force) ?? true))
+            {
+                if (!lhs.Force.EqualsWithin(rhs.Force)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Damage) ?? true))
+            {
+                if (!lhs.Damage.EqualsWithin(rhs.Damage)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.InnerRadius) ?? true))
+            {
+                if (!lhs.InnerRadius.EqualsWithin(rhs.InnerRadius)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.OuterRadius) ?? true))
+            {
+                if (!lhs.OuterRadius.EqualsWithin(rhs.OuterRadius)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.ISRadius) ?? true))
+            {
+                if (!lhs.ISRadius.EqualsWithin(rhs.ISRadius)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.VerticalOffsetMult) ?? true))
+            {
+                if (!lhs.VerticalOffsetMult.EqualsWithin(rhs.VerticalOffsetMult)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Flags) ?? true))
+            {
+                if (lhs.Flags != rhs.Flags) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.SoundLevel) ?? true))
+            {
+                if (lhs.SoundLevel != rhs.SoundLevel) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.PlacedObjectAutoFadeDelay) ?? true))
+            {
+                if (!lhs.PlacedObjectAutoFadeDelay.EqualsWithin(rhs.PlacedObjectAutoFadeDelay)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.Stagger) ?? true))
+            {
+                if (lhs.Stagger != rhs.Stagger) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnPosition) ?? true))
+            {
+                if (!lhs.SpawnPosition.Equals(rhs.SpawnPosition)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnSpreadDegrees) ?? true))
+            {
+                if (!lhs.SpawnSpreadDegrees.EqualsWithin(rhs.SpawnSpreadDegrees)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnCount) ?? true))
+            {
+                if (lhs.SpawnCount != rhs.SpawnCount) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(
+            IFallout4MajorRecordGetter? lhs,
+            IFallout4MajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IExplosionGetter?)lhs,
+                rhs: rhs as IExplosionGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IExplosionGetter?)lhs,
+                rhs: rhs as IExplosionGetter,
+                equalsMask: equalsMask);
+        }
+
+        public virtual int GetHashCode(IExplosionGetter item)
+        {
+            var hash = new HashCode();
+            hash.Add(item.ObjectBounds);
+            if (item.Name is {} Nameitem)
+            {
+                hash.Add(Nameitem);
+            }
+            if (item.Model is {} Modelitem)
+            {
+                hash.Add(Modelitem);
+            }
+            hash.Add(item.ObjectEffect);
+            hash.Add(item.ImageSpaceModifier);
+            hash.Add(item.Light);
+            hash.Add(item.Sound1);
+            hash.Add(item.Sound2);
+            hash.Add(item.ImpactDataSet);
+            hash.Add(item.PlacedObject);
+            hash.Add(item.SpawnProjectile);
+            hash.Add(item.Force);
+            hash.Add(item.Damage);
+            hash.Add(item.InnerRadius);
+            hash.Add(item.OuterRadius);
+            hash.Add(item.ISRadius);
+            hash.Add(item.VerticalOffsetMult);
+            hash.Add(item.Flags);
+            hash.Add(item.SoundLevel);
+            hash.Add(item.PlacedObjectAutoFadeDelay);
+            hash.Add(item.Stagger);
+            hash.Add(item.SpawnPosition);
+            hash.Add(item.SpawnSpreadDegrees);
+            hash.Add(item.SpawnCount);
+            hash.Add(base.GetHashCode());
+            return hash.ToHashCode();
+        }
+
+        public override int GetHashCode(IFallout4MajorRecordGetter item)
+        {
+            return GetHashCode(item: (IExplosionGetter)item);
+        }
+
+        public override int GetHashCode(IMajorRecordGetter item)
+        {
+            return GetHashCode(item: (IExplosionGetter)item);
+        }
+
+        #endregion
+
+        public override object GetNew()
+        {
+            return Explosion.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(IExplosionGetter obj, bool iterateNestedRecords = true)
+        {
+            foreach (var item in base.EnumerateFormLinks(obj, iterateNestedRecords))
+            {
+                yield return item;
+            }
+            if (obj.Model is {} ModelItems)
+            {
+                foreach (var item in ModelItems.EnumerateFormLinks(iterateNestedRecords))
+                {
+                    yield return item;
+                }
+            }
+            if (FormLinkInformation.TryFactory(obj.ObjectEffect, out var ObjectEffectInfo))
+            {
+                yield return ObjectEffectInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.ImageSpaceModifier, out var ImageSpaceModifierInfo))
+            {
+                yield return ImageSpaceModifierInfo;
+            }
+            yield return FormLinkInformation.Factory(obj.Light);
+            yield return FormLinkInformation.Factory(obj.Sound1);
+            yield return FormLinkInformation.Factory(obj.Sound2);
+            yield return FormLinkInformation.Factory(obj.ImpactDataSet);
+            yield return FormLinkInformation.Factory(obj.PlacedObject);
+            yield return FormLinkInformation.Factory(obj.SpawnProjectile);
+            yield break;
+        }
+
+        #region Duplicate
+        public Explosion Duplicate(
+            IExplosionGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            var newRec = new Explosion(formKey, item.FormVersion);
+            newRec.DeepCopyIn(item, default(ErrorMaskBuilder?), copyMask);
+            return newRec;
+        }
+
+        public override Fallout4MajorRecord Duplicate(
+            IFallout4MajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IExplosionGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IExplosionGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class ExplosionSetterTranslationCommon : Fallout4MajorRecordSetterTranslationCommon
+    {
+        public new static readonly ExplosionSetterTranslationCommon Instance = new ExplosionSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            IExplosionInternal item,
+            IExplosionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                item,
+                rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public void DeepCopyIn(
+            IExplosion item,
+            IExplosionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                (IFallout4MajorRecord)item,
+                (IFallout4MajorRecordGetter)rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.ObjectBounds) ?? true))
+            {
+                errorMask?.PushIndex((int)Explosion_FieldIndex.ObjectBounds);
+                try
+                {
+                    if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.ObjectBounds) ?? true))
+                    {
+                        item.ObjectBounds = rhs.ObjectBounds.DeepCopy(
+                            copyMask: copyMask?.GetSubCrystal((int)Explosion_FieldIndex.ObjectBounds),
+                            errorMask: errorMask);
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Name) ?? true))
+            {
+                item.Name = rhs.Name?.DeepCopy();
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Model) ?? true))
+            {
+                errorMask?.PushIndex((int)Explosion_FieldIndex.Model);
+                try
+                {
+                    if(rhs.Model is {} rhsModel)
+                    {
+                        item.Model = rhsModel.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)Explosion_FieldIndex.Model));
+                    }
+                    else
+                    {
+                        item.Model = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.ObjectEffect) ?? true))
+            {
+                item.ObjectEffect.SetTo(rhs.ObjectEffect.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.ImageSpaceModifier) ?? true))
+            {
+                item.ImageSpaceModifier.SetTo(rhs.ImageSpaceModifier.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Light) ?? true))
+            {
+                item.Light.SetTo(rhs.Light.FormKey);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Sound1) ?? true))
+            {
+                item.Sound1.SetTo(rhs.Sound1.FormKey);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Sound2) ?? true))
+            {
+                item.Sound2.SetTo(rhs.Sound2.FormKey);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.ImpactDataSet) ?? true))
+            {
+                item.ImpactDataSet.SetTo(rhs.ImpactDataSet.FormKey);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.PlacedObject) ?? true))
+            {
+                item.PlacedObject.SetTo(rhs.PlacedObject.FormKey);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnProjectile) ?? true))
+            {
+                item.SpawnProjectile.SetTo(rhs.SpawnProjectile.FormKey);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Force) ?? true))
+            {
+                item.Force = rhs.Force;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Damage) ?? true))
+            {
+                item.Damage = rhs.Damage;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.InnerRadius) ?? true))
+            {
+                item.InnerRadius = rhs.InnerRadius;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.OuterRadius) ?? true))
+            {
+                item.OuterRadius = rhs.OuterRadius;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.ISRadius) ?? true))
+            {
+                item.ISRadius = rhs.ISRadius;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.VerticalOffsetMult) ?? true))
+            {
+                item.VerticalOffsetMult = rhs.VerticalOffsetMult;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Flags) ?? true))
+            {
+                item.Flags = rhs.Flags;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.SoundLevel) ?? true))
+            {
+                item.SoundLevel = rhs.SoundLevel;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.PlacedObjectAutoFadeDelay) ?? true))
+            {
+                item.PlacedObjectAutoFadeDelay = rhs.PlacedObjectAutoFadeDelay;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.Stagger) ?? true))
+            {
+                item.Stagger = rhs.Stagger;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnPosition) ?? true))
+            {
+                item.SpawnPosition = rhs.SpawnPosition;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnSpreadDegrees) ?? true))
+            {
+                item.SpawnSpreadDegrees = rhs.SpawnSpreadDegrees;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Explosion_FieldIndex.SpawnCount) ?? true))
+            {
+                item.SpawnCount = rhs.SpawnCount;
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            IExplosion item,
+            IExplosionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        public override void DeepCopyIn(
+            IFallout4MajorRecordInternal item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IExplosionInternal)item,
+                rhs: (IExplosionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecord item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IExplosion)item,
+                rhs: (IExplosionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IExplosionInternal)item,
+                rhs: (IExplosionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IExplosion)item,
+                rhs: (IExplosionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        #endregion
+
+        public Explosion DeepCopy(
+            IExplosionGetter item,
+            Explosion.TranslationMask? copyMask = null)
+        {
+            Explosion ret = (Explosion)((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).GetNew();
+            ((ExplosionSetterTranslationCommon)((IExplosionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public Explosion DeepCopy(
+            IExplosionGetter item,
+            out Explosion.ErrorMask errorMask,
+            Explosion.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            Explosion ret = (Explosion)((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).GetNew();
+            ((ExplosionSetterTranslationCommon)((IExplosionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = Explosion.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public Explosion DeepCopy(
+            IExplosionGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            Explosion ret = (Explosion)((ExplosionCommon)((IExplosionGetter)item).CommonInstance()!).GetNew();
+            ((ExplosionSetterTranslationCommon)((IExplosionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class Explosion
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => Explosion_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => Explosion_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => ExplosionCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterInstance()
+        {
+            return ExplosionSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => ExplosionSetterTranslationCommon.Instance;
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class ExplosionBinaryWriteTranslation :
+        Fallout4MajorRecordBinaryWriteTranslation,
+        IBinaryWriteTranslator
+    {
+        public new static readonly ExplosionBinaryWriteTranslation Instance = new();
+
+        public static void WriteRecordTypes(
+            IExplosionGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            MajorRecordBinaryWriteTranslation.WriteRecordTypes(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+            var ObjectBoundsItem = item.ObjectBounds;
+            ((ObjectBoundsBinaryWriteTranslation)((IBinaryItem)ObjectBoundsItem).BinaryWriteTranslator).Write(
+                item: ObjectBoundsItem,
+                writer: writer,
+                translationParams: translationParams);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Name,
+                header: translationParams.ConvertToCustom(RecordTypes.FULL),
+                binaryType: StringBinaryType.NullTerminate,
+                source: StringsSource.Normal);
+            if (item.Model is {} ModelItem)
+            {
+                ((ModelBinaryWriteTranslation)((IBinaryItem)ModelItem).BinaryWriteTranslator).Write(
+                    item: ModelItem,
+                    writer: writer,
+                    translationParams: translationParams);
+            }
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.ObjectEffect,
+                header: translationParams.ConvertToCustom(RecordTypes.EITM));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.ImageSpaceModifier,
+                header: translationParams.ConvertToCustom(RecordTypes.MNAM));
+            using (HeaderExport.Subrecord(writer, translationParams.ConvertToCustom(RecordTypes.DATA)))
+            {
+                FormLinkBinaryTranslation.Instance.Write(
+                    writer: writer,
+                    item: item.Light);
+                FormLinkBinaryTranslation.Instance.Write(
+                    writer: writer,
+                    item: item.Sound1);
+                FormLinkBinaryTranslation.Instance.Write(
+                    writer: writer,
+                    item: item.Sound2);
+                FormLinkBinaryTranslation.Instance.Write(
+                    writer: writer,
+                    item: item.ImpactDataSet);
+                FormLinkBinaryTranslation.Instance.Write(
+                    writer: writer,
+                    item: item.PlacedObject);
+                FormLinkBinaryTranslation.Instance.Write(
+                    writer: writer,
+                    item: item.SpawnProjectile);
+                FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer: writer,
+                    item: item.Force);
+                FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer: writer,
+                    item: item.Damage);
+                if (writer.MetaData.FormVersion!.Value >= 97)
+                {
+                    FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                        writer: writer,
+                        item: item.InnerRadius);
+                }
+                FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer: writer,
+                    item: item.OuterRadius);
+                FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer: writer,
+                    item: item.ISRadius);
+                FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer: writer,
+                    item: item.VerticalOffsetMult);
+                EnumBinaryTranslation<Explosion.Flag, MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer,
+                    item.Flags,
+                    length: 4);
+                EnumBinaryTranslation<SoundLevel, MutagenFrame, MutagenWriter>.Instance.Write(
+                    writer,
+                    item.SoundLevel,
+                    length: 4);
+                if (writer.MetaData.FormVersion!.Value >= 70)
+                {
+                    FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                        writer: writer,
+                        item: item.PlacedObjectAutoFadeDelay);
+                }
+                if (writer.MetaData.FormVersion!.Value >= 91)
+                {
+                    EnumBinaryTranslation<Explosion.StaggerAmount, MutagenFrame, MutagenWriter>.Instance.Write(
+                        writer,
+                        item.Stagger,
+                        length: 4);
+                }
+                if (writer.MetaData.FormVersion!.Value >= 112)
+                {
+                    P3FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                        writer: writer,
+                        item: item.SpawnPosition);
+                }
+                if (writer.MetaData.FormVersion!.Value >= 112)
+                {
+                    FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                        writer: writer,
+                        item: item.SpawnSpreadDegrees);
+                }
+                if (writer.MetaData.FormVersion!.Value >= 112)
+                {
+                    writer.Write(item.SpawnCount);
+                }
+            }
+        }
+
+        public void Write(
+            MutagenWriter writer,
+            IExplosionGetter item,
+            TypedWriteParams translationParams)
+        {
+            PluginUtilityTranslation.WriteMajorRecord(
+                writer: writer,
+                item: item,
+                translationParams: translationParams,
+                type: RecordTypes.EXPL,
+                writeEmbedded: Fallout4MajorRecordBinaryWriteTranslation.WriteEmbedded,
+                writeRecordTypes: WriteRecordTypes);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (IExplosionGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IFallout4MajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IExplosionGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IExplosionGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class ExplosionBinaryCreateTranslation : Fallout4MajorRecordBinaryCreateTranslation
+    {
+        public new static readonly ExplosionBinaryCreateTranslation Instance = new ExplosionBinaryCreateTranslation();
+
+        public override RecordType RecordType => RecordTypes.EXPL;
+        public static ParseResult FillBinaryRecordTypes(
+            IExplosionInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.OBND:
+                {
+                    item.ObjectBounds = Mutagen.Bethesda.Fallout4.ObjectBounds.CreateFromBinary(frame: frame);
+                    return (int)Explosion_FieldIndex.ObjectBounds;
+                }
+                case RecordTypeInts.FULL:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Name = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        eager: true,
+                        source: StringsSource.Normal,
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)Explosion_FieldIndex.Name;
+                }
+                case RecordTypeInts.MODL:
+                case RecordTypeInts.MODC:
+                case RecordTypeInts.MODT:
+                case RecordTypeInts.MODS:
+                {
+                    item.Model = Mutagen.Bethesda.Fallout4.Model.CreateFromBinary(
+                        frame: frame,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)Explosion_FieldIndex.Model;
+                }
+                case RecordTypeInts.EITM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.ObjectEffect.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Explosion_FieldIndex.ObjectEffect;
+                }
+                case RecordTypeInts.MNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.ImageSpaceModifier.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Explosion_FieldIndex.ImageSpaceModifier;
+                }
+                case RecordTypeInts.DATA:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    var dataFrame = frame.SpawnWithLength(contentLength);
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Light.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Sound1.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Sound2.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    if (dataFrame.Remaining < 4) return null;
+                    item.ImpactDataSet.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    if (dataFrame.Remaining < 4) return null;
+                    item.PlacedObject.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    if (dataFrame.Remaining < 4) return null;
+                    item.SpawnProjectile.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Force = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Damage = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    if (dataFrame.Remaining < 4) return null;
+                    if (frame.MetaData.FormVersion!.Value >= 97)
+                    {
+                        item.InnerRadius = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    }
+                    if (dataFrame.Remaining < 4) return null;
+                    item.OuterRadius = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    if (dataFrame.Remaining < 4) return null;
+                    item.ISRadius = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    if (dataFrame.Remaining < 4) return null;
+                    item.VerticalOffsetMult = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    if (dataFrame.Remaining < 4) return null;
+                    item.Flags = EnumBinaryTranslation<Explosion.Flag, MutagenFrame, MutagenWriter>.Instance.Parse(
+                        reader: dataFrame,
+                        length: 4);
+                    if (dataFrame.Remaining < 4) return null;
+                    item.SoundLevel = EnumBinaryTranslation<SoundLevel, MutagenFrame, MutagenWriter>.Instance.Parse(
+                        reader: dataFrame,
+                        length: 4);
+                    if (dataFrame.Remaining < 4) return null;
+                    if (frame.MetaData.FormVersion!.Value >= 70)
+                    {
+                        item.PlacedObjectAutoFadeDelay = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    }
+                    if (dataFrame.Remaining < 4) return null;
+                    if (frame.MetaData.FormVersion!.Value >= 91)
+                    {
+                        item.Stagger = EnumBinaryTranslation<Explosion.StaggerAmount, MutagenFrame, MutagenWriter>.Instance.Parse(
+                            reader: dataFrame,
+                            length: 4);
+                    }
+                    if (dataFrame.Remaining < 12) return null;
+                    if (frame.MetaData.FormVersion!.Value >= 112)
+                    {
+                        item.SpawnPosition = P3FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    }
+                    if (dataFrame.Remaining < 4) return null;
+                    if (frame.MetaData.FormVersion!.Value >= 112)
+                    {
+                        item.SpawnSpreadDegrees = FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse(reader: dataFrame);
+                    }
+                    if (dataFrame.Remaining < 4) return null;
+                    if (frame.MetaData.FormVersion!.Value >= 112)
+                    {
+                        item.SpawnCount = dataFrame.ReadUInt32();
+                    }
+                    return (int)Explosion_FieldIndex.SpawnCount;
+                }
+                default:
+                    return Fallout4MajorRecordBinaryCreateTranslation.FillBinaryRecordTypes(
+                        item: item,
+                        frame: frame,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        nextRecordType: nextRecordType,
+                        contentLength: contentLength,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+
+    }
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Binary Write Mixins
+    public static class ExplosionBinaryTranslationMixIn
+    {
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    internal partial class ExplosionBinaryOverlay :
+        Fallout4MajorRecordBinaryOverlay,
+        IExplosionGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => Explosion_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => Explosion_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => ExplosionCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => ExplosionSetterTranslationCommon.Instance;
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => ExplosionCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => ExplosionBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((ExplosionBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        protected override Type LinkType => typeof(IExplosionGetter);
+
+        #region ObjectBounds
+        private RangeInt32? _ObjectBoundsLocation;
+        private IObjectBoundsGetter? _ObjectBounds => _ObjectBoundsLocation.HasValue ? ObjectBoundsBinaryOverlay.ObjectBoundsFactory(_recordData.Slice(_ObjectBoundsLocation!.Value.Min), _package) : default;
+        public IObjectBoundsGetter ObjectBounds => _ObjectBounds ?? new ObjectBounds();
+        #endregion
+        #region Name
+        private int? _NameLocation;
+        public ITranslatedStringGetter? Name => _NameLocation.HasValue ? StringBinaryTranslation.Instance.Parse(HeaderTranslation.ExtractSubrecordMemory(_recordData, _NameLocation.Value, _package.MetaData.Constants), StringsSource.Normal, parsingBundle: _package.MetaData, eager: false) : default(TranslatedString?);
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequiredGetter.Name => this.Name?.String ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamedGetter.Name => this.Name?.String;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter ITranslatedNamedRequiredGetter.Name => this.Name ?? TranslatedString.Empty;
+        #endregion
+        #endregion
+        public IModelGetter? Model { get; private set; }
+        #region ObjectEffect
+        private int? _ObjectEffectLocation;
+        public IFormLinkNullableGetter<IObjectEffectGetter> ObjectEffect => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IObjectEffectGetter>(_package, _recordData, _ObjectEffectLocation);
+        #endregion
+        #region ImageSpaceModifier
+        private int? _ImageSpaceModifierLocation;
+        public IFormLinkNullableGetter<IImageSpaceAdapterGetter> ImageSpaceModifier => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IImageSpaceAdapterGetter>(_package, _recordData, _ImageSpaceModifierLocation);
+        #endregion
+        private RangeInt32? _DATALocation;
+        #region Light
+        private int _LightLocation => _DATALocation!.Value.Min;
+        private bool _Light_IsSet => _DATALocation.HasValue;
+        public IFormLinkGetter<ILightGetter> Light => _Light_IsSet ? FormLinkBinaryTranslation.Instance.OverlayFactory<ILightGetter>(_package, _recordData.Span.Slice(_LightLocation, 0x4), isSet: _Light_IsSet) : FormLink<ILightGetter>.Null;
+        #endregion
+        #region Sound1
+        private int _Sound1Location => _DATALocation!.Value.Min + 0x4;
+        private bool _Sound1_IsSet => _DATALocation.HasValue;
+        public IFormLinkGetter<ISoundDescriptorGetter> Sound1 => _Sound1_IsSet ? FormLinkBinaryTranslation.Instance.OverlayFactory<ISoundDescriptorGetter>(_package, _recordData.Span.Slice(_Sound1Location, 0x4), isSet: _Sound1_IsSet) : FormLink<ISoundDescriptorGetter>.Null;
+        #endregion
+        #region Sound2
+        private int _Sound2Location => _DATALocation!.Value.Min + 0x8;
+        private bool _Sound2_IsSet => _DATALocation.HasValue;
+        public IFormLinkGetter<ISoundDescriptorGetter> Sound2 => _Sound2_IsSet ? FormLinkBinaryTranslation.Instance.OverlayFactory<ISoundDescriptorGetter>(_package, _recordData.Span.Slice(_Sound2Location, 0x4), isSet: _Sound2_IsSet) : FormLink<ISoundDescriptorGetter>.Null;
+        #endregion
+        #region ImpactDataSet
+        private int _ImpactDataSetLocation => _DATALocation!.Value.Min + 0xC;
+        private bool _ImpactDataSet_IsSet => _DATALocation.HasValue;
+        public IFormLinkGetter<IImpactDataSetGetter> ImpactDataSet => _ImpactDataSet_IsSet ? FormLinkBinaryTranslation.Instance.OverlayFactory<IImpactDataSetGetter>(_package, _recordData.Span.Slice(_ImpactDataSetLocation, 0x4), isSet: _ImpactDataSet_IsSet) : FormLink<IImpactDataSetGetter>.Null;
+        #endregion
+        #region PlacedObject
+        private int _PlacedObjectLocation => _DATALocation!.Value.Min + 0x10;
+        private bool _PlacedObject_IsSet => _DATALocation.HasValue;
+        public IFormLinkGetter<IExplodeSpawnGetter> PlacedObject => _PlacedObject_IsSet ? FormLinkBinaryTranslation.Instance.OverlayFactory<IExplodeSpawnGetter>(_package, _recordData.Span.Slice(_PlacedObjectLocation, 0x4), isSet: _PlacedObject_IsSet) : FormLink<IExplodeSpawnGetter>.Null;
+        #endregion
+        #region SpawnProjectile
+        private int _SpawnProjectileLocation => _DATALocation!.Value.Min + 0x14;
+        private bool _SpawnProjectile_IsSet => _DATALocation.HasValue;
+        public IFormLinkGetter<IProjectileGetter> SpawnProjectile => _SpawnProjectile_IsSet ? FormLinkBinaryTranslation.Instance.OverlayFactory<IProjectileGetter>(_package, _recordData.Span.Slice(_SpawnProjectileLocation, 0x4), isSet: _SpawnProjectile_IsSet) : FormLink<IProjectileGetter>.Null;
+        #endregion
+        #region Force
+        private int _ForceLocation => _DATALocation!.Value.Min + 0x18;
+        private bool _Force_IsSet => _DATALocation.HasValue;
+        public Single Force => _Force_IsSet ? _recordData.Slice(_ForceLocation, 4).Float() : default(Single);
+        #endregion
+        #region Damage
+        private int _DamageLocation => _DATALocation!.Value.Min + 0x1C;
+        private bool _Damage_IsSet => _DATALocation.HasValue;
+        public Single Damage => _Damage_IsSet ? _recordData.Slice(_DamageLocation, 4).Float() : default(Single);
+        #endregion
+        #region InnerRadius
+        private int _InnerRadiusLocation => _DATALocation!.Value.Min + 0x20;
+        private bool _InnerRadius_IsSet => _DATALocation.HasValue && _package.FormVersion!.FormVersion!.Value >= 97;
+        public Single InnerRadius => _InnerRadius_IsSet ? _recordData.Slice(_InnerRadiusLocation, 4).Float() : default(Single);
+        int InnerRadiusVersioningOffset => _package.FormVersion!.FormVersion!.Value < 97 ? -4 : 0;
+        #endregion
+        #region OuterRadius
+        private int _OuterRadiusLocation => _DATALocation!.Value.Min + InnerRadiusVersioningOffset + 0x24;
+        private bool _OuterRadius_IsSet => _DATALocation.HasValue;
+        public Single OuterRadius => _OuterRadius_IsSet ? _recordData.Slice(_OuterRadiusLocation, 4).Float() : default(Single);
+        #endregion
+        #region ISRadius
+        private int _ISRadiusLocation => _DATALocation!.Value.Min + InnerRadiusVersioningOffset + 0x28;
+        private bool _ISRadius_IsSet => _DATALocation.HasValue;
+        public Single ISRadius => _ISRadius_IsSet ? _recordData.Slice(_ISRadiusLocation, 4).Float() : default(Single);
+        #endregion
+        #region VerticalOffsetMult
+        private int _VerticalOffsetMultLocation => _DATALocation!.Value.Min + InnerRadiusVersioningOffset + 0x2C;
+        private bool _VerticalOffsetMult_IsSet => _DATALocation.HasValue;
+        public Single VerticalOffsetMult => _VerticalOffsetMult_IsSet ? _recordData.Slice(_VerticalOffsetMultLocation, 4).Float() : default(Single);
+        #endregion
+        #region Flags
+        private int _FlagsLocation => _DATALocation!.Value.Min + InnerRadiusVersioningOffset + 0x30;
+        private bool _Flags_IsSet => _DATALocation.HasValue;
+        public Explosion.Flag Flags => _Flags_IsSet ? (Explosion.Flag)BinaryPrimitives.ReadInt32LittleEndian(_recordData.Span.Slice(_FlagsLocation, 0x4)) : default;
+        #endregion
+        #region SoundLevel
+        private int _SoundLevelLocation => _DATALocation!.Value.Min + InnerRadiusVersioningOffset + 0x34;
+        private bool _SoundLevel_IsSet => _DATALocation.HasValue;
+        public SoundLevel SoundLevel => _SoundLevel_IsSet ? (SoundLevel)BinaryPrimitives.ReadInt32LittleEndian(_recordData.Span.Slice(_SoundLevelLocation, 0x4)) : default;
+        #endregion
+        #region PlacedObjectAutoFadeDelay
+        private int _PlacedObjectAutoFadeDelayLocation => _DATALocation!.Value.Min + InnerRadiusVersioningOffset + 0x38;
+        private bool _PlacedObjectAutoFadeDelay_IsSet => _DATALocation.HasValue && _package.FormVersion!.FormVersion!.Value >= 70;
+        public Single PlacedObjectAutoFadeDelay => _PlacedObjectAutoFadeDelay_IsSet ? _recordData.Slice(_PlacedObjectAutoFadeDelayLocation, 4).Float() : default(Single);
+        int PlacedObjectAutoFadeDelayVersioningOffset => InnerRadiusVersioningOffset + (_package.FormVersion!.FormVersion!.Value < 70 ? -4 : 0);
+        #endregion
+        #region Stagger
+        private int _StaggerLocation => _DATALocation!.Value.Min + PlacedObjectAutoFadeDelayVersioningOffset + 0x3C;
+        private bool _Stagger_IsSet => _DATALocation.HasValue && _package.FormVersion!.FormVersion!.Value >= 91;
+        public Explosion.StaggerAmount Stagger => _Stagger_IsSet ? (Explosion.StaggerAmount)BinaryPrimitives.ReadInt32LittleEndian(_recordData.Span.Slice(_StaggerLocation, 0x4)) : default;
+        int StaggerVersioningOffset => PlacedObjectAutoFadeDelayVersioningOffset + (_package.FormVersion!.FormVersion!.Value < 91 ? -4 : 0);
+        #endregion
+        #region SpawnPosition
+        private int _SpawnPositionLocation => _DATALocation!.Value.Min + StaggerVersioningOffset + 0x40;
+        private bool _SpawnPosition_IsSet => _DATALocation.HasValue && _package.FormVersion!.FormVersion!.Value >= 112;
+        public P3Float SpawnPosition => _SpawnPosition_IsSet ? P3FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Read(_recordData.Slice(_SpawnPositionLocation, 12)) : default(P3Float);
+        int SpawnPositionVersioningOffset => StaggerVersioningOffset + (_package.FormVersion!.FormVersion!.Value < 112 ? -12 : 0);
+        #endregion
+        #region SpawnSpreadDegrees
+        private int _SpawnSpreadDegreesLocation => _DATALocation!.Value.Min + SpawnPositionVersioningOffset + 0x4C;
+        private bool _SpawnSpreadDegrees_IsSet => _DATALocation.HasValue && _package.FormVersion!.FormVersion!.Value >= 112;
+        public Single SpawnSpreadDegrees => _SpawnSpreadDegrees_IsSet ? _recordData.Slice(_SpawnSpreadDegreesLocation, 4).Float() : default(Single);
+        int SpawnSpreadDegreesVersioningOffset => SpawnPositionVersioningOffset + (_package.FormVersion!.FormVersion!.Value < 112 ? -4 : 0);
+        #endregion
+        #region SpawnCount
+        private int _SpawnCountLocation => _DATALocation!.Value.Min + SpawnSpreadDegreesVersioningOffset + 0x50;
+        private bool _SpawnCount_IsSet => _DATALocation.HasValue && _package.FormVersion!.FormVersion!.Value >= 112;
+        public UInt32 SpawnCount => _SpawnCount_IsSet ? BinaryPrimitives.ReadUInt32LittleEndian(_recordData.Slice(_SpawnCountLocation, 4)) : default(UInt32);
+        int SpawnCountVersioningOffset => SpawnSpreadDegreesVersioningOffset + (_package.FormVersion!.FormVersion!.Value < 112 ? -4 : 0);
+        #endregion
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected ExplosionBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public static IExplosionGetter ExplosionFactory(
+            OverlayStream stream,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            stream = Decompression.DecompressStream(stream);
+            stream = ExtractRecordMemory(
+                stream: stream,
+                meta: package.MetaData.Constants,
+                memoryPair: out var memoryPair,
+                offset: out var offset,
+                finalPos: out var finalPos);
+            var ret = new ExplosionBinaryOverlay(
+                memoryPair: memoryPair,
+                package: package);
+            ret._package.FormVersion = ret;
+            ret.CustomFactoryEnd(
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset);
+            ret.FillSubrecordTypes(
+                majorReference: ret,
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset,
+                translationParams: translationParams,
+                fill: ret.FillRecordType);
+            return ret;
+        }
+
+        public static IExplosionGetter ExplosionFactory(
+            ReadOnlyMemorySlice<byte> slice,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            return ExplosionFactory(
+                stream: new OverlayStream(slice, package),
+                package: package,
+                translationParams: translationParams);
+        }
+
+        public override ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.OBND:
+                {
+                    _ObjectBoundsLocation = new RangeInt32((stream.Position - offset), finalPos - offset);
+                    return (int)Explosion_FieldIndex.ObjectBounds;
+                }
+                case RecordTypeInts.FULL:
+                {
+                    _NameLocation = (stream.Position - offset);
+                    return (int)Explosion_FieldIndex.Name;
+                }
+                case RecordTypeInts.MODL:
+                case RecordTypeInts.MODC:
+                case RecordTypeInts.MODT:
+                case RecordTypeInts.MODS:
+                {
+                    this.Model = ModelBinaryOverlay.ModelFactory(
+                        stream: stream,
+                        package: _package,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)Explosion_FieldIndex.Model;
+                }
+                case RecordTypeInts.EITM:
+                {
+                    _ObjectEffectLocation = (stream.Position - offset);
+                    return (int)Explosion_FieldIndex.ObjectEffect;
+                }
+                case RecordTypeInts.MNAM:
+                {
+                    _ImageSpaceModifierLocation = (stream.Position - offset);
+                    return (int)Explosion_FieldIndex.ImageSpaceModifier;
+                }
+                case RecordTypeInts.DATA:
+                {
+                    _DATALocation = new((stream.Position - offset) + _package.MetaData.Constants.SubConstants.TypeAndLengthLength, finalPos - offset - 1);
+                    return (int)Explosion_FieldIndex.SpawnCount;
+                }
+                default:
+                    return base.FillRecordType(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset,
+                        type: type,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            ExplosionMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<Explosion>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IExplosionGetter rhs) return false;
+            return ((ExplosionCommon)((IExplosionGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IExplosionGetter? obj)
+        {
+            return ((ExplosionCommon)((IExplosionGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((ExplosionCommon)((IExplosionGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

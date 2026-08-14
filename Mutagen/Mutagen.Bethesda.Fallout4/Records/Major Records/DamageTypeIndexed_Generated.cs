@@ -1,0 +1,1752 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Fallout4.Internals;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Fallout4.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Class
+    public partial class DamageTypeIndexed :
+        ADamageType,
+        IDamageTypeIndexedInternal,
+        IEquatable<IDamageTypeIndexedGetter>,
+        ILoquiObjectSetter<DamageTypeIndexed>
+    {
+        #region Ctor
+        protected DamageTypeIndexed()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region DamageTypes
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<UInt32>? _DamageTypes;
+        public ExtendedList<UInt32>? DamageTypes
+        {
+            get => this._DamageTypes;
+            set => this._DamageTypes = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<UInt32>? IDamageTypeIndexedGetter.DamageTypes => _DamageTypes;
+        #endregion
+
+        #endregion
+
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            DamageTypeIndexedMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public new class Mask<TItem> :
+            ADamageType.Mask<TItem>,
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            : base(initialValue)
+            {
+                this.DamageTypes = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(initialValue, []);
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID,
+                TItem FormVersion,
+                TItem Version2,
+                TItem Fallout4MajorRecordFlags,
+                TItem DamageTypes)
+            : base(
+                MajorRecordFlagsRaw: MajorRecordFlagsRaw,
+                FormKey: FormKey,
+                VersionControl: VersionControl,
+                EditorID: EditorID,
+                FormVersion: FormVersion,
+                Version2: Version2,
+                Fallout4MajorRecordFlags: Fallout4MajorRecordFlags)
+            {
+                this.DamageTypes = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(DamageTypes, []);
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>? DamageTypes;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!base.Equals(rhs)) return false;
+                if (!object.Equals(this.DamageTypes, rhs.DamageTypes)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.DamageTypes);
+                hash.Add(base.GetHashCode());
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public override bool All(Func<TItem, bool> eval)
+            {
+                if (!base.All(eval)) return false;
+                if (this.DamageTypes != null)
+                {
+                    if (!eval(this.DamageTypes.Overall)) return false;
+                    if (this.DamageTypes.Specific != null)
+                    {
+                        foreach (var item in this.DamageTypes.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public override bool Any(Func<TItem, bool> eval)
+            {
+                if (base.Any(eval)) return true;
+                if (this.DamageTypes != null)
+                {
+                    if (eval(this.DamageTypes.Overall)) return true;
+                    if (this.DamageTypes.Specific != null)
+                    {
+                        foreach (var item in this.DamageTypes.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public new Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new DamageTypeIndexed.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                base.Translate_InternalFill(obj, eval);
+                if (DamageTypes != null)
+                {
+                    obj.DamageTypes = new MaskItem<R, IEnumerable<(int Index, R Value)>?>(eval(this.DamageTypes.Overall), []);
+                    if (DamageTypes.Specific != null)
+                    {
+                        var l = new List<(int Index, R Item)>();
+                        obj.DamageTypes.Specific = l;
+                        foreach (var item in DamageTypes.Specific)
+                        {
+                            R mask = eval(item.Value);
+                            l.Add((item.Index, mask));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(DamageTypeIndexed.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, DamageTypeIndexed.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(DamageTypeIndexed.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if ((printMask?.DamageTypes?.Overall ?? true)
+                        && DamageTypes is {} DamageTypesItem)
+                    {
+                        sb.AppendLine("DamageTypes =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(DamageTypesItem.Overall);
+                            if (DamageTypesItem.Specific != null)
+                            {
+                                foreach (var subItem in DamageTypesItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        {
+                                            sb.AppendItem(subItem);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public new class ErrorMask :
+            ADamageType.ErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>? DamageTypes;
+            #endregion
+
+            #region IErrorMask
+            public override object? GetNthMask(int index)
+            {
+                DamageTypeIndexed_FieldIndex enu = (DamageTypeIndexed_FieldIndex)index;
+                switch (enu)
+                {
+                    case DamageTypeIndexed_FieldIndex.DamageTypes:
+                        return DamageTypes;
+                    default:
+                        return base.GetNthMask(index);
+                }
+            }
+
+            public override void SetNthException(int index, Exception ex)
+            {
+                DamageTypeIndexed_FieldIndex enu = (DamageTypeIndexed_FieldIndex)index;
+                switch (enu)
+                {
+                    case DamageTypeIndexed_FieldIndex.DamageTypes:
+                        this.DamageTypes = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(ex, null);
+                        break;
+                    default:
+                        base.SetNthException(index, ex);
+                        break;
+                }
+            }
+
+            public override void SetNthMask(int index, object obj)
+            {
+                DamageTypeIndexed_FieldIndex enu = (DamageTypeIndexed_FieldIndex)index;
+                switch (enu)
+                {
+                    case DamageTypeIndexed_FieldIndex.DamageTypes:
+                        this.DamageTypes = (MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>)obj;
+                        break;
+                    default:
+                        base.SetNthMask(index, obj);
+                        break;
+                }
+            }
+
+            public override bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (DamageTypes != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public override void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected override void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                base.PrintFillInternal(sb);
+                if (DamageTypes is {} DamageTypesItem)
+                {
+                    sb.AppendLine("DamageTypes =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(DamageTypesItem.Overall);
+                        if (DamageTypesItem.Specific != null)
+                        {
+                            foreach (var subItem in DamageTypesItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    {
+                                        sb.AppendItem(subItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.DamageTypes = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(Noggog.ExceptionExt.Combine(this.DamageTypes?.Overall, rhs.DamageTypes?.Overall), Noggog.ExceptionExt.Combine(this.DamageTypes?.Specific, rhs.DamageTypes?.Specific));
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static new ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public new class TranslationMask :
+            ADamageType.TranslationMask,
+            ITranslationMask
+        {
+            #region Members
+            public bool DamageTypes;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+                : base(defaultOn, onOverall)
+            {
+                this.DamageTypes = defaultOn;
+            }
+
+            #endregion
+
+            protected override void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                base.GetCrystal(ret);
+                ret.Add((DamageTypes, null));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public static readonly RecordType GrupRecordType = DamageTypeIndexed_Registration.TriggeringRecordType;
+        public DamageTypeIndexed(
+            FormKey formKey,
+            Fallout4Release gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease.ToGameRelease()).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        private DamageTypeIndexed(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        internal DamageTypeIndexed(
+            FormKey formKey,
+            ushort formVersion)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = formVersion;
+            CustomCtor();
+        }
+
+        public DamageTypeIndexed(IFallout4Mod mod)
+            : this(
+                mod.GetNextFormKey(),
+                mod.Fallout4Release)
+        {
+        }
+
+        public DamageTypeIndexed(IFallout4Mod mod, string editorID)
+            : this(
+                mod.GetNextFormKey(editorID),
+                mod.Fallout4Release)
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<DamageTypeIndexed>.ToString(this);
+        }
+
+        protected override Type LinkType => typeof(IDamageTypeIndexed);
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IDamageTypeIndexedGetter rhs) return false;
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IDamageTypeIndexedGetter? obj)
+        {
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => DamageTypeIndexedBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((DamageTypeIndexedBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #region Binary Create
+        public new static DamageTypeIndexed CreateFromBinary(
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            var ret = new DamageTypeIndexed();
+            ((DamageTypeIndexedSetterCommon)((IDamageTypeIndexedGetter)ret).CommonSetterInstance()!).CopyInFromBinary(
+                item: ret,
+                frame: frame,
+                translationParams: translationParams);
+            return ret;
+        }
+
+        #endregion
+
+        public static bool TryCreateFromBinary(
+            MutagenFrame frame,
+            out DamageTypeIndexed item,
+            TypedParseParams translationParams = default)
+        {
+            var startPos = frame.Position;
+            item = CreateFromBinary(
+                frame: frame,
+                translationParams: translationParams);
+            return startPos != frame.Position;
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((DamageTypeIndexedSetterCommon)((IDamageTypeIndexedGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static new DamageTypeIndexed GetNew()
+        {
+            return new DamageTypeIndexed();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface IDamageTypeIndexed :
+        IADamageTypeInternal,
+        IDamageTypeIndexedGetter,
+        ILoquiObjectSetter<IDamageTypeIndexedInternal>
+    {
+        new ExtendedList<UInt32>? DamageTypes { get; set; }
+    }
+
+    public partial interface IDamageTypeIndexedInternal :
+        IADamageTypeInternal,
+        IDamageTypeIndexed,
+        IDamageTypeIndexedGetter
+    {
+    }
+
+    [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.DMGT)]
+    public partial interface IDamageTypeIndexedGetter :
+        IADamageTypeGetter,
+        IBinaryItem,
+        ILoquiObject<IDamageTypeIndexedGetter>,
+        IMapsToGetter<IDamageTypeIndexedGetter>
+    {
+        static new ILoquiRegistration StaticRegistration => DamageTypeIndexed_Registration.Instance;
+        IReadOnlyList<UInt32>? DamageTypes { get; }
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class DamageTypeIndexedMixIn
+    {
+        public static void Clear(this IDamageTypeIndexedInternal item)
+        {
+            ((DamageTypeIndexedSetterCommon)((IDamageTypeIndexedGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static DamageTypeIndexed.Mask<bool> GetEqualsMask(
+            this IDamageTypeIndexedGetter item,
+            IDamageTypeIndexedGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this IDamageTypeIndexedGetter item,
+            string? name = null,
+            DamageTypeIndexed.Mask<bool>? printMask = null)
+        {
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this IDamageTypeIndexedGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            DamageTypeIndexed.Mask<bool>? printMask = null)
+        {
+            ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this IDamageTypeIndexedGetter item,
+            IDamageTypeIndexedGetter rhs,
+            DamageTypeIndexed.TranslationMask? equalsMask = null)
+        {
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this IDamageTypeIndexedInternal lhs,
+            IDamageTypeIndexedGetter rhs,
+            out DamageTypeIndexed.ErrorMask errorMask,
+            DamageTypeIndexed.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = DamageTypeIndexed.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this IDamageTypeIndexedInternal lhs,
+            IDamageTypeIndexedGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static DamageTypeIndexed DeepCopy(
+            this IDamageTypeIndexedGetter item,
+            DamageTypeIndexed.TranslationMask? copyMask = null)
+        {
+            return ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static DamageTypeIndexed DeepCopy(
+            this IDamageTypeIndexedGetter item,
+            out DamageTypeIndexed.ErrorMask errorMask,
+            DamageTypeIndexed.TranslationMask? copyMask = null)
+        {
+            return ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static DamageTypeIndexed DeepCopy(
+            this IDamageTypeIndexedGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        public static DamageTypeIndexed Duplicate(
+            this IDamageTypeIndexedGetter item,
+            FormKey formKey,
+            DamageTypeIndexed.TranslationMask? copyMask = null)
+        {
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static DamageTypeIndexed Duplicate(
+            this IDamageTypeIndexedGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this IDamageTypeIndexedInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((DamageTypeIndexedSetterCommon)((IDamageTypeIndexedGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Field Index
+    internal enum DamageTypeIndexed_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+        FormVersion = 4,
+        Version2 = 5,
+        Fallout4MajorRecordFlags = 6,
+        DamageTypes = 7,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class DamageTypeIndexed_Registration : ILoquiRegistration
+    {
+        public static readonly DamageTypeIndexed_Registration Instance = new DamageTypeIndexed_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Fallout4.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 1;
+
+        public const ushort FieldCount = 8;
+
+        public static readonly Type MaskType = typeof(DamageTypeIndexed.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(DamageTypeIndexed.ErrorMask);
+
+        public static readonly Type ClassType = typeof(DamageTypeIndexed);
+
+        public static readonly Type GetterType = typeof(IDamageTypeIndexedGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(IDamageTypeIndexed);
+
+        public static readonly Type? InternalSetterType = typeof(IDamageTypeIndexedInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Fallout4.DamageTypeIndexed";
+
+        public const string Name = "DamageTypeIndexed";
+
+        public const string Namespace = "Mutagen.Bethesda.Fallout4";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly RecordType TriggeringRecordType = RecordTypes.DMGT;
+        public static RecordTriggerSpecs TriggerSpecs => _recordSpecs.Value;
+        private static readonly Lazy<RecordTriggerSpecs> _recordSpecs = new Lazy<RecordTriggerSpecs>(() =>
+        {
+            var triggers = RecordCollection.Factory(RecordTypes.DMGT);
+            var all = RecordCollection.Factory(
+                RecordTypes.DMGT,
+                RecordTypes.DNAM);
+            return new RecordTriggerSpecs(
+                allRecordTypes: all,
+                triggeringRecordTypes: triggers);
+        });
+        public static readonly Type BinaryWriteTranslation = typeof(DamageTypeIndexedBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class DamageTypeIndexedSetterCommon : ADamageTypeSetterCommon
+    {
+        public new static readonly DamageTypeIndexedSetterCommon Instance = new DamageTypeIndexedSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(IDamageTypeIndexedInternal item)
+        {
+            ClearPartial();
+            item.DamageTypes = null;
+            base.Clear(item);
+        }
+
+        public override void Clear(IADamageTypeInternal item)
+        {
+            Clear(item: (IDamageTypeIndexedInternal)item);
+        }
+
+        public override void Clear(IFallout4MajorRecordInternal item)
+        {
+            Clear(item: (IDamageTypeIndexedInternal)item);
+        }
+
+        public override void Clear(IMajorRecordInternal item)
+        {
+            Clear(item: (IDamageTypeIndexedInternal)item);
+        }
+
+        #region Mutagen
+        public void RemapLinks(IDamageTypeIndexed obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+            base.RemapLinks(obj, mapping);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            IDamageTypeIndexedInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<IDamageTypeIndexedInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: DamageTypeIndexedBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: DamageTypeIndexedBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        public override void CopyInFromBinary(
+            IADamageTypeInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (DamageTypeIndexed)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IFallout4MajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (DamageTypeIndexed)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (DamageTypeIndexed)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    internal partial class DamageTypeIndexedCommon : ADamageTypeCommon
+    {
+        public new static readonly DamageTypeIndexedCommon Instance = new DamageTypeIndexedCommon();
+
+        public DamageTypeIndexed.Mask<bool> GetEqualsMask(
+            IDamageTypeIndexedGetter item,
+            IDamageTypeIndexedGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new DamageTypeIndexed.Mask<bool>(false);
+            ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            IDamageTypeIndexedGetter item,
+            IDamageTypeIndexedGetter rhs,
+            DamageTypeIndexed.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.DamageTypes = item.DamageTypes.CollectionEqualsHelper(
+                rhs.DamageTypes,
+                (l, r) => l == r,
+                include);
+            base.FillEqualsMask(item, rhs, ret, include);
+        }
+
+        public string Print(
+            IDamageTypeIndexedGetter item,
+            string? name = null,
+            DamageTypeIndexed.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            IDamageTypeIndexedGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            DamageTypeIndexed.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"DamageTypeIndexed =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (DamageTypeIndexed) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            IDamageTypeIndexedGetter item,
+            StructuredStringBuilder sb,
+            DamageTypeIndexed.Mask<bool>? printMask = null)
+        {
+            ADamageTypeCommon.ToStringFields(
+                item: item,
+                sb: sb,
+                printMask: printMask);
+            if ((printMask?.DamageTypes?.Overall ?? true)
+                && item.DamageTypes is {} DamageTypesItem)
+            {
+                sb.AppendLine("DamageTypes =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in DamageTypesItem)
+                    {
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(subItem);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static DamageTypeIndexed_FieldIndex ConvertFieldIndex(ADamageType_FieldIndex index)
+        {
+            switch (index)
+            {
+                case ADamageType_FieldIndex.MajorRecordFlagsRaw:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case ADamageType_FieldIndex.FormKey:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case ADamageType_FieldIndex.VersionControl:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case ADamageType_FieldIndex.EditorID:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case ADamageType_FieldIndex.FormVersion:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case ADamageType_FieldIndex.Version2:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case ADamageType_FieldIndex.Fallout4MajorRecordFlags:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new DamageTypeIndexed_FieldIndex ConvertFieldIndex(Fallout4MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case Fallout4MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormKey:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.VersionControl:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.EditorID:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormVersion:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Version2:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Fallout4MajorRecordFlags:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new DamageTypeIndexed_FieldIndex ConvertFieldIndex(MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.FormKey:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.VersionControl:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.EditorID:
+                    return (DamageTypeIndexed_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            IDamageTypeIndexedGetter? lhs,
+            IDamageTypeIndexedGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if (!base.Equals((IADamageTypeGetter)lhs, (IADamageTypeGetter)rhs, equalsMask)) return false;
+            if ((equalsMask?.GetShouldTranslate((int)DamageTypeIndexed_FieldIndex.DamageTypes) ?? true))
+            {
+                if (!lhs.DamageTypes.SequenceEqualNullable(rhs.DamageTypes)) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(
+            IADamageTypeGetter? lhs,
+            IADamageTypeGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IDamageTypeIndexedGetter?)lhs,
+                rhs: rhs as IDamageTypeIndexedGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IFallout4MajorRecordGetter? lhs,
+            IFallout4MajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IDamageTypeIndexedGetter?)lhs,
+                rhs: rhs as IDamageTypeIndexedGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IDamageTypeIndexedGetter?)lhs,
+                rhs: rhs as IDamageTypeIndexedGetter,
+                equalsMask: equalsMask);
+        }
+
+        public virtual int GetHashCode(IDamageTypeIndexedGetter item)
+        {
+            var hash = new HashCode();
+            hash.Add(item.DamageTypes);
+            hash.Add(base.GetHashCode());
+            return hash.ToHashCode();
+        }
+
+        public override int GetHashCode(IADamageTypeGetter item)
+        {
+            return GetHashCode(item: (IDamageTypeIndexedGetter)item);
+        }
+
+        public override int GetHashCode(IFallout4MajorRecordGetter item)
+        {
+            return GetHashCode(item: (IDamageTypeIndexedGetter)item);
+        }
+
+        public override int GetHashCode(IMajorRecordGetter item)
+        {
+            return GetHashCode(item: (IDamageTypeIndexedGetter)item);
+        }
+
+        #endregion
+
+        public override object GetNew()
+        {
+            return DamageTypeIndexed.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(IDamageTypeIndexedGetter obj, bool iterateNestedRecords = true)
+        {
+            foreach (var item in base.EnumerateFormLinks(obj, iterateNestedRecords))
+            {
+                yield return item;
+            }
+            yield break;
+        }
+
+        #region Duplicate
+        public DamageTypeIndexed Duplicate(
+            IDamageTypeIndexedGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            var newRec = new DamageTypeIndexed(formKey, item.FormVersion);
+            newRec.DeepCopyIn(item, default(ErrorMaskBuilder?), copyMask);
+            return newRec;
+        }
+
+        public override ADamageType Duplicate(
+            IADamageTypeGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IDamageTypeIndexedGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override Fallout4MajorRecord Duplicate(
+            IFallout4MajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IDamageTypeIndexedGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IDamageTypeIndexedGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class DamageTypeIndexedSetterTranslationCommon : ADamageTypeSetterTranslationCommon
+    {
+        public new static readonly DamageTypeIndexedSetterTranslationCommon Instance = new DamageTypeIndexedSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            IDamageTypeIndexedInternal item,
+            IDamageTypeIndexedGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                item,
+                rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public void DeepCopyIn(
+            IDamageTypeIndexed item,
+            IDamageTypeIndexedGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                (IADamageType)item,
+                (IADamageTypeGetter)rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+            if ((copyMask?.GetShouldTranslate((int)DamageTypeIndexed_FieldIndex.DamageTypes) ?? true))
+            {
+                errorMask?.PushIndex((int)DamageTypeIndexed_FieldIndex.DamageTypes);
+                try
+                {
+                    if ((rhs.DamageTypes != null))
+                    {
+                        item.DamageTypes =
+                            rhs.DamageTypes
+                            .ToExtendedList<UInt32>();
+                    }
+                    else
+                    {
+                        item.DamageTypes = null;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            IDamageTypeIndexed item,
+            IDamageTypeIndexedGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        public override void DeepCopyIn(
+            IADamageTypeInternal item,
+            IADamageTypeGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IDamageTypeIndexedInternal)item,
+                rhs: (IDamageTypeIndexedGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IADamageType item,
+            IADamageTypeGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IDamageTypeIndexed)item,
+                rhs: (IDamageTypeIndexedGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecordInternal item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IDamageTypeIndexedInternal)item,
+                rhs: (IDamageTypeIndexedGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecord item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IDamageTypeIndexed)item,
+                rhs: (IDamageTypeIndexedGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IDamageTypeIndexedInternal)item,
+                rhs: (IDamageTypeIndexedGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IDamageTypeIndexed)item,
+                rhs: (IDamageTypeIndexedGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        #endregion
+
+        public DamageTypeIndexed DeepCopy(
+            IDamageTypeIndexedGetter item,
+            DamageTypeIndexed.TranslationMask? copyMask = null)
+        {
+            DamageTypeIndexed ret = (DamageTypeIndexed)((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).GetNew();
+            ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public DamageTypeIndexed DeepCopy(
+            IDamageTypeIndexedGetter item,
+            out DamageTypeIndexed.ErrorMask errorMask,
+            DamageTypeIndexed.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            DamageTypeIndexed ret = (DamageTypeIndexed)((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).GetNew();
+            ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = DamageTypeIndexed.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public DamageTypeIndexed DeepCopy(
+            IDamageTypeIndexedGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            DamageTypeIndexed ret = (DamageTypeIndexed)((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)item).CommonInstance()!).GetNew();
+            ((DamageTypeIndexedSetterTranslationCommon)((IDamageTypeIndexedGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class DamageTypeIndexed
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => DamageTypeIndexed_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => DamageTypeIndexed_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => DamageTypeIndexedCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterInstance()
+        {
+            return DamageTypeIndexedSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => DamageTypeIndexedSetterTranslationCommon.Instance;
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class DamageTypeIndexedBinaryWriteTranslation :
+        ADamageTypeBinaryWriteTranslation,
+        IBinaryWriteTranslator
+    {
+        public new static readonly DamageTypeIndexedBinaryWriteTranslation Instance = new();
+
+        public static void WriteRecordTypes(
+            IDamageTypeIndexedGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            MajorRecordBinaryWriteTranslation.WriteRecordTypes(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<UInt32>.Instance.Write(
+                writer: writer,
+                items: item.DamageTypes,
+                recordType: translationParams.ConvertToCustom(RecordTypes.DNAM),
+                transl: UInt32BinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write);
+        }
+
+        public void Write(
+            MutagenWriter writer,
+            IDamageTypeIndexedGetter item,
+            TypedWriteParams translationParams)
+        {
+            PluginUtilityTranslation.WriteMajorRecord(
+                writer: writer,
+                item: item,
+                translationParams: translationParams,
+                type: RecordTypes.DMGT,
+                writeEmbedded: ADamageTypeBinaryWriteTranslation.WriteEmbedded,
+                writeRecordTypes: WriteRecordTypes);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (IDamageTypeIndexedGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IADamageTypeGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IDamageTypeIndexedGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IFallout4MajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IDamageTypeIndexedGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IDamageTypeIndexedGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class DamageTypeIndexedBinaryCreateTranslation : ADamageTypeBinaryCreateTranslation
+    {
+        public new static readonly DamageTypeIndexedBinaryCreateTranslation Instance = new DamageTypeIndexedBinaryCreateTranslation();
+
+        public override RecordType RecordType => RecordTypes.DMGT;
+        public static ParseResult FillBinaryRecordTypes(
+            IDamageTypeIndexedInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.DNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.DamageTypes =
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<UInt32>.Instance.Parse(
+                            reader: frame.SpawnWithLength(contentLength),
+                            transl: UInt32BinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Parse)
+                        .CastExtendedList<UInt32>();
+                    return (int)DamageTypeIndexed_FieldIndex.DamageTypes;
+                }
+                default:
+                    return ADamageTypeBinaryCreateTranslation.FillBinaryRecordTypes(
+                        item: item,
+                        frame: frame,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        nextRecordType: nextRecordType,
+                        contentLength: contentLength,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+
+    }
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Binary Write Mixins
+    public static class DamageTypeIndexedBinaryTranslationMixIn
+    {
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    internal partial class DamageTypeIndexedBinaryOverlay :
+        ADamageTypeBinaryOverlay,
+        IDamageTypeIndexedGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => DamageTypeIndexed_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => DamageTypeIndexed_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => DamageTypeIndexedCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => DamageTypeIndexedSetterTranslationCommon.Instance;
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => DamageTypeIndexedBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((DamageTypeIndexedBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        protected override Type LinkType => typeof(IDamageTypeIndexedGetter);
+
+        public IReadOnlyList<UInt32>? DamageTypes { get; private set; }
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected DamageTypeIndexedBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public static IDamageTypeIndexedGetter DamageTypeIndexedFactory(
+            OverlayStream stream,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            stream = Decompression.DecompressStream(stream);
+            stream = ExtractRecordMemory(
+                stream: stream,
+                meta: package.MetaData.Constants,
+                memoryPair: out var memoryPair,
+                offset: out var offset,
+                finalPos: out var finalPos);
+            var ret = new DamageTypeIndexedBinaryOverlay(
+                memoryPair: memoryPair,
+                package: package);
+            ret._package.FormVersion = ret;
+            ret.CustomFactoryEnd(
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset);
+            ret.FillSubrecordTypes(
+                majorReference: ret,
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset,
+                translationParams: translationParams,
+                fill: ret.FillRecordType);
+            return ret;
+        }
+
+        public static IDamageTypeIndexedGetter DamageTypeIndexedFactory(
+            ReadOnlyMemorySlice<byte> slice,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            return DamageTypeIndexedFactory(
+                stream: new OverlayStream(slice, package),
+                package: package,
+                translationParams: translationParams);
+        }
+
+        public override ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.DNAM:
+                {
+                    this.DamageTypes = BinaryOverlayList.FactoryByStartIndexWithTrigger<UInt32>(
+                        stream: stream,
+                        package: _package,
+                        finalPos: finalPos,
+                        itemLength: 4,
+                        getter: (s, p) => BinaryPrimitives.ReadUInt32LittleEndian(s));
+                    return (int)DamageTypeIndexed_FieldIndex.DamageTypes;
+                }
+                default:
+                    return base.FillRecordType(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset,
+                        type: type,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            DamageTypeIndexedMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<DamageTypeIndexed>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IDamageTypeIndexedGetter rhs) return false;
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IDamageTypeIndexedGetter? obj)
+        {
+            return ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((DamageTypeIndexedCommon)((IDamageTypeIndexedGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

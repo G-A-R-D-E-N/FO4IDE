@@ -1,0 +1,119 @@
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.settings-modal {
+  width: 560px;
+  max-width: 92vw;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  color: var(--text-primary);
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-color);
+}
+.settings-header h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.settings-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+}
+.settings-close:hover { color: var(--text-primary); }
+
+.settings-body {
+  padding: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.settings-field > span { color: var(--text-secondary); }
+.settings-field > span em { color: #6f6f6f; font-style: normal; }
+
+.settings-field input,
+.settings-field select {
+  background: #3c3c3c;
+  border: 1px solid transparent;
+  padding: 8px 10px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+}
+.settings-field input:focus,
+.settings-field select:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.settings-input-row {
+  display: flex;
+  gap: 8px;
+}
+.settings-input-row input { flex: 1; }
+
+.settings-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: -4px;
+}
+.settings-test { font-size: 12px; color: var(--text-secondary); }
+
+.settings-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 4px 0;
+}
+
+.settings-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 7px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.settings-btn:hover { border-color: var(--accent-color); }
+.settings-btn.primary {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+.settings-btn.primary:hover { background: var(--accent-hover); }
+
+.settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border-color);
+}
+.settings-status { font-size: 12px; color: var(--text-secondary); }
+.settings-actions { display: flex; gap: 8px; }

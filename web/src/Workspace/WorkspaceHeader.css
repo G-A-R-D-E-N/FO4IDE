@@ -1,0 +1,195 @@
+.ws-header {
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.ws-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+}
+
+.ws-compare { border-bottom: 1px solid var(--border-color); }
+
+.ws-spacer { flex: 1 1 auto; }
+
+.ws-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 240px;
+  padding: 3px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ws-pill:hover { border-color: var(--border-strong); background: var(--bg-hover); }
+
+.ws-pill-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ws-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.ws-vs {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.ws-add {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.ws-add:hover { color: var(--text-primary); border-color: var(--accent-color); }
+
+.ws-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.ws-btn:hover { background: var(--bg-hover); border-color: var(--border-strong); }
+.ws-btn.on { border-color: var(--accent-color); color: var(--accent-color); }
+
+.ws-btn-primary {
+  background: var(--accent-dim);
+  border-color: var(--accent-dim);
+  color: #fff;
+  font-weight: 600;
+}
+
+.ws-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+.ws-actions { position: relative; }
+
+.ws-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 40;
+  min-width: 190px;
+  padding: 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-tertiary);
+  box-shadow: var(--shadow-panel);
+}
+
+.ws-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ws-menu-item:hover { background: var(--bg-hover); }
+.ws-menu-item.danger { color: var(--status-changed); }
+
+.ws-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.ws-picker-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.ws-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.ws-picker-item:hover { border-color: var(--accent-color); }
+
+.ws-picker-cancel {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.ws-picker-cancel:hover { color: var(--text-primary); }
+
+.ws-breadcrumb {
+  gap: 2px;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.ws-bc-seg { display: inline-flex; align-items: center; gap: 2px; }
+
+.ws-bc-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  cursor: pointer;
+  padding: 1px 3px;
+  border-radius: var(--radius-sm);
+}
+
+.ws-bc-btn:hover:not(:disabled) { background: var(--bg-hover); color: var(--text-primary); }
+.ws-bc-btn.leaf { color: var(--text-primary); cursor: default; }
+
+.ws-bc-leaf {
+  color: var(--text-primary);
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+}

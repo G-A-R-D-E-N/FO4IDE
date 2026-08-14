@@ -1,0 +1,2026 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Fallout4.Internals;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Cache;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Fallout4.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Class
+    public partial class LandscapeTexture :
+        Fallout4MajorRecord,
+        IEquatable<ILandscapeTextureGetter>,
+        ILandscapeTextureInternal,
+        ILoquiObjectSetter<LandscapeTexture>
+    {
+        #region Ctor
+        protected LandscapeTexture()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region TextureSet
+        private readonly IFormLinkNullable<ITextureSetGetter> _TextureSet = new FormLinkNullable<ITextureSetGetter>();
+        public IFormLinkNullable<ITextureSetGetter> TextureSet
+        {
+            get => _TextureSet;
+            set => _TextureSet.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<ITextureSetGetter> ILandscapeTextureGetter.TextureSet => this.TextureSet;
+        #endregion
+        #region MaterialType
+        private readonly IFormLink<IMaterialTypeGetter> _MaterialType = new FormLink<IMaterialTypeGetter>();
+        public IFormLink<IMaterialTypeGetter> MaterialType
+        {
+            get => _MaterialType;
+            set => _MaterialType.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkGetter<IMaterialTypeGetter> ILandscapeTextureGetter.MaterialType => this.MaterialType;
+        #endregion
+        #region HavokFriction
+        public Byte HavokFriction { get; set; } = default(Byte);
+        #endregion
+        #region HavokRestitution
+        public Byte HavokRestitution { get; set; } = default(Byte);
+        #endregion
+        #region TextureSpecularExponent
+        public Byte TextureSpecularExponent { get; set; } = default(Byte);
+        #endregion
+        #region Grasses
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<IFormLinkGetter<IGrassGetter>> _Grasses = new ExtendedList<IFormLinkGetter<IGrassGetter>>();
+        public ExtendedList<IFormLinkGetter<IGrassGetter>> Grasses
+        {
+            get => this._Grasses;
+            init => this._Grasses = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IFormLinkGetter<IGrassGetter>> ILandscapeTextureGetter.Grasses => _Grasses;
+        #endregion
+
+        #endregion
+
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            LandscapeTextureMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public new class Mask<TItem> :
+            Fallout4MajorRecord.Mask<TItem>,
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            : base(initialValue)
+            {
+                this.TextureSet = initialValue;
+                this.MaterialType = initialValue;
+                this.HavokFriction = initialValue;
+                this.HavokRestitution = initialValue;
+                this.TextureSpecularExponent = initialValue;
+                this.Grasses = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(initialValue, []);
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID,
+                TItem FormVersion,
+                TItem Version2,
+                TItem Fallout4MajorRecordFlags,
+                TItem TextureSet,
+                TItem MaterialType,
+                TItem HavokFriction,
+                TItem HavokRestitution,
+                TItem TextureSpecularExponent,
+                TItem Grasses)
+            : base(
+                MajorRecordFlagsRaw: MajorRecordFlagsRaw,
+                FormKey: FormKey,
+                VersionControl: VersionControl,
+                EditorID: EditorID,
+                FormVersion: FormVersion,
+                Version2: Version2,
+                Fallout4MajorRecordFlags: Fallout4MajorRecordFlags)
+            {
+                this.TextureSet = TextureSet;
+                this.MaterialType = MaterialType;
+                this.HavokFriction = HavokFriction;
+                this.HavokRestitution = HavokRestitution;
+                this.TextureSpecularExponent = TextureSpecularExponent;
+                this.Grasses = new MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>(Grasses, []);
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public TItem TextureSet;
+            public TItem MaterialType;
+            public TItem HavokFriction;
+            public TItem HavokRestitution;
+            public TItem TextureSpecularExponent;
+            public MaskItem<TItem, IEnumerable<(int Index, TItem Value)>?>? Grasses;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!base.Equals(rhs)) return false;
+                if (!object.Equals(this.TextureSet, rhs.TextureSet)) return false;
+                if (!object.Equals(this.MaterialType, rhs.MaterialType)) return false;
+                if (!object.Equals(this.HavokFriction, rhs.HavokFriction)) return false;
+                if (!object.Equals(this.HavokRestitution, rhs.HavokRestitution)) return false;
+                if (!object.Equals(this.TextureSpecularExponent, rhs.TextureSpecularExponent)) return false;
+                if (!object.Equals(this.Grasses, rhs.Grasses)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.TextureSet);
+                hash.Add(this.MaterialType);
+                hash.Add(this.HavokFriction);
+                hash.Add(this.HavokRestitution);
+                hash.Add(this.TextureSpecularExponent);
+                hash.Add(this.Grasses);
+                hash.Add(base.GetHashCode());
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public override bool All(Func<TItem, bool> eval)
+            {
+                if (!base.All(eval)) return false;
+                if (!eval(this.TextureSet)) return false;
+                if (!eval(this.MaterialType)) return false;
+                if (!eval(this.HavokFriction)) return false;
+                if (!eval(this.HavokRestitution)) return false;
+                if (!eval(this.TextureSpecularExponent)) return false;
+                if (this.Grasses != null)
+                {
+                    if (!eval(this.Grasses.Overall)) return false;
+                    if (this.Grasses.Specific != null)
+                    {
+                        foreach (var item in this.Grasses.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public override bool Any(Func<TItem, bool> eval)
+            {
+                if (base.Any(eval)) return true;
+                if (eval(this.TextureSet)) return true;
+                if (eval(this.MaterialType)) return true;
+                if (eval(this.HavokFriction)) return true;
+                if (eval(this.HavokRestitution)) return true;
+                if (eval(this.TextureSpecularExponent)) return true;
+                if (this.Grasses != null)
+                {
+                    if (eval(this.Grasses.Overall)) return true;
+                    if (this.Grasses.Specific != null)
+                    {
+                        foreach (var item in this.Grasses.Specific)
+                        {
+                            if (!eval(item.Value)) return false;
+                        }
+                    }
+                }
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public new Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new LandscapeTexture.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                base.Translate_InternalFill(obj, eval);
+                obj.TextureSet = eval(this.TextureSet);
+                obj.MaterialType = eval(this.MaterialType);
+                obj.HavokFriction = eval(this.HavokFriction);
+                obj.HavokRestitution = eval(this.HavokRestitution);
+                obj.TextureSpecularExponent = eval(this.TextureSpecularExponent);
+                if (Grasses != null)
+                {
+                    obj.Grasses = new MaskItem<R, IEnumerable<(int Index, R Value)>?>(eval(this.Grasses.Overall), []);
+                    if (Grasses.Specific != null)
+                    {
+                        var l = new List<(int Index, R Item)>();
+                        obj.Grasses.Specific = l;
+                        foreach (var item in Grasses.Specific)
+                        {
+                            R mask = eval(item.Value);
+                            l.Add((item.Index, mask));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(LandscapeTexture.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, LandscapeTexture.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(LandscapeTexture.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.TextureSet ?? true)
+                    {
+                        sb.AppendItem(TextureSet, "TextureSet");
+                    }
+                    if (printMask?.MaterialType ?? true)
+                    {
+                        sb.AppendItem(MaterialType, "MaterialType");
+                    }
+                    if (printMask?.HavokFriction ?? true)
+                    {
+                        sb.AppendItem(HavokFriction, "HavokFriction");
+                    }
+                    if (printMask?.HavokRestitution ?? true)
+                    {
+                        sb.AppendItem(HavokRestitution, "HavokRestitution");
+                    }
+                    if (printMask?.TextureSpecularExponent ?? true)
+                    {
+                        sb.AppendItem(TextureSpecularExponent, "TextureSpecularExponent");
+                    }
+                    if ((printMask?.Grasses?.Overall ?? true)
+                        && Grasses is {} GrassesItem)
+                    {
+                        sb.AppendLine("Grasses =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(GrassesItem.Overall);
+                            if (GrassesItem.Specific != null)
+                            {
+                                foreach (var subItem in GrassesItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        {
+                                            sb.AppendItem(subItem);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public new class ErrorMask :
+            Fallout4MajorRecord.ErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public Exception? TextureSet;
+            public Exception? MaterialType;
+            public Exception? HavokFriction;
+            public Exception? HavokRestitution;
+            public Exception? TextureSpecularExponent;
+            public MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>? Grasses;
+            #endregion
+
+            #region IErrorMask
+            public override object? GetNthMask(int index)
+            {
+                LandscapeTexture_FieldIndex enu = (LandscapeTexture_FieldIndex)index;
+                switch (enu)
+                {
+                    case LandscapeTexture_FieldIndex.TextureSet:
+                        return TextureSet;
+                    case LandscapeTexture_FieldIndex.MaterialType:
+                        return MaterialType;
+                    case LandscapeTexture_FieldIndex.HavokFriction:
+                        return HavokFriction;
+                    case LandscapeTexture_FieldIndex.HavokRestitution:
+                        return HavokRestitution;
+                    case LandscapeTexture_FieldIndex.TextureSpecularExponent:
+                        return TextureSpecularExponent;
+                    case LandscapeTexture_FieldIndex.Grasses:
+                        return Grasses;
+                    default:
+                        return base.GetNthMask(index);
+                }
+            }
+
+            public override void SetNthException(int index, Exception ex)
+            {
+                LandscapeTexture_FieldIndex enu = (LandscapeTexture_FieldIndex)index;
+                switch (enu)
+                {
+                    case LandscapeTexture_FieldIndex.TextureSet:
+                        this.TextureSet = ex;
+                        break;
+                    case LandscapeTexture_FieldIndex.MaterialType:
+                        this.MaterialType = ex;
+                        break;
+                    case LandscapeTexture_FieldIndex.HavokFriction:
+                        this.HavokFriction = ex;
+                        break;
+                    case LandscapeTexture_FieldIndex.HavokRestitution:
+                        this.HavokRestitution = ex;
+                        break;
+                    case LandscapeTexture_FieldIndex.TextureSpecularExponent:
+                        this.TextureSpecularExponent = ex;
+                        break;
+                    case LandscapeTexture_FieldIndex.Grasses:
+                        this.Grasses = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(ex, null);
+                        break;
+                    default:
+                        base.SetNthException(index, ex);
+                        break;
+                }
+            }
+
+            public override void SetNthMask(int index, object obj)
+            {
+                LandscapeTexture_FieldIndex enu = (LandscapeTexture_FieldIndex)index;
+                switch (enu)
+                {
+                    case LandscapeTexture_FieldIndex.TextureSet:
+                        this.TextureSet = (Exception?)obj;
+                        break;
+                    case LandscapeTexture_FieldIndex.MaterialType:
+                        this.MaterialType = (Exception?)obj;
+                        break;
+                    case LandscapeTexture_FieldIndex.HavokFriction:
+                        this.HavokFriction = (Exception?)obj;
+                        break;
+                    case LandscapeTexture_FieldIndex.HavokRestitution:
+                        this.HavokRestitution = (Exception?)obj;
+                        break;
+                    case LandscapeTexture_FieldIndex.TextureSpecularExponent:
+                        this.TextureSpecularExponent = (Exception?)obj;
+                        break;
+                    case LandscapeTexture_FieldIndex.Grasses:
+                        this.Grasses = (MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>)obj;
+                        break;
+                    default:
+                        base.SetNthMask(index, obj);
+                        break;
+                }
+            }
+
+            public override bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (TextureSet != null) return true;
+                if (MaterialType != null) return true;
+                if (HavokFriction != null) return true;
+                if (HavokRestitution != null) return true;
+                if (TextureSpecularExponent != null) return true;
+                if (Grasses != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public override void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected override void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                base.PrintFillInternal(sb);
+                {
+                    sb.AppendItem(TextureSet, "TextureSet");
+                }
+                {
+                    sb.AppendItem(MaterialType, "MaterialType");
+                }
+                {
+                    sb.AppendItem(HavokFriction, "HavokFriction");
+                }
+                {
+                    sb.AppendItem(HavokRestitution, "HavokRestitution");
+                }
+                {
+                    sb.AppendItem(TextureSpecularExponent, "TextureSpecularExponent");
+                }
+                if (Grasses is {} GrassesItem)
+                {
+                    sb.AppendLine("Grasses =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(GrassesItem.Overall);
+                        if (GrassesItem.Specific != null)
+                        {
+                            foreach (var subItem in GrassesItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    {
+                                        sb.AppendItem(subItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.TextureSet = this.TextureSet.Combine(rhs.TextureSet);
+                ret.MaterialType = this.MaterialType.Combine(rhs.MaterialType);
+                ret.HavokFriction = this.HavokFriction.Combine(rhs.HavokFriction);
+                ret.HavokRestitution = this.HavokRestitution.Combine(rhs.HavokRestitution);
+                ret.TextureSpecularExponent = this.TextureSpecularExponent.Combine(rhs.TextureSpecularExponent);
+                ret.Grasses = new MaskItem<Exception?, IEnumerable<(int Index, Exception Value)>?>(Noggog.ExceptionExt.Combine(this.Grasses?.Overall, rhs.Grasses?.Overall), Noggog.ExceptionExt.Combine(this.Grasses?.Specific, rhs.Grasses?.Specific));
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static new ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public new class TranslationMask :
+            Fallout4MajorRecord.TranslationMask,
+            ITranslationMask
+        {
+            #region Members
+            public bool TextureSet;
+            public bool MaterialType;
+            public bool HavokFriction;
+            public bool HavokRestitution;
+            public bool TextureSpecularExponent;
+            public bool Grasses;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+                : base(defaultOn, onOverall)
+            {
+                this.TextureSet = defaultOn;
+                this.MaterialType = defaultOn;
+                this.HavokFriction = defaultOn;
+                this.HavokRestitution = defaultOn;
+                this.TextureSpecularExponent = defaultOn;
+                this.Grasses = defaultOn;
+            }
+
+            #endregion
+
+            protected override void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                base.GetCrystal(ret);
+                ret.Add((TextureSet, null));
+                ret.Add((MaterialType, null));
+                ret.Add((HavokFriction, null));
+                ret.Add((HavokRestitution, null));
+                ret.Add((TextureSpecularExponent, null));
+                ret.Add((Grasses, null));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public static readonly RecordType GrupRecordType = LandscapeTexture_Registration.TriggeringRecordType;
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => LandscapeTextureCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        public override void RemapLinks(IReadOnlyDictionary<FormKey, FormKey> mapping) => LandscapeTextureSetterCommon.Instance.RemapLinks(this, mapping);
+        public LandscapeTexture(
+            FormKey formKey,
+            Fallout4Release gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease.ToGameRelease()).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        private LandscapeTexture(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        internal LandscapeTexture(
+            FormKey formKey,
+            ushort formVersion)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = formVersion;
+            CustomCtor();
+        }
+
+        public LandscapeTexture(IFallout4Mod mod)
+            : this(
+                mod.GetNextFormKey(),
+                mod.Fallout4Release)
+        {
+        }
+
+        public LandscapeTexture(IFallout4Mod mod, string editorID)
+            : this(
+                mod.GetNextFormKey(editorID),
+                mod.Fallout4Release)
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<LandscapeTexture>.ToString(this);
+        }
+
+        protected override Type LinkType => typeof(ILandscapeTexture);
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not ILandscapeTextureGetter rhs) return false;
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(ILandscapeTextureGetter? obj)
+        {
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((LandscapeTextureCommon)((ILandscapeTextureGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => LandscapeTextureBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((LandscapeTextureBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #region Binary Create
+        public new static LandscapeTexture CreateFromBinary(
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            var ret = new LandscapeTexture();
+            ((LandscapeTextureSetterCommon)((ILandscapeTextureGetter)ret).CommonSetterInstance()!).CopyInFromBinary(
+                item: ret,
+                frame: frame,
+                translationParams: translationParams);
+            return ret;
+        }
+
+        #endregion
+
+        public static bool TryCreateFromBinary(
+            MutagenFrame frame,
+            out LandscapeTexture item,
+            TypedParseParams translationParams = default)
+        {
+            var startPos = frame.Position;
+            item = CreateFromBinary(
+                frame: frame,
+                translationParams: translationParams);
+            return startPos != frame.Position;
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((LandscapeTextureSetterCommon)((ILandscapeTextureGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static new LandscapeTexture GetNew()
+        {
+            return new LandscapeTexture();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface ILandscapeTexture :
+        IFallout4MajorRecordInternal,
+        IFormLinkContainer,
+        ILandscapeTextureGetter,
+        ILoquiObjectSetter<ILandscapeTextureInternal>,
+        IRegionTarget
+    {
+        new IFormLinkNullable<ITextureSetGetter> TextureSet { get; set; }
+        new IFormLink<IMaterialTypeGetter> MaterialType { get; set; }
+        new Byte HavokFriction { get; set; }
+        new Byte HavokRestitution { get; set; }
+        new Byte TextureSpecularExponent { get; set; }
+        new ExtendedList<IFormLinkGetter<IGrassGetter>> Grasses { get; }
+    }
+
+    public partial interface ILandscapeTextureInternal :
+        IFallout4MajorRecordInternal,
+        ILandscapeTexture,
+        ILandscapeTextureGetter
+    {
+    }
+
+    [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.LTEX)]
+    public partial interface ILandscapeTextureGetter :
+        IFallout4MajorRecordGetter,
+        IBinaryItem,
+        IFormLinkContainerGetter,
+        ILoquiObject<ILandscapeTextureGetter>,
+        IMapsToGetter<ILandscapeTextureGetter>,
+        IRegionTargetGetter
+    {
+        static new ILoquiRegistration StaticRegistration => LandscapeTexture_Registration.Instance;
+        IFormLinkNullableGetter<ITextureSetGetter> TextureSet { get; }
+        IFormLinkGetter<IMaterialTypeGetter> MaterialType { get; }
+        Byte HavokFriction { get; }
+        Byte HavokRestitution { get; }
+        Byte TextureSpecularExponent { get; }
+        IReadOnlyList<IFormLinkGetter<IGrassGetter>> Grasses { get; }
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class LandscapeTextureMixIn
+    {
+        public static void Clear(this ILandscapeTextureInternal item)
+        {
+            ((LandscapeTextureSetterCommon)((ILandscapeTextureGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static LandscapeTexture.Mask<bool> GetEqualsMask(
+            this ILandscapeTextureGetter item,
+            ILandscapeTextureGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this ILandscapeTextureGetter item,
+            string? name = null,
+            LandscapeTexture.Mask<bool>? printMask = null)
+        {
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this ILandscapeTextureGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            LandscapeTexture.Mask<bool>? printMask = null)
+        {
+            ((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this ILandscapeTextureGetter item,
+            ILandscapeTextureGetter rhs,
+            LandscapeTexture.TranslationMask? equalsMask = null)
+        {
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this ILandscapeTextureInternal lhs,
+            ILandscapeTextureGetter rhs,
+            out LandscapeTexture.ErrorMask errorMask,
+            LandscapeTexture.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = LandscapeTexture.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this ILandscapeTextureInternal lhs,
+            ILandscapeTextureGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static LandscapeTexture DeepCopy(
+            this ILandscapeTextureGetter item,
+            LandscapeTexture.TranslationMask? copyMask = null)
+        {
+            return ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static LandscapeTexture DeepCopy(
+            this ILandscapeTextureGetter item,
+            out LandscapeTexture.ErrorMask errorMask,
+            LandscapeTexture.TranslationMask? copyMask = null)
+        {
+            return ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static LandscapeTexture DeepCopy(
+            this ILandscapeTextureGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        public static LandscapeTexture Duplicate(
+            this ILandscapeTextureGetter item,
+            FormKey formKey,
+            LandscapeTexture.TranslationMask? copyMask = null)
+        {
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static LandscapeTexture Duplicate(
+            this ILandscapeTextureGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this ILandscapeTextureInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((LandscapeTextureSetterCommon)((ILandscapeTextureGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Field Index
+    internal enum LandscapeTexture_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+        FormVersion = 4,
+        Version2 = 5,
+        Fallout4MajorRecordFlags = 6,
+        TextureSet = 7,
+        MaterialType = 8,
+        HavokFriction = 9,
+        HavokRestitution = 10,
+        TextureSpecularExponent = 11,
+        Grasses = 12,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class LandscapeTexture_Registration : ILoquiRegistration
+    {
+        public static readonly LandscapeTexture_Registration Instance = new LandscapeTexture_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Fallout4.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 6;
+
+        public const ushort FieldCount = 13;
+
+        public static readonly Type MaskType = typeof(LandscapeTexture.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(LandscapeTexture.ErrorMask);
+
+        public static readonly Type ClassType = typeof(LandscapeTexture);
+
+        public static readonly Type GetterType = typeof(ILandscapeTextureGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(ILandscapeTexture);
+
+        public static readonly Type? InternalSetterType = typeof(ILandscapeTextureInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Fallout4.LandscapeTexture";
+
+        public const string Name = "LandscapeTexture";
+
+        public const string Namespace = "Mutagen.Bethesda.Fallout4";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly RecordType TriggeringRecordType = RecordTypes.LTEX;
+        public static RecordTriggerSpecs TriggerSpecs => _recordSpecs.Value;
+        private static readonly Lazy<RecordTriggerSpecs> _recordSpecs = new Lazy<RecordTriggerSpecs>(() =>
+        {
+            var triggers = RecordCollection.Factory(RecordTypes.LTEX);
+            var all = RecordCollection.Factory(
+                RecordTypes.LTEX,
+                RecordTypes.TNAM,
+                RecordTypes.MNAM,
+                RecordTypes.HNAM,
+                RecordTypes.SNAM,
+                RecordTypes.GNAM);
+            return new RecordTriggerSpecs(
+                allRecordTypes: all,
+                triggeringRecordTypes: triggers);
+        });
+        public static readonly Type BinaryWriteTranslation = typeof(LandscapeTextureBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class LandscapeTextureSetterCommon : Fallout4MajorRecordSetterCommon
+    {
+        public new static readonly LandscapeTextureSetterCommon Instance = new LandscapeTextureSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(ILandscapeTextureInternal item)
+        {
+            ClearPartial();
+            item.TextureSet.Clear();
+            item.MaterialType.Clear();
+            item.HavokFriction = default(Byte);
+            item.HavokRestitution = default(Byte);
+            item.TextureSpecularExponent = default(Byte);
+            item.Grasses.Clear();
+            base.Clear(item);
+        }
+
+        public override void Clear(IFallout4MajorRecordInternal item)
+        {
+            Clear(item: (ILandscapeTextureInternal)item);
+        }
+
+        public override void Clear(IMajorRecordInternal item)
+        {
+            Clear(item: (ILandscapeTextureInternal)item);
+        }
+
+        #region Mutagen
+        public void RemapLinks(ILandscapeTexture obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+            base.RemapLinks(obj, mapping);
+            obj.TextureSet.Relink(mapping);
+            obj.MaterialType.Relink(mapping);
+            obj.Grasses.RemapLinks(mapping);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            ILandscapeTextureInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<ILandscapeTextureInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: LandscapeTextureBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: LandscapeTextureBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        public override void CopyInFromBinary(
+            IFallout4MajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (LandscapeTexture)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (LandscapeTexture)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    internal partial class LandscapeTextureCommon : Fallout4MajorRecordCommon
+    {
+        public new static readonly LandscapeTextureCommon Instance = new LandscapeTextureCommon();
+
+        public LandscapeTexture.Mask<bool> GetEqualsMask(
+            ILandscapeTextureGetter item,
+            ILandscapeTextureGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new LandscapeTexture.Mask<bool>(false);
+            ((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            ILandscapeTextureGetter item,
+            ILandscapeTextureGetter rhs,
+            LandscapeTexture.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.TextureSet = item.TextureSet.Equals(rhs.TextureSet);
+            ret.MaterialType = item.MaterialType.Equals(rhs.MaterialType);
+            ret.HavokFriction = item.HavokFriction == rhs.HavokFriction;
+            ret.HavokRestitution = item.HavokRestitution == rhs.HavokRestitution;
+            ret.TextureSpecularExponent = item.TextureSpecularExponent == rhs.TextureSpecularExponent;
+            ret.Grasses = item.Grasses.CollectionEqualsHelper(
+                rhs.Grasses,
+                (l, r) => object.Equals(l, r),
+                include);
+            base.FillEqualsMask(item, rhs, ret, include);
+        }
+
+        public string Print(
+            ILandscapeTextureGetter item,
+            string? name = null,
+            LandscapeTexture.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            ILandscapeTextureGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            LandscapeTexture.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"LandscapeTexture =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (LandscapeTexture) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            ILandscapeTextureGetter item,
+            StructuredStringBuilder sb,
+            LandscapeTexture.Mask<bool>? printMask = null)
+        {
+            Fallout4MajorRecordCommon.ToStringFields(
+                item: item,
+                sb: sb,
+                printMask: printMask);
+            if (printMask?.TextureSet ?? true)
+            {
+                sb.AppendItem(item.TextureSet.FormKeyNullable, "TextureSet");
+            }
+            if (printMask?.MaterialType ?? true)
+            {
+                sb.AppendItem(item.MaterialType.FormKey, "MaterialType");
+            }
+            if (printMask?.HavokFriction ?? true)
+            {
+                sb.AppendItem(item.HavokFriction, "HavokFriction");
+            }
+            if (printMask?.HavokRestitution ?? true)
+            {
+                sb.AppendItem(item.HavokRestitution, "HavokRestitution");
+            }
+            if (printMask?.TextureSpecularExponent ?? true)
+            {
+                sb.AppendItem(item.TextureSpecularExponent, "TextureSpecularExponent");
+            }
+            if (printMask?.Grasses?.Overall ?? true)
+            {
+                sb.AppendLine("Grasses =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in item.Grasses)
+                    {
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(subItem.FormKey);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static LandscapeTexture_FieldIndex ConvertFieldIndex(Fallout4MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case Fallout4MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormKey:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.VersionControl:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.EditorID:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormVersion:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Version2:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Fallout4MajorRecordFlags:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new LandscapeTexture_FieldIndex ConvertFieldIndex(MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.FormKey:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.VersionControl:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.EditorID:
+                    return (LandscapeTexture_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            ILandscapeTextureGetter? lhs,
+            ILandscapeTextureGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if (!base.Equals((IFallout4MajorRecordGetter)lhs, (IFallout4MajorRecordGetter)rhs, equalsMask)) return false;
+            if ((equalsMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.TextureSet) ?? true))
+            {
+                if (!lhs.TextureSet.Equals(rhs.TextureSet)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.MaterialType) ?? true))
+            {
+                if (!lhs.MaterialType.Equals(rhs.MaterialType)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.HavokFriction) ?? true))
+            {
+                if (lhs.HavokFriction != rhs.HavokFriction) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.HavokRestitution) ?? true))
+            {
+                if (lhs.HavokRestitution != rhs.HavokRestitution) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.TextureSpecularExponent) ?? true))
+            {
+                if (lhs.TextureSpecularExponent != rhs.TextureSpecularExponent) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.Grasses) ?? true))
+            {
+                if (!lhs.Grasses.SequenceEqualNullable(rhs.Grasses)) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(
+            IFallout4MajorRecordGetter? lhs,
+            IFallout4MajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (ILandscapeTextureGetter?)lhs,
+                rhs: rhs as ILandscapeTextureGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (ILandscapeTextureGetter?)lhs,
+                rhs: rhs as ILandscapeTextureGetter,
+                equalsMask: equalsMask);
+        }
+
+        public virtual int GetHashCode(ILandscapeTextureGetter item)
+        {
+            var hash = new HashCode();
+            hash.Add(item.TextureSet);
+            hash.Add(item.MaterialType);
+            hash.Add(item.HavokFriction);
+            hash.Add(item.HavokRestitution);
+            hash.Add(item.TextureSpecularExponent);
+            hash.Add(item.Grasses);
+            hash.Add(base.GetHashCode());
+            return hash.ToHashCode();
+        }
+
+        public override int GetHashCode(IFallout4MajorRecordGetter item)
+        {
+            return GetHashCode(item: (ILandscapeTextureGetter)item);
+        }
+
+        public override int GetHashCode(IMajorRecordGetter item)
+        {
+            return GetHashCode(item: (ILandscapeTextureGetter)item);
+        }
+
+        #endregion
+
+        public override object GetNew()
+        {
+            return LandscapeTexture.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(ILandscapeTextureGetter obj, bool iterateNestedRecords = true)
+        {
+            foreach (var item in base.EnumerateFormLinks(obj, iterateNestedRecords))
+            {
+                yield return item;
+            }
+            if (FormLinkInformation.TryFactory(obj.TextureSet, out var TextureSetInfo))
+            {
+                yield return TextureSetInfo;
+            }
+            yield return FormLinkInformation.Factory(obj.MaterialType);
+            foreach (var item in obj.Grasses)
+            {
+                yield return FormLinkInformation.Factory(item);
+            }
+            yield break;
+        }
+
+        #region Duplicate
+        public LandscapeTexture Duplicate(
+            ILandscapeTextureGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            var newRec = new LandscapeTexture(formKey, item.FormVersion);
+            newRec.DeepCopyIn(item, default(ErrorMaskBuilder?), copyMask);
+            return newRec;
+        }
+
+        public override Fallout4MajorRecord Duplicate(
+            IFallout4MajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (ILandscapeTextureGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (ILandscapeTextureGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class LandscapeTextureSetterTranslationCommon : Fallout4MajorRecordSetterTranslationCommon
+    {
+        public new static readonly LandscapeTextureSetterTranslationCommon Instance = new LandscapeTextureSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            ILandscapeTextureInternal item,
+            ILandscapeTextureGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                item,
+                rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public void DeepCopyIn(
+            ILandscapeTexture item,
+            ILandscapeTextureGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                (IFallout4MajorRecord)item,
+                (IFallout4MajorRecordGetter)rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+            if ((copyMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.TextureSet) ?? true))
+            {
+                item.TextureSet.SetTo(rhs.TextureSet.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.MaterialType) ?? true))
+            {
+                item.MaterialType.SetTo(rhs.MaterialType.FormKey);
+            }
+            if ((copyMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.HavokFriction) ?? true))
+            {
+                item.HavokFriction = rhs.HavokFriction;
+            }
+            if ((copyMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.HavokRestitution) ?? true))
+            {
+                item.HavokRestitution = rhs.HavokRestitution;
+            }
+            if ((copyMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.TextureSpecularExponent) ?? true))
+            {
+                item.TextureSpecularExponent = rhs.TextureSpecularExponent;
+            }
+            if ((copyMask?.GetShouldTranslate((int)LandscapeTexture_FieldIndex.Grasses) ?? true))
+            {
+                errorMask?.PushIndex((int)LandscapeTexture_FieldIndex.Grasses);
+                try
+                {
+                    item.Grasses.SetTo(
+                        rhs.Grasses
+                            .Select(b => (IFormLinkGetter<IGrassGetter>)new FormLink<IGrassGetter>(b.FormKey)));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            ILandscapeTexture item,
+            ILandscapeTextureGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        public override void DeepCopyIn(
+            IFallout4MajorRecordInternal item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ILandscapeTextureInternal)item,
+                rhs: (ILandscapeTextureGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecord item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ILandscapeTexture)item,
+                rhs: (ILandscapeTextureGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ILandscapeTextureInternal)item,
+                rhs: (ILandscapeTextureGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (ILandscapeTexture)item,
+                rhs: (ILandscapeTextureGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        #endregion
+
+        public LandscapeTexture DeepCopy(
+            ILandscapeTextureGetter item,
+            LandscapeTexture.TranslationMask? copyMask = null)
+        {
+            LandscapeTexture ret = (LandscapeTexture)((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).GetNew();
+            ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public LandscapeTexture DeepCopy(
+            ILandscapeTextureGetter item,
+            out LandscapeTexture.ErrorMask errorMask,
+            LandscapeTexture.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            LandscapeTexture ret = (LandscapeTexture)((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).GetNew();
+            ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = LandscapeTexture.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public LandscapeTexture DeepCopy(
+            ILandscapeTextureGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            LandscapeTexture ret = (LandscapeTexture)((LandscapeTextureCommon)((ILandscapeTextureGetter)item).CommonInstance()!).GetNew();
+            ((LandscapeTextureSetterTranslationCommon)((ILandscapeTextureGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class LandscapeTexture
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => LandscapeTexture_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => LandscapeTexture_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => LandscapeTextureCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterInstance()
+        {
+            return LandscapeTextureSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => LandscapeTextureSetterTranslationCommon.Instance;
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class LandscapeTextureBinaryWriteTranslation :
+        Fallout4MajorRecordBinaryWriteTranslation,
+        IBinaryWriteTranslator
+    {
+        public new static readonly LandscapeTextureBinaryWriteTranslation Instance = new();
+
+        public static void WriteRecordTypes(
+            ILandscapeTextureGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            MajorRecordBinaryWriteTranslation.WriteRecordTypes(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.TextureSet,
+                header: translationParams.ConvertToCustom(RecordTypes.TNAM));
+            FormLinkBinaryTranslation.Instance.Write(
+                writer: writer,
+                item: item.MaterialType,
+                header: translationParams.ConvertToCustom(RecordTypes.MNAM));
+            using (HeaderExport.Subrecord(writer, translationParams.ConvertToCustom(RecordTypes.HNAM)))
+            {
+                writer.Write(item.HavokFriction);
+                writer.Write(item.HavokRestitution);
+            }
+            ByteBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
+                writer: writer,
+                item: item.TextureSpecularExponent,
+                header: translationParams.ConvertToCustom(RecordTypes.SNAM));
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IFormLinkGetter<IGrassGetter>>.Instance.Write(
+                writer: writer,
+                items: item.Grasses,
+                transl: (MutagenWriter subWriter, IFormLinkGetter<IGrassGetter> subItem, TypedWriteParams conv) =>
+                {
+                    FormLinkBinaryTranslation.Instance.Write(
+                        writer: subWriter,
+                        item: subItem,
+                        header: translationParams.ConvertToCustom(RecordTypes.GNAM));
+                });
+        }
+
+        public void Write(
+            MutagenWriter writer,
+            ILandscapeTextureGetter item,
+            TypedWriteParams translationParams)
+        {
+            PluginUtilityTranslation.WriteMajorRecord(
+                writer: writer,
+                item: item,
+                translationParams: translationParams,
+                type: RecordTypes.LTEX,
+                writeEmbedded: Fallout4MajorRecordBinaryWriteTranslation.WriteEmbedded,
+                writeRecordTypes: WriteRecordTypes);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (ILandscapeTextureGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IFallout4MajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (ILandscapeTextureGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (ILandscapeTextureGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class LandscapeTextureBinaryCreateTranslation : Fallout4MajorRecordBinaryCreateTranslation
+    {
+        public new static readonly LandscapeTextureBinaryCreateTranslation Instance = new LandscapeTextureBinaryCreateTranslation();
+
+        public override RecordType RecordType => RecordTypes.LTEX;
+        public static ParseResult FillBinaryRecordTypes(
+            ILandscapeTextureInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.TNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.TextureSet.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)LandscapeTexture_FieldIndex.TextureSet;
+                }
+                case RecordTypeInts.MNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.MaterialType.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)LandscapeTexture_FieldIndex.MaterialType;
+                }
+                case RecordTypeInts.HNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    var dataFrame = frame.SpawnWithLength(contentLength);
+                    if (dataFrame.Remaining < 1) return null;
+                    item.HavokFriction = dataFrame.ReadUInt8();
+                    if (dataFrame.Remaining < 1) return null;
+                    item.HavokRestitution = dataFrame.ReadUInt8();
+                    return (int)LandscapeTexture_FieldIndex.HavokRestitution;
+                }
+                case RecordTypeInts.SNAM:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.TextureSpecularExponent = frame.ReadUInt8();
+                    return (int)LandscapeTexture_FieldIndex.TextureSpecularExponent;
+                }
+                case RecordTypeInts.GNAM:
+                {
+                    item.Grasses.SetTo(
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IFormLinkGetter<IGrassGetter>>.Instance.Parse(
+                            reader: frame,
+                            triggeringRecord: translationParams.ConvertToCustom(RecordTypes.GNAM),
+                            transl: FormLinkBinaryTranslation.Instance.Parse));
+                    return (int)LandscapeTexture_FieldIndex.Grasses;
+                }
+                default:
+                    return Fallout4MajorRecordBinaryCreateTranslation.FillBinaryRecordTypes(
+                        item: item,
+                        frame: frame,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        nextRecordType: nextRecordType,
+                        contentLength: contentLength,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+
+    }
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Binary Write Mixins
+    public static class LandscapeTextureBinaryTranslationMixIn
+    {
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    internal partial class LandscapeTextureBinaryOverlay :
+        Fallout4MajorRecordBinaryOverlay,
+        ILandscapeTextureGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => LandscapeTexture_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => LandscapeTexture_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => LandscapeTextureCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => LandscapeTextureSetterTranslationCommon.Instance;
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => LandscapeTextureCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => LandscapeTextureBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((LandscapeTextureBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        protected override Type LinkType => typeof(ILandscapeTextureGetter);
+
+        #region TextureSet
+        private int? _TextureSetLocation;
+        public IFormLinkNullableGetter<ITextureSetGetter> TextureSet => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<ITextureSetGetter>(_package, _recordData, _TextureSetLocation);
+        #endregion
+        #region MaterialType
+        private int? _MaterialTypeLocation;
+        public IFormLinkGetter<IMaterialTypeGetter> MaterialType => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IMaterialTypeGetter>(_package, _recordData, _MaterialTypeLocation);
+        #endregion
+        private RangeInt32? _HNAMLocation;
+        #region HavokFriction
+        private int _HavokFrictionLocation => _HNAMLocation!.Value.Min;
+        private bool _HavokFriction_IsSet => _HNAMLocation.HasValue;
+        public Byte HavokFriction => _HavokFriction_IsSet ? _recordData.Span[_HavokFrictionLocation] : default;
+        #endregion
+        #region HavokRestitution
+        private int _HavokRestitutionLocation => _HNAMLocation!.Value.Min + 0x1;
+        private bool _HavokRestitution_IsSet => _HNAMLocation.HasValue;
+        public Byte HavokRestitution => _HavokRestitution_IsSet ? _recordData.Span[_HavokRestitutionLocation] : default;
+        #endregion
+        #region TextureSpecularExponent
+        private int? _TextureSpecularExponentLocation;
+        public Byte TextureSpecularExponent => _TextureSpecularExponentLocation.HasValue ? HeaderTranslation.ExtractSubrecordMemory(_recordData, _TextureSpecularExponentLocation.Value, _package.MetaData.Constants)[0] : default(Byte);
+        #endregion
+        public IReadOnlyList<IFormLinkGetter<IGrassGetter>> Grasses { get; private set; } = [];
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected LandscapeTextureBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public static ILandscapeTextureGetter LandscapeTextureFactory(
+            OverlayStream stream,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            stream = Decompression.DecompressStream(stream);
+            stream = ExtractRecordMemory(
+                stream: stream,
+                meta: package.MetaData.Constants,
+                memoryPair: out var memoryPair,
+                offset: out var offset,
+                finalPos: out var finalPos);
+            var ret = new LandscapeTextureBinaryOverlay(
+                memoryPair: memoryPair,
+                package: package);
+            ret._package.FormVersion = ret;
+            ret.CustomFactoryEnd(
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset);
+            ret.FillSubrecordTypes(
+                majorReference: ret,
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset,
+                translationParams: translationParams,
+                fill: ret.FillRecordType);
+            return ret;
+        }
+
+        public static ILandscapeTextureGetter LandscapeTextureFactory(
+            ReadOnlyMemorySlice<byte> slice,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            return LandscapeTextureFactory(
+                stream: new OverlayStream(slice, package),
+                package: package,
+                translationParams: translationParams);
+        }
+
+        public override ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.TNAM:
+                {
+                    _TextureSetLocation = (stream.Position - offset);
+                    return (int)LandscapeTexture_FieldIndex.TextureSet;
+                }
+                case RecordTypeInts.MNAM:
+                {
+                    _MaterialTypeLocation = (stream.Position - offset);
+                    return (int)LandscapeTexture_FieldIndex.MaterialType;
+                }
+                case RecordTypeInts.HNAM:
+                {
+                    _HNAMLocation = new((stream.Position - offset) + _package.MetaData.Constants.SubConstants.TypeAndLengthLength, finalPos - offset - 1);
+                    return (int)LandscapeTexture_FieldIndex.HavokRestitution;
+                }
+                case RecordTypeInts.SNAM:
+                {
+                    _TextureSpecularExponentLocation = (stream.Position - offset);
+                    return (int)LandscapeTexture_FieldIndex.TextureSpecularExponent;
+                }
+                case RecordTypeInts.GNAM:
+                {
+                    this.Grasses = BinaryOverlayList.FactoryByArray<IFormLinkGetter<IGrassGetter>>(
+                        mem: stream.RemainingMemory,
+                        package: _package,
+                        getter: (s, p) => FormLinkBinaryTranslation.Instance.OverlayFactory<IGrassGetter>(p, s),
+                        locs: ParseRecordLocations(
+                            stream: stream,
+                            constants: _package.MetaData.Constants.SubConstants,
+                            trigger: RecordTypes.GNAM,
+                            skipHeader: true,
+                            translationParams: translationParams));
+                    return (int)LandscapeTexture_FieldIndex.Grasses;
+                }
+                default:
+                    return base.FillRecordType(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset,
+                        type: type,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            LandscapeTextureMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<LandscapeTexture>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not ILandscapeTextureGetter rhs) return false;
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(ILandscapeTextureGetter? obj)
+        {
+            return ((LandscapeTextureCommon)((ILandscapeTextureGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((LandscapeTextureCommon)((ILandscapeTextureGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

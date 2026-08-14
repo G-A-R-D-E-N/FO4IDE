@@ -1,0 +1,49 @@
+using Mutagen.Bethesda.Environments.DI;
+
+namespace Mutagen.Bethesda.Plugins.Records.DI;
+
+public interface IModActivator
+{
+    TMod Activate<TMod>(ModKey modKey, float? headerVersion = null, bool? forceUseLowerFormIDRanges = false)
+        where TMod : IModGetter;
+}
+
+public interface IModActivator<TMod>
+    where TMod : IModGetter
+{
+    TMod Activate(ModKey modKey, float? headerVersion = null, bool? forceUseLowerFormIDRanges = false);
+}
+
+public sealed class ModActivator : IModActivator
+{
+    private readonly IGameReleaseContext _gameRelease;
+
+    public ModActivator(
+        IGameReleaseContext gameRelease)
+    {
+        _gameRelease = gameRelease;
+    }
+
+    public TMod Activate<TMod>(ModKey modKey, float? headerVersion = null, bool? forceUseLowerFormIDRanges = false)
+        where TMod : IModGetter
+    {
+        return ModFactory<TMod>.Activator(modKey, _gameRelease.Release, headerVersion: headerVersion, forceUseLowerFormIDRanges: forceUseLowerFormIDRanges);
+    }
+}
+
+public sealed class ModActivator<TMod> : IModActivator<TMod>
+    where TMod : IModGetter
+{
+    private readonly IGameReleaseContext _gameRelease;
+
+    public ModActivator(
+        IGameReleaseContext gameRelease)
+    {
+        _gameRelease = gameRelease;
+    }
+
+    public TMod Activate(ModKey modKey, float? headerVersion = null, bool? forceUseLowerFormIDRanges = false)
+    {
+        return ModFactory<TMod>.Activator(modKey, _gameRelease.Release, headerVersion: headerVersion, forceUseLowerFormIDRanges: forceUseLowerFormIDRanges);
+    }
+}

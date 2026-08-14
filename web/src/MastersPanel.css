@@ -1,0 +1,96 @@
+
+.masters-modal {
+  width: 720px;
+  max-width: 92vw;
+  max-height: 86vh;
+}
+
+.masters-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-color, #2b2b2b);
+}
+.masters-plugin-select {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #2b2b2b);
+  background: transparent;
+  color: var(--text-color, #ddd);
+  font-size: 12.5px;
+}
+.masters-plugin-select:focus { outline: none; border-color: var(--accent-color, #4ec9b0); }
+.masters-load-btn { white-space: nowrap; }
+
+.masters-body {
+  padding: 12px 14px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.masters-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.masters-table th {
+  text-align: left;
+  padding: 4px 8px;
+  color: var(--muted, #8a8f98);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-color, #2b2b2b);
+}
+.masters-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.12);
+  color: var(--text-color, #ccc);
+}
+.masters-table tr.unused { background: rgba(229, 192, 123, 0.07); }
+.masters-name { font-family: var(--mono-font, monospace); }
+.masters-unused-flag { color: #e5c07b; font-weight: 600; }
+
+.masters-reorder-cell { display: flex; gap: 2px; }
+.masters-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border-color, #2b2b2b);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-color, #ccc);
+  cursor: pointer;
+}
+.masters-mini-btn:hover:not(:disabled) { border-color: var(--accent-color, #4ec9b0); color: var(--accent-color, #4ec9b0); }
+.masters-mini-btn:disabled { opacity: 0.3; cursor: default; }
+
+.masters-flag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color, #2b2b2b);
+}
+.masters-flag-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-color, #ccc);
+  cursor: pointer;
+}
+.masters-dirty-badge {
+  font-size: 11px;
+  color: #e5c07b;
+}
+
+.masters-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}

@@ -1,0 +1,3342 @@
+
+#region Usings
+using Loqui;
+using Loqui.Interfaces;
+using Loqui.Internal;
+using Mutagen.Bethesda.Binary;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Fallout4.Internals;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Aspects;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+using Mutagen.Bethesda.Plugins.Binary.Overlay;
+using Mutagen.Bethesda.Plugins.Binary.Streams;
+using Mutagen.Bethesda.Plugins.Binary.Translations;
+using Mutagen.Bethesda.Plugins.Cache;
+using Mutagen.Bethesda.Plugins.Exceptions;
+using Mutagen.Bethesda.Plugins.Internals;
+using Mutagen.Bethesda.Plugins.Meta;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Records.Internals;
+using Mutagen.Bethesda.Plugins.Records.Mapping;
+using Mutagen.Bethesda.Plugins.Utility;
+using Mutagen.Bethesda.Strings;
+using Mutagen.Bethesda.Translations.Binary;
+using Noggog;
+using Noggog.StructuredStrings;
+using Noggog.StructuredStrings.CSharp;
+using RecordTypeInts = Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts;
+using RecordTypes = Mutagen.Bethesda.Fallout4.Internals.RecordTypes;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+#endregion
+
+#nullable enable
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Class
+    public partial class Faction :
+        Fallout4MajorRecord,
+        IEquatable<IFactionGetter>,
+        IFactionInternal,
+        ILoquiObjectSetter<Faction>
+    {
+        #region Ctor
+        protected Faction()
+        {
+            CustomCtor();
+        }
+        partial void CustomCtor();
+        #endregion
+
+        #region Name
+
+        public TranslatedString? Name { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter? IFactionGetter.Name => this.Name;
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequiredGetter.Name => this.Name?.String ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamedGetter.Name => this.Name?.String;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter? ITranslatedNamedGetter.Name => this.Name;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter ITranslatedNamedRequiredGetter.Name => this.Name ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamed.Name
+        {
+            get => this.Name?.String;
+            set => this.Name = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequired.Name
+        {
+            get => this.Name?.String ?? string.Empty;
+            set => this.Name = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        TranslatedString ITranslatedNamedRequired.Name
+        {
+            get => this.Name ?? string.Empty;
+            set => this.Name = value;
+        }
+        #endregion
+        #endregion
+        #region Relations
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<Relation> _Relations = new ExtendedList<Relation>();
+        public ExtendedList<Relation> Relations
+        {
+            get => this._Relations;
+            init => this._Relations = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IRelationGetter> IFactionGetter.Relations => _Relations;
+        #endregion
+
+        #endregion
+        #region Flags
+        public Faction.FactionFlag Flags { get; set; } = default(Faction.FactionFlag);
+        #endregion
+        #region ExteriorJailMarker
+        private readonly IFormLinkNullable<IPlacedObjectGetter> _ExteriorJailMarker = new FormLinkNullable<IPlacedObjectGetter>();
+        public IFormLinkNullable<IPlacedObjectGetter> ExteriorJailMarker
+        {
+            get => _ExteriorJailMarker;
+            set => _ExteriorJailMarker.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IPlacedObjectGetter> IFactionGetter.ExteriorJailMarker => this.ExteriorJailMarker;
+        #endregion
+        #region FollowerWaitMarker
+        private readonly IFormLinkNullable<IPlacedObjectGetter> _FollowerWaitMarker = new FormLinkNullable<IPlacedObjectGetter>();
+        public IFormLinkNullable<IPlacedObjectGetter> FollowerWaitMarker
+        {
+            get => _FollowerWaitMarker;
+            set => _FollowerWaitMarker.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IPlacedObjectGetter> IFactionGetter.FollowerWaitMarker => this.FollowerWaitMarker;
+        #endregion
+        #region StolenGoodsContainer
+        private readonly IFormLinkNullable<IPlacedObjectGetter> _StolenGoodsContainer = new FormLinkNullable<IPlacedObjectGetter>();
+        public IFormLinkNullable<IPlacedObjectGetter> StolenGoodsContainer
+        {
+            get => _StolenGoodsContainer;
+            set => _StolenGoodsContainer.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IPlacedObjectGetter> IFactionGetter.StolenGoodsContainer => this.StolenGoodsContainer;
+        #endregion
+        #region PlayerInventoryContainer
+        private readonly IFormLinkNullable<IPlacedObjectGetter> _PlayerInventoryContainer = new FormLinkNullable<IPlacedObjectGetter>();
+        public IFormLinkNullable<IPlacedObjectGetter> PlayerInventoryContainer
+        {
+            get => _PlayerInventoryContainer;
+            set => _PlayerInventoryContainer.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IPlacedObjectGetter> IFactionGetter.PlayerInventoryContainer => this.PlayerInventoryContainer;
+        #endregion
+        #region SharedCrimeFactionList
+        private readonly IFormLinkNullable<IFormListGetter> _SharedCrimeFactionList = new FormLinkNullable<IFormListGetter>();
+        public IFormLinkNullable<IFormListGetter> SharedCrimeFactionList
+        {
+            get => _SharedCrimeFactionList;
+            set => _SharedCrimeFactionList.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IFormListGetter> IFactionGetter.SharedCrimeFactionList => this.SharedCrimeFactionList;
+        #endregion
+        #region JailOutfit
+        private readonly IFormLinkNullable<IOutfitGetter> _JailOutfit = new FormLinkNullable<IOutfitGetter>();
+        public IFormLinkNullable<IOutfitGetter> JailOutfit
+        {
+            get => _JailOutfit;
+            set => _JailOutfit.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IOutfitGetter> IFactionGetter.JailOutfit => this.JailOutfit;
+        #endregion
+        #region CrimeValues
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private CrimeValues? _CrimeValues;
+        public CrimeValues? CrimeValues
+        {
+            get => _CrimeValues;
+            set => _CrimeValues = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ICrimeValuesGetter? IFactionGetter.CrimeValues => this.CrimeValues;
+        #endregion
+        #region Ranks
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<Rank> _Ranks = new ExtendedList<Rank>();
+        public ExtendedList<Rank> Ranks
+        {
+            get => this._Ranks;
+            init => this._Ranks = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IRankGetter> IFactionGetter.Ranks => _Ranks;
+        #endregion
+
+        #endregion
+        #region VendorBuySellList
+        private readonly IFormLinkNullable<IFormListGetter> _VendorBuySellList = new FormLinkNullable<IFormListGetter>();
+        public IFormLinkNullable<IFormListGetter> VendorBuySellList
+        {
+            get => _VendorBuySellList;
+            set => _VendorBuySellList.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IFormListGetter> IFactionGetter.VendorBuySellList => this.VendorBuySellList;
+        #endregion
+        #region MerchantContainer
+        private readonly IFormLinkNullable<IPlacedObjectGetter> _MerchantContainer = new FormLinkNullable<IPlacedObjectGetter>();
+        public IFormLinkNullable<IPlacedObjectGetter> MerchantContainer
+        {
+            get => _MerchantContainer;
+            set => _MerchantContainer.SetTo(value);
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IFormLinkNullableGetter<IPlacedObjectGetter> IFactionGetter.MerchantContainer => this.MerchantContainer;
+        #endregion
+        #region VendorValues
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private VendorValues? _VendorValues;
+        public VendorValues? VendorValues
+        {
+            get => _VendorValues;
+            set => _VendorValues = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IVendorValuesGetter? IFactionGetter.VendorValues => this.VendorValues;
+        #endregion
+        #region VendorLocation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private LocationTargetRadius? _VendorLocation;
+        public LocationTargetRadius? VendorLocation
+        {
+            get => _VendorLocation;
+            set => _VendorLocation = value;
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILocationTargetRadiusGetter? IFactionGetter.VendorLocation => this.VendorLocation;
+        #endregion
+        #region Conditions
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ExtendedList<Condition>? _Conditions;
+        public ExtendedList<Condition>? Conditions
+        {
+            get => this._Conditions;
+            set => this._Conditions = value;
+        }
+        #region Interface Members
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IReadOnlyList<IConditionGetter>? IFactionGetter.Conditions => _Conditions;
+        #endregion
+
+        #endregion
+
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            FactionMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        #region Mask
+        public new class Mask<TItem> :
+            Fallout4MajorRecord.Mask<TItem>,
+            IEquatable<Mask<TItem>>,
+            IMask<TItem>
+        {
+            #region Ctors
+            public Mask(TItem initialValue)
+            : base(initialValue)
+            {
+                this.Name = initialValue;
+                this.Relations = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Relation.Mask<TItem>?>>?>(initialValue, []);
+                this.Flags = initialValue;
+                this.ExteriorJailMarker = initialValue;
+                this.FollowerWaitMarker = initialValue;
+                this.StolenGoodsContainer = initialValue;
+                this.PlayerInventoryContainer = initialValue;
+                this.SharedCrimeFactionList = initialValue;
+                this.JailOutfit = initialValue;
+                this.CrimeValues = new MaskItem<TItem, CrimeValues.Mask<TItem>?>(initialValue, new CrimeValues.Mask<TItem>(initialValue));
+                this.Ranks = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Rank.Mask<TItem>?>>?>(initialValue, []);
+                this.VendorBuySellList = initialValue;
+                this.MerchantContainer = initialValue;
+                this.VendorValues = new MaskItem<TItem, VendorValues.Mask<TItem>?>(initialValue, new VendorValues.Mask<TItem>(initialValue));
+                this.VendorLocation = new MaskItem<TItem, LocationTargetRadius.Mask<TItem>?>(initialValue, new LocationTargetRadius.Mask<TItem>(initialValue));
+                this.Conditions = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Condition.Mask<TItem>?>>?>(initialValue, []);
+            }
+
+            public Mask(
+                TItem MajorRecordFlagsRaw,
+                TItem FormKey,
+                TItem VersionControl,
+                TItem EditorID,
+                TItem FormVersion,
+                TItem Version2,
+                TItem Fallout4MajorRecordFlags,
+                TItem Name,
+                TItem Relations,
+                TItem Flags,
+                TItem ExteriorJailMarker,
+                TItem FollowerWaitMarker,
+                TItem StolenGoodsContainer,
+                TItem PlayerInventoryContainer,
+                TItem SharedCrimeFactionList,
+                TItem JailOutfit,
+                TItem CrimeValues,
+                TItem Ranks,
+                TItem VendorBuySellList,
+                TItem MerchantContainer,
+                TItem VendorValues,
+                TItem VendorLocation,
+                TItem Conditions)
+            : base(
+                MajorRecordFlagsRaw: MajorRecordFlagsRaw,
+                FormKey: FormKey,
+                VersionControl: VersionControl,
+                EditorID: EditorID,
+                FormVersion: FormVersion,
+                Version2: Version2,
+                Fallout4MajorRecordFlags: Fallout4MajorRecordFlags)
+            {
+                this.Name = Name;
+                this.Relations = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Relation.Mask<TItem>?>>?>(Relations, []);
+                this.Flags = Flags;
+                this.ExteriorJailMarker = ExteriorJailMarker;
+                this.FollowerWaitMarker = FollowerWaitMarker;
+                this.StolenGoodsContainer = StolenGoodsContainer;
+                this.PlayerInventoryContainer = PlayerInventoryContainer;
+                this.SharedCrimeFactionList = SharedCrimeFactionList;
+                this.JailOutfit = JailOutfit;
+                this.CrimeValues = new MaskItem<TItem, CrimeValues.Mask<TItem>?>(CrimeValues, new CrimeValues.Mask<TItem>(CrimeValues));
+                this.Ranks = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Rank.Mask<TItem>?>>?>(Ranks, []);
+                this.VendorBuySellList = VendorBuySellList;
+                this.MerchantContainer = MerchantContainer;
+                this.VendorValues = new MaskItem<TItem, VendorValues.Mask<TItem>?>(VendorValues, new VendorValues.Mask<TItem>(VendorValues));
+                this.VendorLocation = new MaskItem<TItem, LocationTargetRadius.Mask<TItem>?>(VendorLocation, new LocationTargetRadius.Mask<TItem>(VendorLocation));
+                this.Conditions = new MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Condition.Mask<TItem>?>>?>(Conditions, []);
+            }
+
+            #pragma warning disable CS8618
+            protected Mask()
+            {
+            }
+            #pragma warning restore CS8618
+
+            #endregion
+
+            #region Members
+            public TItem Name;
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Relation.Mask<TItem>?>>?>? Relations;
+            public TItem Flags;
+            public TItem ExteriorJailMarker;
+            public TItem FollowerWaitMarker;
+            public TItem StolenGoodsContainer;
+            public TItem PlayerInventoryContainer;
+            public TItem SharedCrimeFactionList;
+            public TItem JailOutfit;
+            public MaskItem<TItem, CrimeValues.Mask<TItem>?>? CrimeValues { get; set; }
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Rank.Mask<TItem>?>>?>? Ranks;
+            public TItem VendorBuySellList;
+            public TItem MerchantContainer;
+            public MaskItem<TItem, VendorValues.Mask<TItem>?>? VendorValues { get; set; }
+            public MaskItem<TItem, LocationTargetRadius.Mask<TItem>?>? VendorLocation { get; set; }
+            public MaskItem<TItem, IEnumerable<MaskItemIndexed<TItem, Condition.Mask<TItem>?>>?>? Conditions;
+            #endregion
+
+            #region Equals
+            public override bool Equals(object? obj)
+            {
+                if (!(obj is Mask<TItem> rhs)) return false;
+                return Equals(rhs);
+            }
+
+            public bool Equals(Mask<TItem>? rhs)
+            {
+                if (rhs == null) return false;
+                if (!base.Equals(rhs)) return false;
+                if (!object.Equals(this.Name, rhs.Name)) return false;
+                if (!object.Equals(this.Relations, rhs.Relations)) return false;
+                if (!object.Equals(this.Flags, rhs.Flags)) return false;
+                if (!object.Equals(this.ExteriorJailMarker, rhs.ExteriorJailMarker)) return false;
+                if (!object.Equals(this.FollowerWaitMarker, rhs.FollowerWaitMarker)) return false;
+                if (!object.Equals(this.StolenGoodsContainer, rhs.StolenGoodsContainer)) return false;
+                if (!object.Equals(this.PlayerInventoryContainer, rhs.PlayerInventoryContainer)) return false;
+                if (!object.Equals(this.SharedCrimeFactionList, rhs.SharedCrimeFactionList)) return false;
+                if (!object.Equals(this.JailOutfit, rhs.JailOutfit)) return false;
+                if (!object.Equals(this.CrimeValues, rhs.CrimeValues)) return false;
+                if (!object.Equals(this.Ranks, rhs.Ranks)) return false;
+                if (!object.Equals(this.VendorBuySellList, rhs.VendorBuySellList)) return false;
+                if (!object.Equals(this.MerchantContainer, rhs.MerchantContainer)) return false;
+                if (!object.Equals(this.VendorValues, rhs.VendorValues)) return false;
+                if (!object.Equals(this.VendorLocation, rhs.VendorLocation)) return false;
+                if (!object.Equals(this.Conditions, rhs.Conditions)) return false;
+                return true;
+            }
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+                hash.Add(this.Name);
+                hash.Add(this.Relations);
+                hash.Add(this.Flags);
+                hash.Add(this.ExteriorJailMarker);
+                hash.Add(this.FollowerWaitMarker);
+                hash.Add(this.StolenGoodsContainer);
+                hash.Add(this.PlayerInventoryContainer);
+                hash.Add(this.SharedCrimeFactionList);
+                hash.Add(this.JailOutfit);
+                hash.Add(this.CrimeValues);
+                hash.Add(this.Ranks);
+                hash.Add(this.VendorBuySellList);
+                hash.Add(this.MerchantContainer);
+                hash.Add(this.VendorValues);
+                hash.Add(this.VendorLocation);
+                hash.Add(this.Conditions);
+                hash.Add(base.GetHashCode());
+                return hash.ToHashCode();
+            }
+
+            #endregion
+
+            #region All
+            public override bool All(Func<TItem, bool> eval)
+            {
+                if (!base.All(eval)) return false;
+                if (!eval(this.Name)) return false;
+                if (this.Relations != null)
+                {
+                    if (!eval(this.Relations.Overall)) return false;
+                    if (this.Relations.Specific != null)
+                    {
+                        foreach (var item in this.Relations.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (!eval(this.Flags)) return false;
+                if (!eval(this.ExteriorJailMarker)) return false;
+                if (!eval(this.FollowerWaitMarker)) return false;
+                if (!eval(this.StolenGoodsContainer)) return false;
+                if (!eval(this.PlayerInventoryContainer)) return false;
+                if (!eval(this.SharedCrimeFactionList)) return false;
+                if (!eval(this.JailOutfit)) return false;
+                if (CrimeValues != null)
+                {
+                    if (!eval(this.CrimeValues.Overall)) return false;
+                    if (this.CrimeValues.Specific != null && !this.CrimeValues.Specific.All(eval)) return false;
+                }
+                if (this.Ranks != null)
+                {
+                    if (!eval(this.Ranks.Overall)) return false;
+                    if (this.Ranks.Specific != null)
+                    {
+                        foreach (var item in this.Ranks.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (!eval(this.VendorBuySellList)) return false;
+                if (!eval(this.MerchantContainer)) return false;
+                if (VendorValues != null)
+                {
+                    if (!eval(this.VendorValues.Overall)) return false;
+                    if (this.VendorValues.Specific != null && !this.VendorValues.Specific.All(eval)) return false;
+                }
+                if (VendorLocation != null)
+                {
+                    if (!eval(this.VendorLocation.Overall)) return false;
+                    if (this.VendorLocation.Specific != null && !this.VendorLocation.Specific.All(eval)) return false;
+                }
+                if (this.Conditions != null)
+                {
+                    if (!eval(this.Conditions.Overall)) return false;
+                    if (this.Conditions.Specific != null)
+                    {
+                        foreach (var item in this.Conditions.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            #endregion
+
+            #region Any
+            public override bool Any(Func<TItem, bool> eval)
+            {
+                if (base.Any(eval)) return true;
+                if (eval(this.Name)) return true;
+                if (this.Relations != null)
+                {
+                    if (eval(this.Relations.Overall)) return true;
+                    if (this.Relations.Specific != null)
+                    {
+                        foreach (var item in this.Relations.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (eval(this.Flags)) return true;
+                if (eval(this.ExteriorJailMarker)) return true;
+                if (eval(this.FollowerWaitMarker)) return true;
+                if (eval(this.StolenGoodsContainer)) return true;
+                if (eval(this.PlayerInventoryContainer)) return true;
+                if (eval(this.SharedCrimeFactionList)) return true;
+                if (eval(this.JailOutfit)) return true;
+                if (CrimeValues != null)
+                {
+                    if (eval(this.CrimeValues.Overall)) return true;
+                    if (this.CrimeValues.Specific != null && this.CrimeValues.Specific.Any(eval)) return true;
+                }
+                if (this.Ranks != null)
+                {
+                    if (eval(this.Ranks.Overall)) return true;
+                    if (this.Ranks.Specific != null)
+                    {
+                        foreach (var item in this.Ranks.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                if (eval(this.VendorBuySellList)) return true;
+                if (eval(this.MerchantContainer)) return true;
+                if (VendorValues != null)
+                {
+                    if (eval(this.VendorValues.Overall)) return true;
+                    if (this.VendorValues.Specific != null && this.VendorValues.Specific.Any(eval)) return true;
+                }
+                if (VendorLocation != null)
+                {
+                    if (eval(this.VendorLocation.Overall)) return true;
+                    if (this.VendorLocation.Specific != null && this.VendorLocation.Specific.Any(eval)) return true;
+                }
+                if (this.Conditions != null)
+                {
+                    if (eval(this.Conditions.Overall)) return true;
+                    if (this.Conditions.Specific != null)
+                    {
+                        foreach (var item in this.Conditions.Specific)
+                        {
+                            if (!eval(item.Overall)) return false;
+                            if (item.Specific != null && !item.Specific.All(eval)) return false;
+                        }
+                    }
+                }
+                return false;
+            }
+            #endregion
+
+            #region Translate
+            public new Mask<R> Translate<R>(Func<TItem, R> eval)
+            {
+                var ret = new Faction.Mask<R>();
+                this.Translate_InternalFill(ret, eval);
+                return ret;
+            }
+
+            protected void Translate_InternalFill<R>(Mask<R> obj, Func<TItem, R> eval)
+            {
+                base.Translate_InternalFill(obj, eval);
+                obj.Name = eval(this.Name);
+                if (Relations != null)
+                {
+                    obj.Relations = new MaskItem<R, IEnumerable<MaskItemIndexed<R, Relation.Mask<R>?>>?>(eval(this.Relations.Overall), []);
+                    if (Relations.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, Relation.Mask<R>?>>();
+                        obj.Relations.Specific = l;
+                        foreach (var item in Relations.Specific)
+                        {
+                            MaskItemIndexed<R, Relation.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, Relation.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+                obj.Flags = eval(this.Flags);
+                obj.ExteriorJailMarker = eval(this.ExteriorJailMarker);
+                obj.FollowerWaitMarker = eval(this.FollowerWaitMarker);
+                obj.StolenGoodsContainer = eval(this.StolenGoodsContainer);
+                obj.PlayerInventoryContainer = eval(this.PlayerInventoryContainer);
+                obj.SharedCrimeFactionList = eval(this.SharedCrimeFactionList);
+                obj.JailOutfit = eval(this.JailOutfit);
+                obj.CrimeValues = this.CrimeValues == null ? null : new MaskItem<R, CrimeValues.Mask<R>?>(eval(this.CrimeValues.Overall), this.CrimeValues.Specific?.Translate(eval));
+                if (Ranks != null)
+                {
+                    obj.Ranks = new MaskItem<R, IEnumerable<MaskItemIndexed<R, Rank.Mask<R>?>>?>(eval(this.Ranks.Overall), []);
+                    if (Ranks.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, Rank.Mask<R>?>>();
+                        obj.Ranks.Specific = l;
+                        foreach (var item in Ranks.Specific)
+                        {
+                            MaskItemIndexed<R, Rank.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, Rank.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+                obj.VendorBuySellList = eval(this.VendorBuySellList);
+                obj.MerchantContainer = eval(this.MerchantContainer);
+                obj.VendorValues = this.VendorValues == null ? null : new MaskItem<R, VendorValues.Mask<R>?>(eval(this.VendorValues.Overall), this.VendorValues.Specific?.Translate(eval));
+                obj.VendorLocation = this.VendorLocation == null ? null : new MaskItem<R, LocationTargetRadius.Mask<R>?>(eval(this.VendorLocation.Overall), this.VendorLocation.Specific?.Translate(eval));
+                if (Conditions != null)
+                {
+                    obj.Conditions = new MaskItem<R, IEnumerable<MaskItemIndexed<R, Condition.Mask<R>?>>?>(eval(this.Conditions.Overall), []);
+                    if (Conditions.Specific != null)
+                    {
+                        var l = new List<MaskItemIndexed<R, Condition.Mask<R>?>>();
+                        obj.Conditions.Specific = l;
+                        foreach (var item in Conditions.Specific)
+                        {
+                            MaskItemIndexed<R, Condition.Mask<R>?>? mask = item == null ? null : new MaskItemIndexed<R, Condition.Mask<R>?>(item.Index, eval(item.Overall), item.Specific?.Translate(eval));
+                            if (mask == null) continue;
+                            l.Add(mask);
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public string Print(Faction.Mask<bool>? printMask = null)
+            {
+                var sb = new StructuredStringBuilder();
+                Print(sb, printMask);
+                return sb.ToString();
+            }
+
+            public void Print(StructuredStringBuilder sb, Faction.Mask<bool>? printMask = null)
+            {
+                sb.AppendLine($"{nameof(Faction.Mask<TItem>)} =>");
+                using (sb.Brace())
+                {
+                    if (printMask?.Name ?? true)
+                    {
+                        sb.AppendItem(Name, "Name");
+                    }
+                    if ((printMask?.Relations?.Overall ?? true)
+                        && Relations is {} RelationsItem)
+                    {
+                        sb.AppendLine("Relations =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(RelationsItem.Overall);
+                            if (RelationsItem.Specific != null)
+                            {
+                                foreach (var subItem in RelationsItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (printMask?.Flags ?? true)
+                    {
+                        sb.AppendItem(Flags, "Flags");
+                    }
+                    if (printMask?.ExteriorJailMarker ?? true)
+                    {
+                        sb.AppendItem(ExteriorJailMarker, "ExteriorJailMarker");
+                    }
+                    if (printMask?.FollowerWaitMarker ?? true)
+                    {
+                        sb.AppendItem(FollowerWaitMarker, "FollowerWaitMarker");
+                    }
+                    if (printMask?.StolenGoodsContainer ?? true)
+                    {
+                        sb.AppendItem(StolenGoodsContainer, "StolenGoodsContainer");
+                    }
+                    if (printMask?.PlayerInventoryContainer ?? true)
+                    {
+                        sb.AppendItem(PlayerInventoryContainer, "PlayerInventoryContainer");
+                    }
+                    if (printMask?.SharedCrimeFactionList ?? true)
+                    {
+                        sb.AppendItem(SharedCrimeFactionList, "SharedCrimeFactionList");
+                    }
+                    if (printMask?.JailOutfit ?? true)
+                    {
+                        sb.AppendItem(JailOutfit, "JailOutfit");
+                    }
+                    if (printMask?.CrimeValues?.Overall ?? true)
+                    {
+                        CrimeValues?.Print(sb);
+                    }
+                    if ((printMask?.Ranks?.Overall ?? true)
+                        && Ranks is {} RanksItem)
+                    {
+                        sb.AppendLine("Ranks =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(RanksItem.Overall);
+                            if (RanksItem.Specific != null)
+                            {
+                                foreach (var subItem in RanksItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (printMask?.VendorBuySellList ?? true)
+                    {
+                        sb.AppendItem(VendorBuySellList, "VendorBuySellList");
+                    }
+                    if (printMask?.MerchantContainer ?? true)
+                    {
+                        sb.AppendItem(MerchantContainer, "MerchantContainer");
+                    }
+                    if (printMask?.VendorValues?.Overall ?? true)
+                    {
+                        VendorValues?.Print(sb);
+                    }
+                    if (printMask?.VendorLocation?.Overall ?? true)
+                    {
+                        VendorLocation?.Print(sb);
+                    }
+                    if ((printMask?.Conditions?.Overall ?? true)
+                        && Conditions is {} ConditionsItem)
+                    {
+                        sb.AppendLine("Conditions =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendItem(ConditionsItem.Overall);
+                            if (ConditionsItem.Specific != null)
+                            {
+                                foreach (var subItem in ConditionsItem.Specific)
+                                {
+                                    using (sb.Brace())
+                                    {
+                                        subItem?.Print(sb);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        public new class ErrorMask :
+            Fallout4MajorRecord.ErrorMask,
+            IErrorMask<ErrorMask>
+        {
+            #region Members
+            public Exception? Name;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Relation.ErrorMask?>>?>? Relations;
+            public Exception? Flags;
+            public Exception? ExteriorJailMarker;
+            public Exception? FollowerWaitMarker;
+            public Exception? StolenGoodsContainer;
+            public Exception? PlayerInventoryContainer;
+            public Exception? SharedCrimeFactionList;
+            public Exception? JailOutfit;
+            public MaskItem<Exception?, CrimeValues.ErrorMask?>? CrimeValues;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Rank.ErrorMask?>>?>? Ranks;
+            public Exception? VendorBuySellList;
+            public Exception? MerchantContainer;
+            public MaskItem<Exception?, VendorValues.ErrorMask?>? VendorValues;
+            public MaskItem<Exception?, LocationTargetRadius.ErrorMask?>? VendorLocation;
+            public MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Condition.ErrorMask?>>?>? Conditions;
+            #endregion
+
+            #region IErrorMask
+            public override object? GetNthMask(int index)
+            {
+                Faction_FieldIndex enu = (Faction_FieldIndex)index;
+                switch (enu)
+                {
+                    case Faction_FieldIndex.Name:
+                        return Name;
+                    case Faction_FieldIndex.Relations:
+                        return Relations;
+                    case Faction_FieldIndex.Flags:
+                        return Flags;
+                    case Faction_FieldIndex.ExteriorJailMarker:
+                        return ExteriorJailMarker;
+                    case Faction_FieldIndex.FollowerWaitMarker:
+                        return FollowerWaitMarker;
+                    case Faction_FieldIndex.StolenGoodsContainer:
+                        return StolenGoodsContainer;
+                    case Faction_FieldIndex.PlayerInventoryContainer:
+                        return PlayerInventoryContainer;
+                    case Faction_FieldIndex.SharedCrimeFactionList:
+                        return SharedCrimeFactionList;
+                    case Faction_FieldIndex.JailOutfit:
+                        return JailOutfit;
+                    case Faction_FieldIndex.CrimeValues:
+                        return CrimeValues;
+                    case Faction_FieldIndex.Ranks:
+                        return Ranks;
+                    case Faction_FieldIndex.VendorBuySellList:
+                        return VendorBuySellList;
+                    case Faction_FieldIndex.MerchantContainer:
+                        return MerchantContainer;
+                    case Faction_FieldIndex.VendorValues:
+                        return VendorValues;
+                    case Faction_FieldIndex.VendorLocation:
+                        return VendorLocation;
+                    case Faction_FieldIndex.Conditions:
+                        return Conditions;
+                    default:
+                        return base.GetNthMask(index);
+                }
+            }
+
+            public override void SetNthException(int index, Exception ex)
+            {
+                Faction_FieldIndex enu = (Faction_FieldIndex)index;
+                switch (enu)
+                {
+                    case Faction_FieldIndex.Name:
+                        this.Name = ex;
+                        break;
+                    case Faction_FieldIndex.Relations:
+                        this.Relations = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Relation.ErrorMask?>>?>(ex, null);
+                        break;
+                    case Faction_FieldIndex.Flags:
+                        this.Flags = ex;
+                        break;
+                    case Faction_FieldIndex.ExteriorJailMarker:
+                        this.ExteriorJailMarker = ex;
+                        break;
+                    case Faction_FieldIndex.FollowerWaitMarker:
+                        this.FollowerWaitMarker = ex;
+                        break;
+                    case Faction_FieldIndex.StolenGoodsContainer:
+                        this.StolenGoodsContainer = ex;
+                        break;
+                    case Faction_FieldIndex.PlayerInventoryContainer:
+                        this.PlayerInventoryContainer = ex;
+                        break;
+                    case Faction_FieldIndex.SharedCrimeFactionList:
+                        this.SharedCrimeFactionList = ex;
+                        break;
+                    case Faction_FieldIndex.JailOutfit:
+                        this.JailOutfit = ex;
+                        break;
+                    case Faction_FieldIndex.CrimeValues:
+                        this.CrimeValues = new MaskItem<Exception?, CrimeValues.ErrorMask?>(ex, null);
+                        break;
+                    case Faction_FieldIndex.Ranks:
+                        this.Ranks = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Rank.ErrorMask?>>?>(ex, null);
+                        break;
+                    case Faction_FieldIndex.VendorBuySellList:
+                        this.VendorBuySellList = ex;
+                        break;
+                    case Faction_FieldIndex.MerchantContainer:
+                        this.MerchantContainer = ex;
+                        break;
+                    case Faction_FieldIndex.VendorValues:
+                        this.VendorValues = new MaskItem<Exception?, VendorValues.ErrorMask?>(ex, null);
+                        break;
+                    case Faction_FieldIndex.VendorLocation:
+                        this.VendorLocation = new MaskItem<Exception?, LocationTargetRadius.ErrorMask?>(ex, null);
+                        break;
+                    case Faction_FieldIndex.Conditions:
+                        this.Conditions = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Condition.ErrorMask?>>?>(ex, null);
+                        break;
+                    default:
+                        base.SetNthException(index, ex);
+                        break;
+                }
+            }
+
+            public override void SetNthMask(int index, object obj)
+            {
+                Faction_FieldIndex enu = (Faction_FieldIndex)index;
+                switch (enu)
+                {
+                    case Faction_FieldIndex.Name:
+                        this.Name = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.Relations:
+                        this.Relations = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Relation.ErrorMask?>>?>)obj;
+                        break;
+                    case Faction_FieldIndex.Flags:
+                        this.Flags = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.ExteriorJailMarker:
+                        this.ExteriorJailMarker = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.FollowerWaitMarker:
+                        this.FollowerWaitMarker = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.StolenGoodsContainer:
+                        this.StolenGoodsContainer = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.PlayerInventoryContainer:
+                        this.PlayerInventoryContainer = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.SharedCrimeFactionList:
+                        this.SharedCrimeFactionList = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.JailOutfit:
+                        this.JailOutfit = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.CrimeValues:
+                        this.CrimeValues = (MaskItem<Exception?, CrimeValues.ErrorMask?>?)obj;
+                        break;
+                    case Faction_FieldIndex.Ranks:
+                        this.Ranks = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Rank.ErrorMask?>>?>)obj;
+                        break;
+                    case Faction_FieldIndex.VendorBuySellList:
+                        this.VendorBuySellList = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.MerchantContainer:
+                        this.MerchantContainer = (Exception?)obj;
+                        break;
+                    case Faction_FieldIndex.VendorValues:
+                        this.VendorValues = (MaskItem<Exception?, VendorValues.ErrorMask?>?)obj;
+                        break;
+                    case Faction_FieldIndex.VendorLocation:
+                        this.VendorLocation = (MaskItem<Exception?, LocationTargetRadius.ErrorMask?>?)obj;
+                        break;
+                    case Faction_FieldIndex.Conditions:
+                        this.Conditions = (MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Condition.ErrorMask?>>?>)obj;
+                        break;
+                    default:
+                        base.SetNthMask(index, obj);
+                        break;
+                }
+            }
+
+            public override bool IsInError()
+            {
+                if (Overall != null) return true;
+                if (Name != null) return true;
+                if (Relations != null) return true;
+                if (Flags != null) return true;
+                if (ExteriorJailMarker != null) return true;
+                if (FollowerWaitMarker != null) return true;
+                if (StolenGoodsContainer != null) return true;
+                if (PlayerInventoryContainer != null) return true;
+                if (SharedCrimeFactionList != null) return true;
+                if (JailOutfit != null) return true;
+                if (CrimeValues != null) return true;
+                if (Ranks != null) return true;
+                if (VendorBuySellList != null) return true;
+                if (MerchantContainer != null) return true;
+                if (VendorValues != null) return true;
+                if (VendorLocation != null) return true;
+                if (Conditions != null) return true;
+                return false;
+            }
+            #endregion
+
+            #region To String
+            public override string ToString() => this.Print();
+
+            public override void Print(StructuredStringBuilder sb, string? name = null)
+            {
+                sb.AppendLine($"{(name ?? "ErrorMask")} =>");
+                using (sb.Brace())
+                {
+                    if (this.Overall != null)
+                    {
+                        sb.AppendLine("Overall =>");
+                        using (sb.Brace())
+                        {
+                            sb.AppendLine($"{this.Overall}");
+                        }
+                    }
+                    PrintFillInternal(sb);
+                }
+            }
+            protected override void PrintFillInternal(StructuredStringBuilder sb)
+            {
+                base.PrintFillInternal(sb);
+                {
+                    sb.AppendItem(Name, "Name");
+                }
+                if (Relations is {} RelationsItem)
+                {
+                    sb.AppendLine("Relations =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(RelationsItem.Overall);
+                        if (RelationsItem.Specific != null)
+                        {
+                            foreach (var subItem in RelationsItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+                {
+                    sb.AppendItem(Flags, "Flags");
+                }
+                {
+                    sb.AppendItem(ExteriorJailMarker, "ExteriorJailMarker");
+                }
+                {
+                    sb.AppendItem(FollowerWaitMarker, "FollowerWaitMarker");
+                }
+                {
+                    sb.AppendItem(StolenGoodsContainer, "StolenGoodsContainer");
+                }
+                {
+                    sb.AppendItem(PlayerInventoryContainer, "PlayerInventoryContainer");
+                }
+                {
+                    sb.AppendItem(SharedCrimeFactionList, "SharedCrimeFactionList");
+                }
+                {
+                    sb.AppendItem(JailOutfit, "JailOutfit");
+                }
+                CrimeValues?.Print(sb);
+                if (Ranks is {} RanksItem)
+                {
+                    sb.AppendLine("Ranks =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(RanksItem.Overall);
+                        if (RanksItem.Specific != null)
+                        {
+                            foreach (var subItem in RanksItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+                {
+                    sb.AppendItem(VendorBuySellList, "VendorBuySellList");
+                }
+                {
+                    sb.AppendItem(MerchantContainer, "MerchantContainer");
+                }
+                VendorValues?.Print(sb);
+                VendorLocation?.Print(sb);
+                if (Conditions is {} ConditionsItem)
+                {
+                    sb.AppendLine("Conditions =>");
+                    using (sb.Brace())
+                    {
+                        sb.AppendItem(ConditionsItem.Overall);
+                        if (ConditionsItem.Specific != null)
+                        {
+                            foreach (var subItem in ConditionsItem.Specific)
+                            {
+                                using (sb.Brace())
+                                {
+                                    subItem?.Print(sb);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Combine
+            public ErrorMask Combine(ErrorMask? rhs)
+            {
+                if (rhs == null) return this;
+                var ret = new ErrorMask();
+                ret.Name = this.Name.Combine(rhs.Name);
+                ret.Relations = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Relation.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Relations?.Overall, rhs.Relations?.Overall), Noggog.ExceptionExt.Combine(this.Relations?.Specific, rhs.Relations?.Specific));
+                ret.Flags = this.Flags.Combine(rhs.Flags);
+                ret.ExteriorJailMarker = this.ExteriorJailMarker.Combine(rhs.ExteriorJailMarker);
+                ret.FollowerWaitMarker = this.FollowerWaitMarker.Combine(rhs.FollowerWaitMarker);
+                ret.StolenGoodsContainer = this.StolenGoodsContainer.Combine(rhs.StolenGoodsContainer);
+                ret.PlayerInventoryContainer = this.PlayerInventoryContainer.Combine(rhs.PlayerInventoryContainer);
+                ret.SharedCrimeFactionList = this.SharedCrimeFactionList.Combine(rhs.SharedCrimeFactionList);
+                ret.JailOutfit = this.JailOutfit.Combine(rhs.JailOutfit);
+                ret.CrimeValues = this.CrimeValues.Combine(rhs.CrimeValues, (l, r) => l.Combine(r));
+                ret.Ranks = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Rank.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Ranks?.Overall, rhs.Ranks?.Overall), Noggog.ExceptionExt.Combine(this.Ranks?.Specific, rhs.Ranks?.Specific));
+                ret.VendorBuySellList = this.VendorBuySellList.Combine(rhs.VendorBuySellList);
+                ret.MerchantContainer = this.MerchantContainer.Combine(rhs.MerchantContainer);
+                ret.VendorValues = this.VendorValues.Combine(rhs.VendorValues, (l, r) => l.Combine(r));
+                ret.VendorLocation = this.VendorLocation.Combine(rhs.VendorLocation, (l, r) => l.Combine(r));
+                ret.Conditions = new MaskItem<Exception?, IEnumerable<MaskItem<Exception?, Condition.ErrorMask?>>?>(Noggog.ExceptionExt.Combine(this.Conditions?.Overall, rhs.Conditions?.Overall), Noggog.ExceptionExt.Combine(this.Conditions?.Specific, rhs.Conditions?.Specific));
+                return ret;
+            }
+            public static ErrorMask? Combine(ErrorMask? lhs, ErrorMask? rhs)
+            {
+                if (lhs != null && rhs != null) return lhs.Combine(rhs);
+                return lhs ?? rhs;
+            }
+            #endregion
+
+            #region Factory
+            public static new ErrorMask Factory(ErrorMaskBuilder errorMask)
+            {
+                return new ErrorMask();
+            }
+            #endregion
+
+        }
+        public new class TranslationMask :
+            Fallout4MajorRecord.TranslationMask,
+            ITranslationMask
+        {
+            #region Members
+            public bool Name;
+            public Relation.TranslationMask? Relations;
+            public bool Flags;
+            public bool ExteriorJailMarker;
+            public bool FollowerWaitMarker;
+            public bool StolenGoodsContainer;
+            public bool PlayerInventoryContainer;
+            public bool SharedCrimeFactionList;
+            public bool JailOutfit;
+            public CrimeValues.TranslationMask? CrimeValues;
+            public Rank.TranslationMask? Ranks;
+            public bool VendorBuySellList;
+            public bool MerchantContainer;
+            public VendorValues.TranslationMask? VendorValues;
+            public LocationTargetRadius.TranslationMask? VendorLocation;
+            public Condition.TranslationMask? Conditions;
+            #endregion
+
+            #region Ctors
+            public TranslationMask(
+                bool defaultOn,
+                bool onOverall = true)
+                : base(defaultOn, onOverall)
+            {
+                this.Name = defaultOn;
+                this.Flags = defaultOn;
+                this.ExteriorJailMarker = defaultOn;
+                this.FollowerWaitMarker = defaultOn;
+                this.StolenGoodsContainer = defaultOn;
+                this.PlayerInventoryContainer = defaultOn;
+                this.SharedCrimeFactionList = defaultOn;
+                this.JailOutfit = defaultOn;
+                this.VendorBuySellList = defaultOn;
+                this.MerchantContainer = defaultOn;
+            }
+
+            #endregion
+
+            protected override void GetCrystal(List<(bool On, TranslationCrystal? SubCrystal)> ret)
+            {
+                base.GetCrystal(ret);
+                ret.Add((Name, null));
+                ret.Add((Relations == null ? DefaultOn : !Relations.GetCrystal().CopyNothing, Relations?.GetCrystal()));
+                ret.Add((Flags, null));
+                ret.Add((ExteriorJailMarker, null));
+                ret.Add((FollowerWaitMarker, null));
+                ret.Add((StolenGoodsContainer, null));
+                ret.Add((PlayerInventoryContainer, null));
+                ret.Add((SharedCrimeFactionList, null));
+                ret.Add((JailOutfit, null));
+                ret.Add((CrimeValues != null ? CrimeValues.OnOverall : DefaultOn, CrimeValues?.GetCrystal()));
+                ret.Add((Ranks == null ? DefaultOn : !Ranks.GetCrystal().CopyNothing, Ranks?.GetCrystal()));
+                ret.Add((VendorBuySellList, null));
+                ret.Add((MerchantContainer, null));
+                ret.Add((VendorValues != null ? VendorValues.OnOverall : DefaultOn, VendorValues?.GetCrystal()));
+                ret.Add((VendorLocation != null ? VendorLocation.OnOverall : DefaultOn, VendorLocation?.GetCrystal()));
+                ret.Add((Conditions == null ? DefaultOn : !Conditions.GetCrystal().CopyNothing, Conditions?.GetCrystal()));
+            }
+
+            public static implicit operator TranslationMask(bool defaultOn)
+            {
+                return new TranslationMask(defaultOn: defaultOn, onOverall: defaultOn);
+            }
+
+        }
+        #endregion
+
+        #region Mutagen
+        public static readonly RecordType GrupRecordType = Faction_Registration.TriggeringRecordType;
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => FactionCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        public override void RemapLinks(IReadOnlyDictionary<FormKey, FormKey> mapping) => FactionSetterCommon.Instance.RemapLinks(this, mapping);
+        public Faction(
+            FormKey formKey,
+            Fallout4Release gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease.ToGameRelease()).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        private Faction(
+            FormKey formKey,
+            GameRelease gameRelease)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = GameConstants.Get(gameRelease).DefaultFormVersion!.Value;
+            CustomCtor();
+        }
+
+        internal Faction(
+            FormKey formKey,
+            ushort formVersion)
+        {
+            this.FormKey = formKey;
+            this.FormVersion = formVersion;
+            CustomCtor();
+        }
+
+        public Faction(IFallout4Mod mod)
+            : this(
+                mod.GetNextFormKey(),
+                mod.Fallout4Release)
+        {
+        }
+
+        public Faction(IFallout4Mod mod, string editorID)
+            : this(
+                mod.GetNextFormKey(editorID),
+                mod.Fallout4Release)
+        {
+            this.EditorID = editorID;
+        }
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<Faction>.ToString(this);
+        }
+
+        protected override Type LinkType => typeof(IFaction);
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IFactionGetter rhs) return false;
+            return ((FactionCommon)((IFactionGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IFactionGetter? obj)
+        {
+            return ((FactionCommon)((IFactionGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((FactionCommon)((IFactionGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+        #endregion
+
+        #region Binary Translation
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => FactionBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((FactionBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        #region Binary Create
+        public new static Faction CreateFromBinary(
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            var ret = new Faction();
+            ((FactionSetterCommon)((IFactionGetter)ret).CommonSetterInstance()!).CopyInFromBinary(
+                item: ret,
+                frame: frame,
+                translationParams: translationParams);
+            return ret;
+        }
+
+        #endregion
+
+        public static bool TryCreateFromBinary(
+            MutagenFrame frame,
+            out Faction item,
+            TypedParseParams translationParams = default)
+        {
+            var startPos = frame.Position;
+            item = CreateFromBinary(
+                frame: frame,
+                translationParams: translationParams);
+            return startPos != frame.Position;
+        }
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        void IClearable.Clear()
+        {
+            ((FactionSetterCommon)((IFactionGetter)this).CommonSetterInstance()!).Clear(this);
+        }
+
+        internal static new Faction GetNew()
+        {
+            return new Faction();
+        }
+
+    }
+    #endregion
+
+    #region Interface
+    public partial interface IFaction :
+        IAliasVoiceType,
+        IFactionGetter,
+        IFallout4MajorRecordInternal,
+        IFormLinkContainer,
+        ILoquiObjectSetter<IFactionInternal>,
+        INamed,
+        INamedRequired,
+        IObjectId,
+        IOwner,
+        IRelatable,
+        ITranslatedNamed,
+        ITranslatedNamedRequired
+    {
+
+        new TranslatedString? Name { get; set; }
+        new ExtendedList<Relation> Relations { get; }
+        new Faction.FactionFlag Flags { get; set; }
+        new IFormLinkNullable<IPlacedObjectGetter> ExteriorJailMarker { get; set; }
+        new IFormLinkNullable<IPlacedObjectGetter> FollowerWaitMarker { get; set; }
+        new IFormLinkNullable<IPlacedObjectGetter> StolenGoodsContainer { get; set; }
+        new IFormLinkNullable<IPlacedObjectGetter> PlayerInventoryContainer { get; set; }
+        new IFormLinkNullable<IFormListGetter> SharedCrimeFactionList { get; set; }
+        new IFormLinkNullable<IOutfitGetter> JailOutfit { get; set; }
+        new CrimeValues? CrimeValues { get; set; }
+        new ExtendedList<Rank> Ranks { get; }
+        new IFormLinkNullable<IFormListGetter> VendorBuySellList { get; set; }
+        new IFormLinkNullable<IPlacedObjectGetter> MerchantContainer { get; set; }
+        new VendorValues? VendorValues { get; set; }
+        new LocationTargetRadius? VendorLocation { get; set; }
+        new ExtendedList<Condition>? Conditions { get; set; }
+    }
+
+    public partial interface IFactionInternal :
+        IFallout4MajorRecordInternal,
+        IFaction,
+        IFactionGetter
+    {
+    }
+
+    [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.FACT)]
+    public partial interface IFactionGetter :
+        IFallout4MajorRecordGetter,
+        IAliasVoiceTypeGetter,
+        IBinaryItem,
+        IFormLinkContainerGetter,
+        ILoquiObject<IFactionGetter>,
+        IMapsToGetter<IFactionGetter>,
+        INamedGetter,
+        INamedRequiredGetter,
+        IObjectIdGetter,
+        IOwnerGetter,
+        IRelatableGetter,
+        ITranslatedNamedGetter,
+        ITranslatedNamedRequiredGetter
+    {
+        static new ILoquiRegistration StaticRegistration => Faction_Registration.Instance;
+        #region Name
+
+        ITranslatedStringGetter? Name { get; }
+        #endregion
+        IReadOnlyList<IRelationGetter> Relations { get; }
+        Faction.FactionFlag Flags { get; }
+        IFormLinkNullableGetter<IPlacedObjectGetter> ExteriorJailMarker { get; }
+        IFormLinkNullableGetter<IPlacedObjectGetter> FollowerWaitMarker { get; }
+        IFormLinkNullableGetter<IPlacedObjectGetter> StolenGoodsContainer { get; }
+        IFormLinkNullableGetter<IPlacedObjectGetter> PlayerInventoryContainer { get; }
+        IFormLinkNullableGetter<IFormListGetter> SharedCrimeFactionList { get; }
+        IFormLinkNullableGetter<IOutfitGetter> JailOutfit { get; }
+        ICrimeValuesGetter? CrimeValues { get; }
+        IReadOnlyList<IRankGetter> Ranks { get; }
+        IFormLinkNullableGetter<IFormListGetter> VendorBuySellList { get; }
+        IFormLinkNullableGetter<IPlacedObjectGetter> MerchantContainer { get; }
+        IVendorValuesGetter? VendorValues { get; }
+        ILocationTargetRadiusGetter? VendorLocation { get; }
+        IReadOnlyList<IConditionGetter>? Conditions { get; }
+
+    }
+
+    #endregion
+
+    #region Common MixIn
+    public static partial class FactionMixIn
+    {
+        public static void Clear(this IFactionInternal item)
+        {
+            ((FactionSetterCommon)((IFactionGetter)item).CommonSetterInstance()!).Clear(item: item);
+        }
+
+        public static Faction.Mask<bool> GetEqualsMask(
+            this IFactionGetter item,
+            IFactionGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            return ((FactionCommon)((IFactionGetter)item).CommonInstance()!).GetEqualsMask(
+                item: item,
+                rhs: rhs,
+                include: include);
+        }
+
+        public static string Print(
+            this IFactionGetter item,
+            string? name = null,
+            Faction.Mask<bool>? printMask = null)
+        {
+            return ((FactionCommon)((IFactionGetter)item).CommonInstance()!).Print(
+                item: item,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static void Print(
+            this IFactionGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            Faction.Mask<bool>? printMask = null)
+        {
+            ((FactionCommon)((IFactionGetter)item).CommonInstance()!).Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+        }
+
+        public static bool Equals(
+            this IFactionGetter item,
+            IFactionGetter rhs,
+            Faction.TranslationMask? equalsMask = null)
+        {
+            return ((FactionCommon)((IFactionGetter)item).CommonInstance()!).Equals(
+                lhs: item,
+                rhs: rhs,
+                equalsMask: equalsMask?.GetCrystal());
+        }
+
+        public static void DeepCopyIn(
+            this IFactionInternal lhs,
+            IFactionGetter rhs,
+            out Faction.ErrorMask errorMask,
+            Faction.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            ((FactionSetterTranslationCommon)((IFactionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: false);
+            errorMask = Faction.ErrorMask.Factory(errorMaskBuilder);
+        }
+
+        public static void DeepCopyIn(
+            this IFactionInternal lhs,
+            IFactionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask)
+        {
+            ((FactionSetterTranslationCommon)((IFactionGetter)lhs).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: lhs,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: false);
+        }
+
+        public static Faction DeepCopy(
+            this IFactionGetter item,
+            Faction.TranslationMask? copyMask = null)
+        {
+            return ((FactionSetterTranslationCommon)((IFactionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask);
+        }
+
+        public static Faction DeepCopy(
+            this IFactionGetter item,
+            out Faction.ErrorMask errorMask,
+            Faction.TranslationMask? copyMask = null)
+        {
+            return ((FactionSetterTranslationCommon)((IFactionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: out errorMask);
+        }
+
+        public static Faction DeepCopy(
+            this IFactionGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            return ((FactionSetterTranslationCommon)((IFactionGetter)item).CommonSetterTranslationInstance()!).DeepCopy(
+                item: item,
+                copyMask: copyMask,
+                errorMask: errorMask);
+        }
+
+        #region Mutagen
+        public static Faction Duplicate(
+            this IFactionGetter item,
+            FormKey formKey,
+            Faction.TranslationMask? copyMask = null)
+        {
+            return ((FactionCommon)((IFactionGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask?.GetCrystal());
+        }
+
+        public static Faction Duplicate(
+            this IFactionGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return ((FactionCommon)((IFactionGetter)item).CommonInstance()!).Duplicate(
+                item: item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public static void CopyInFromBinary(
+            this IFactionInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams = default)
+        {
+            ((FactionSetterCommon)((IFactionGetter)item).CommonSetterInstance()!).CopyInFromBinary(
+                item: item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Field Index
+    internal enum Faction_FieldIndex
+    {
+        MajorRecordFlagsRaw = 0,
+        FormKey = 1,
+        VersionControl = 2,
+        EditorID = 3,
+        FormVersion = 4,
+        Version2 = 5,
+        Fallout4MajorRecordFlags = 6,
+        Name = 7,
+        Relations = 8,
+        Flags = 9,
+        ExteriorJailMarker = 10,
+        FollowerWaitMarker = 11,
+        StolenGoodsContainer = 12,
+        PlayerInventoryContainer = 13,
+        SharedCrimeFactionList = 14,
+        JailOutfit = 15,
+        CrimeValues = 16,
+        Ranks = 17,
+        VendorBuySellList = 18,
+        MerchantContainer = 19,
+        VendorValues = 20,
+        VendorLocation = 21,
+        Conditions = 22,
+    }
+    #endregion
+
+    #region Registration
+    internal partial class Faction_Registration : ILoquiRegistration
+    {
+        public static readonly Faction_Registration Instance = new Faction_Registration();
+
+        public static ProtocolKey ProtocolKey => ProtocolDefinition_Fallout4.ProtocolKey;
+
+        public const ushort AdditionalFieldCount = 16;
+
+        public const ushort FieldCount = 23;
+
+        public static readonly Type MaskType = typeof(Faction.Mask<>);
+
+        public static readonly Type ErrorMaskType = typeof(Faction.ErrorMask);
+
+        public static readonly Type ClassType = typeof(Faction);
+
+        public static readonly Type GetterType = typeof(IFactionGetter);
+
+        public static readonly Type? InternalGetterType = null;
+
+        public static readonly Type SetterType = typeof(IFaction);
+
+        public static readonly Type? InternalSetterType = typeof(IFactionInternal);
+
+        public const string FullName = "Mutagen.Bethesda.Fallout4.Faction";
+
+        public const string Name = "Faction";
+
+        public const string Namespace = "Mutagen.Bethesda.Fallout4";
+
+        public const byte GenericCount = 0;
+
+        public static readonly Type? GenericRegistrationType = null;
+
+        public static readonly RecordType TriggeringRecordType = RecordTypes.FACT;
+        public static RecordTriggerSpecs TriggerSpecs => _recordSpecs.Value;
+        private static readonly Lazy<RecordTriggerSpecs> _recordSpecs = new Lazy<RecordTriggerSpecs>(() =>
+        {
+            var triggers = RecordCollection.Factory(RecordTypes.FACT);
+            var all = RecordCollection.Factory(
+                RecordTypes.FACT,
+                RecordTypes.FULL,
+                RecordTypes.XNAM,
+                RecordTypes.DATA,
+                RecordTypes.JAIL,
+                RecordTypes.WAIT,
+                RecordTypes.STOL,
+                RecordTypes.PLCN,
+                RecordTypes.CRGR,
+                RecordTypes.JOUT,
+                RecordTypes.CRVA,
+                RecordTypes.RNAM,
+                RecordTypes.MNAM,
+                RecordTypes.FNAM,
+                RecordTypes.INAM,
+                RecordTypes.VEND,
+                RecordTypes.VENC,
+                RecordTypes.VENV,
+                RecordTypes.PLVD,
+                RecordTypes.CTDA,
+                RecordTypes.CITC,
+                RecordTypes.CIS1,
+                RecordTypes.CIS2);
+            return new RecordTriggerSpecs(
+                allRecordTypes: all,
+                triggeringRecordTypes: triggers);
+        });
+        public static readonly Type BinaryWriteTranslation = typeof(FactionBinaryWriteTranslation);
+        #region Interface
+        ProtocolKey ILoquiRegistration.ProtocolKey => ProtocolKey;
+        ushort ILoquiRegistration.FieldCount => FieldCount;
+        ushort ILoquiRegistration.AdditionalFieldCount => AdditionalFieldCount;
+        Type ILoquiRegistration.MaskType => MaskType;
+        Type ILoquiRegistration.ErrorMaskType => ErrorMaskType;
+        Type ILoquiRegistration.ClassType => ClassType;
+        Type ILoquiRegistration.SetterType => SetterType;
+        Type? ILoquiRegistration.InternalSetterType => InternalSetterType;
+        Type ILoquiRegistration.GetterType => GetterType;
+        Type? ILoquiRegistration.InternalGetterType => InternalGetterType;
+        string ILoquiRegistration.FullName => FullName;
+        string ILoquiRegistration.Name => Name;
+        string ILoquiRegistration.Namespace => Namespace;
+        byte ILoquiRegistration.GenericCount => GenericCount;
+        Type? ILoquiRegistration.GenericRegistrationType => GenericRegistrationType;
+        ushort? ILoquiRegistration.GetNameIndex(StringCaseAgnostic name) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsEnumerable(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsLoqui(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.GetNthIsSingleton(ushort index) => throw new NotImplementedException();
+        string ILoquiRegistration.GetNthName(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsNthDerivative(ushort index) => throw new NotImplementedException();
+        bool ILoquiRegistration.IsProtected(ushort index) => throw new NotImplementedException();
+        Type ILoquiRegistration.GetNthType(ushort index) => throw new NotImplementedException();
+        #endregion
+
+    }
+    #endregion
+
+    #region Common
+    internal partial class FactionSetterCommon : Fallout4MajorRecordSetterCommon
+    {
+        public new static readonly FactionSetterCommon Instance = new FactionSetterCommon();
+
+        partial void ClearPartial();
+
+        public void Clear(IFactionInternal item)
+        {
+            ClearPartial();
+            item.Name = default;
+            item.Relations.Clear();
+            item.Flags = default(Faction.FactionFlag);
+            item.ExteriorJailMarker.Clear();
+            item.FollowerWaitMarker.Clear();
+            item.StolenGoodsContainer.Clear();
+            item.PlayerInventoryContainer.Clear();
+            item.SharedCrimeFactionList.Clear();
+            item.JailOutfit.Clear();
+            item.CrimeValues = null;
+            item.Ranks.Clear();
+            item.VendorBuySellList.Clear();
+            item.MerchantContainer.Clear();
+            item.VendorValues = null;
+            item.VendorLocation = null;
+            item.Conditions = null;
+            base.Clear(item);
+        }
+
+        public override void Clear(IFallout4MajorRecordInternal item)
+        {
+            Clear(item: (IFactionInternal)item);
+        }
+
+        public override void Clear(IMajorRecordInternal item)
+        {
+            Clear(item: (IFactionInternal)item);
+        }
+
+        #region Mutagen
+        public void RemapLinks(IFaction obj, IReadOnlyDictionary<FormKey, FormKey> mapping)
+        {
+            base.RemapLinks(obj, mapping);
+            obj.Relations.RemapLinks(mapping);
+            obj.ExteriorJailMarker.Relink(mapping);
+            obj.FollowerWaitMarker.Relink(mapping);
+            obj.StolenGoodsContainer.Relink(mapping);
+            obj.PlayerInventoryContainer.Relink(mapping);
+            obj.SharedCrimeFactionList.Relink(mapping);
+            obj.JailOutfit.Relink(mapping);
+            obj.VendorBuySellList.Relink(mapping);
+            obj.MerchantContainer.Relink(mapping);
+            obj.VendorLocation?.RemapLinks(mapping);
+            obj.Conditions?.RemapLinks(mapping);
+        }
+
+        #endregion
+
+        #region Binary Translation
+        public virtual void CopyInFromBinary(
+            IFactionInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            PluginUtilityTranslation.MajorRecordParse<IFactionInternal>(
+                record: item,
+                frame: frame,
+                translationParams: translationParams,
+                fillStructs: FactionBinaryCreateTranslation.FillBinaryStructs,
+                fillTyped: FactionBinaryCreateTranslation.FillBinaryRecordTypes);
+        }
+
+        public override void CopyInFromBinary(
+            IFallout4MajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (Faction)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        public override void CopyInFromBinary(
+            IMajorRecordInternal item,
+            MutagenFrame frame,
+            TypedParseParams translationParams)
+        {
+            CopyInFromBinary(
+                item: (Faction)item,
+                frame: frame,
+                translationParams: translationParams);
+        }
+
+        #endregion
+
+    }
+    internal partial class FactionCommon : Fallout4MajorRecordCommon
+    {
+        public new static readonly FactionCommon Instance = new FactionCommon();
+
+        public Faction.Mask<bool> GetEqualsMask(
+            IFactionGetter item,
+            IFactionGetter rhs,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            var ret = new Faction.Mask<bool>(false);
+            ((FactionCommon)((IFactionGetter)item).CommonInstance()!).FillEqualsMask(
+                item: item,
+                rhs: rhs,
+                ret: ret,
+                include: include);
+            return ret;
+        }
+
+        public void FillEqualsMask(
+            IFactionGetter item,
+            IFactionGetter rhs,
+            Faction.Mask<bool> ret,
+            EqualsMaskHelper.Include include = EqualsMaskHelper.Include.All)
+        {
+            ret.Name = object.Equals(item.Name, rhs.Name);
+            ret.Relations = item.Relations.CollectionEqualsHelper(
+                rhs.Relations,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            ret.Flags = item.Flags == rhs.Flags;
+            ret.ExteriorJailMarker = item.ExteriorJailMarker.Equals(rhs.ExteriorJailMarker);
+            ret.FollowerWaitMarker = item.FollowerWaitMarker.Equals(rhs.FollowerWaitMarker);
+            ret.StolenGoodsContainer = item.StolenGoodsContainer.Equals(rhs.StolenGoodsContainer);
+            ret.PlayerInventoryContainer = item.PlayerInventoryContainer.Equals(rhs.PlayerInventoryContainer);
+            ret.SharedCrimeFactionList = item.SharedCrimeFactionList.Equals(rhs.SharedCrimeFactionList);
+            ret.JailOutfit = item.JailOutfit.Equals(rhs.JailOutfit);
+            ret.CrimeValues = EqualsMaskHelper.EqualsHelper(
+                item.CrimeValues,
+                rhs.CrimeValues,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.Ranks = item.Ranks.CollectionEqualsHelper(
+                rhs.Ranks,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            ret.VendorBuySellList = item.VendorBuySellList.Equals(rhs.VendorBuySellList);
+            ret.MerchantContainer = item.MerchantContainer.Equals(rhs.MerchantContainer);
+            ret.VendorValues = EqualsMaskHelper.EqualsHelper(
+                item.VendorValues,
+                rhs.VendorValues,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.VendorLocation = EqualsMaskHelper.EqualsHelper(
+                item.VendorLocation,
+                rhs.VendorLocation,
+                (loqLhs, loqRhs, incl) => loqLhs.GetEqualsMask(loqRhs, incl),
+                include);
+            ret.Conditions = item.Conditions.CollectionEqualsHelper(
+                rhs.Conditions,
+                (loqLhs, loqRhs) => loqLhs.GetEqualsMask(loqRhs, include),
+                include);
+            base.FillEqualsMask(item, rhs, ret, include);
+        }
+
+        public string Print(
+            IFactionGetter item,
+            string? name = null,
+            Faction.Mask<bool>? printMask = null)
+        {
+            var sb = new StructuredStringBuilder();
+            Print(
+                item: item,
+                sb: sb,
+                name: name,
+                printMask: printMask);
+            return sb.ToString();
+        }
+
+        public void Print(
+            IFactionGetter item,
+            StructuredStringBuilder sb,
+            string? name = null,
+            Faction.Mask<bool>? printMask = null)
+        {
+            if (name == null)
+            {
+                sb.AppendLine($"Faction =>");
+            }
+            else
+            {
+                sb.AppendLine($"{name} (Faction) =>");
+            }
+            using (sb.Brace())
+            {
+                ToStringFields(
+                    item: item,
+                    sb: sb,
+                    printMask: printMask);
+            }
+        }
+
+        protected static void ToStringFields(
+            IFactionGetter item,
+            StructuredStringBuilder sb,
+            Faction.Mask<bool>? printMask = null)
+        {
+            Fallout4MajorRecordCommon.ToStringFields(
+                item: item,
+                sb: sb,
+                printMask: printMask);
+            if ((printMask?.Name ?? true)
+                && item.Name is {} NameItem)
+            {
+                sb.AppendItem(NameItem, "Name");
+            }
+            if (printMask?.Relations?.Overall ?? true)
+            {
+                sb.AppendLine("Relations =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in item.Relations)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+            if (printMask?.Flags ?? true)
+            {
+                sb.AppendItem(item.Flags, "Flags");
+            }
+            if (printMask?.ExteriorJailMarker ?? true)
+            {
+                sb.AppendItem(item.ExteriorJailMarker.FormKeyNullable, "ExteriorJailMarker");
+            }
+            if (printMask?.FollowerWaitMarker ?? true)
+            {
+                sb.AppendItem(item.FollowerWaitMarker.FormKeyNullable, "FollowerWaitMarker");
+            }
+            if (printMask?.StolenGoodsContainer ?? true)
+            {
+                sb.AppendItem(item.StolenGoodsContainer.FormKeyNullable, "StolenGoodsContainer");
+            }
+            if (printMask?.PlayerInventoryContainer ?? true)
+            {
+                sb.AppendItem(item.PlayerInventoryContainer.FormKeyNullable, "PlayerInventoryContainer");
+            }
+            if (printMask?.SharedCrimeFactionList ?? true)
+            {
+                sb.AppendItem(item.SharedCrimeFactionList.FormKeyNullable, "SharedCrimeFactionList");
+            }
+            if (printMask?.JailOutfit ?? true)
+            {
+                sb.AppendItem(item.JailOutfit.FormKeyNullable, "JailOutfit");
+            }
+            if ((printMask?.CrimeValues?.Overall ?? true)
+                && item.CrimeValues is {} CrimeValuesItem)
+            {
+                CrimeValuesItem?.Print(sb, "CrimeValues");
+            }
+            if (printMask?.Ranks?.Overall ?? true)
+            {
+                sb.AppendLine("Ranks =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in item.Ranks)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+            if (printMask?.VendorBuySellList ?? true)
+            {
+                sb.AppendItem(item.VendorBuySellList.FormKeyNullable, "VendorBuySellList");
+            }
+            if (printMask?.MerchantContainer ?? true)
+            {
+                sb.AppendItem(item.MerchantContainer.FormKeyNullable, "MerchantContainer");
+            }
+            if ((printMask?.VendorValues?.Overall ?? true)
+                && item.VendorValues is {} VendorValuesItem)
+            {
+                VendorValuesItem?.Print(sb, "VendorValues");
+            }
+            if ((printMask?.VendorLocation?.Overall ?? true)
+                && item.VendorLocation is {} VendorLocationItem)
+            {
+                VendorLocationItem?.Print(sb, "VendorLocation");
+            }
+            if ((printMask?.Conditions?.Overall ?? true)
+                && item.Conditions is {} ConditionsItem)
+            {
+                sb.AppendLine("Conditions =>");
+                using (sb.Brace())
+                {
+                    foreach (var subItem in ConditionsItem)
+                    {
+                        using (sb.Brace())
+                        {
+                            subItem?.Print(sb, "Item");
+                        }
+                    }
+                }
+            }
+        }
+
+        public static Faction_FieldIndex ConvertFieldIndex(Fallout4MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case Fallout4MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (Faction_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormKey:
+                    return (Faction_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.VersionControl:
+                    return (Faction_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.EditorID:
+                    return (Faction_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.FormVersion:
+                    return (Faction_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Version2:
+                    return (Faction_FieldIndex)((int)index);
+                case Fallout4MajorRecord_FieldIndex.Fallout4MajorRecordFlags:
+                    return (Faction_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        public static new Faction_FieldIndex ConvertFieldIndex(MajorRecord_FieldIndex index)
+        {
+            switch (index)
+            {
+                case MajorRecord_FieldIndex.MajorRecordFlagsRaw:
+                    return (Faction_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.FormKey:
+                    return (Faction_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.VersionControl:
+                    return (Faction_FieldIndex)((int)index);
+                case MajorRecord_FieldIndex.EditorID:
+                    return (Faction_FieldIndex)((int)index);
+                default:
+                    throw new ArgumentException($"Index is out of range: {index.ToStringFast()}");
+            }
+        }
+
+        #region Equals and Hash
+        public virtual bool Equals(
+            IFactionGetter? lhs,
+            IFactionGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            if (!EqualsMaskHelper.RefEquality(lhs, rhs, out var isEqual)) return isEqual;
+            if (!base.Equals((IFallout4MajorRecordGetter)lhs, (IFallout4MajorRecordGetter)rhs, equalsMask)) return false;
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.Name) ?? true))
+            {
+                if (!object.Equals(lhs.Name, rhs.Name)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.Relations) ?? true))
+            {
+                if (!lhs.Relations.SequenceEqual(rhs.Relations, (l, r) => ((RelationCommon)((IRelationGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)Faction_FieldIndex.Relations)))) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.Flags) ?? true))
+            {
+                if (lhs.Flags != rhs.Flags) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.ExteriorJailMarker) ?? true))
+            {
+                if (!lhs.ExteriorJailMarker.Equals(rhs.ExteriorJailMarker)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.FollowerWaitMarker) ?? true))
+            {
+                if (!lhs.FollowerWaitMarker.Equals(rhs.FollowerWaitMarker)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.StolenGoodsContainer) ?? true))
+            {
+                if (!lhs.StolenGoodsContainer.Equals(rhs.StolenGoodsContainer)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.PlayerInventoryContainer) ?? true))
+            {
+                if (!lhs.PlayerInventoryContainer.Equals(rhs.PlayerInventoryContainer)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.SharedCrimeFactionList) ?? true))
+            {
+                if (!lhs.SharedCrimeFactionList.Equals(rhs.SharedCrimeFactionList)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.JailOutfit) ?? true))
+            {
+                if (!lhs.JailOutfit.Equals(rhs.JailOutfit)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.CrimeValues) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.CrimeValues, rhs.CrimeValues, out var lhsCrimeValues, out var rhsCrimeValues, out var isCrimeValuesEqual))
+                {
+                    if (!((CrimeValuesCommon)((ICrimeValuesGetter)lhsCrimeValues).CommonInstance()!).Equals(lhsCrimeValues, rhsCrimeValues, equalsMask?.GetSubCrystal((int)Faction_FieldIndex.CrimeValues))) return false;
+                }
+                else if (!isCrimeValuesEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.Ranks) ?? true))
+            {
+                if (!lhs.Ranks.SequenceEqual(rhs.Ranks, (l, r) => ((RankCommon)((IRankGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)Faction_FieldIndex.Ranks)))) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.VendorBuySellList) ?? true))
+            {
+                if (!lhs.VendorBuySellList.Equals(rhs.VendorBuySellList)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.MerchantContainer) ?? true))
+            {
+                if (!lhs.MerchantContainer.Equals(rhs.MerchantContainer)) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.VendorValues) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.VendorValues, rhs.VendorValues, out var lhsVendorValues, out var rhsVendorValues, out var isVendorValuesEqual))
+                {
+                    if (!((VendorValuesCommon)((IVendorValuesGetter)lhsVendorValues).CommonInstance()!).Equals(lhsVendorValues, rhsVendorValues, equalsMask?.GetSubCrystal((int)Faction_FieldIndex.VendorValues))) return false;
+                }
+                else if (!isVendorValuesEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.VendorLocation) ?? true))
+            {
+                if (EqualsMaskHelper.RefEquality(lhs.VendorLocation, rhs.VendorLocation, out var lhsVendorLocation, out var rhsVendorLocation, out var isVendorLocationEqual))
+                {
+                    if (!((LocationTargetRadiusCommon)((ILocationTargetRadiusGetter)lhsVendorLocation).CommonInstance()!).Equals(lhsVendorLocation, rhsVendorLocation, equalsMask?.GetSubCrystal((int)Faction_FieldIndex.VendorLocation))) return false;
+                }
+                else if (!isVendorLocationEqual) return false;
+            }
+            if ((equalsMask?.GetShouldTranslate((int)Faction_FieldIndex.Conditions) ?? true))
+            {
+                if (!lhs.Conditions.SequenceEqualNullable(rhs.Conditions, (l, r) => ((ConditionCommon)((IConditionGetter)l).CommonInstance()!).Equals(l, r, equalsMask?.GetSubCrystal((int)Faction_FieldIndex.Conditions)))) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(
+            IFallout4MajorRecordGetter? lhs,
+            IFallout4MajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IFactionGetter?)lhs,
+                rhs: rhs as IFactionGetter,
+                equalsMask: equalsMask);
+        }
+
+        public override bool Equals(
+            IMajorRecordGetter? lhs,
+            IMajorRecordGetter? rhs,
+            TranslationCrystal? equalsMask)
+        {
+            return Equals(
+                lhs: (IFactionGetter?)lhs,
+                rhs: rhs as IFactionGetter,
+                equalsMask: equalsMask);
+        }
+
+        public virtual int GetHashCode(IFactionGetter item)
+        {
+            var hash = new HashCode();
+            if (item.Name is {} Nameitem)
+            {
+                hash.Add(Nameitem);
+            }
+            hash.Add(item.Relations);
+            hash.Add(item.Flags);
+            hash.Add(item.ExteriorJailMarker);
+            hash.Add(item.FollowerWaitMarker);
+            hash.Add(item.StolenGoodsContainer);
+            hash.Add(item.PlayerInventoryContainer);
+            hash.Add(item.SharedCrimeFactionList);
+            hash.Add(item.JailOutfit);
+            if (item.CrimeValues is {} CrimeValuesitem)
+            {
+                hash.Add(CrimeValuesitem);
+            }
+            hash.Add(item.Ranks);
+            hash.Add(item.VendorBuySellList);
+            hash.Add(item.MerchantContainer);
+            if (item.VendorValues is {} VendorValuesitem)
+            {
+                hash.Add(VendorValuesitem);
+            }
+            if (item.VendorLocation is {} VendorLocationitem)
+            {
+                hash.Add(VendorLocationitem);
+            }
+            hash.Add(item.Conditions);
+            hash.Add(base.GetHashCode());
+            return hash.ToHashCode();
+        }
+
+        public override int GetHashCode(IFallout4MajorRecordGetter item)
+        {
+            return GetHashCode(item: (IFactionGetter)item);
+        }
+
+        public override int GetHashCode(IMajorRecordGetter item)
+        {
+            return GetHashCode(item: (IFactionGetter)item);
+        }
+
+        #endregion
+
+        public override object GetNew()
+        {
+            return Faction.GetNew();
+        }
+
+        #region Mutagen
+        public IEnumerable<IFormLinkGetter> EnumerateFormLinks(IFactionGetter obj, bool iterateNestedRecords = true)
+        {
+            foreach (var item in base.EnumerateFormLinks(obj, iterateNestedRecords))
+            {
+                yield return item;
+            }
+            foreach (var item in obj.Relations.SelectMany(f => f.EnumerateFormLinks(iterateNestedRecords)))
+            {
+                yield return FormLinkInformation.Factory(item);
+            }
+            if (FormLinkInformation.TryFactory(obj.ExteriorJailMarker, out var ExteriorJailMarkerInfo))
+            {
+                yield return ExteriorJailMarkerInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.FollowerWaitMarker, out var FollowerWaitMarkerInfo))
+            {
+                yield return FollowerWaitMarkerInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.StolenGoodsContainer, out var StolenGoodsContainerInfo))
+            {
+                yield return StolenGoodsContainerInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.PlayerInventoryContainer, out var PlayerInventoryContainerInfo))
+            {
+                yield return PlayerInventoryContainerInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.SharedCrimeFactionList, out var SharedCrimeFactionListInfo))
+            {
+                yield return SharedCrimeFactionListInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.JailOutfit, out var JailOutfitInfo))
+            {
+                yield return JailOutfitInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.VendorBuySellList, out var VendorBuySellListInfo))
+            {
+                yield return VendorBuySellListInfo;
+            }
+            if (FormLinkInformation.TryFactory(obj.MerchantContainer, out var MerchantContainerInfo))
+            {
+                yield return MerchantContainerInfo;
+            }
+            if (obj.VendorLocation is IFormLinkContainerGetter VendorLocationlinkCont)
+            {
+                foreach (var item in VendorLocationlinkCont.EnumerateFormLinks(iterateNestedRecords))
+                {
+                    yield return item;
+                }
+            }
+            if (obj.Conditions is {} ConditionsItem)
+            {
+                foreach (var item in ConditionsItem.WhereCastable<IConditionGetter, IFormLinkContainerGetter>()
+                    .SelectMany((f) => f.EnumerateFormLinks(iterateNestedRecords)))
+                {
+                    yield return FormLinkInformation.Factory(item);
+                }
+            }
+            yield break;
+        }
+
+        #region Duplicate
+        public Faction Duplicate(
+            IFactionGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            var newRec = new Faction(formKey, item.FormVersion);
+            newRec.DeepCopyIn(item, default(ErrorMaskBuilder?), copyMask);
+            return newRec;
+        }
+
+        public override Fallout4MajorRecord Duplicate(
+            IFallout4MajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IFactionGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        public override MajorRecord Duplicate(
+            IMajorRecordGetter item,
+            FormKey formKey,
+            TranslationCrystal? copyMask)
+        {
+            return this.Duplicate(
+                item: (IFactionGetter)item,
+                formKey: formKey,
+                copyMask: copyMask);
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+    internal partial class FactionSetterTranslationCommon : Fallout4MajorRecordSetterTranslationCommon
+    {
+        public new static readonly FactionSetterTranslationCommon Instance = new FactionSetterTranslationCommon();
+
+        #region DeepCopyIn
+        public void DeepCopyIn(
+            IFactionInternal item,
+            IFactionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                item,
+                rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public void DeepCopyIn(
+            IFaction item,
+            IFactionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            base.DeepCopyIn(
+                (IFallout4MajorRecord)item,
+                (IFallout4MajorRecordGetter)rhs,
+                errorMask,
+                copyMask,
+                deepCopy: deepCopy);
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.Name) ?? true))
+            {
+                item.Name = rhs.Name?.DeepCopy();
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.Relations) ?? true))
+            {
+                errorMask?.PushIndex((int)Faction_FieldIndex.Relations);
+                try
+                {
+                    item.Relations.SetTo(
+                        rhs.Relations
+                        .Select(r =>
+                        {
+                            return r.DeepCopy(
+                                errorMask: errorMask,
+                                default(TranslationCrystal));
+                        }));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.Flags) ?? true))
+            {
+                item.Flags = rhs.Flags;
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.ExteriorJailMarker) ?? true))
+            {
+                item.ExteriorJailMarker.SetTo(rhs.ExteriorJailMarker.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.FollowerWaitMarker) ?? true))
+            {
+                item.FollowerWaitMarker.SetTo(rhs.FollowerWaitMarker.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.StolenGoodsContainer) ?? true))
+            {
+                item.StolenGoodsContainer.SetTo(rhs.StolenGoodsContainer.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.PlayerInventoryContainer) ?? true))
+            {
+                item.PlayerInventoryContainer.SetTo(rhs.PlayerInventoryContainer.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.SharedCrimeFactionList) ?? true))
+            {
+                item.SharedCrimeFactionList.SetTo(rhs.SharedCrimeFactionList.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.JailOutfit) ?? true))
+            {
+                item.JailOutfit.SetTo(rhs.JailOutfit.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.CrimeValues) ?? true))
+            {
+                errorMask?.PushIndex((int)Faction_FieldIndex.CrimeValues);
+                try
+                {
+                    if(rhs.CrimeValues is {} rhsCrimeValues)
+                    {
+                        item.CrimeValues = rhsCrimeValues.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)Faction_FieldIndex.CrimeValues));
+                    }
+                    else
+                    {
+                        item.CrimeValues = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.Ranks) ?? true))
+            {
+                errorMask?.PushIndex((int)Faction_FieldIndex.Ranks);
+                try
+                {
+                    item.Ranks.SetTo(
+                        rhs.Ranks
+                        .Select(r =>
+                        {
+                            return r.DeepCopy(
+                                errorMask: errorMask,
+                                default(TranslationCrystal));
+                        }));
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.VendorBuySellList) ?? true))
+            {
+                item.VendorBuySellList.SetTo(rhs.VendorBuySellList.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.MerchantContainer) ?? true))
+            {
+                item.MerchantContainer.SetTo(rhs.MerchantContainer.FormKeyNullable);
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.VendorValues) ?? true))
+            {
+                errorMask?.PushIndex((int)Faction_FieldIndex.VendorValues);
+                try
+                {
+                    if(rhs.VendorValues is {} rhsVendorValues)
+                    {
+                        item.VendorValues = rhsVendorValues.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)Faction_FieldIndex.VendorValues));
+                    }
+                    else
+                    {
+                        item.VendorValues = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.VendorLocation) ?? true))
+            {
+                errorMask?.PushIndex((int)Faction_FieldIndex.VendorLocation);
+                try
+                {
+                    if(rhs.VendorLocation is {} rhsVendorLocation)
+                    {
+                        item.VendorLocation = rhsVendorLocation.DeepCopy(
+                            errorMask: errorMask,
+                            copyMask?.GetSubCrystal((int)Faction_FieldIndex.VendorLocation));
+                    }
+                    else
+                    {
+                        item.VendorLocation = default;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            if ((copyMask?.GetShouldTranslate((int)Faction_FieldIndex.Conditions) ?? true))
+            {
+                errorMask?.PushIndex((int)Faction_FieldIndex.Conditions);
+                try
+                {
+                    if ((rhs.Conditions != null))
+                    {
+                        item.Conditions =
+                            rhs.Conditions
+                            .Select(r =>
+                            {
+                                return r.DeepCopy(
+                                    errorMask: errorMask,
+                                    default(TranslationCrystal));
+                            })
+                            .ToExtendedList<Condition>();
+                    }
+                    else
+                    {
+                        item.Conditions = null;
+                    }
+                }
+                catch (Exception ex)
+                when (errorMask != null)
+                {
+                    errorMask.ReportException(ex);
+                }
+                finally
+                {
+                    errorMask?.PopIndex();
+                }
+            }
+            DeepCopyInCustom(
+                item: item,
+                rhs: rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        partial void DeepCopyInCustom(
+            IFaction item,
+            IFactionGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy);
+        public override void DeepCopyIn(
+            IFallout4MajorRecordInternal item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IFactionInternal)item,
+                rhs: (IFactionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IFallout4MajorRecord item,
+            IFallout4MajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IFaction)item,
+                rhs: (IFactionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecordInternal item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IFactionInternal)item,
+                rhs: (IFactionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        public override void DeepCopyIn(
+            IMajorRecord item,
+            IMajorRecordGetter rhs,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask,
+            bool deepCopy)
+        {
+            this.DeepCopyIn(
+                item: (IFaction)item,
+                rhs: (IFactionGetter)rhs,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: deepCopy);
+        }
+
+        #endregion
+
+        public Faction DeepCopy(
+            IFactionGetter item,
+            Faction.TranslationMask? copyMask = null)
+        {
+            Faction ret = (Faction)((FactionCommon)((IFactionGetter)item).CommonInstance()!).GetNew();
+            ((FactionSetterTranslationCommon)((IFactionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: null,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            return ret;
+        }
+
+        public Faction DeepCopy(
+            IFactionGetter item,
+            out Faction.ErrorMask errorMask,
+            Faction.TranslationMask? copyMask = null)
+        {
+            var errorMaskBuilder = new ErrorMaskBuilder();
+            Faction ret = (Faction)((FactionCommon)((IFactionGetter)item).CommonInstance()!).GetNew();
+            ((FactionSetterTranslationCommon)((IFactionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                ret,
+                item,
+                errorMask: errorMaskBuilder,
+                copyMask: copyMask?.GetCrystal(),
+                deepCopy: true);
+            errorMask = Faction.ErrorMask.Factory(errorMaskBuilder);
+            return ret;
+        }
+
+        public Faction DeepCopy(
+            IFactionGetter item,
+            ErrorMaskBuilder? errorMask,
+            TranslationCrystal? copyMask = null)
+        {
+            Faction ret = (Faction)((FactionCommon)((IFactionGetter)item).CommonInstance()!).GetNew();
+            ((FactionSetterTranslationCommon)((IFactionGetter)ret).CommonSetterTranslationInstance()!).DeepCopyIn(
+                item: ret,
+                rhs: item,
+                errorMask: errorMask,
+                copyMask: copyMask,
+                deepCopy: true);
+            return ret;
+        }
+
+    }
+    #endregion
+
+}
+
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class Faction
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => Faction_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => Faction_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => FactionCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterInstance()
+        {
+            return FactionSetterCommon.Instance;
+        }
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => FactionSetterTranslationCommon.Instance;
+
+        #endregion
+
+    }
+}
+
+#region Modules
+#region Binary Translation
+namespace Mutagen.Bethesda.Fallout4
+{
+    public partial class FactionBinaryWriteTranslation :
+        Fallout4MajorRecordBinaryWriteTranslation,
+        IBinaryWriteTranslator
+    {
+        public new static readonly FactionBinaryWriteTranslation Instance = new();
+
+        public static void WriteRecordTypes(
+            IFactionGetter item,
+            MutagenWriter writer,
+            TypedWriteParams translationParams)
+        {
+            MajorRecordBinaryWriteTranslation.WriteRecordTypes(
+                item: item,
+                writer: writer,
+                translationParams: translationParams);
+            StringBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.Name,
+                header: translationParams.ConvertToCustom(RecordTypes.FULL),
+                binaryType: StringBinaryType.NullTerminate,
+                source: StringsSource.Normal);
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IRelationGetter>.Instance.Write(
+                writer: writer,
+                items: item.Relations,
+                transl: (MutagenWriter subWriter, IRelationGetter subItem, TypedWriteParams conv) =>
+                {
+                    var Item = subItem;
+                    ((RelationBinaryWriteTranslation)((IBinaryItem)Item).BinaryWriteTranslator).Write(
+                        item: Item,
+                        writer: subWriter,
+                        translationParams: conv);
+                });
+            EnumBinaryTranslation<Faction.FactionFlag, MutagenFrame, MutagenWriter>.Instance.Write(
+                writer,
+                item.Flags,
+                length: 4,
+                header: translationParams.ConvertToCustom(RecordTypes.DATA));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.ExteriorJailMarker,
+                header: translationParams.ConvertToCustom(RecordTypes.JAIL));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.FollowerWaitMarker,
+                header: translationParams.ConvertToCustom(RecordTypes.WAIT));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.StolenGoodsContainer,
+                header: translationParams.ConvertToCustom(RecordTypes.STOL));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.PlayerInventoryContainer,
+                header: translationParams.ConvertToCustom(RecordTypes.PLCN));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.SharedCrimeFactionList,
+                header: translationParams.ConvertToCustom(RecordTypes.CRGR));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.JailOutfit,
+                header: translationParams.ConvertToCustom(RecordTypes.JOUT));
+            if (item.CrimeValues is {} CrimeValuesItem)
+            {
+                ((CrimeValuesBinaryWriteTranslation)((IBinaryItem)CrimeValuesItem).BinaryWriteTranslator).Write(
+                    item: CrimeValuesItem,
+                    writer: writer,
+                    translationParams: translationParams);
+            }
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IRankGetter>.Instance.Write(
+                writer: writer,
+                items: item.Ranks,
+                transl: (MutagenWriter subWriter, IRankGetter subItem, TypedWriteParams conv) =>
+                {
+                    var Item = subItem;
+                    ((RankBinaryWriteTranslation)((IBinaryItem)Item).BinaryWriteTranslator).Write(
+                        item: Item,
+                        writer: subWriter,
+                        translationParams: conv);
+                });
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.VendorBuySellList,
+                header: translationParams.ConvertToCustom(RecordTypes.VEND));
+            FormLinkBinaryTranslation.Instance.WriteNullable(
+                writer: writer,
+                item: item.MerchantContainer,
+                header: translationParams.ConvertToCustom(RecordTypes.VENC));
+            if (item.VendorValues is {} VendorValuesItem)
+            {
+                ((VendorValuesBinaryWriteTranslation)((IBinaryItem)VendorValuesItem).BinaryWriteTranslator).Write(
+                    item: VendorValuesItem,
+                    writer: writer,
+                    translationParams: translationParams);
+            }
+            if (item.VendorLocation is {} VendorLocationItem)
+            {
+                using (HeaderExport.Subrecord(writer, RecordTypes.PLVD))
+                {
+                    ((LocationTargetRadiusBinaryWriteTranslation)((IBinaryItem)VendorLocationItem).BinaryWriteTranslator).Write(
+                        item: VendorLocationItem,
+                        writer: writer,
+                        translationParams: translationParams);
+                }
+            }
+            Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IConditionGetter>.Instance.WriteWithCounter(
+                writer: writer,
+                items: item.Conditions,
+                counterType: RecordTypes.CITC,
+                counterLength: 4,
+                transl: (MutagenWriter subWriter, IConditionGetter subItem, TypedWriteParams conv) =>
+                {
+                    var Item = subItem;
+                    ((ConditionBinaryWriteTranslation)((IBinaryItem)Item).BinaryWriteTranslator).Write(
+                        item: Item,
+                        writer: subWriter,
+                        translationParams: conv);
+                });
+        }
+
+        public void Write(
+            MutagenWriter writer,
+            IFactionGetter item,
+            TypedWriteParams translationParams)
+        {
+            PluginUtilityTranslation.WriteMajorRecord(
+                writer: writer,
+                item: item,
+                translationParams: translationParams,
+                type: RecordTypes.FACT,
+                writeEmbedded: Fallout4MajorRecordBinaryWriteTranslation.WriteEmbedded,
+                writeRecordTypes: WriteRecordTypes);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            object item,
+            TypedWriteParams translationParams = default)
+        {
+            Write(
+                item: (IFactionGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IFallout4MajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IFactionGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+        public override void Write(
+            MutagenWriter writer,
+            IMajorRecordGetter item,
+            TypedWriteParams translationParams)
+        {
+            Write(
+                item: (IFactionGetter)item,
+                writer: writer,
+                translationParams: translationParams);
+        }
+
+    }
+
+    internal partial class FactionBinaryCreateTranslation : Fallout4MajorRecordBinaryCreateTranslation
+    {
+        public new static readonly FactionBinaryCreateTranslation Instance = new FactionBinaryCreateTranslation();
+
+        public override RecordType RecordType => RecordTypes.FACT;
+        public static ParseResult FillBinaryRecordTypes(
+            IFactionInternal item,
+            MutagenFrame frame,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            RecordType nextRecordType,
+            int contentLength,
+            TypedParseParams translationParams = default)
+        {
+            nextRecordType = translationParams.ConvertToStandard(nextRecordType);
+            switch (nextRecordType.TypeInt)
+            {
+                case RecordTypeInts.FULL:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Name = StringBinaryTranslation.Instance.Parse(
+                        reader: frame.SpawnWithLength(contentLength),
+                        eager: true,
+                        source: StringsSource.Normal,
+                        stringBinaryType: StringBinaryType.NullTerminate,
+                        parseWhole: true);
+                    return (int)Faction_FieldIndex.Name;
+                }
+                case RecordTypeInts.XNAM:
+                {
+                    item.Relations.SetTo(
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<Relation>.Instance.Parse(
+                            reader: frame,
+                            triggeringRecord: Relation_Registration.TriggerSpecs,
+                            translationParams: translationParams,
+                            transl: Relation.TryCreateFromBinary));
+                    return (int)Faction_FieldIndex.Relations;
+                }
+                case RecordTypeInts.DATA:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.Flags = EnumBinaryTranslation<Faction.FactionFlag, MutagenFrame, MutagenWriter>.Instance.Parse(
+                        reader: frame,
+                        length: contentLength);
+                    return (int)Faction_FieldIndex.Flags;
+                }
+                case RecordTypeInts.JAIL:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.ExteriorJailMarker.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.ExteriorJailMarker;
+                }
+                case RecordTypeInts.WAIT:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.FollowerWaitMarker.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.FollowerWaitMarker;
+                }
+                case RecordTypeInts.STOL:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.StolenGoodsContainer.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.StolenGoodsContainer;
+                }
+                case RecordTypeInts.PLCN:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.PlayerInventoryContainer.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.PlayerInventoryContainer;
+                }
+                case RecordTypeInts.CRGR:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.SharedCrimeFactionList.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.SharedCrimeFactionList;
+                }
+                case RecordTypeInts.JOUT:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.JailOutfit.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.JailOutfit;
+                }
+                case RecordTypeInts.CRVA:
+                {
+                    item.CrimeValues = Mutagen.Bethesda.Fallout4.CrimeValues.CreateFromBinary(frame: frame);
+                    return (int)Faction_FieldIndex.CrimeValues;
+                }
+                case RecordTypeInts.RNAM:
+                case RecordTypeInts.MNAM:
+                case RecordTypeInts.FNAM:
+                case RecordTypeInts.INAM:
+                {
+                    item.Ranks.SetTo(
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<Rank>.Instance.Parse(
+                            reader: frame,
+                            triggeringRecord: Rank_Registration.TriggerSpecs,
+                            translationParams: translationParams,
+                            transl: Rank.TryCreateFromBinary));
+                    return (int)Faction_FieldIndex.Ranks;
+                }
+                case RecordTypeInts.VEND:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.VendorBuySellList.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.VendorBuySellList;
+                }
+                case RecordTypeInts.VENC:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.MerchantContainer.SetTo(FormLinkBinaryTranslation.Instance.Parse(reader: frame));
+                    return (int)Faction_FieldIndex.MerchantContainer;
+                }
+                case RecordTypeInts.VENV:
+                {
+                    item.VendorValues = Mutagen.Bethesda.Fallout4.VendorValues.CreateFromBinary(frame: frame);
+                    return (int)Faction_FieldIndex.VendorValues;
+                }
+                case RecordTypeInts.PLVD:
+                {
+                    frame.Position += frame.MetaData.Constants.SubConstants.HeaderLength;
+                    item.VendorLocation = Mutagen.Bethesda.Fallout4.LocationTargetRadius.CreateFromBinary(frame: frame);
+                    return (int)Faction_FieldIndex.VendorLocation;
+                }
+                case RecordTypeInts.CTDA:
+                case RecordTypeInts.CITC:
+                {
+                    item.Conditions =
+                        Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<Condition>.Instance.ParsePerItem(
+                            reader: frame,
+                            countLengthLength: 4,
+                            countRecord: RecordTypes.CITC,
+                            triggeringRecord: Condition_Registration.TriggerSpecs,
+                            translationParams: translationParams,
+                            transl: Condition.TryCreateFromBinary)
+                        .CastExtendedList<Condition>();
+                    return (int)Faction_FieldIndex.Conditions;
+                }
+                default:
+                    return Fallout4MajorRecordBinaryCreateTranslation.FillBinaryRecordTypes(
+                        item: item,
+                        frame: frame,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        nextRecordType: nextRecordType,
+                        contentLength: contentLength,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+
+    }
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    #region Binary Write Mixins
+    public static class FactionBinaryTranslationMixIn
+    {
+    }
+    #endregion
+
+}
+namespace Mutagen.Bethesda.Fallout4
+{
+    internal partial class FactionBinaryOverlay :
+        Fallout4MajorRecordBinaryOverlay,
+        IFactionGetter
+    {
+        #region Common Routing
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ILoquiRegistration ILoquiObject.Registration => Faction_Registration.Instance;
+        public new static ILoquiRegistration StaticRegistration => Faction_Registration.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonInstance() => FactionCommon.Instance;
+        [DebuggerStepThrough]
+        protected override object CommonSetterTranslationInstance() => FactionSetterTranslationCommon.Instance;
+
+        #endregion
+
+        void IPrintable.Print(StructuredStringBuilder sb, string? name) => this.Print(sb, name);
+
+        public override IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => FactionCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected override object BinaryWriteTranslator => FactionBinaryWriteTranslation.Instance;
+        void IBinaryItem.WriteToBinary(
+            MutagenWriter writer,
+            TypedWriteParams translationParams = default)
+        {
+            ((FactionBinaryWriteTranslation)this.BinaryWriteTranslator).Write(
+                item: this,
+                writer: writer,
+                translationParams: translationParams);
+        }
+        protected override Type LinkType => typeof(IFactionGetter);
+
+        #region Name
+        private int? _NameLocation;
+        public ITranslatedStringGetter? Name => _NameLocation.HasValue ? StringBinaryTranslation.Instance.Parse(HeaderTranslation.ExtractSubrecordMemory(_recordData, _NameLocation.Value, _package.MetaData.Constants), StringsSource.Normal, parsingBundle: _package.MetaData, eager: false) : default(TranslatedString?);
+        #region Aspects
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string INamedRequiredGetter.Name => this.Name?.String ?? string.Empty;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        string? INamedGetter.Name => this.Name?.String;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ITranslatedStringGetter ITranslatedNamedRequiredGetter.Name => this.Name ?? TranslatedString.Empty;
+        #endregion
+        #endregion
+        public IReadOnlyList<IRelationGetter> Relations { get; private set; } = [];
+        #region Flags
+        private int? _FlagsLocation;
+        public Faction.FactionFlag Flags => EnumBinaryTranslation<Faction.FactionFlag, MutagenFrame, MutagenWriter>.Instance.ParseRecord(_FlagsLocation, _recordData, _package, 4);
+        #endregion
+        #region ExteriorJailMarker
+        private int? _ExteriorJailMarkerLocation;
+        public IFormLinkNullableGetter<IPlacedObjectGetter> ExteriorJailMarker => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IPlacedObjectGetter>(_package, _recordData, _ExteriorJailMarkerLocation);
+        #endregion
+        #region FollowerWaitMarker
+        private int? _FollowerWaitMarkerLocation;
+        public IFormLinkNullableGetter<IPlacedObjectGetter> FollowerWaitMarker => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IPlacedObjectGetter>(_package, _recordData, _FollowerWaitMarkerLocation);
+        #endregion
+        #region StolenGoodsContainer
+        private int? _StolenGoodsContainerLocation;
+        public IFormLinkNullableGetter<IPlacedObjectGetter> StolenGoodsContainer => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IPlacedObjectGetter>(_package, _recordData, _StolenGoodsContainerLocation);
+        #endregion
+        #region PlayerInventoryContainer
+        private int? _PlayerInventoryContainerLocation;
+        public IFormLinkNullableGetter<IPlacedObjectGetter> PlayerInventoryContainer => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IPlacedObjectGetter>(_package, _recordData, _PlayerInventoryContainerLocation);
+        #endregion
+        #region SharedCrimeFactionList
+        private int? _SharedCrimeFactionListLocation;
+        public IFormLinkNullableGetter<IFormListGetter> SharedCrimeFactionList => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IFormListGetter>(_package, _recordData, _SharedCrimeFactionListLocation);
+        #endregion
+        #region JailOutfit
+        private int? _JailOutfitLocation;
+        public IFormLinkNullableGetter<IOutfitGetter> JailOutfit => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IOutfitGetter>(_package, _recordData, _JailOutfitLocation);
+        #endregion
+        #region CrimeValues
+        private RangeInt32? _CrimeValuesLocation;
+        public ICrimeValuesGetter? CrimeValues => _CrimeValuesLocation.HasValue ? CrimeValuesBinaryOverlay.CrimeValuesFactory(_recordData.Slice(_CrimeValuesLocation!.Value.Min), _package) : default;
+        #endregion
+        public IReadOnlyList<IRankGetter> Ranks { get; private set; } = [];
+        #region VendorBuySellList
+        private int? _VendorBuySellListLocation;
+        public IFormLinkNullableGetter<IFormListGetter> VendorBuySellList => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IFormListGetter>(_package, _recordData, _VendorBuySellListLocation);
+        #endregion
+        #region MerchantContainer
+        private int? _MerchantContainerLocation;
+        public IFormLinkNullableGetter<IPlacedObjectGetter> MerchantContainer => FormLinkBinaryTranslation.Instance.NullableRecordOverlayFactory<IPlacedObjectGetter>(_package, _recordData, _MerchantContainerLocation);
+        #endregion
+        #region VendorValues
+        private RangeInt32? _VendorValuesLocation;
+        public IVendorValuesGetter? VendorValues => _VendorValuesLocation.HasValue ? VendorValuesBinaryOverlay.VendorValuesFactory(_recordData.Slice(_VendorValuesLocation!.Value.Min), _package) : default;
+        #endregion
+        public ILocationTargetRadiusGetter? VendorLocation { get; private set; }
+        public IReadOnlyList<IConditionGetter>? Conditions { get; private set; }
+        partial void CustomFactoryEnd(
+            OverlayStream stream,
+            int finalPos,
+            int offset);
+
+        partial void CustomCtor();
+        protected FactionBinaryOverlay(
+            MemoryPair memoryPair,
+            BinaryOverlayFactoryPackage package)
+            : base(
+                memoryPair: memoryPair,
+                package: package)
+        {
+            this.CustomCtor();
+        }
+
+        public static IFactionGetter FactionFactory(
+            OverlayStream stream,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            stream = Decompression.DecompressStream(stream);
+            stream = ExtractRecordMemory(
+                stream: stream,
+                meta: package.MetaData.Constants,
+                memoryPair: out var memoryPair,
+                offset: out var offset,
+                finalPos: out var finalPos);
+            var ret = new FactionBinaryOverlay(
+                memoryPair: memoryPair,
+                package: package);
+            ret._package.FormVersion = ret;
+            ret.CustomFactoryEnd(
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset);
+            ret.FillSubrecordTypes(
+                majorReference: ret,
+                stream: stream,
+                finalPos: finalPos,
+                offset: offset,
+                translationParams: translationParams,
+                fill: ret.FillRecordType);
+            return ret;
+        }
+
+        public static IFactionGetter FactionFactory(
+            ReadOnlyMemorySlice<byte> slice,
+            BinaryOverlayFactoryPackage package,
+            TypedParseParams translationParams = default)
+        {
+            return FactionFactory(
+                stream: new OverlayStream(slice, package),
+                package: package,
+                translationParams: translationParams);
+        }
+
+        public override ParseResult FillRecordType(
+            OverlayStream stream,
+            int finalPos,
+            int offset,
+            RecordType type,
+            PreviousParse lastParsed,
+            Dictionary<RecordType, int>? recordParseCount,
+            TypedParseParams translationParams = default)
+        {
+            type = translationParams.ConvertToStandard(type);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.FULL:
+                {
+                    _NameLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.Name;
+                }
+                case RecordTypeInts.XNAM:
+                {
+                    this.Relations = BinaryOverlayList.FactoryByArray<IRelationGetter>(
+                        mem: stream.RemainingMemory,
+                        package: _package,
+                        translationParams: translationParams,
+                        getter: (s, p, recConv) => RelationBinaryOverlay.RelationFactory(new OverlayStream(s, p), p, recConv),
+                        locs: ParseRecordLocations(
+                            stream: stream,
+                            trigger: Relation_Registration.TriggerSpecs,
+                            triggersAlwaysAreNewRecords: true,
+                            constants: _package.MetaData.Constants.SubConstants,
+                            skipHeader: false));
+                    return (int)Faction_FieldIndex.Relations;
+                }
+                case RecordTypeInts.DATA:
+                {
+                    _FlagsLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.Flags;
+                }
+                case RecordTypeInts.JAIL:
+                {
+                    _ExteriorJailMarkerLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.ExteriorJailMarker;
+                }
+                case RecordTypeInts.WAIT:
+                {
+                    _FollowerWaitMarkerLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.FollowerWaitMarker;
+                }
+                case RecordTypeInts.STOL:
+                {
+                    _StolenGoodsContainerLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.StolenGoodsContainer;
+                }
+                case RecordTypeInts.PLCN:
+                {
+                    _PlayerInventoryContainerLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.PlayerInventoryContainer;
+                }
+                case RecordTypeInts.CRGR:
+                {
+                    _SharedCrimeFactionListLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.SharedCrimeFactionList;
+                }
+                case RecordTypeInts.JOUT:
+                {
+                    _JailOutfitLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.JailOutfit;
+                }
+                case RecordTypeInts.CRVA:
+                {
+                    _CrimeValuesLocation = new RangeInt32((stream.Position - offset), finalPos - offset);
+                    return (int)Faction_FieldIndex.CrimeValues;
+                }
+                case RecordTypeInts.RNAM:
+                case RecordTypeInts.MNAM:
+                case RecordTypeInts.FNAM:
+                case RecordTypeInts.INAM:
+                {
+                    this.Ranks = this.ParseRepeatedTypelessSubrecord<IRankGetter>(
+                        stream: stream,
+                        translationParams: translationParams,
+                        trigger: Rank_Registration.TriggerSpecs,
+                        factory: RankBinaryOverlay.RankFactory);
+                    return (int)Faction_FieldIndex.Ranks;
+                }
+                case RecordTypeInts.VEND:
+                {
+                    _VendorBuySellListLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.VendorBuySellList;
+                }
+                case RecordTypeInts.VENC:
+                {
+                    _MerchantContainerLocation = (stream.Position - offset);
+                    return (int)Faction_FieldIndex.MerchantContainer;
+                }
+                case RecordTypeInts.VENV:
+                {
+                    _VendorValuesLocation = new RangeInt32((stream.Position - offset), finalPos - offset);
+                    return (int)Faction_FieldIndex.VendorValues;
+                }
+                case RecordTypeInts.PLVD:
+                {
+                    stream.Position += _package.MetaData.Constants.SubConstants.HeaderLength;
+                    this.VendorLocation = LocationTargetRadiusBinaryOverlay.LocationTargetRadiusFactory(
+                        stream: stream,
+                        package: _package,
+                        finalPos: finalPos,
+                        translationParams: translationParams.DoNotShortCircuit());
+                    return (int)Faction_FieldIndex.VendorLocation;
+                }
+                case RecordTypeInts.CTDA:
+                case RecordTypeInts.CITC:
+                {
+                    this.Conditions = BinaryOverlayList.FactoryByCountPerItem<IConditionGetter>(
+                        stream: stream,
+                        package: _package,
+                        countLength: 4,
+                        trigger: Condition_Registration.TriggerSpecs,
+                        countType: RecordTypes.CITC,
+                        translationParams: translationParams,
+                        getter: (s, p, recConv) => ConditionBinaryOverlay.ConditionFactory(new OverlayStream(s, p), p, recConv),
+                        skipHeader: false);
+                    return (int)Faction_FieldIndex.Conditions;
+                }
+                default:
+                    return base.FillRecordType(
+                        stream: stream,
+                        finalPos: finalPos,
+                        offset: offset,
+                        type: type,
+                        lastParsed: lastParsed,
+                        recordParseCount: recordParseCount,
+                        translationParams: translationParams.WithNoConverter());
+            }
+        }
+        #region To String
+
+        public override void Print(
+            StructuredStringBuilder sb,
+            string? name = null)
+        {
+            FactionMixIn.Print(
+                item: this,
+                sb: sb,
+                name: name);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return MajorRecordPrinter<Faction>.ToString(this);
+        }
+
+        #region Equals and Hash
+        public override bool Equals(object? obj)
+        {
+            if (obj is IFormLinkGetter formLink)
+            {
+                return formLink.Equals(this);
+            }
+            if (obj is not IFactionGetter rhs) return false;
+            return ((FactionCommon)((IFactionGetter)this).CommonInstance()!).Equals(this, rhs, equalsMask: null);
+        }
+
+        public bool Equals(IFactionGetter? obj)
+        {
+            return ((FactionCommon)((IFactionGetter)this).CommonInstance()!).Equals(this, obj, equalsMask: null);
+        }
+
+        public override int GetHashCode() => ((FactionCommon)((IFactionGetter)this).CommonInstance()!).GetHashCode(this);
+
+        #endregion
+
+    }
+
+}
+#endregion
+
+#endregion
+

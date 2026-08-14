@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="AnimationSoundTagSet" objType="Record" recordType="STAG" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <RefList name="Tags" refName="AnimationSoundTag" />
+    </Fields>
+  </Object>
+  <Object name="AnimationSoundTag" objType="Subrecord" recordType="TNAM">
+    <Fields>
+      <FormLink name="Sound" refName="SoundDescriptor" />
+      <String name="Action" />
+    </Fields>
+  </Object>
+</Loqui>

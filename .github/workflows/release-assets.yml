@@ -1,0 +1,142 @@
+name: Release packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing GitHub release tag
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-packages-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  windows-package:
+    name: Windows package
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build Windows web bundle
+        working-directory: web
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+
+      - name: Publish Windows app
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'fo4ide-windows-publish.log'
+          dotnet publish FO4RecordEditor\FO4RecordEditor.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=false -p:DebugType=none 2>&1 | Tee-Object -FilePath $log
+          if ($LASTEXITCODE -ne 0) {
+            $tail = (Get-Content $log -Tail 24) -join ' '
+            $tail = $tail -replace '%', '%25' -replace '\r?\n', '%0A'
+            Write-Output "::error title=Windows publish failed::$tail"
+            exit $LASTEXITCODE
+          }
+
+      - name: Stage and inspect Windows package
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          $version = $env:TAG -replace '^v', ''
+          & .\package.ps1 -Version $version -SkipWeb -SkipPublish -SkipCkWiki -SkipAudioTools
+          $archive = "dist\FO4IDE-$version-windows-x64.zip"
+          if (-not (Test-Path $archive)) { throw "Windows package was not created: $archive" }
+          $inspect = Join-Path $env:RUNNER_TEMP 'fo4ide-windows-package'
+          Expand-Archive -Path $archive -DestinationPath $inspect -Force
+          if (-not (Test-Path (Join-Path $inspect 'FO4RecordEditor.exe'))) {
+            throw 'Windows package does not contain FO4RecordEditor.exe'
+          }
+
+      - name: Attach Windows package to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          $version = $env:TAG -replace '^v', ''
+          gh release view $env:TAG
+          gh release upload $env:TAG "dist\FO4IDE-$version-windows-x64.zip#FO4IDE Windows x64" --clobber
+
+  linux-package:
+    name: Linux package
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install Debian packaging tools
+        run: sudo apt-get update && sudo apt-get install --yes fakeroot
+
+      - name: Build and inspect Linux package
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          version="${TAG#v}"
+          log="$RUNNER_TEMP/fo4ide-linux-package.log"
+          set +e
+          ./packaging/linux/build-deb.sh "$version" 2>&1 | tee "$log"
+          status="${PIPESTATUS[0]}"
+          set -e
+          if [ "$status" -ne 0 ]; then
+            tail="$(tail -n 24 "$log" | tr '\n' ' ')"
+            echo "::error title=Linux package failed::$tail"
+            exit "$status"
+          fi
+          package="packaging/linux/out/fo4ide_${version}_amd64.deb"
+          test -f "$package"
+          dpkg-deb -c "$package" | grep -Fq './usr/bin/fo4ide'
+          dpkg-deb -c "$package" | grep -Fq './opt/fo4ide/FO4RecordEditor.Server'
+
+      - name: Attach Linux package to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          version="${TAG#v}"
+          package="packaging/linux/out/fo4ide_${version}_amd64.deb"
+          gh release view "$TAG"
+          gh release upload "$TAG" "$package#FO4IDE Linux amd64 deb" --clobber
