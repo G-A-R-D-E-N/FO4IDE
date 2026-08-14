@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="PackIn" recordType="PKIN" objType="Record" majorFlag="true" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <RefDirect name="ObjectBounds" refName="ObjectBounds" />
+      <String name="Filter" recordType="FLTR" />
+      <FormLink name="Cell" refName="Cell" recordType="CNAM" />
+      <UInt32 name="Version" recordType="VNAM" />
+    </Fields>
+  </Object>
+</Loqui>

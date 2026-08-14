@@ -1,0 +1,200 @@
+.topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 44px;
+  padding: 0 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 30;
+}
+[data-theme="light"] .topbar {
+  background: var(--bg-secondary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+[data-theme="light"] .top-tab-close:hover { background: rgba(0,0,0,0.08); color: var(--text-primary); }
+
+/* Brand */
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  flex: 0 0 auto;
+  padding-right: 4px;
+}
+.brand-x { color: var(--accent-color); }
+
+/* Tabs */
+.topbar-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.top-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.top-tab:hover { background: var(--bg-hover); color: var(--text-primary); }
+.top-tab.active {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.top-tab-label {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.top-tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 2px;
+  border-radius: 3px;
+  color: var(--text-muted);
+}
+.top-tab-close:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
+
+/* Command bar */
+.topbar-command {
+  position: relative;
+  flex: 1 1 auto;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.command-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+.command-field:focus-within { border-color: var(--accent-color); }
+.command-icon { color: var(--text-muted); flex: 0 0 auto; }
+.command-field input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+.command-field input::placeholder { color: var(--text-muted); }
+.command-kbd {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  letter-spacing: 0.04em;
+}
+
+.command-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 360px;
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  z-index: 50;
+  padding: 4px;
+}
+.command-empty {
+  padding: 14px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.command-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12.5px;
+}
+.command-result.active { background: var(--bg-hover); }
+.command-result .cr-id {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.command-result .cr-type {
+  flex: 0 0 auto;
+  color: var(--chip-2);
+  font-size: 11px;
+}
+.command-result .cr-plugin {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-size: 11px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Tools */
+.topbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.tool-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.tool-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.tool-btn.on { color: var(--accent-color); }
+.tool-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  color: var(--bg-primary);
+  font-size: 11px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}

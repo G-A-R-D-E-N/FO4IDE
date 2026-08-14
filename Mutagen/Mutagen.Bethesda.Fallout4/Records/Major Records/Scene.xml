@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="Scene" objType="Record" recordType="SCEN" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <RefDirect name="VirtualMachineAdapter" refName="SceneAdapter" recordType="VMAD" overflowRecordType="XXXX" />
+      <Enum name="Flags" enumName="Scene.Flag" byteLength="4" recordType="FNAM" />
+      <RefList name="Phases" refName="ScenePhase" />
+      <RefList name="Actors" refName="SceneActor" />
+      <RefList name="Actions" refName="SceneAction" />
+      <RefDirect name="Unused" refName="ScenePhaseUnusedData" />
+      <RefDirect name="Unused2" refName="ScenePhaseUnusedData" markerType="NEXT" />
+      <FormLink name="Quest" refName="Quest" recordType="PNAM" />
+      <UInt32 name="LastActionIndex" recordType="INAM" />
+      <ByteArray name="VNAM" recordType="VNAM" />
+      <Float name="CameraDistanceOverride" recordType="CNAM" />
+      <Float name="DialogueDistanceOverride" recordType="ACTV" />
+      <Float name="FovOverride" recordType="CRIS" />
+      <List name="Keywords" counterRecType="KSIZ" recordType="KWDA">
+        <FormLink refName="Keyword" />
+      </List>
+      <RefList name="Conditions" refName="Condition" />
+      <RefDirect name="SetParentQuestStage" refName="SceneSetParentQuestStage" />
+      <String name="Notes" recordType="NNAM" />
+      <FormLink name="Template" refName="Scene" recordType="TNAM" />
+      <UInt32 name="Index" recordType="XNAM" />
+    </Fields>
+  </Object>
+  <Object name="SceneAdapter" baseClass="AVirtualMachineAdapter" recordType="VMAD" objType="Subrecord">
+    <Fields>
+      <RefDirect name="ScriptFragments" refName="SceneScriptFragments" binary="Custom" nullable="True" />
+    </Fields>
+  </Object>
+  <Object name="SceneScriptFragments" baseClass="ScriptFragments" objType="Subrecord">
+    <Fields>
+      <RefList name="PhaseFragments" refName="ScenePhaseFragment" counterLength="2" />
+    </Fields>
+  </Object>
+  <Object name="ScenePhaseFragment" objType="Subrecord">
+    <Fields>
+      <Enum name="Flags" enumName="ScenePhaseFragment.Flag" byteLength="1" />
+      <UInt8 name="Index" />
+      <UInt32 name="Unknown" />
+      <String name="ScriptName" binaryType="PrependLengthUShort" />
+      <String name="FragmentName" binaryType="PrependLengthUShort" />
+    </Fields>
+  </Object>
+  <Object name="ScenePhase" objType="Subrecord">
+    <Fields>
+      <Marker name="StartMarker" recordType="HNAM" nullable="False" />
+      <String name="Name" recordType="NAM0" />
+      <RefList name="StartConditions" refName="Condition" binary="Custom" />
+      <RefList name="CompletionConditions" refName="Condition" binary="Custom" markerType="NEXT" />
+      <UInt32 name="EditorWidth" recordType="WNAM" />
+      <Enum name="Flags" enumName="ScenePhase.Flag" byteLength="2" recordType="FNAM" />
+      <RefDirect name="PhaseSetParentQuestStage" refName="SceneSetParentQuestStage" />
+      <Marker name="EndMarker" recordType="HNAM" />
+    </Fields>
+  </Object>
+  <Object name="SceneSetParentQuestStage" objType="Subrecord" recordType="SCQS">
+    <Fields>
+      <Int16 name="OnBegin" />
+      <Int16 name="OnEnd" />
+    </Fields>
+  </Object>
+  <Object name="SceneActor" objType="Subrecord">
+    <Fields>
+      <UInt32 name="ID" recordType="ALID" nullable="False" />
+      <Enum name="Flags" enumName="SceneActor.Flag" recordType="LNAM" byteLength="4" nullable="False" />
+      <Enum name="BehaviorFlags" enumName="SceneActor.BehaviorFlag" recordType="DNAM" byteLength="4" nullable="False" />
+    </Fields>
+  </Object>
+  <Object name="SceneAction" objType="Subrecord">
+    <Fields>
+      <RefDirect name="Type" refName="ASceneActionType" recordType="ANAM" nullable="False" binary="Custom" />
+      <String name="Name" recordType="NAM0" />
+      <Int32 name="AliasID" recordType="ALID" />
+      <UInt32 name="Index" recordType="INAM" />
+      <Enum name="Flags" enumName="SceneAction.Flag" byteLength="4" recordType="FNAM" />
+      <UInt32 name="StartPhase" recordType="SNAM" />
+      <UInt32 name="EndPhase" recordType="ENAM" />
+      <Float name="TimerMaxSeconds" recordType="SNAM" />
+      <Int16 name="SetParentQuestStage" recordType="SCQS" />
+      <Float name="TimerMinSeconds" recordType="TNAM" />
+      <ByteArray name="STSC" recordType="STSC" />
+      <RefList name="StartScenes" refName="StartScene" />
+      <FormLink name="PlayerPositiveResponse" refName="DialogTopic" recordType="PTOP" />
+      <FormLink name="PlayerNegativeResponse" refName="DialogTopic" recordType="NTOP" />
+      <FormLink name="PlayerNeutralResponse" refName="DialogTopic" recordType="NETO" />
+      <FormLink name="PlayerQuestionResponse" refName="DialogTopic" recordType="QTOP" />
+      <FormLink name="PlayerPositiveSubtype" refName="Keyword" recordType="VENC" />
+      <FormLink name="PlayerNegativeSubtype" refName="Keyword" recordType="PLVD" />
+      <FormLink name="PlayerNeutralSubtype" refName="Keyword" recordType="JOUT" />
+      <FormLink name="PlayerQuestionSubtype" refName="Keyword" recordType="DALC" />
+      <List name="NpcHeadtrackingActorIds" recordType="DTID">
+        <Int32 />
+      </List>
+      <FormLink name="NpcPositiveResponse" refName="DialogTopic" recordType="NPOT" />
+      <FormLink name="NpcNegativeResponse" refName="DialogTopic" recordType="NNGT" />
+      <FormLink name="NpcNeutralResponse" refName="DialogTopic" recordType="NNUT" />
+      <FormLink name="NpcQuestionResponse" refName="DialogTopic" recordType="NQUT" />
+      <FormLink name="NpcPositiveSubtype" refName="Keyword" recordType="NPOS" />
+      <FormLink name="NpcNegativeSubtype" refName="Keyword" recordType="NNGS" />
+      <FormLink name="NpcNeutralSubtype" refName="Keyword" recordType="NNUS" />
+      <FormLink name="NpcQuestionSubtype" refName="Keyword" recordType="NQUS" />
+      <Int32 name="DialogueTargetActorId" recordType="DTGT" />
+      <List name="Packages">
+        <FormLink refName="Package" recordType="PNAM" />
+      </List>
+      <FormLink name="Topic" recordType="DATA" refName="DialogTopic" />
+      <CustomLogic name="HTIDParsing" recordType="HTID" />
+      <Float name="LoopingMax" recordType="DMAX" />
+      <Float name="LoopingMin" recordType="DMIN" />
+      <RefDirect name="Camera" refName="SceneCamera" />
+      <Enum name="Emotion" enumName="Emotion" byteLength="4" recordType="DEMO" />
+      <UInt32 name="EmotionValue" recordType="DEVA" />
+      <List name="PlayerHeadTrackingActorIds" recordType="HTID">
+        <Int32 />
+      </List>
+      <FormLink name="DialogueSubtype" recordType="VENC" refName="Keyword" />
+      <FormLink name="AnimArchType" refName="Keyword" recordType="PNAM" />
+      <FormLink name="AudioOutputOverride" recordType="ONAM" refName="SoundOutputModel" />
+      <RefDirect name="Unused" refName="ScenePhaseUnusedData" />
+      <Marker name="EndMarker" recordType="ANAM" />
+    </Fields>
+  </Object>
+  <Object name="ASceneActionType" objType="Subrecord" />
+  <Object name="SceneActionTypicalType" objType="Subrecord" baseClass="ASceneActionType">
+    <Fields>
+      <Enum name="Type" enumName="SceneAction.TypeEnum" nullable="False" binary="NoGeneration" />
+      <FormLink name="PlaySound" refName="SoundDescriptor" nullable="True" />
+    </Fields>
+  </Object>
+  <Object name="SceneActionStartScene" objType="Subrecord" baseClass="ASceneActionType">
+    <Fields>
+      <Bool name="EndSceneSayGreeting" nullable="True" binary="NoGeneration" />
+    </Fields>
+  </Object>
+  <Object name="ScenePhaseUnusedData" objType="Subrecord">
+    <Fields>
+      <ByteArray name="SCHR" recordType="SCHR" />
+      <ByteArray name="SCDA" recordType="SCDA" />
+      <ByteArray name="SCTX" recordType="SCTX" />
+      <ByteArray name="QNAM" recordType="QNAM" />
+      <ByteArray name="SCRO" recordType="SCRO" />
+    </Fields>
+  </Object>
+  <Object name="StartScene" objType="Subrecord">
+    <Fields>
+      <FormLink name="Scene" refName="Scene" recordType="LCEP" />
+      <UInt16 name="PhaseIndex" recordType="INTT" />
+      <String name="StartPhaseForScene" recordType="SSPN" />
+      <RefList name="Conditions" refName="Condition" counterRecType="CITC" />
+    </Fields>
+  </Object>
+  <Object name="SceneCamera" objType="Subrecord" recordType="CRIS">
+    <Fields>
+      <Float name="FovOnPlayerCamera" />
+      <Float name="RateOfCameraChange" />
+    </Fields>
+  </Object>
+</Loqui>

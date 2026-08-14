@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="PexFile">
+    <Fields>
+      <UInt8 name="MajorVersion" />
+      <UInt8 name="MinorVersion" />
+      <UInt16 name="GameId" />
+      <DateTime name="CompilationTime" />
+      <String name="SourceFileName" />
+      <String name="Username" />
+      <String name="MachineName" />
+      <RefDirect name="DebugInfo" nullable="True" refName="DebugInfo" />
+      <RefList name="Objects" refName="PexObject" />
+      <Array name="UserFlags" fixedSize="32">
+        <String nullable="True" />
+      </Array>
+    </Fields>
+  </Object>
+</Loqui>

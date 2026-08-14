@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="MutagenSource"
+    targetNamespace="http://tempuri.org/LoquiSource.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/LoquiSource.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:redefine schemaLocation="../../Loqui/Loqui/LoquiSource.xsd">
+    <xs:complexType name="ObjectType" >
+      <xs:complexContent>
+        <xs:extension base="ObjectType">
+          <xs:choice>
+            <xs:element name="BaseRecordTypeOverrides" type="RecordTypeMappingsType" minOccurs="0" />
+            <xs:element name="CustomRecordTypeTrigger" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="AdditionalContainedRecordType" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="SubgroupType" type="xs:int" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="LinkInterface" type="InterfaceType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="GameReleaseOptions" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="GameModeOverride" type="GameModeRecordTypeOverrides" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="VersionOverride" type="VersionRecordTypeOverrides" minOccurs="0" maxOccurs="unbounded" />
+          </xs:choice>
+          <xs:attribute name="recordType" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the record type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="objType" type="MutagenObjectType" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Type of mutagen object this is creating.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="majorFlag" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>
+                Whether a major record has custom flags
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="partialForm" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>
+                Whether record can be a PartialForm
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="failOnUnknownType" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether an unknown type encountered should be considered an error or warning.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="customBinaryEnd" type="CustomEndType" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to add custom logic after typical binary parsing.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="customBinary" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to generate typical binary translation
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binaryOverlay" type="MutagenBinaryType" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary overlay translations.  Defaults to "binary" setting if missing
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binaryOverlayGenerateCtor" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to generate the binary overlay factory method
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="endMarkerType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Optional ending marker
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="shortCircuitToLastRequired" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to short circuit only to the last required field
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="customRecordFallback" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                whether to define a custom function for when an unrecognized record is encountered
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="usesStringFiles" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                For mod objects, whether or not they should utilize string localization
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="inferredAssets" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>
+                Whether a record has Inferred Assets
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="resolvedAssets" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>
+                Whether a record has Resolved Assets
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="abstractSplitter" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether there is a custom splitting factory from this abstract class
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="StructType">
+      <xs:complexContent>
+        <xs:extension base="StructType">
+          <xs:attribute name="recordType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the record type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Field">
+      <xs:complexContent>
+        <xs:extension base="Field">
+          <xs:sequence>
+            <xs:element name="CustomVersion" type="xs:int" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Versioning" type="VersioningType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="RecordTypeVersioning" type="RecordTypeVersioningType" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+          <xs:attribute name="recordType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the record type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="recordTypeHex" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Integer representation used for record type
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="overflowRecordType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Record type to use if there is a length overflow
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binary" type="MutagenBinaryType" use="optional" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary translations
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binaryOverlay" type="MutagenBinaryType" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary overlay translations.  Defaults to "binary" setting if missing
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="byteLength" type="xs:integer" >
+            <xs:annotation>
+              <xs:documentation>
+                Explicit definition of byte length on disk.  Used in various circumstances
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="metaAssets" type="xs:boolean" use="optional" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether a record has implicit or meta assets present
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="markerType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Used to specify the RecordType used for a prepending marker subrecord
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="circular" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether field has a circular reference chain
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="unknown" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether field is unknown or not
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="notDuplicate" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to consider duplicate logic
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RefDirect">
+      <xs:complexContent>
+        <xs:extension base="RefDirect">
+          <xs:choice>
+            <xs:element name="RecordTypeOverrides" type="RecordTypeMappingsType" minOccurs="0" maxOccurs="1" />
+          </xs:choice>
+          <xs:attribute name="recordType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the record type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="markerType" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the discarded marker type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binary" type="MutagenBinaryType" use="optional" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary translations
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="objType" type="MutagenObjectType">
+            <xs:annotation>
+              <xs:documentation>
+                Type of mutagen object this is referencing.  Only needed for interface typed references.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="NRefDirectField" >
+      <xs:complexContent>
+        <xs:extension base="NRefDirectField">
+          <xs:choice>
+            <xs:element name="RecordTypeOverrides" type="RecordTypeMappingsType" minOccurs="0" maxOccurs="1" />
+          </xs:choice>
+          <xs:attribute name="recordType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the record type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="markerType" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the discarded marker type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="endMarkerType" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                Typical four letter ASCII tag used for the discarded marker type.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binary" type="MutagenBinaryType" use="optional" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary translations
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="objType" type="MutagenObjectType">
+            <xs:annotation>
+              <xs:documentation>
+                Type of mutagen object this is referencing.  Only needed for interface typed references.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Color">
+      <xs:complexContent>
+        <xs:extension base="Color">
+          <xs:attribute name="binaryType" type="ColorBinaryType" use="required" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="String">
+      <xs:complexContent>
+        <xs:extension base="String">
+          <xs:attribute name="binaryType" type="StringBinaryType" />
+          <xs:attribute name="translated" type="StringsFileType" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Enum">
+      <xs:complexContent>
+        <xs:extension base="Enum">
+          <xs:attribute name="nullableBinaryFallback" type="xs:int" >
+            <xs:annotation>
+              <xs:documentation>
+                If an enum is marked nullable, but with no record type, read/write this number as the "null" value.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Bool">
+      <xs:complexContent>
+        <xs:extension base="Bool">
+          <xs:attribute name="boolAsMarker" type="xs:string" />
+          <xs:attribute name="importantByteLength" type="xs:int" >
+            <xs:annotation>
+              <xs:documentation>
+                How much of the byte length to consider when checking if bool is true or false
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="P2">
+      <xs:complexContent>
+        <xs:extension base="P2">
+          <xs:attribute name="swapCoords" type="xs:boolean" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RangedFloat">
+      <xs:complexContent>
+        <xs:extension base="RangedFloat">
+          <xs:attribute name="multiplier" type="xs:double" />
+          <xs:attribute name="divisor" type="xs:double" />
+          <xs:attribute name="integerType" type="FloatIntegerType" />
+          <xs:attribute name="isRotation" type="xs:boolean" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Percent">
+      <xs:complexContent>
+        <xs:extension base="Percent">
+          <xs:attribute name="integerType" type="FloatIntegerType" />
+          <xs:attribute name="isRotation" type="xs:boolean" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Dict">
+      <xs:complexContent>
+        <xs:extension base="Dict">
+          <xs:attribute name="lengthLength" type="xs:byte" />
+          <xs:attribute name="thread" type="xs:boolean" />
+          <xs:attribute name="asyncItems" type="xs:boolean" />
+          <xs:attribute name="binaryOverlay" type="MutagenBinaryType" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary overlay translations.  Defaults to "binary" setting if missing
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="numEnumKeys" type="xs:byte" >
+            <xs:annotation>
+              <xs:documentation>
+                Number of values the assigned enum key offers
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="List">
+      <xs:complexContent>
+        <xs:extension base="List">
+          <xs:attribute name="lengthLength" type="xs:byte" />
+          <xs:attribute name="thread" type="xs:boolean" />
+          <xs:attribute name="asyncItems" type="xs:boolean" />
+          <xs:attribute name="binaryOverlay" type="MutagenBinaryType" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary overlay translations.  Defaults to "binary" setting if missing
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="counterRecType" >
+            <xs:annotation>
+              <xs:documentation>
+                Record type of a counter subrecord the list starts with.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="counterLength" >
+            <xs:annotation>
+              <xs:documentation>
+                Number of bytes for the counter
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="nullIfCounterZero" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                If has a counter record type, should single record typed list be null if count is zero.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="allowNoCounter" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to expect/allow a list to have no counter when one is defined
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="endMarker" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                RecordType of an ending marker
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="alwaysWriteEndMarker" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to write the end marker, even if list is empty
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RefListField">
+      <xs:complexContent>
+        <xs:extension base="RefListField">
+          <xs:attribute name="thread" type="xs:boolean" />
+          <xs:attribute name="asyncItems" type="xs:boolean" />
+          <xs:attribute name="binaryOverlay" type="MutagenBinaryType" >
+            <xs:annotation>
+              <xs:documentation>
+                How to generate binary overlay translations.  Defaults to "binary" setting if missing
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="counterRecType" >
+            <xs:annotation>
+              <xs:documentation>
+                Record type of a counter subrecord the list starts with.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="counterLength" >
+            <xs:annotation>
+              <xs:documentation>
+                Number of bytes for the counter
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="expectedLengthLength" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to export the expected length before the content, and with what byte size
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="nullIfCounterZero" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                If has a counter record type, should single record typed list be null if count is zero.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="allowNoCounter" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to expect/allow a list to have no counter when one is defined
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="endMarker" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                RecordType of an ending marker
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="alwaysWriteEndMarker" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to write the end marker, even if list is empty
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemMarkerType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                RecordType of an starting marker for each item
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemEndMarkerType" type="xs:string" >
+            <xs:annotation>
+              <xs:documentation>
+                RecordType of an ending marker for each item
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="additive" type="xs:boolean" >
+            <xs:annotation>
+              <xs:documentation>
+                Whether to clear and call Add, rather than SetTo
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:group name="NamedFieldOptions">
+      <xs:choice>
+        <xs:group ref="NamedFieldOptions"/>
+        <xs:element name="FormLink" type="NFormLink"/>
+        <xs:element name="FormLinkOrIndex" type="NFormLinkOrIndex"/>
+        <xs:element name="FormID" type="NFormID"/>
+        <xs:element name="FormKey" type="NFormKey"/>
+        <xs:element name="ModKey" type="NModKey"/>
+        <xs:element name="AssetLink" type="NAssetLink"/>
+        <xs:element name="RecordType" type="NRecordType"/>
+        <xs:element name="Buffer" type="NBuffer"/>
+        <xs:element name="Data" type="DataType" />
+        <xs:element name="Marker" type="NMarkerType"/>
+        <xs:element name="Group" type="GroupType" />
+        <xs:element name="CustomLogic" type="CustomLogic" />
+        <xs:element name="Gendered" type="NGenderedItem" />
+        <xs:element name="Break" />
+        <xs:element name="Zero" type="ZeroType"/>
+        <xs:element name="Guid" type="NGuid" />
+      </xs:choice>
+    </xs:group>
+
+    <xs:group name="FieldOptions">
+      <xs:choice>
+        <xs:group ref="FieldOptions"/>
+        <xs:element name="FormLink" type="FormLink"/>
+        <xs:element name="FormID" type="FormID"/>
+        <xs:element name="FormKey" type="FormKey"/>
+        <xs:element name="ModKey" type="ModKey"/>
+        <xs:element name="AssetLink" type="AssetLink"/>
+        <xs:element name="RecordType" type="RecordType"/>
+        <xs:element name="Buffer" type="Buffer"/>
+        <xs:element name="Zero" type="ZeroType"/>
+        <xs:element name="Marker" type="MarkerType"/>
+        <xs:element name="Gendered" type="GenderedItem" />
+        <xs:element name="Break" />
+        <xs:element name="Guid" type="Guid" />
+      </xs:choice>
+    </xs:group>
+  </xs:redefine>
+
+  <xs:simpleType name="MutagenObjectType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Record" />
+      <xs:enumeration value="Subrecord" />
+      <xs:enumeration value="Group" />
+      <xs:enumeration value="Mod" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="CustomEndType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Off" />
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="Async" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ColorBinaryType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NoAlpha" />
+      <xs:enumeration value="Alpha" />
+      <xs:enumeration value="NoAlphaFloat" />
+      <xs:enumeration value="AlphaFloat" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MutagenBinaryType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="NoGeneration" />
+      <xs:enumeration value="Custom" />
+      <xs:enumeration value="CustomWrite" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MutagenVersionAction" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Add" />
+      <xs:enumeration value="Remove" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="StringBinaryType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Plain" />
+      <xs:enumeration value="NullTerminate" />
+      <xs:enumeration value="PrependLength" />
+      <xs:enumeration value="PrependLengthUShort" />
+      <xs:enumeration value="PrependLengthUInt8" />
+      <xs:enumeration value="NullTerminateIfNotEmpty" />
+      <xs:enumeration value="PrependLengthWithNullIfContent" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FloatIntegerType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Byte" />
+      <xs:enumeration value="ByteHundred" />
+      <xs:enumeration value="UInt" />
+      <xs:enumeration value="UShort" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Buffer" >
+    <xs:complexContent>
+      <xs:extension base="Nothing">
+        <xs:attribute name="byteLength" type="xs:integer" use="required" />
+        <xs:attribute name="static" type="xs:boolean" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VersioningType" >
+    <xs:attribute name="formVersion" type="xs:unsignedShort" use="required" />
+    <xs:attribute name="action" type="MutagenVersionAction" />
+  </xs:complexType>
+
+  <xs:complexType name="RecordTypeVersioningType" >
+    <xs:attribute name="formVersion" type="xs:unsignedShort" use="required" />
+    <xs:attribute name="recordType" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="NBuffer" >
+    <xs:complexContent>
+      <xs:extension base="Buffer">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ZeroType">
+    <xs:attribute name="byteLength" type="xs:int" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="CustomLogic">
+    <xs:sequence>
+      <xs:element name="RecordType" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="byteLength" type="xs:int" />
+    <xs:attribute name="recordType" type="xs:string" >
+      <xs:annotation>
+        <xs:documentation>
+          Typical four letter ASCII tag used for the record type.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="isUntypedRecordType" type="xs:boolean" >
+      <xs:annotation>
+        <xs:documentation>
+          Whether to consider special logic a part of record type parsing even if it's missing
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="MarkerType">
+    <xs:complexContent>
+      <xs:extension base="Field" />
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NMarkerType" >
+    <xs:complexContent>
+      <xs:extension base="MarkerType">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="FormIDType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="EDIDChars" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="StringsFileType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="IL" />
+      <xs:enumeration value="DL" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="FormLink" >
+    <xs:complexContent>
+      <xs:extension base="RefDirectField">
+        <xs:attribute name="type" type="FormIDType" >
+          <xs:annotation>
+            <xs:documentation>
+              Type of formID system to use
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="maxIsNone" type="xs:boolean" >
+          <xs:annotation>
+            <xs:documentation>
+              Whether max value is interpreted as None
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NFormLink" >
+    <xs:complexContent>
+      <xs:extension base="FormLink">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NFormLinkOrAlias" >
+    <xs:complexContent>
+      <xs:extension base="NFormLink">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NFormLinkOrIndex" >
+    <xs:complexContent>
+      <xs:extension base="NFormLink">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FormID" >
+    <xs:complexContent>
+      <xs:extension base="Field" />
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NFormID" >
+    <xs:complexContent>
+      <xs:extension base="FormID">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+	<xs:complexType name="FormKey" >
+		<xs:complexContent>
+			<xs:extension base="Field" />
+		</xs:complexContent>
+	</xs:complexType>
+
+  <xs:complexType name="NFormKey" >
+    <xs:complexContent>
+      <xs:extension base="FormKey">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ModKey" >
+    <xs:complexContent>
+      <xs:extension base="Field" />
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NModKey" >
+    <xs:complexContent>
+      <xs:extension base="ModKey">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Guid" >
+    <xs:complexContent>
+      <xs:extension base="Field" />
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NGuid" >
+    <xs:complexContent>
+      <xs:extension base="Guid">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RecordType" >
+    <xs:complexContent>
+      <xs:extension base="Field" />
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NRecordType" >
+    <xs:complexContent>
+      <xs:extension base="RecordType">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="GenderedItem" >
+    <xs:complexContent>
+      <xs:extension base="Field">
+        <xs:sequence>
+          <xs:element name="MaleTypeOverrides" type="RecordTypeMappingsType" minOccurs="0" />
+          <xs:element name="FemaleTypeOverrides" type="RecordTypeMappingsType" minOccurs="0" />
+          <xs:element name="Fields" type="SingleFieldOption" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="maleMarker" type="xs:string" />
+        <xs:attribute name="femaleMarker" type="xs:string" />
+        <xs:attribute name="markerPerGender" type="xs:boolean" />
+        <xs:attribute name="shortCircuit" type="xs:boolean" />
+        <xs:attribute name="parseNonConvertedItems" type="xs:boolean" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NGenderedItem" >
+    <xs:complexContent>
+      <xs:extension base="GenderedItem">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DataTypeFieldRangeType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="NamedFieldOptions" minOccurs="0" maxOccurs="unbounded" />
+    </xs:choice>
+    <xs:attribute name="Min" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="DataTypeFields" >
+    <xs:choice minOccurs="0" maxOccurs="unbounded" >
+      <xs:group ref="NamedFieldOptions" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="Range" type="DataTypeFieldRangeType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="DataType" >
+    <xs:sequence>
+      <xs:element name="Fields" type="DataTypeFields" minOccurs="0" maxOccurs="1" />
+      <xs:element name="CustomVersion" type="xs:int" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Versioning" type="VersioningType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="RecordTypeVersioning" type="RecordTypeVersioningType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="recordType" />
+    <xs:attribute name="binaryOverlay" type="MutagenBinaryType" >
+      <xs:annotation>
+        <xs:documentation>
+          How to generate binary overlay translations.  Defaults to "normal" setting if missing
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="RecordTypeMappingsType" >
+    <xs:choice>
+      <xs:element name="Mapping" type="RecordTypeMappingType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="RecordTypeMappingType" >
+    <xs:attribute name="From" type="xs:string" use="required" />
+    <xs:attribute name="To" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="GameModeRecordTypeOverrides" >
+    <xs:sequence>
+      <xs:element name="Mapping" type="GameModeRecordTypeOverrideType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="release" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="VersionRecordTypeOverrides" >
+    <xs:sequence>
+      <xs:element name="Mapping" type="GameModeRecordTypeOverrideType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="version" type="xs:byte" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="GameModeRecordTypeOverrideType" >
+    <xs:attribute name="From" type="xs:string" use="required" />
+    <xs:attribute name="To" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="GroupType" >
+    <xs:attribute name="name" use="required" />
+    <xs:attribute name="refName" use="required" />
+    <xs:attribute name="edidLinked" />
+  </xs:complexType>
+
+	<xs:complexType name="AssetLink" >
+		<xs:complexContent>
+			<xs:extension base="String" >
+				<xs:attribute name="assetType" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NAssetLink" >
+		<xs:complexContent>
+			<xs:extension base="AssetLink">
+				<xs:attribute name="name" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>

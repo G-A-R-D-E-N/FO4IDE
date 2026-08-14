@@ -1,0 +1,249 @@
+.cr-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.cr-sidebar {
+  width: 300px;
+  min-width: 250px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.cr-sidebar-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+.cr-sidebar-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cr-search-box {
+  position: relative;
+}
+.cr-search-box input {
+  width: 100%;
+  padding-left: 28px;
+  background: var(--bg-primary);
+}
+.cr-search-icon {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  color: var(--text-secondary);
+}
+
+.cr-list {
+  flex: 1;
+  overflow-y: auto;
+}
+.cr-list-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  transition: all 0.1s;
+}
+.cr-list-item:hover {
+  background: var(--bg-hover);
+}
+.cr-list-item.selected {
+  background: var(--bg-hover);
+  border-left-color: var(--accent-color);
+}
+.cr-li-title {
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cr-li-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cr-sidebar-footer {
+  padding: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.cr-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0;
+}
+
+.cr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+}
+.cr-empty h2 {
+  margin: 16px 0 8px 0;
+  color: var(--text-primary);
+}
+
+.cr-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+.cr-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.cr-header-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+.cr-badge {
+  background: #333;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.cr-badge-sub {
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.cr-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.cr-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.cr-legend {
+  display: flex;
+  gap: 12px;
+}
+.cr-legend-item {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+}
+.cr-legend-item.differs {
+  color: var(--text-highlight);
+  border: 1px solid #4a2626;
+}
+.cr-legend-item.identical {
+  color: var(--text-identical);
+}
+
+.cr-grid-container {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+.cr-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+.cr-grid th, .cr-grid td {
+  border: 1px solid #2b2b2b;
+  padding: 6px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+.cr-grid th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-tertiary);
+  font-weight: 600;
+  color: #fff;
+  z-index: 5;
+  box-shadow: 0 1px 0 var(--border-color);
+}
+.cr-grid th:first-child, .cr-grid td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--bg-primary);
+  z-index: 6;
+}
+.cr-grid th:first-child {
+  z-index: 10;
+  background: var(--bg-tertiary);
+}
+.cr-grid td {
+  transition: filter 0.1s;
+}
+.cr-grid tr:hover td {
+  filter: brightness(1.2);
+}
+
+.cr-winner-badge {
+  margin-left: 8px;
+  font-size: 10px;
+  color: #aaa;
+}
+
+.cr-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  z-index: 10;
+}
+.cr-resolve-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.cr-resolve-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cr-resolve-group span {
+  color: var(--text-secondary);
+}
+
+.cr-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cr-status {
+  color: var(--text-identical);
+}
+.cr-actions-right {
+  display: flex;
+  gap: 8px;
+}

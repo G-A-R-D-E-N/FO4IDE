@@ -1,0 +1,30 @@
+name: wiki-link-check
+
+# GitHub does not run Actions inside wiki repos (the .wiki.git repo has no
+# workflows, no Actions tab and no push triggers), so this check lives in
+# the main repo and polls the wiki. Wiki edits are rare, so 6-hourly is
+# plenty to catch a dead page the same day it lands; workflow_dispatch
+# covers "check right now", and pushes to this repo's main run the check
+# immediately since the wiki is derived from these docs.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repo (for the checker script)
+        uses: actions/checkout@v4
+
+      - name: Clone the wiki
+        run: git clone --depth 1 https://github.com/G-A-R-D-E-N/FO4-IDE.wiki.git "$RUNNER_TEMP/wiki"
+
+      - name: Run the wiki link check
+        run: python3 .github/scripts/check-wiki-links.py "$RUNNER_TEMP/wiki"

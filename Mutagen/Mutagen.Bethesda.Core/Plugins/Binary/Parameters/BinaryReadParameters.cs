@@ -1,0 +1,51 @@
+﻿using System.IO.Abstractions;
+using Mutagen.Bethesda.Plugins.Cache;
+using Mutagen.Bethesda.Plugins.Masters;
+using Mutagen.Bethesda.Plugins.Order;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Strings;
+using Noggog;
+
+namespace Mutagen.Bethesda.Plugins.Binary.Parameters;
+
+/// <summary>
+/// Parameter object for customizing binary import job instructions
+/// </summary>
+public record BinaryReadParameters
+{
+    public static BinaryReadParameters Default => new();
+    
+    public StringsReadParameters? StringsParam { get; init; }
+    
+    /// <summary>
+    /// Required for games with Separated Load Order lists per master type
+    /// </summary>
+    public IReadOnlyCache<IModMasterStyledGetter, ModKey>? MasterFlagsLookup { get; init; }
+
+    /// <summary>
+    /// Whether to use multithreading when possible
+    /// </summary>
+    public bool Parallel { get; init; } = true;
+    
+    /// <summary>
+    /// Whether to treat unknown records as errors and throw an exception
+    /// </summary>
+    public bool ThrowOnUnknownSubrecord { get; init; } = false;
+    
+    /// <summary>
+    /// FileSystem to read from
+    /// </summary>
+    public IFileSystem? FileSystem { get; init; }
+
+    /// <summary>
+    /// Optional LinkCache for cross-mod record type resolution.
+    /// Required when reading records that reference records from other mods and need type information about those records.
+    /// </summary>
+    public ILinkCache? LinkCache { get; init; }
+
+    /// <summary>
+    /// Optional master reference overrides to use instead of reading from the file header.
+    /// Used for split mod imports where split file ModKeys are remapped to the base ModKey.
+    /// </summary>
+    public IReadOnlyMasterReferenceCollection? MasterOverrides { get; init; }
+}

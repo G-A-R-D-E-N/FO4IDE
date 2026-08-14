@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    The Linux/cross-platform host for the same app the WPF shell hosts.
+
+    There is one codebase. The WPF shell puts the React UI in a WebView2 control and exposes the
+    interop classes with AddHostObjectToScript; this project serves the identical React bundle over
+    Kestrel and exposes the identical interop classes over POST /rpc. Both compile the SAME
+    Services/, Models/ and ViewModels/ sources: they are linked in below rather than copied, so a
+    change to an interop method reaches both hosts with no porting step.
+
+    Anything a UI toolkit has to provide (file pickers, message boxes, UI-thread marshalling) goes
+    through FO4RecordEditor.Services.HostServices, which each host installs at startup.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>FO4RecordEditor.Server</RootNamespace>
+    <AssemblyName>FO4RecordEditor.Server</AssemblyName>
+    <NoWarn>$(NoWarn);CA1416;CS1591</NoWarn>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The Web SDK's implicit using collides with the app's own Models.LogLevel. -->
+    <Using Remove="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mutagen\Mutagen.Bethesda.Fallout4\Mutagen.Bethesda.Fallout4.csproj" />
+    <ProjectReference Include="..\FO4RecordEditor.Core\FO4RecordEditor.Core.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
+    <!-- The native window: WebKitGTK on Linux, the OS webview elsewhere. This is the counterpart of
+         the WPF shell's WebView2 control, so the app is a real window and not a browser tab. -->
+    <PackageReference Include="Photino.NET" Version="4.0.16" />
+  </ItemGroup>
+
+  <!-- Shared app layer, compiled from the WPF project's tree. Views/ and the .xaml code-behind are
+       deliberately not here: those are the only genuinely Windows-only parts. -->
+  <ItemGroup>
+    <Compile Include="..\FO4RecordEditor\Services\**\*.cs"
+             Exclude="..\FO4RecordEditor\Services\WpfHostServices.cs"
+             Link="Shared\Services\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\FO4RecordEditor\Models\**\*.cs"
+             Link="Shared\Models\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\FO4RecordEditor\ViewModels\**\*.cs"
+             Link="Shared\ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- The React bundle, served as static files instead of through a WebView2 virtual host. -->
+  <ItemGroup>
+    <Content Include="..\web\dist\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>web\dist\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+
+</Project>

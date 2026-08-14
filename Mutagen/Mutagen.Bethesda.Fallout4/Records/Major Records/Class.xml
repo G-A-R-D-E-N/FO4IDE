@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="Class" recordType="CLAS" objType="Record" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <String name="Name" recordType="FULL" translated="Normal" />
+      <String name="Description" recordType="DESC" translated="DL" nullable="False" />
+      <String name="Icon" recordType="ICON" />
+      <RefList name="Properties" refName="ObjectProperty" recordType="PRPS" />
+      <Data>
+        <Fields>
+          <Int32 name="Unknown" />
+          <Float name="BleedoutDefault" />
+        </Fields>
+      </Data>
+    </Fields>
+  </Object>
+</Loqui>

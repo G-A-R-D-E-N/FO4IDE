@@ -1,0 +1,37 @@
+.plugin-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12.5px;
+}
+
+.plugin-chip.clickable {
+  cursor: pointer;
+}
+
+.plugin-chip.clickable:hover {
+  background: var(--bg-hover);
+}
+
+.plugin-chip-badge {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--bg-primary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.plugin-chip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

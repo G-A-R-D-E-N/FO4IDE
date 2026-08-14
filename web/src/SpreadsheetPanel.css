@@ -1,0 +1,91 @@
+/* Spreadsheet panel -- reuses PapyrusPanel.css for the modal shell/banner; adds the grid + toolbar. */
+.spreadsheet-modal {
+  width: min(1100px, 94vw);
+  max-width: 94vw;
+  max-height: 88vh;
+}
+
+.spreadsheet-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-color, #2b2b2b);
+  align-items: center;
+}
+.spreadsheet-select {
+  min-width: 0;
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #2b2b2b);
+  background: transparent;
+  color: var(--text-color, #ddd);
+  font-size: 12.5px;
+}
+.spreadsheet-select:focus { outline: none; border-color: var(--accent-color, #4ec9b0); }
+.spreadsheet-save-btn { white-space: nowrap; }
+
+.spreadsheet-result {
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--accent-color, #4ec9b0);
+  border-bottom: 1px solid var(--border-color, #2b2b2b);
+}
+
+.spreadsheet-body {
+  padding: 10px 14px;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.spreadsheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.spreadsheet-table th {
+  text-align: left;
+  position: sticky;
+  top: 0;
+  background: var(--panel-bg, #1e1e1e);
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border-color, #2b2b2b);
+}
+.spreadsheet-table td {
+  padding: 2px 6px;
+  border-bottom: 1px solid var(--border-color, #232323);
+}
+.spreadsheet-edid {
+  font-weight: 600;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spreadsheet-cell-input {
+  width: 100%;
+  min-width: 70px;
+  padding: 3px 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-color, #ddd);
+  font-size: 12px;
+}
+.spreadsheet-cell-input:focus {
+  outline: none;
+  border-color: var(--accent-color, #4ec9b0);
+  background: rgba(78, 201, 176, 0.08);
+}
+.spreadsheet-dirty .spreadsheet-cell-input {
+  background: rgba(230, 180, 60, 0.14);
+  border-color: rgba(230, 180, 60, 0.5);
+}
+
+.spreadsheet-truncated {
+  margin-top: 8px;
+  font-size: 11.5px;
+  opacity: 0.7;
+}

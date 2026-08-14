@@ -1,0 +1,18 @@
+bin/
+obj/
+*.user
+.vs/
+.idea/
+nupkg/
+
+# Third-party xEdit source (not part of this project)
+TES5Edit-dev-4.1.6/
+
+web/node_modules/
+web/dist/
+
+# Release output from package.ps1
+dist/
+
+# Linux packaging output (staged tree, publish dir and the built .deb)
+packaging/linux/out/

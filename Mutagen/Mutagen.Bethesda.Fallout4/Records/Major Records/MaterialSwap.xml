@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="MaterialSwap" recordType="MSWP" objType="Record" majorFlag="true" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <CustomLogic name="FNAMParsing" />
+      <String name="TreeFolder" recordType="FNAM" binary="Custom">
+        <Versioning formVersion="112" action="Add" />
+      </String>
+      <RefList name="Substitutions" refName="MaterialSubstitution" binary="Custom" binaryOverlay="Normal" />
+    </Fields>
+  </Object>
+  <Object name="MaterialSubstitution" objType="Subrecord">
+    <Fields>
+      <String name="OriginalMaterial" recordType="BNAM" />
+      <String name="ReplacementMaterial" recordType="SNAM" />
+      <CustomLogic name="FNAMParsing" recordType="FNAM" />
+      <Float name="ColorRemappingIndex" recordType="CNAM" />
+    </Fields>
+  </Object>
+</Loqui>

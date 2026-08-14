@@ -1,0 +1,68 @@
+<Project>
+    <!-- Local addition (not upstream Mutagen), added when this fork was vendored into FO4RecordEditor
+         as a ProjectReference dependency: force off the NuGet packaging properties that each project
+         file re-enables (IsPackable, GenerateDocumentationFile, GeneratePackageOnBuild). We never run
+         `dotnet pack` on these; they are compiled and linked directly, never published as a .nupkg.
+         Packaging only cost build time (pack, then immediately delete the resulting NuGet cache entry
+         on every build) and, combined with GenerateDocumentationFile, produced roughly 72,000 CS1591
+         "missing XML doc comment" warnings across the auto-generated record code on a cold build.
+
+         GenerateDocumentationFile=false alone does NOT stop the doc file from being produced: the
+         SDK derives the actual `DocumentationFile` path from `GenerateDocumentationFile`'s value
+         earlier in its own targets (inside Microsoft.NET.Sdk's own props/targets, imported before
+         Microsoft.Common.targets, which is what pulls in THIS file, so by the time this
+         PropertyGroup runs, `DocumentationFile` already holds a concrete path and only
+         `GenerateDocumentationFile` itself gets reset here; csc still receives `/doc:<path>` because
+         nothing ever cleared `DocumentationFile`. Confirmed with
+         `dotnet msbuild -getProperty:DocumentationFile -getProperty:GenerateDocumentationFile`:
+         `GenerateDocumentationFile` read back `false` exactly as expected, while `DocumentationFile`
+         still held `obj/Release/net9.0/Mutagen.Bethesda.Core.xml`. Clearing `DocumentationFile`
+         directly below is what actually stops the file. CS1591 stays suppressed too, since a stray
+         doc file is one thing but a thousand missing-doc-comment warnings from generated code is
+         another.
+
+         A genuinely cold (no incremental cache) build of the whole solution surfaces roughly 2,300
+         warnings total, ALL of them here in Mutagen's own generated/upstream code, ZERO in
+         FO4RecordEditor's own project (confirmed by attribution grep after every one of these was
+         found). They are pre-existing upstream characteristics (missing XML doc coverage, a couple of
+         genuine but harmless member-hiding patterns in the generated binding code, an unreachable
+         optional-parameter default on interface members, an inexact stream read in the binary
+         reader, etc.), not defects introduced by the two functional patches documented above in this
+         file's history or in THIRD_PARTY_NOTICES.md. Suppressed here, in the vendored copy only, so a
+         first `dotnet build` after cloning this repo is not a 2,000+ line wall of unrelated noise. -->
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+        <DocumentationFile></DocumentationFile>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <NoWarn>$(NoWarn);CS1591;CS1066;CS1573;CS0108;CS1574;CS1570;CS0419;CA2022;CS1711;CS8524;CS0628;CA1416;CS0219;CS0169;CS0109</NoWarn>
+    </PropertyGroup>
+
+    <!-- Clear NuGet packages after successful build for projects that generate packages -->
+    <Target Name="ClearLocalNuGetPackages" AfterTargets="Build" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+        <PropertyGroup>
+            <NuGetPackagesPath>$(USERPROFILE)\.nuget\packages</NuGetPackagesPath>
+            <!-- Use PackageId if specified, otherwise use AssemblyName, otherwise use MSBuildProjectName -->
+            <CurrentPackageId Condition="'$(PackageId)' != ''">$(PackageId)</CurrentPackageId>
+            <CurrentPackageId Condition="'$(CurrentPackageId)' == '' AND '$(AssemblyName)' != ''">$(AssemblyName)</CurrentPackageId>
+            <CurrentPackageId Condition="'$(CurrentPackageId)' == ''">$(MSBuildProjectName)</CurrentPackageId>
+            <!-- Convert to lowercase for NuGet folder name -->
+            <CurrentPackageIdLower>$(CurrentPackageId.ToLowerInvariant())</CurrentPackageIdLower>
+        </PropertyGroup>
+
+        <Message Text="Clearing local NuGet package cache for $(CurrentPackageId)..." Importance="high" />
+
+        <!-- Windows -->
+        <Exec Condition="'$(OS)' == 'Windows_NT'"
+              Command="if exist &quot;$(NuGetPackagesPath)\$(CurrentPackageIdLower)&quot; ( echo Deleting $(NuGetPackagesPath)\$(CurrentPackageIdLower) &amp;&amp; rd /s /q &quot;$(NuGetPackagesPath)\$(CurrentPackageIdLower)&quot; )"
+              ContinueOnError="true" />
+
+        <!-- Linux/Mac -->
+        <Exec Condition="'$(OS)' != 'Windows_NT'"
+              Command="if [ -d &quot;$(NuGetPackagesPath)/$(CurrentPackageIdLower)&quot; ]; then echo &quot;Deleting $(NuGetPackagesPath)/$(CurrentPackageIdLower)&quot;; rm -rf &quot;$(NuGetPackagesPath)/$(CurrentPackageIdLower)&quot;; fi"
+              ContinueOnError="true" />
+
+        <Message Text="Finished clearing local NuGet package cache for $(CurrentPackageId)." Importance="high" />
+    </Target>
+
+</Project>

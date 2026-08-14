@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="MiscItem" recordType="MISC" baseClass="Fallout4MajorRecord" objType="Record" majorFlag="true">
+    <Fields>
+      <RefDirect name="VirtualMachineAdapter" refName="VirtualMachineAdapter" overflowRecordType="XXXX" />
+      <RefDirect name="ObjectBounds" refName="ObjectBounds" nullable="False" />
+      <FormLink name="PreviewTransform" refName="Transform" recordType="PTRN" />
+      <String name="Name" recordType="FULL" translated="Normal" />
+      <RefDirect name="Model" refName="Model" />
+      <RefDirect name="Icons" refName="Icons" />
+      <RefDirect name="Destructible" refName="Destructible" />
+      <FormLink name="PickUpSound" refName="SoundDescriptor" recordType="YNAM" />
+      <FormLink name="PutDownSound" refName="SoundDescriptor" recordType="ZNAM" />
+      <List name="Keywords" counterRecType="KSIZ" recordType="KWDA">
+        <FormLink refName="Keyword" />
+      </List>
+      <FormLink name="FeaturedItemMessage" refName="Message" recordType="FIMD" />
+      <Data>
+        <Fields>
+          <Int32 name="Value" />
+          <Float name="Weight" />
+        </Fields>
+      </Data>
+      <RefList name="Components" refName="MiscItemComponent" recordType="CVPA" />
+      <List name="ComponentDisplayIndices" recordType="CDIX">
+        <UInt8 />
+      </List>
+    </Fields>
+    <LinkInterface>IItem</LinkInterface>
+    <LinkInterface>IHarvestTarget</LinkInterface>
+    <LinkInterface>IObjectId</LinkInterface>
+    <LinkInterface>IConstructible</LinkInterface>
+    <LinkInterface>IStaticTarget</LinkInterface>
+    <LinkInterface>IPlaceableObject</LinkInterface>
+    <LinkInterface>IReferenceableObject</LinkInterface>
+    <LinkInterface>IExplodeSpawn</LinkInterface>
+    <LinkInterface>IConstructibleObjectTarget</LinkInterface>
+  </Object>
+  <Object name="MiscItemComponent" objType="Subrecord">
+    <Fields>
+      <FormLink name="Component" refName="Component" />
+      <UInt32 name="Count" />
+    </Fields>
+  </Object>
+</Loqui>

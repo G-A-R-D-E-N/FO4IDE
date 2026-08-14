@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="SoundDescriptor" recordType="SNDR" objType="Record" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <String name="Notes" recordType="NNAM" />
+      <RefDirect name="Data" refName="ASoundDescriptor" recordType="CNAM" binary="Custom" />
+      <FormLink name="Category" refName="SoundCategory" recordType="GNAM" />
+      <FormLink name="AlternateSoundFor" recordType="SNAM" refName="SoundDescriptor" />
+      <List name="SoundFiles">
+        <String recordType="ANAM" />
+      </List>
+      <FormLink name="OutputModel" recordType="ONAM" refName="SoundOutputModel" />
+      <RefList name="Conditions" refName="Condition" />
+      <RefDirect name="LoopAndRumble" refName="SoundLoopAndRumble" />
+      <CustomLogic name="DataParse" recordType="BNAM" />
+      <List name="Descriptors">
+        <FormLink refName="SoundDescriptor" recordType="DNAM" />
+      </List>
+      <RefList name="RatesOfFire" refName="SoundRateOfFire" counterRecType="ITMC" />
+    </Fields>
+    <LinkInterface>ISound</LinkInterface>
+  </Object>
+  <Object name="ASoundDescriptor" objType="Subrecord" abstract="true" />
+  <Object name="SoundDescriptorStandardData" objType="Subrecord" baseClass="ASoundDescriptor">
+    <Fields>
+      <Int8 name="PercentFrequencyShift" />
+      <Int8 name="PercentFrequencyVariance" />
+      <UInt8 name="Priority" />
+      <UInt8 name="Variance" />
+      <Float name="StaticAttenuation" integerType="UShort" divisor="100" />
+    </Fields>
+  </Object>
+  <Object name="SoundDescriptorCompoundData" objType="Subrecord" baseClass="ASoundDescriptor">
+    <Fields>
+    </Fields>
+  </Object>
+  <Object name="SoundDescriptorAutoweaponData" objType="Subrecord" baseClass="ASoundDescriptor">
+    <Fields>
+      <FormLink name="BaseDescriptor" refName="SoundDescriptor" />
+    </Fields>
+  </Object>
+  <Object name="SoundLoopAndRumble" objType="Subrecord" recordType="LNAM">
+    <Fields>
+      <UInt8 name="Unknown" />
+      <Enum name="Loop" enumName="SoundDescriptor.LoopType" byteLength="1" />
+      <UInt8 name="Sidechain" />
+      <UInt8 name="RumbleValues" />
+    </Fields>
+  </Object>
+  <Object name="SoundRateOfFire" objType="Subrecord" endMarkerType="ITME">
+    <Fields>
+      <Marker name="ITMS" recordType="ITMS" />
+      <UInt32 name="RotationsPerMinute" recordType="INTV" />
+      <String name="File" recordType="FNAM" />
+    </Fields>
+  </Object>
+</Loqui>

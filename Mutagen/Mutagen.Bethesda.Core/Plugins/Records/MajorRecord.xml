@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="MajorRecord" objType="Record" abstract="true" generateEquals="false">
+    <Fields>
+      <Int32 name="MajorRecordFlagsRaw" nullable="False" />
+      <FormKey name="FormKey" setPermission="Protected" nullable="False" internalSetInterface="true" copy="DeepCopyOnly" alwaysCopy="true" generateInterfaceMembers="false" />
+      <UInt32 name="VersionControl" nullable="False" />
+      <String name="EditorID" recordType="EDID" generateClassMembers="false" />
+    </Fields>
+  </Object>
+</Loqui>

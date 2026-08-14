@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="NavigationMeshObstacleManager" recordType="NOCM" objType="Record" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <RefList name="SubObjects" refName="NavigationMeshObstacleManagerSubObject" />
+    </Fields>
+  </Object>
+  <Object name="NavigationMeshObstacleManagerSubObject" objType="Subrecord">
+    <Fields>
+      <UInt32 name="Index" recordType="INDX" />
+      <List name="DATAs" unknown="true" >
+        <UInt64 recordType="DATA" />
+      </List>
+      <ByteArray name="INTV" recordType="INTV" />
+      <String name="Model" recordType="NAM1" />
+    </Fields>
+  </Object>
+</Loqui>

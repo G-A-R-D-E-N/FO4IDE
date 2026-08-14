@@ -1,0 +1,751 @@
+.rv-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+/* Toolbar */
+.rv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-color);
+  flex: 0 0 auto;
+}
+.rv-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #2a2a2e;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: var(--text-secondary);
+}
+.rv-filter input {
+  background: transparent; border: none; outline: none;
+  color: var(--text-primary); font-size: 12px; width: 150px;
+}
+.rv-toggle-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: transparent; border: 1px solid transparent;
+  color: var(--text-secondary); font-size: 11px; padding: 4px 8px;
+  border-radius: 4px; cursor: pointer;
+}
+.rv-toggle-btn:hover { color: var(--text-primary); }
+.rv-toggle-btn.on { color: var(--text-primary); background: var(--bg-tertiary); border-color: var(--border-color); }
+.rv-status {
+  margin-left: auto; font-size: 11px; color: var(--text-secondary);
+  font-family: 'Inter', sans-serif; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; max-width: 45%;
+}
+
+/* Breadcrumb */
+.rv-breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 11px; color: var(--text-secondary); font-family: monospace; flex: 0 0 auto;
+}
+.rv-bc-cat { color: var(--text-primary); font-weight: 600; }
+.rv-bc-rec { color: #9a85b0; font-weight: 600; }
+
+/* Comparison grid */
+.rv-grid-scroll { flex: 1; overflow: auto; }
+.rv-grid {
+  border-collapse: collapse; table-layout: fixed;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; width: 100%;
+}
+.rv-grid th {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 8px; text-align: left; font-weight: 600;
+  color: var(--text-secondary); white-space: nowrap;
+}
+.rv-col-name { color: var(--text-primary); font-weight: 600; }
+.rv-winner-col { box-shadow: inset 0 -2px 0 #c0905a; }
+.rv-winner-badge {
+  margin-left: 8px; font-size: 8px; letter-spacing: 0.5px;
+  color: #c0905a; background: rgba(192, 144, 90, 0.12);
+  border: 1px solid rgba(192, 144, 90, 0.3); border-radius: 3px;
+  padding: 1px 4px; font-family: 'Inter', sans-serif; vertical-align: middle;
+}
+
+.rv-prop-col { width: 300px; max-width: 300px; }
+
+/* Column width modes (xEdit: Standard / Fit All / Fit Text / Fit Smart), applied on the .rv-grid
+   element itself. Base .rv-grid above (table-layout:fixed, no per-plugin-column width) IS Fit All --
+   the browser divides remaining space evenly across unsized columns, which was this tool's only
+   behaviour before these modes existed. The others override that. */
+.rv-cw-standard { table-layout: fixed; }
+.rv-cw-standard th:not(.rv-prop-col),
+.rv-cw-standard td:not(.rv-prop-col) { width: 200px; max-width: 200px; }
+
+.rv-cw-fitText, .rv-cw-fitSmart {
+  table-layout: auto;   /* size each column to its own content, xEdit's AutoFitColumns intent */
+}
+.rv-cw-fitText th:not(.rv-prop-col), .rv-cw-fitText td:not(.rv-prop-col),
+.rv-cw-fitSmart th:not(.rv-prop-col), .rv-cw-fitSmart td:not(.rv-prop-col) {
+  white-space: nowrap;
+}
+/* Fit Smart adds xEdit's ceiling: content sizing is fine until one huge value would blow the whole
+   grid wide, at which point that one column should wrap and clip rather than drag every other
+   column into a horizontal scrollbar with it. */
+.rv-cw-fitSmart th:not(.rv-prop-col), .rv-cw-fitSmart td:not(.rv-prop-col) {
+  white-space: normal;
+  max-width: min(480px, 40vw);
+  overflow-wrap: break-word;
+}
+/* Sticky left column -- always needs an opaque background so scrolled content doesn't show through.
+   Use td.rv-sticky / th.rv-sticky specificity (0,1,1) to beat .rv-diff td (0,1,1) and
+   .rv-grid tr:hover td (0,2,1) rules below. */
+td.rv-sticky, th.rv-sticky {
+  position: sticky; left: 0; z-index: 10;
+  background: var(--bg-secondary); border-right: 1px solid var(--border-color);
+}
+thead th.rv-sticky { z-index: 21; background: var(--bg-secondary); }
+/* Keep sticky col opaque when row is highlighted */
+.rv-diff td.rv-sticky       { background: var(--bg-secondary); }
+.rv-grid tr:hover td.rv-sticky { background: var(--bg-hover); }
+
+.rv-grid td {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: top;
+}
+/* Flat backgrounds; differing rows get a faint emphasis + accent edge (xEdit-like). */
+.rv-diff td { background: rgba(192, 144, 90, 0.04); }
+.rv-diff .rv-prop-col { box-shadow: inset 2px 0 0 rgba(192, 144, 90, 0.5); }
+.rv-grid tr:hover td { background: rgba(255, 255, 255, 0.04); }
+
+.rv-prop-col .rv-prop-inner { color: var(--text-secondary); display: inline-flex; align-items: center; }
+.rv-diff .rv-prop-col .rv-prop-inner { color: var(--text-primary); font-weight: 600; }
+
+.rv-expandable { cursor: pointer; }
+.rv-expand { display: inline-flex; align-items: center; margin-right: 3px; color: var(--text-secondary); cursor: pointer; }
+.rv-expand:hover { color: var(--text-primary); }
+.rv-expand-spacer { display: inline-block; width: 15px; }
+
+/* Section headers */
+.rv-section-row td.rv-section { background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); }
+td.rv-section {
+  font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.5px;
+  text-transform: uppercase; color: var(--text-secondary); font-weight: 700; padding: 5px 8px;
+}
+
+/* Status-driven cell coloring (backend Statuses, commit C1). Status is shown with a BACKGROUND
+   TINT plus readable text so real conflicts pop on the deep-dark surface. Identical-to-master
+   recedes (dim, no tint); win/lose are clearly highlighted so the eye finds them fast. */
+.rv-cell { font-family: 'JetBrains Mono', monospace; cursor: default; }
+
+/* Field absent / not defined in this plugin - no tint, very dim text. */
+.rv-c-notdefined,
+.rv-c-none      { color: var(--text-muted); }
+
+/* Identical to the winning value - recedes (dim text, no tint). */
+.rv-c-identical { color: var(--text-muted); }
+
+/* Master record - subtle purple tint. */
+.rv-c-master    { background: color-mix(in srgb, var(--conflict-purple) 50%, transparent); color: var(--text-primary); }
+
+/* Sole definer - subtle neutral tint. */
+.rv-c-only      { background: color-mix(in srgb, var(--bg-hover) 70%, transparent); color: var(--text-primary); }
+
+/* Override that matches the winner (last in chain) - subtle green tint. */
+.rv-c-override  { background: color-mix(in srgb, var(--status-base) 14%, transparent); color: var(--text-primary); }
+
+/* The value the game uses - amber/orange tint, slightly bold. Must stand out. */
+.rv-c-win {
+  background: color-mix(in srgb, var(--status-warning) 26%, transparent);
+  box-shadow: inset 2px 0 0 var(--status-warning);
+  color: var(--text-primary); font-weight: 600;
+}
+
+/* Overridden / losing value - red tint so it is obvious it is being replaced. */
+.rv-c-lose {
+  background: color-mix(in srgb, var(--status-changed) 20%, transparent);
+  color: var(--text-primary);
+}
+
+/* Winner marker icon sits just before the value. */
+.rv-win-icon {
+  color: var(--status-warning); margin-right: 4px;
+  vertical-align: -1px; flex: 0 0 auto;
+}
+
+/* Record-level conflict rollup pill (matrix.Level), shown in the breadcrumb. */
+.rv-lvl-badge {
+  margin-left: 8px; font-size: 9px; letter-spacing: 0.4px;
+  font-family: 'Inter', sans-serif; font-weight: 700;
+  border-radius: var(--radius-sm); padding: 1px 7px;
+  border: 1px solid transparent; vertical-align: middle;
+}
+.rv-lvl-noconflict {
+  color: var(--status-ok);
+  background: color-mix(in srgb, var(--status-ok) 16%, transparent);
+  border-color: color-mix(in srgb, var(--status-ok) 40%, transparent);
+}
+.rv-lvl-override {
+  color: var(--status-warning);
+  background: color-mix(in srgb, var(--status-warning) 16%, transparent);
+  border-color: color-mix(in srgb, var(--status-warning) 40%, transparent);
+}
+.rv-lvl-conflict {
+  color: var(--status-changed);
+  background: color-mix(in srgb, var(--status-changed) 16%, transparent);
+  border-color: color-mix(in srgb, var(--status-changed) 40%, transparent);
+}
+.rv-lvl-critical {
+  color: var(--chip-6);
+  background: color-mix(in srgb, var(--chip-6) 20%, transparent);
+  border-color: color-mix(in srgb, var(--chip-6) 50%, transparent);
+}
+.rv-lvl-onlyone {
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+  border-color: var(--border-color);
+}
+
+.rv-empty { padding: 24px; color: var(--text-secondary); font-family: 'Inter', sans-serif; }
+
+/* Inline cell editor */
+.rv-edit-input {
+  width: 100%; background: #1b1b1f; border: 1px solid var(--accent-color);
+  border-radius: 3px; color: #fff; font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; padding: 2px 4px; outline: none;
+}
+
+/* Bottom drawer */
+.rv-drawer { flex: 0 0 auto; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; }
+.rv-drawer.open { height: 168px; }
+.rv-drawer.closed { height: auto; }
+.rv-drawer-tabs {
+  display: flex; align-items: center; gap: 4px; height: 28px;
+  padding: 0 8px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); flex: 0 0 auto;
+}
+.rv-drawer-tabs button {
+  display: flex; align-items: center; gap: 5px;
+  background: transparent; border: none; color: var(--text-secondary);
+  font-size: 11px; font-family: 'Inter', sans-serif; padding: 4px 8px; cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.rv-drawer-tabs button.on { color: var(--text-primary); border-bottom-color: var(--accent-color); }
+.rv-drawer-tabs .rv-drawer-collapse { margin-left: auto; border-bottom: none; }
+.rv-prob-badge {
+  background: rgba(176, 122, 122, 0.2); color: #b07a7a;
+  border: 1px solid rgba(176, 122, 122, 0.4); border-radius: 8px;
+  font-size: 9px; padding: 0 5px; font-weight: 700;
+}
+.rv-drawer-body { flex: 1; overflow: auto; padding: 6px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.rv-drawer-note { color: var(--text-secondary); padding: 8px 2px; font-family: 'Inter', sans-serif; }
+
+.rv-ref-row {
+  display: flex; align-items: center; gap: 10px; padding: 3px 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.rv-ref-type { color: #9a85b0; min-width: 150px; }
+.rv-ref-id { color: var(--text-primary); flex: 1; }
+.rv-ref-plugin { color: var(--text-secondary); }
+
+.rv-prob-row { display: flex; align-items: center; gap: 8px; padding: 3px 4px; color: #c79a9a; }
+.rv-prob-icon { color: #b07a7a; flex: 0 0 auto; }
+
+/* Right-click context menu */
+.rv-context {
+  position: fixed; z-index: 1000; min-width: 210px;
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: 6px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5); padding: 4px; font-family: 'Inter', sans-serif;
+}
+.rv-context button {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: transparent; border: none; color: var(--text-primary);
+  font-size: 12px; text-align: left; padding: 6px 8px; border-radius: 4px; cursor: pointer;
+}
+.rv-context button:hover { background: var(--bg-tertiary); }
+.rv-context button.rv-danger { color: #c79a9a; }
+.rv-context button.rv-danger:hover { background: rgba(176, 122, 122, 0.15); }
+.rv-context .rv-key { margin-left: auto; font-size: 10px; color: var(--text-secondary); font-family: monospace; }
+.rv-context-sep { height: 1px; background: var(--border-color); margin: 4px 2px; }
+.rv-context-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-secondary); padding: 4px 8px 2px;
+}
+
+.rv-status-filter {
+  background: var(--bg-secondary, #252526);
+  color: var(--text-primary, #ccc);
+  border: 1px solid var(--border-color, #3c3c3c);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 2px 6px;
+  margin-left: 8px;
+}
+
+.rv-ref-clickable { cursor: pointer; }
+.rv-ref-clickable:hover { background: var(--bg-hover, #2a2d2e); }
+
+/* ── Record-level tab bar ─────────────────────────────────────────────────── */
+.rv-tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  flex: 0 0 auto;
+  min-height: 34px;
+}
+.rv-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 34px;
+  padding: 0 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.rv-tab:hover { color: var(--text-primary); }
+.rv-tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent-color);
+  font-weight: 600;
+}
+.rv-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 16px;
+  padding: 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--status-changed) 18%, transparent);
+  color: var(--status-changed);
+  border: 1px solid color-mix(in srgb, var(--status-changed) 35%, transparent);
+  border-radius: 8px;
+}
+.rv-tab.active .rv-tab-count {
+  background: color-mix(in srgb, var(--accent-color) 20%, transparent);
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 40%, transparent);
+}
+
+/* ── Conflicts tab ────────────────────────────────────────────────────────── */
+.rv-conflicts-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Stat bar */
+.rv-conflict-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 14px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+}
+.rv-cs-total {
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.rv-cs-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rv-cs-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.rv-cs-values {
+  background: color-mix(in srgb, var(--status-warning) 15%, transparent);
+  color: var(--status-warning);
+  border: 1px solid color-mix(in srgb, var(--status-warning) 30%, transparent);
+}
+.rv-cs-formids {
+  background: color-mix(in srgb, var(--chip-2) 15%, transparent);
+  color: var(--chip-2);
+  border: 1px solid color-mix(in srgb, var(--chip-2) 30%, transparent);
+}
+
+/* Conflict groups -- single-table xEdit style */
+.rv-conflict-groups {
+  flex: 1;
+  overflow: auto;
+  padding: 0;
+}
+.rv-cg-table { margin: 0; width: 100%; }
+
+/* Severity badge colors (also used inside separator rows) */
+.rv-cg-sev-badge-conflict {
+  background: color-mix(in srgb, var(--status-changed) 18%, transparent);
+  color: var(--status-changed);
+  border-color: color-mix(in srgb, var(--status-changed) 35%, transparent);
+}
+.rv-cg-sev-badge-critical {
+  background: color-mix(in srgb, var(--chip-6) 20%, transparent);
+  color: var(--chip-6);
+  border-color: color-mix(in srgb, var(--chip-6) 40%, transparent);
+}
+.rv-cg-sev-badge-override {
+  background: color-mix(in srgb, var(--status-warning) 18%, transparent);
+  color: var(--status-warning);
+  border-color: color-mix(in srgb, var(--status-warning) 35%, transparent);
+}
+
+/* Group separator row */
+.rv-cg-sep td {
+  padding: 5px 12px;
+  background: var(--bg-tertiary);
+  border-top: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  user-select: none;
+}
+.rv-cg-sep:hover td { background: var(--bg-hover); }
+.rv-cg-sep-sev-override td { border-left: 3px solid var(--status-warning); }
+.rv-cg-sep-sev-conflict td { border-left: 3px solid var(--status-changed); }
+.rv-cg-sep-sev-critical  td { border-left: 3px solid var(--chip-6); }
+
+.rv-sep-inner  { display: flex; align-items: center; gap: 10px; }
+.rv-sep-name   { color: var(--text-primary); flex: 1; }
+.rv-sep-badge  {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 8px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.rv-sep-chevron      { transition: transform 0.15s; color: var(--text-muted); flex: 0 0 auto; }
+.rv-sep-chevron-open { transform: rotate(90deg); }
+
+/* AI write flash: row pulses green when the AI just modified that field */
+.rv-row-flash td {
+  animation: rv-flash 1.8s ease-out forwards;
+}
+@keyframes rv-flash {
+  0%   { background: rgba(63, 185, 80, 0.35); box-shadow: inset 0 0 0 1px rgba(63, 185, 80, 0.6); }
+  30%  { background: rgba(63, 185, 80, 0.22); }
+  100% { background: transparent; box-shadow: none; }
+}
+[data-theme="light"] .rv-row-flash td {
+  animation: rv-flash-light 1.8s ease-out forwards;
+}
+@keyframes rv-flash-light {
+  0%   { background: rgba(26, 127, 55, 0.18); box-shadow: inset 0 0 0 1px rgba(26, 127, 55, 0.4); }
+  30%  { background: rgba(26, 127, 55, 0.10); }
+  100% { background: transparent; box-shadow: none; }
+}
+
+/* ── References tab ───────────────────────────────────────────────────────── */
+.rv-references-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.rv-ref-header {
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex: 0 0 auto;
+}
+.rv-ref-list {
+  flex: 1;
+  overflow: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+/* ── Stub / empty states ──────────────────────────────────────────────────── */
+.rv-tab-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+}
+.rv-tab-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+}
+.rv-tab-stub {
+  flex-direction: column;
+  gap: 12px;
+  color: var(--text-muted);
+}
+
+/* ---- History / Dependencies tabs ---- */
+
+.rv-list-tab {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 12px 16px;
+}
+
+.rv-tab-note {
+  margin-bottom: 10px;
+  padding: 7px 10px;
+  border-left: 2px solid var(--accent-color);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.rv-flat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.rv-flat-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border-strong);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.rv-flat-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.rv-flat-table td em { color: var(--text-muted); }
+
+.rv-num { font-variant-numeric: tabular-nums; text-align: right; width: 1%; white-space: nowrap; }
+.rv-mono { font-family: 'Cascadia Code', 'Consolas', monospace; white-space: nowrap; }
+.rv-dim { color: var(--text-muted); white-space: nowrap; }
+
+.rv-row-link { cursor: pointer; }
+.rv-row-link:hover { background: var(--bg-hover); }
+
+/* A dangling FormLink is a crash risk, so it is coloured like one rather than listed plainly. */
+.rv-row-bad td { color: var(--status-changed); }
+
+.rv-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.rv-tag-created { color: var(--status-base); }
+.rv-tag-override { color: var(--text-muted); }
+.rv-tag-conflicting { color: var(--status-warning); }
+.rv-tag-missing { color: var(--status-changed); }
+
+.rv-breadcrumb-slim { padding-top: 4px; padding-bottom: 4px; }
+
+/* A field that differs across plugins, marked in the flat Field View. */
+.rv-row-diff td:first-child { border-left: 2px solid var(--status-warning); }
+
+/* ---- xEdit-style density ----
+   The grid is a reading surface, not a form. xEdit fits roughly twice the rows we did in the same
+   height, and that density is the point: you scan a record instead of scrolling it. */
+
+.rv-grid td { padding: 1px 7px; line-height: 1.45; }
+.rv-grid th { padding: 3px 7px; font-size: 10px; }
+.rv-grid tr { height: 19px; }
+
+/* One tight filter row, replacing the stack of header bands that sat above the grid. */
+.rv-toolbar { padding: 3px 8px; gap: 6px; }
+
+.rv-tb-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.rv-filter { padding: 2px 6px; background: var(--bg-primary); border-color: var(--border-color); }
+.rv-filter input { width: 120px; font-size: 11.5px; }
+.rv-filter:focus-within { border-color: var(--accent-color); }
+
+.rv-toggle-btn { padding: 2px 7px; }
+.rv-status-filter { font-size: 11px; padding: 2px 4px; }
+
+/* Which plugin's tree the record was opened from, which the winner column does not tell you. */
+.rv-tb-src {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.rv-tb-src + .rv-status { margin-left: 8px; }
+
+/* The workspace header is one row now, not two plus a duplicate breadcrumb. */
+.ws-header .ws-row { padding: 3px 8px; }
+.ws-compare { border-bottom: none; }
+
+.ws-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+/* ---- Conflict palette, rebuilt ----
+   The row carries the conflict state and the cells stop painting their own blocks. Previously every
+   cell tinted itself by status, so a conflicting record showed a purple master column beside an
+   amber winner column beside red losers: a wall of colour with no focal point. xEdit tints the ROW
+   by its state and leaves the cells nearly plain, which is why most of its grid reads as calm and
+   the few rows that matter jump out.
+
+   Status names follow xEdit's own vocabulary (TConflictThis in its sources): Not Defined, Identical
+   To Master, Single Record, Master, Override Without Conflict, Conflict Winner, Conflict Loser.
+   The hues are ours: xEdit's default colour table is not vendored here, so these are chosen to read
+   on this dark surface rather than claimed to match its exact values. */
+
+.rv-s-none      { background: transparent; }
+.rv-s-benign    { background: color-mix(in srgb, var(--status-base) 5%, transparent); }
+.rv-s-override  { background: color-mix(in srgb, var(--status-base) 9%, transparent); }
+.rv-s-conflict  { background: color-mix(in srgb, var(--status-warning) 11%, transparent); }
+.rv-s-critical  { background: color-mix(in srgb, var(--status-changed) 13%, transparent); }
+
+/* A thin edge on the field name is enough to find a conflicting row while scrolling. */
+.rv-s-conflict .rv-prop-col { box-shadow: inset 2px 0 0 var(--status-warning); }
+.rv-s-critical .rv-prop-col { box-shadow: inset 2px 0 0 var(--status-changed); }
+
+/* Cells: text does the work now. Only the winner keeps a mark, because "what does the game
+   actually use" is the one question the grid must answer instantly. */
+.rv-grid td.rv-cell { background: none; }
+
+.rv-c-notdefined, .rv-c-none { color: var(--text-muted); }
+.rv-c-identical              { color: var(--text-muted); }
+.rv-c-only                   { color: var(--text-secondary); }
+.rv-c-master                 { color: var(--text-secondary); }
+.rv-c-override               { color: var(--status-base); }
+.rv-c-lose                   { color: var(--status-changed); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--status-changed) 55%, transparent); }
+
+.rv-grid td.rv-c-win {
+  color: var(--text-primary);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--status-warning) 14%, transparent);
+  box-shadow: inset 2px 0 0 var(--status-warning);
+}
+
+/* Hover must still win over the row tint or the pointer loses its row. */
+.rv-grid tr:hover td { background: var(--bg-hover); }
+.rv-grid tr:hover td.rv-c-win { background: color-mix(in srgb, var(--status-warning) 22%, transparent); }
+
+/* ---- Legend ---- */
+
+.rv-legend-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.rv-legend-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+
+.rv-legend {
+  position: absolute;
+  right: 10px;
+  top: 100%;
+  z-index: 60;
+  margin-top: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-tertiary);
+  box-shadow: var(--shadow-panel);
+  min-width: 260px;
+}
+
+.rv-legend h4 {
+  margin: 0 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.rv-legend h4 + h4 { margin-top: 10px; }
+
+.rv-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.rv-legend-swatch {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+}
+
+.rv-toolbar { position: relative; }

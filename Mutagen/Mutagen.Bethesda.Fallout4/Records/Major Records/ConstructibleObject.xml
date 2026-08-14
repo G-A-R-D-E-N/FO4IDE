@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Loqui xmlns="http://tempuri.org/LoquiSource.xsd">
+  <Object name="ConstructibleObject" recordType="COBJ" objType="Record" baseClass="Fallout4MajorRecord">
+    <Fields>
+      <FormLink name="PickUpSound" refName="SoundDescriptor" recordType="YNAM" />
+      <FormLink name="PutDownSound" refName="SoundDescriptor" recordType="ZNAM" />
+      <RefList name="Components" recordType="FVPA" refName="ConstructibleObjectComponent" />
+      <String name="Description" recordType="DESC" translated="DL" />
+      <RefList name="Conditions" refName="Condition" />
+      <FormLink name="CreatedObject" recordType="CNAM">
+        <Interface>IConstructibleObjectTarget</Interface>
+      </FormLink>
+      <FormLink name="WorkbenchKeyword" refName="Keyword" recordType="BNAM" />
+      <ByteArray name="NAM1" recordType="NAM1" />
+      <ByteArray name="NAM2" recordType="NAM2" />
+      <ByteArray name="NAM3" recordType="NAM3" />
+      <FormLink name="MenuArtObject" recordType="ANAM" refName="ArtObject" />
+      <List name="Categories" recordType="FNAM">
+        <FormLink refName="Keyword" />
+      </List>
+      <RefList name="CreatedObjectCounts" recordType="INTV" refName="ConstructibleCreatedObjectCount" />
+    </Fields>
+    <LinkInterface>IHarvestTarget</LinkInterface>
+    <LinkInterface>IItem</LinkInterface>
+    <LinkInterface>IPlaceableObject</LinkInterface>
+    <LinkInterface>IReferenceableObject</LinkInterface>
+  </Object>
+  <Object name="ConstructibleObjectComponent" objType="Subrecord">
+    <Fields>
+      <FormLink name="Component">
+        <Interface>IItem</Interface>
+      </FormLink>
+      <UInt32 name="Count" />
+    </Fields>
+  </Object>
+  <Object name="ConstructibleCreatedObjectCount" objType="Subrecord">
+    <Fields>
+      <UInt16 name="Count" />
+      <Break />
+      <UInt16 name="Priority" />
+    </Fields>
+  </Object>
+</Loqui>

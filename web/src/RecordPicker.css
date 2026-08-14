@@ -1,0 +1,89 @@
+.rp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.rp-modal {
+  width: 640px;
+  max-width: 92vw;
+  height: 70vh;
+  max-height: 640px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  color: var(--text-primary);
+}
+.rp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 14px;
+  font-weight: 600;
+}
+.rp-header button { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; display: flex; }
+.rp-header button:hover { color: var(--text-primary); }
+
+.rp-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 14px;
+  padding: 7px 10px;
+  background: #2a2a2e;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--text-secondary);
+}
+.rp-search:focus-within { border-color: var(--accent-color); }
+.rp-search input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-primary); font-size: 13px; }
+.rp-chip {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 2px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+}
+.rp-chip.on { background: rgba(154, 133, 176, 0.18); border-color: rgba(154, 133, 176, 0.5); color: #b9a6cc; }
+
+.rp-results {
+  flex: 1;
+  overflow: auto;
+  padding: 0 8px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.rp-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.rp-row:hover { background: rgba(14, 99, 156, 0.18); }
+.rp-type { color: #9a85b0; min-width: 150px; }
+.rp-id { color: var(--text-primary); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.rp-fk { color: var(--text-secondary); }
+.rp-plugin { color: var(--text-secondary); min-width: 140px; text-align: right; }
+
+.rp-note { padding: 18px; color: var(--text-secondary); font-family: 'Inter', sans-serif; }
+.rp-footer {
+  padding: 8px 16px;
+  border-top: 1px solid var(--border-color);
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+}

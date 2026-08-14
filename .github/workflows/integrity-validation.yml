@@ -1,0 +1,138 @@
+name: Override and duplicate integrity validation
+
+on:
+  push:
+    branches:
+      - fix/override-and-duplicate-integrity
+
+permissions:
+  contents: write
+
+concurrency:
+  group: override-and-duplicate-integrity
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reassemble and apply proposed patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -d .github/integrity.parts && ! -f FO4RecordEditor.Tests/DuplicateFormIdTests.cs ]]; then
+            cat .github/integrity.parts/* | tr -d '\r\n' > /tmp/integrity.patch.gz.b64
+            echo "75ab36d4c31c07b035f9ea448f5795d52da0945c06bd673d1c7b071f1b2c3403  /tmp/integrity.patch.gz.b64" | sha256sum -c -
+            base64 --decode /tmp/integrity.patch.gz.b64 > /tmp/integrity.patch.gz
+            echo "1b6b8fb207027c2f245efd5ac8cc1c78b409098e53b530956d84f05d982db0b4  /tmp/integrity.patch.gz" | sha256sum -c -
+            gunzip -c /tmp/integrity.patch.gz > /tmp/integrity.patch
+            echo "ac89f343fcce1e0b2b43409617fc23b715e76b03deb618dd890344892e5c52d8  /tmp/integrity.patch" | sha256sum -c -
+            git apply --check /tmp/integrity.patch
+            git apply /tmp/integrity.patch
+          fi
+          git diff --check
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci --no-audit --no-fund
+
+      - name: Run web tests
+        if: runner.os == 'Linux'
+        working-directory: web
+        run: npm test
+
+      - name: Build web bundle
+        working-directory: web
+        run: npm run build
+
+      - name: Restore portable tests
+        if: runner.os == 'Linux'
+        run: dotnet restore FO4RecordEditor.Core.Tests/FO4RecordEditor.Core.Tests.csproj
+
+      - name: Build portable tests
+        if: runner.os == 'Linux'
+        run: dotnet build FO4RecordEditor.Core.Tests/FO4RecordEditor.Core.Tests.csproj --configuration Release --no-restore
+
+      - name: Run portable tests
+        if: runner.os == 'Linux'
+        run: dotnet test FO4RecordEditor.Core.Tests/FO4RecordEditor.Core.Tests.csproj --configuration Release --no-build --logger "console;verbosity=normal"
+
+      - name: Build server
+        if: runner.os == 'Linux'
+        run: dotnet build FO4RecordEditor.Server/FO4RecordEditor.Server.csproj --configuration Release
+
+      - name: Restore Windows tests
+        if: runner.os == 'Windows'
+        run: dotnet restore FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj
+
+      - name: Build Windows tests
+        if: runner.os == 'Windows'
+        run: dotnet build FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj --configuration Release --no-restore
+
+      - name: Run Windows tests
+        if: runner.os == 'Windows'
+        run: dotnet test FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj --configuration Release --no-build --logger "console;verbosity=normal"
+
+  promote:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Commit validated source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f FO4RecordEditor.Tests/DuplicateFormIdTests.cs ]]; then
+            echo "Validated source commit already exists."
+            exit 0
+          fi
+          cat .github/integrity.parts/* | tr -d '\r\n' > /tmp/integrity.patch.gz.b64
+          echo "75ab36d4c31c07b035f9ea448f5795d52da0945c06bd673d1c7b071f1b2c3403  /tmp/integrity.patch.gz.b64" | sha256sum -c -
+          base64 --decode /tmp/integrity.patch.gz.b64 > /tmp/integrity.patch.gz
+          echo "1b6b8fb207027c2f245efd5ac8cc1c78b409098e53b530956d84f05d982db0b4  /tmp/integrity.patch.gz" | sha256sum -c -
+          gunzip -c /tmp/integrity.patch.gz > /tmp/integrity.patch
+          echo "ac89f343fcce1e0b2b43409617fc23b715e76b03deb618dd890344892e5c52d8  /tmp/integrity.patch" | sha256sum -c -
+          git apply --check /tmp/integrity.patch
+          git apply /tmp/integrity.patch
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add FO4RecordEditor/Services/Ai/AiGuidance.cs \
+                  FO4RecordEditor/Services/Ai/PluginToolExecutor.cs \
+                  FO4RecordEditor/Services/BackendInterop.cs \
+                  FO4RecordEditor.Core/Services/Mo2ProfileLoader.cs \
+                  FO4RecordEditor.Core/Services/MutagenLoader.cs \
+                  FO4RecordEditor.Core/Services/WriteService.XEdit3.cs \
+                  FO4RecordEditor.Core/Services/WriteService.cs \
+                  FO4RecordEditor.Tests/AiGuidanceTests.cs \
+                  FO4RecordEditor.Tests/DuplicateFormIdTests.cs \
+                  FO4RecordEditor.Tests/PluginToolExecutorTests.cs \
+                  FO4RecordEditor.Tests/WriteToolsTests.cs \
+                  Mutagen/Mutagen.Bethesda.Core/Plugins/Records/AGroup.cs \
+                  README.md docs/MCP_SETUP.md docs/internal/KNOWLEDGE.md \
+                  web/src/MainShell.tsx web/src/RecordView.tsx web/src/backend.ts
+          git commit -m "fix(integrity): protect overrides and report duplicate FormIDs"
+          git push origin HEAD:fix/override-and-duplicate-integrity
