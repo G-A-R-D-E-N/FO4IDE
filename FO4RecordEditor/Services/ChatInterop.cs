@@ -11,13 +11,13 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// WebView2 host object bridging the React AI panel to the live Claude backend (the Anthropic agent
-/// with plugin tool-use, or the plain streaming chat). Owns the chat sessions (persisted under
-/// %AppData%\FO4RecordEditor\Chats via ChatHistoryService) and the slash commands. Reply tokens,
-/// tool-status lines, info notes, and session events are pushed to the page via the injected
-/// <c>post</c> callback (which marshals to the UI thread before PostWebMessageAsJson).
-/// </summary>
+
+
+
+
+
+
+
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class ChatInterop
@@ -25,12 +25,12 @@ public class ChatInterop
     private readonly ShellViewModel _shell;
     private readonly Action<object> _post;
     private readonly ChatHistoryService _history = new();
-    // Each session is its own conversation with its own in-flight request, so multiple chats can run
-    // at once and never bleed into each other. _live keeps a stable object per session id (so streamed
-    // replies land on the right one); _running tracks the cancellation token per session.
+
+
+
     private readonly Dictionary<Guid, ChatSession> _live = new();
     private readonly Dictionary<Guid, CancellationTokenSource> _running = new();
-    private readonly SemaphoreSlim _agentGate = new(1, 1);   // serializes the (stateful) Anthropic agent
+    private readonly SemaphoreSlim _agentGate = new(1, 1);
     private ChatSession _current = new();
 
     public ChatInterop(ShellViewModel shell, Action<object> post)
@@ -40,7 +40,7 @@ public class ChatInterop
         _live[_current.Id] = _current;
     }
 
-    // Keep a single stable instance per session id, so concurrent appends/streams target the same object.
+
     private ChatSession Live(ChatSession s) { _live[s.Id] = s; return s; }
     private ChatSession? ResolveLive(string id)
     {
@@ -53,23 +53,23 @@ public class ChatInterop
 
     public bool IsAgentReady() => _shell.Agent != null;
 
-    // ---- sessions --------------------------------------------------------
 
-    /// <summary>All saved chats (newest first) as JSON: [{id, name, createdAt, count}].</summary>
+
+
     public string ListSessions() => JsonConvert.SerializeObject(
         _history.LoadAll().Select(SessionMeta).ToArray());
 
-    /// <summary>Create a new empty chat and return it. (No shared history to reset -- each session
-    /// carries its own conversation, built fresh per send.)</summary>
+
+
     public string NewSession()
     {
         _current = Live(new ChatSession());
         return JsonConvert.SerializeObject(SessionDto(_current));
     }
 
-    /// <summary>Switch to a saved chat: return the full session ({id, name, messages:[{isUser,text}]})
-    /// so the panel can render the transcript. A chat that is mid-stream keeps streaming in the
-    /// background; switching to it just shows its current state.</summary>
+
+
+
     public string LoadSession(string id)
     {
         var session = ResolveLive(id);
@@ -78,9 +78,9 @@ public class ChatInterop
         return JsonConvert.SerializeObject(SessionDto(session));
     }
 
-    /// <summary>Fork a chat into a NEW one seeded with its most recent messages (older bulk dropped to
-    /// save usage). Instant and reliable -- it does NOT call the model (summarizing a huge transcript
-    /// through the provider is slow/can hang). For a compressed summary, run /compact first.</summary>
+
+
+
     public string ForkSession(string id)
     {
         DebugLog.Interop(nameof(ForkSession), id);
@@ -145,7 +145,7 @@ public class ChatInterop
         messages = s.Messages.Select(m => new { isUser = m.IsUser, text = m.Text }).ToArray(),
     };
 
-    // ---- commands --------------------------------------------------------
+
 
     private static readonly (string Name, string Args, string Help)[] _commands =
     {
@@ -158,11 +158,11 @@ public class ChatInterop
         ("/stop",    "",     "Stop the current response."),
     };
 
-    /// <summary>The slash commands as JSON: [{name, args, help}].</summary>
+
     public string GetCommands() => JsonConvert.SerializeObject(
         _commands.Select(c => new { name = c.Name, args = c.Args, help = c.Help }).ToArray());
 
-    /// <summary>Stop the in-flight response for a specific chat (by session id).</summary>
+
     public void CancelMessage(string sessionId)
     {
         if (Guid.TryParse(sessionId, out var gid) && _running.TryGetValue(gid, out var cts))
@@ -171,14 +171,14 @@ public class ChatInterop
 
     public void ResetChat() => NewSession();
 
-    // ---- send ------------------------------------------------------------
 
-    /// <summary>
-    /// Send a user message (or a slash command) to a SPECIFIC chat session and stream the reply back,
-    /// tagged with that session's id. Multiple sessions can run at once without bleeding into each other.
-    /// Web messages carry SessionId: {Type:"AiToken"|"AiToolStatus"|"AiInfo"|"AiError",SessionId,Text},
-    /// {Type:"AiDone",SessionId[,Stopped]}, {Type:"AiClear",SessionId}, {Type:"SessionRenamed",Id,Name}.
-    /// </summary>
+
+
+
+
+
+
+
     public async Task SendMessage(string sessionId, string text, string imagesJson)
     {
         var session = ResolveLive(sessionId) ?? Live(new ChatSession());
@@ -192,7 +192,7 @@ public class ChatInterop
             return;
         }
 
-        // Auto-name a brand-new chat from its first message.
+
         if (session.Messages.Count == 0 && text.Length > 2)
         {
             session.Name = text.Length > 30 ? text[..30] + "…" : text;
@@ -202,8 +202,8 @@ public class ChatInterop
         session.Messages.Add(new SessionMessage { IsUser = true, Text = text });
         _history.Save(session);
 
-        // The session/transcript keeps the clean text; the AI prompt gets the image file paths appended
-        // so it can view them (Claude Code reads them with its Read tool; auto-approved above).
+
+
         var prompt = text;
         if (imagePaths.Count > 0)
             prompt = (text.Length > 0 ? text + "\n\n" : "") +
@@ -213,7 +213,7 @@ public class ChatInterop
         await RunForSession(session, prompt);
     }
 
-    // Decode base64 image attachments (data URLs or raw base64) to temp PNG/JPG files. Returns paths.
+
     private static System.Collections.Generic.List<string> SaveAttachedImages(string? imagesJson)
     {
         var paths = new System.Collections.Generic.List<string>();
@@ -242,12 +242,12 @@ public class ChatInterop
         return paths;
     }
 
-    // Run the AI for ONE session and stream the reply tagged with that session's id. The reply is
-    // persisted to the captured session object, so switching chats mid-stream never misroutes it.
+
+
     private async Task RunForSession(ChatSession session, string prompt)
     {
         var sid = session.Id.ToString();
-        // Cancel only THIS session's previous run (other sessions keep streaming).
+
         if (_running.TryGetValue(session.Id, out var prev)) prev.Cancel();
         var cts = new CancellationTokenSource(TimeSpan.FromMinutes(15));
         _running[session.Id] = cts;
@@ -261,8 +261,8 @@ public class ChatInterop
 
             if (_shell.Agent != null)
             {
-                // The Anthropic agent holds shared tool-loop state, so serialize its runs. Load THIS
-                // session's prior turns, then run (RunAsync appends the prompt as the user turn).
+
+
                 await _agentGate.WaitAsync(ct);
                 try
                 {
@@ -278,8 +278,8 @@ public class ChatInterop
             }
             else
             {
-                // Claude Code / Ollama: one-shot stream built from THIS session's messages -- fully
-                // concurrent (each call is independent; no shared history).
+
+
                 await _shell.Chat.StreamOneShot(BuildMessages(session, ctx, prompt),
                     token => { full.Append(token); _post(new { Type = "AiToken", SessionId = sid, Text = token }); }, ct);
             }
@@ -287,7 +287,7 @@ public class ChatInterop
             session.Messages.Add(new SessionMessage { IsUser = false, Text = full.ToString() });
             _history.Save(session);
             _post(new { Type = "AiDone", SessionId = sid });
-            await MaybeAutoCompact(session);   // keep the re-sent transcript from growing without bound
+            await MaybeAutoCompact(session);
         }
         catch (OperationCanceledException)
         {
@@ -306,8 +306,8 @@ public class ChatInterop
         }
     }
 
-    // Build the provider message list for a session: system context + the session's turns, with the
-    // last user turn replaced by the prompt (which may carry image references).
+
+
     private static List<ChatMessage> BuildMessages(ChatSession session, string systemCtx, string promptOverride)
     {
         var msgs = new List<ChatMessage> { new(ChatRole.System, systemCtx) };
@@ -370,7 +370,7 @@ public class ChatInterop
     private static string UsageText(ChatSession session)
     {
         var chars = session.Messages.Sum(m => m.Text?.Length ?? 0);
-        var tokens = chars / 4;   // rough heuristic
+        var tokens = chars / 4;
         return $"This chat: {session.Messages.Count} message(s), ~{chars:N0} chars (≈{tokens:N0} tokens). " +
                "The whole transcript is re-sent each turn -- use /compact if it gets large.";
     }
@@ -389,23 +389,23 @@ public class ChatInterop
     {
         var lastUser = session.Messages.LastOrDefault(m => m.IsUser);
         if (lastUser == null) { _post(new { Type = "AiInfo", SessionId = session.Id.ToString(), Text = "Nothing to retry." }); return; }
-        // Drop the previous assistant reply (if any) so the re-run replaces it.
+
         if (session.Messages.Count > 0 && !session.Messages[^1].IsUser)
             session.Messages.RemoveAt(session.Messages.Count - 1);
         _post(new { Type = "AiRetry", SessionId = session.Id.ToString(), Text = lastUser.Text });
         await RunForSession(session, lastUser.Text);
     }
 
-    // The whole transcript is re-sent every turn, so its size is the main cost driver. Once a chat
-    // grows past this, auto-compact the older messages so usage stops climbing turn over turn.
+
+
     private const int AutoCompactBudgetChars = 80_000;
 
     private async Task MaybeAutoCompact(ChatSession session)
     {
         var chars = session.Messages.Sum(m => m.Text?.Length ?? 0);
-        // Need enough messages that compacting (which keeps the last 6 verbatim) actually helps.
+
         if (chars < AutoCompactBudgetChars || session.Messages.Count <= 7) return;
-        try { await Compact(session); } catch { /* never let auto-compact break the turn */ }
+        try { await Compact(session); } catch {  }
     }
 
     private async Task Compact(ChatSession session)
@@ -443,7 +443,7 @@ public class ChatInterop
             session.Messages.AddRange(recent);
             _history.Save(session);
 
-            // Tell the panel to re-render this session's compacted transcript.
+
             _post(new { Type = "AiReload", SessionId = sid, Session = SessionDto(session) });
         }
         catch (OperationCanceledException) { _post(new { Type = "AiInfo", SessionId = sid, Text = "Compact cancelled." }); }

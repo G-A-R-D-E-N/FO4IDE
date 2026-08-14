@@ -5,16 +5,16 @@ using System.Text.RegularExpressions;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Looks up Papyrus function signatures and script overviews directly from an offline Creation Kit
-/// Wiki HTML mirror instead of the AI having to grep/read whole wiki pages itself. The root is always
-/// caller-supplied (this class never resolves a path itself) -- see ToolPaths.CkWiki for the actual
-/// resolution chain: an explicit override (CK_WIKI_PATH env var, '--ck-wiki &lt;folder&gt;' launch
-/// flag, or the CkWikiPath Settings field) beats the copy bundled with the release package under
-/// tools\ckwiki\fallout4\. Parses the wiki's actual exported MediaWiki HTML structure -- one page per
-/// function (e.g. "GetBaseObject_-_ActiveMagicEffect.html") and one page per script
-/// ("ActiveMagicEffect_Script.html") -- verified against real pages before writing this, not guessed.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
 public static class PapyrusWikiService
 {
     public static string LookupFunction(string wikiRoot, string script, string function)
@@ -66,8 +66,8 @@ public static class PapyrusWikiService
         if (string.IsNullOrWhiteSpace(wikiRoot) || !Directory.Exists(wikiRoot))
             return ToolError.Fail(NotConfiguredMessage);
         script = (script ?? "").Trim();
-        // Filenames use "<Script>_Script.html"; accept either "ActiveMagicEffect" or
-        // "ActiveMagicEffect_Script"/"ActiveMagicEffect Script" from the caller.
+
+
         script = Regex.Replace(script, @"[_ ]?Script$", "", RegexOptions.IgnoreCase);
         if (script.Length == 0) return ToolError.Fail("Provide a script name, e.g. 'ActiveMagicEffect' or 'ObjectReference'.");
 
@@ -114,9 +114,9 @@ public static class PapyrusWikiService
         return m.Success ? StripTags(m.Groups[1].Value) : null;
     }
 
-    // The wiki's exported markup is <h2><span class="mw-headline" id="SectionId">Title</span></h2> --
-    // the id sits on the inner span, not the h2 itself. Grabs everything after the </h2> up to the
-    // next <h2 or the closing of the content div.
+
+
+
     private static string ExtractSection(string html, string sectionId)
     {
         var m = Regex.Match(html,

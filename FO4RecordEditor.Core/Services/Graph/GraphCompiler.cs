@@ -6,38 +6,38 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>Options for one graph compile.</summary>
+
 public sealed class GraphCompileOptions
 {
     public PapyrusCompileOptions Papyrus { get; } = new();
 
     public PapyrusSourceWriterOptions Writer { get; } = new();
 
-    /// <summary>Stop once source exists, for the canvas preview.</summary>
+
     public bool StopAfterSource { get; set; }
 
-    /// <summary>
-    /// Treat a surviving Papyrus error as a defect in this compiler rather than in the graph.
-    /// </summary>
-    /// <remarks>
-    /// If the validator did its job, the generated source produces no errors at all, so any that
-    /// survive are a validator gap. Turning this on in the test suite makes the whole suite a
-    /// ratchet on validator completeness; it stays off in production, where the author still needs
-    /// the message.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
     public bool TreatPapyrusErrorsAsInternalFaults { get; set; }
 }
 
-/// <summary>What one graph compile produced.</summary>
+
 public sealed record GraphCompileResult
 {
-    /// <summary>
-    /// The generated source, present even on failure.
-    /// </summary>
-    /// <remarks>
-    /// Populated whenever emission got that far, specifically so the canvas can show the source with
-    /// the failure marked. Without it, debugging the emitter is guesswork.
-    /// </remarks>
+
+
+
+
+
+
+
     public string? Source { get; init; }
 
     public GraphSourceMap? SourceMap { get; init; }
@@ -48,7 +48,7 @@ public sealed record GraphCompileResult
 
     public IReadOnlyList<GraphDiagnostic> Diagnostics { get; init; } = Array.Empty<GraphDiagnostic>();
 
-    /// <summary>The unmapped Papyrus diagnostics, kept for debugging the mapping itself.</summary>
+
     public IReadOnlyList<PapyrusDiagnostic> PapyrusDiagnostics { get; init; } =
         Array.Empty<PapyrusDiagnostic>();
 
@@ -60,14 +60,14 @@ public sealed record GraphCompileResult
         Diagnostics.Where(d => d.Severity == GraphSeverity.Error);
 }
 
-/// <summary>
-/// Graph to script to compiled object.
-/// </summary>
-/// <remarks>
-/// Mirrors <see cref="PapyrusCompiler"/>'s shape and inherits its stance: refuse at the first stage
-/// that reports an error rather than press on, because a later stage would then be working from a
-/// tree it has already been told is wrong.
-/// </remarks>
+
+
+
+
+
+
+
+
 public sealed class GraphCompiler
 {
     private readonly PapyrusScriptIndex _index;
@@ -84,13 +84,13 @@ public sealed class GraphCompiler
 
     public NodePalette Palette => _palette;
 
-    /// <summary>
-    /// Diagnostics only, with no emission.
-    /// </summary>
-    /// <remarks>
-    /// Shares its stages verbatim with <see cref="Compile"/>, so live validation on the canvas can
-    /// never disagree with what a compile would say.
-    /// </remarks>
+
+
+
+
+
+
+
     public GraphValidation Validate(GraphDocument document) =>
         new GraphValidator(_index, _palette).Validate(document);
 
@@ -162,7 +162,7 @@ public sealed class GraphCompiler
         return Compile(document!, options);
     }
 
-    /// <summary>Compiles and writes both the source and the compiled object.</summary>
+
     public GraphCompileResult CompileToFile(
         GraphDocument document, string pscPath, string? pexPath = null, GraphCompileOptions? options = null)
     {
@@ -181,26 +181,26 @@ public sealed class GraphCompiler
     private readonly Dictionary<string, string> _scratchRoots =
         new(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>
-    /// Puts the generated source where the index can find it, so the script can refer to its own type.
-    /// </summary>
-    /// <remarks>
-    /// <c>PapyrusScriptIndex</c> resolves from disk roots and has no in-memory injection, so a
-    /// script that is not on a root cannot be resolved even while it is being compiled. That
-    /// matters as soon as a graph passes <c>Self</c> somewhere its base type is wanted: the checker
-    /// asks whether the script inherits from the parameter's type, the index cannot find the
-    /// script, and a perfectly good call is refused.
-    /// <para>
-    /// One scratch directory per script name, because <c>AddRoot</c> snapshots a directory's
-    /// contents into its name map and returns early the second time it is given the same root. The
-    /// file therefore has to exist before the root is added; writing into an already-added root
-    /// would leave the script unfindable. Later compiles of the same script rewrite the file and
-    /// invalidate the parse cache, which is enough.
-    /// </para>
-    /// <para>
-    /// The file is a build artefact, not output: the caller still decides where real output goes.
-    /// </para>
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void PublishForSelfReference(string scriptName, string source)
     {
         if (string.IsNullOrWhiteSpace(scriptName)) return;
@@ -229,8 +229,8 @@ public sealed class GraphCompiler
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            // Losing this only costs self-type resolution, which the compiler will then report in
-            // its own terms. It is not worth failing an otherwise good compile over.
+
+
         }
     }
 
@@ -246,14 +246,14 @@ public sealed class GraphCompiler
         return PapyrusParser.Parse(header + imports + "\n", document.Header.ScriptName + ".psc");
     }
 
-    /// <summary>
-    /// Attributes a Papyrus diagnostic to the node that produced the offending source.
-    /// </summary>
-    /// <remarks>
-    /// Four steps, narrowing to widening. The last one has to be loud: a compiler error that mapped
-    /// to nothing and got dropped would present to the author as a failure with no reason given,
-    /// which is the worst outcome this subsystem could produce.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private static GraphDiagnostic MapBack(
         PapyrusDiagnostic diagnostic, GraphSourceMap map, GraphCompileOptions options)
     {

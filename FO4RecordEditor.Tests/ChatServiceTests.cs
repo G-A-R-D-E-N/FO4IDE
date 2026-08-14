@@ -8,7 +8,7 @@ namespace FO4RecordEditor.Tests;
 
 public class ChatServiceTests
 {
-    // Yields a couple of tokens then throws, simulating a mid-stream network failure.
+
     private sealed class ThrowingProvider : IAIProvider
     {
         public string Name => "Throwing";
@@ -43,8 +43,8 @@ public class ChatServiceTests
         var act = async () => await chat.SendAsync("hello", null, _ => { });
         await act.Should().ThrowAsync<InvalidOperationException>();
 
-        // History must stay alternating: user then assistant (with the partial text),
-        // so the next turn is not two consecutive user messages.
+
+
         chat.History.Should().HaveCount(2);
         chat.History[0].Role.Should().Be(ChatRole.User);
         chat.History[1].Role.Should().Be(ChatRole.Assistant);

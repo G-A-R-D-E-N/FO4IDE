@@ -9,21 +9,21 @@ const back = () => window.chrome?.webview?.hostObjects?.backend;
 const OPERATORS = ['==', '!=', '>', '>=', '<', '<='];
 const BLANK: ConditionDto = { function: 'GetItemCount', operator: '==', value: 1, runOn: 'Subject' };
 
-/** One parameter slot of a condition function, from xEdit's own function table. */
+
 interface ParamSlot { label: string; kind: 'record' | 'number' | 'text'; types: string; }
 type ParamTable = Record<string, ParamSlot[]>;
 
 type PickTarget = { index: number; key: 'param1' | 'param2' | 'reference' | 'compareGlobal'; types: string };
 
-/**
- * The condition editor. Which fields a row shows is driven by xEdit's condition-function table
- * (transcribed in ConditionFunctions.cs): 259 of the 479 functions take no parameters at all, and
- * most of the rest take exactly one of a specific record type -- so showing two blank FormKey boxes
- * on every row, as the first cut did, was noise on almost every condition.
- *
- * Writes go through SetConditionsAt, which replaces the whole list, so the list is edited locally
- * and sent once. Cancel genuinely cancels.
- */
+
+
+
+
+
+
+
+
+
 export default function ConditionsEditor(
   { plugin, record, path, label, onClose, onSaved }:
   { plugin: string; record: string; path: string; label: string;
@@ -55,8 +55,8 @@ export default function ConditionsEditor(
     })();
   }, [plugin, record, path]);
 
-  // Resolve every FormKey on screen to "EditorID [key]" in one round trip, so a parameter reads as
-  // a name the way it does in the grid rather than a raw id.
+
+
   useEffect(() => {
     const b = back();
     if (!b || !rows) return;
@@ -71,9 +71,9 @@ export default function ConditionsEditor(
       try {
         const got = JSON.parse(await b.ResolveFormKeyLabels(missing.join(',')));
         setLabels(prev => ({ ...prev, ...got }));
-      } catch { /* names are a nicety; the raw key still works */ }
+      } catch {  }
     })();
-  }, [rows]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [rows]);
 
   const slotsFor = (fn: string): ParamSlot[] => paramTable[fn] ?? [];
   const shownFunctions = useMemo(() => {
@@ -98,9 +98,9 @@ export default function ConditionsEditor(
     const b = back();
     if (!b || !rows) return;
 
-    // A row toggled to "compare against a global" starts with compareGlobal: '' as a placeholder.
-    // Saving it that way does NOT fail: the backend falls back to a numeric ConditionFloat and
-    // defaults the value to 1, so the condition silently changes meaning instead of erroring.
+
+
+
     const unset = rows.findIndex(r => r.compareGlobal !== undefined && !String(r.compareGlobal).trim());
     if (unset >= 0) {
       setError(`Condition ${unset + 1} compares against a global but none is picked. `

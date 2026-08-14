@@ -5,16 +5,16 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>What validating a graph found, plus the context the later stages reuse.</summary>
+
 public sealed class GraphValidation
 {
     public IReadOnlyList<GraphDiagnostic> Diagnostics { get; init; } = Array.Empty<GraphDiagnostic>();
 
-    /// <summary>The definition each node resolved to, keyed by node id.</summary>
+
     public IReadOnlyDictionary<string, NodeDefinition> Definitions { get; init; } =
         new Dictionary<string, NodeDefinition>();
 
-    /// <summary>The type variables solved per node.</summary>
+
     public IReadOnlyDictionary<string, GenericBinding> Generics { get; init; } =
         new Dictionary<string, GenericBinding>();
 
@@ -26,18 +26,18 @@ public sealed class GraphValidation
     public bool Ok => !Errors.Any();
 }
 
-/// <summary>
-/// The refusal engine: everything structural that has to be true before lowering can start.
-/// </summary>
-/// <remarks>
-/// Runs first and refuses rather than repairs. The stance is inherited from the Papyrus back end,
-/// which declines to guess an arity rather than emit a call it is not sure about: a wrong script is
-/// worse than none, because nothing downstream reports it until the game runs it.
-/// <para>
-/// Every diagnostic names the node, and where a pin is implicated, the pin. That is what lets the
-/// canvas paint the offending pin rather than the whole graph.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class GraphValidator
 {
     private readonly PapyrusScriptIndex _index;
@@ -79,14 +79,14 @@ public sealed class GraphValidator
         };
     }
 
-    /// <summary>
-    /// A parsed stand-in for the script being authored, so type names resolve relative to it.
-    /// </summary>
-    /// <remarks>
-    /// The resolver needs a script to resolve names against, and the graph is not one yet. Parsing a
-    /// header-only source gives it the same import roots and parent chain the finished script will
-    /// have, which is what makes a type name mean the same thing here as it will after emission.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private PapyrusScript? OwnerScriptFor(GraphDocument document)
     {
         if (string.IsNullOrWhiteSpace(document.Header.ScriptName)) return null;
@@ -152,8 +152,8 @@ public sealed class GraphValidator
             var definition = _palette.Find(node.Definition);
             if (definition == null)
             {
-                // Refusing here rather than guessing is the same reason the back end refuses an
-                // unresolved callee: once optional parameters exist, arity is not derivable.
+
+
                 problems.Add(GraphDiagnostic.Error(
                     GraphDiagnosticCodes.UnknownNodeDefinition,
                     $"'{node.Definition}' is not on this palette. The script it comes from may not "
@@ -170,8 +170,8 @@ public sealed class GraphValidator
         IReadOnlyDictionary<string, NodeDefinition> definitions,
         List<GraphDiagnostic> problems)
     {
-        // Keyed by the pin itself rather than by a joined string: an argument pin id already
-        // contains a colon, so splitting a "node:pin" key back apart would cut in the wrong place.
+
+
         var dataInputs = new Dictionary<string, (PinRef Pin, List<GraphWire> Wires)>(StringComparer.OrdinalIgnoreCase);
         var execOutputs = new Dictionary<string, (PinRef Pin, List<GraphWire> Wires)>(StringComparer.OrdinalIgnoreCase);
 
@@ -205,8 +205,8 @@ public sealed class GraphValidator
 
             if (fromPin == null || toPin == null)
             {
-                // The case the "pins are never stored" decision exists to produce: a renamed
-                // parameter surfaces here, naming the node, instead of compiling the wrong call.
+
+
                 var missing = fromPin == null ? wire.From : wire.To;
                 problems.Add(new GraphDiagnostic
                 {
@@ -322,8 +322,8 @@ public sealed class GraphValidator
 
         return solved;
 
-        // The type on the other end of whatever is wired to a pin, without recursing into generics,
-        // which is enough because a generic is always solved from a concrete neighbour.
+
+
         (string TypeName, bool IsArray)? SourceTypeOf(PinRef pin)
         {
             var wire = document.Into(pin).FirstOrDefault() ?? document.OutOf(pin).FirstOrDefault();
@@ -429,9 +429,9 @@ public sealed class GraphValidator
                 if (node.PinValues.ContainsKey(pin.Id)) continue;
                 if (pin.DeclaredDefault != null) continue;
 
-                // The self pin is special: leaving it unwired means "this script", which is only
-                // legal when the call's owner is on this graph's own chain. That is judged during
-                // lowering, where the chain is known, so it is not an error here.
+
+
+
                 if (string.Equals(pin.Id, PinIds.Self, StringComparison.OrdinalIgnoreCase)) continue;
 
                 problems.Add(new GraphDiagnostic
@@ -463,9 +463,9 @@ public sealed class GraphValidator
                 "This graph has no event or function to start from, so nothing would run."));
         }
 
-        // Keyed by the emitted signature's identity, not just the name. A local override and a
-        // remote handler for the same event are different declarations that legitimately coexist:
-        // OnActivate() and ObjectReference.OnActivate() are not the same function.
+
+
+
         foreach (var duplicate in entries
             .GroupBy(n => (definitions[n.Id].IsRemoteEvent ? definitions[n.Id].OwnerScript + "." : "")
                           + EntryNameOf(n, definitions[n.Id]) + "/" + (n.ConfigString("state") ?? ""),
@@ -487,7 +487,7 @@ public sealed class GraphValidator
         ValidateCustomEvents(document, problems);
     }
 
-    /// <summary>Custom events this script declares and can raise.</summary>
+
     private static void ValidateCustomEvents(GraphDocument document, List<GraphDiagnostic> problems)
     {
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -511,15 +511,15 @@ public sealed class GraphValidator
         }
     }
 
-    /// <summary>
-    /// The rules Papyrus puts on states, checked here because the emitter cannot recover from them.
-    /// </summary>
-    /// <remarks>
-    /// A state name that is not an identifier, or an auto state naming a state nothing declares,
-    /// would both emit text the Papyrus parser rejects with a message pointing at generated source
-    /// the author never wrote. A global function inside a state parses, but the state has no meaning
-    /// for it, so it is refused rather than emitted as something that reads as intentional.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
     private static void ValidateStates(
         GraphDocument document,
         IReadOnlyDictionary<string, NodeDefinition> definitions,
@@ -563,7 +563,7 @@ public sealed class GraphValidator
         }
     }
 
-    /// <summary>The Papyrus name an entry node emits.</summary>
+
     public static string EntryNameOf(GraphNode node, NodeDefinition definition) =>
         definition.Kind == GraphNodeKind.FunctionEntry
             ? node.ConfigString("name") ?? "Unnamed"

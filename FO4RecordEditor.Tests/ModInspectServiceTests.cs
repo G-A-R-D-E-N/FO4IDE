@@ -21,10 +21,10 @@ public class ModInspectServiceTests
         File.WriteAllText(Path.Combine(root, "Textures", "Weapons", "gun_d.dds"), "x");
         File.WriteAllText(Path.Combine(root, "MyMod.esp"), "x");
         File.WriteAllText(Path.Combine(root, "Scripts", "MyScript.pex"), "x");
-        File.WriteAllText(Path.Combine(root, "Scripts", "Source", "MyScript.psc"), "x");  // must be excluded
+        File.WriteAllText(Path.Combine(root, "Scripts", "Source", "MyScript.psc"), "x");
         File.WriteAllText(Path.Combine(root, "Sound", "Voice", "MyMod.esp", "PlayerVoice", "line1.fuz"), "x");
         File.WriteAllText(Path.Combine(root, "Sound", "FX", "AnimTextData", "data1.txt"), "x");
-        File.WriteAllText(Path.Combine(root, "readme.txt"), "x");   // not categorized -> "other"
+        File.WriteAllText(Path.Combine(root, "readme.txt"), "x");
 
         return root;
     }
@@ -50,7 +50,7 @@ public class ModInspectServiceTests
         try
         {
             var result = ModInspectService.CatalogFolder(root);
-            // Scripts/MyScript.pex counts; Scripts/Source/MyScript.psc must NOT.
+
             result.Should().Contain("scripts_pex: 1");
             result.Should().NotContain("scripts_psc:", "the only .psc lives under Scripts\\Source, which must be excluded");
         }

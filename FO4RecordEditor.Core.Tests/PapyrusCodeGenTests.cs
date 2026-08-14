@@ -7,20 +7,20 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The code generator: a resolved script to <c>.pex</c> instructions.
-/// </summary>
-/// <remarks>
-/// These assert instruction shapes, not whole files. The whole-file check is
-/// <see cref="PapyrusDifferentialTests"/>, which compiles real sources and compares against the
-/// <c>.pex</c> the Creation Kit produced from them; this is the half that says which shape is
-/// intended and fails legibly when one changes.
-/// <para>
-/// Every expectation here was read off real compiler output first. Where a shape is a deliberate
-/// choice rather than an observation -- emission order of variables, temporary numbering -- the test
-/// says so rather than pretending the Creation Kit agrees.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class PapyrusCodeGenTests : IDisposable
 {
     private readonly string _root;
@@ -30,8 +30,8 @@ public class PapyrusCodeGenTests : IDisposable
         _root = Path.Combine(Path.GetTempPath(), "fo4re-codegen-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_root);
 
-        // A minimal stand-in for the base game's root type. Real scripts extend something; a script
-        // that extends nothing still names ScriptObject as its parent, so it has to exist.
+
+
         Write("ScriptObject", "Scriptname ScriptObject Native Hidden\n");
     }
 
@@ -68,7 +68,7 @@ public class PapyrusCodeGenTests : IDisposable
         obj.States.Single(s => s.Name == state).Functions
             .Single(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>The body as one normalised line per instruction, temporaries collapsed.</summary>
+
     private static string[] Listing(PexFunction fn) =>
         fn.Instructions.Select(i => i.Mnemonic + " " + string.Join(" ", i.Args.Select(Operand))).ToArray();
 
@@ -82,7 +82,7 @@ public class PapyrusCodeGenTests : IDisposable
         _ => "None",
     };
 
-    // ---- object shape ----------------------------------------------------------------------
+
 
     [Fact]
     public void A_script_that_extends_nothing_still_names_ScriptObject_as_its_parent()
@@ -125,10 +125,10 @@ public class PapyrusCodeGenTests : IDisposable
         backing.DefaultValue!.Int.Should().Be(3);
     }
 
-    /// <summary>
-    /// An AutoReadOnly is a constant, not storage: no backing variable, and a generated getter that
-    /// returns the literal. All 32 of Form.psc's kSlotMask properties compile to exactly this.
-    /// </summary>
+
+
+
+
     [Fact]
     public void An_auto_read_only_property_becomes_a_getter_returning_the_constant()
     {
@@ -216,12 +216,12 @@ public class PapyrusCodeGenTests : IDisposable
         obj.States.Single(s => s.Name == "Idle").Functions.Single().Name.Should().Be("Poke");
     }
 
-    // ---- control flow ----------------------------------------------------------------------
 
-    /// <summary>
-    /// A lone If still closes its branch with a jump to the end, and the conditional jump targets
-    /// the same place. PulowskShelterScript's OnLoad is the reference.
-    /// </summary>
+
+
+
+
+
     [Fact]
     public void A_lone_if_emits_a_trailing_jump_to_the_end()
     {
@@ -239,7 +239,7 @@ public class PapyrusCodeGenTests : IDisposable
             "jmp 1");
     }
 
-    /// <summary>The else body carries no trailing jump; it already falls through.</summary>
+
     [Fact]
     public void An_if_else_jumps_over_the_else_and_the_else_falls_through()
     {
@@ -280,10 +280,10 @@ public class PapyrusCodeGenTests : IDisposable
             "jmp -3");
     }
 
-    /// <summary>
-    /// Both sides of a short-circuit are cast into one shared bool slot, and the jump skips the
-    /// right operand. MetroCurrency:Manager line 71 is the reference.
-    /// </summary>
+
+
+
+
     [Fact]
     public void And_short_circuits_through_one_shared_slot()
     {
@@ -318,9 +318,9 @@ public class PapyrusCodeGenTests : IDisposable
         Listing(Function(CompileObject("Logic2"), "Go"))[1].Should().Be("jmpt T 2");
     }
 
-    // ---- expressions -----------------------------------------------------------------------
 
-    /// <summary>There is no cmp_ne opcode; inequality is equality negated in place.</summary>
+
+
     [Fact]
     public void Inequality_is_equality_followed_by_not()
     {
@@ -335,7 +335,7 @@ public class PapyrusCodeGenTests : IDisposable
             "not b b");
     }
 
-    /// <summary>A comparison brings both sides to one type, promoting int to float rather than truncating.</summary>
+
     [Fact]
     public void A_mixed_comparison_promotes_the_int_side_to_float()
     {
@@ -350,7 +350,7 @@ public class PapyrusCodeGenTests : IDisposable
             "cmp_gt b afValue T");
     }
 
-    /// <summary>An int literal in a float slot is written as a float, not cast at run time.</summary>
+
     [Fact]
     public void An_int_literal_in_a_float_slot_is_folded()
     {
@@ -462,12 +462,12 @@ public class PapyrusCodeGenTests : IDisposable
         Listing(Function(CompileObject("Check"), "Go")).Should().Equal("is b akThing Other");
     }
 
-    // ---- calls -----------------------------------------------------------------------------
 
-    /// <summary>
-    /// The format carries no notion of a default, so every parameter is materialised at the call
-    /// site. This is why an unresolvable callee has to be refused rather than guessed at.
-    /// </summary>
+
+
+
+
+
     [Fact]
     public void Optional_arguments_are_filled_in_from_the_declaration()
     {
@@ -498,7 +498,7 @@ public class PapyrusCodeGenTests : IDisposable
             "callmethod Target self ::nonevar 1 9");
     }
 
-    /// <summary>A global is dispatched statically against the script that declares it, including this one.</summary>
+
     [Fact]
     public void A_bare_call_to_an_own_global_is_a_static_call_on_this_script()
     {
@@ -543,10 +543,10 @@ public class PapyrusCodeGenTests : IDisposable
             "callparent Poke ::nonevar");
     }
 
-    /// <summary>
-    /// The receiver is evaluated before the arguments; Game.RemovePlayerCaps proves the order is
-    /// observable.
-    /// </summary>
+
+
+
+
     [Fact]
     public void A_method_calls_receiver_is_evaluated_before_its_arguments()
     {
@@ -570,10 +570,10 @@ public class PapyrusCodeGenTests : IDisposable
             "callmethod Take T ::nonevar T");
     }
 
-    /// <summary>
-    /// An auto property is its backing variable inside its own script and propget/propset elsewhere,
-    /// because the backing variable is private to the script that declares it.
-    /// </summary>
+
+
+
+
     [Fact]
     public void An_own_auto_property_is_read_and_written_through_its_backing_variable()
     {
@@ -599,18 +599,18 @@ public class PapyrusCodeGenTests : IDisposable
                 int n = akHolder.Count
             EndFunction
             """);
-        // The literal is copied into a temporary before the propset, which is not an optimisation
-        // anyone would choose but is what the shipped objects contain: all 2,520 propset
-        // instructions in the vanilla corpus carry a temporary, and none carries a literal. This
-        // expectation used to say otherwise, and was written from what looked reasonable rather
-        // than from anything measured.
+
+
+
+
+
         Listing(Function(CompileObject("User"), "Go")).Should().Equal(
             "assign T 5",
             "propset Count akHolder T",
             "propget Count akHolder n");
     }
 
-    /// <summary>A remote or custom event handler compiles to a name the decompiler reads back.</summary>
+
     [Fact]
     public void A_remote_event_handler_is_named_after_its_type_and_event()
     {
@@ -646,12 +646,12 @@ public class PapyrusCodeGenTests : IDisposable
         fn.Locals.Should().Contain(l => l.Name == "::nonevar" && l.Type == "None");
     }
 
-    // ---- refusals --------------------------------------------------------------------------
 
-    /// <summary>
-    /// Silence beats a false positive, restated for a back end: a callee with no declaration on the
-    /// roots has unknown arity once defaults exist, so nothing is emitted for it.
-    /// </summary>
+
+
+
+
+
     [Fact]
     public void A_call_into_a_script_that_is_not_on_the_roots_is_refused_rather_than_guessed()
     {
@@ -668,12 +668,12 @@ public class PapyrusCodeGenTests : IDisposable
         result.Pex.Should().BeNull();
     }
 
-    /// <summary>
-    /// Array built-ins are declared in no script, so the type checker leaves their arguments
-    /// unchecked by design -- which means bad-but-parseable source reaches the back end. Reading
-    /// operand zero of an empty argument list is not a refusal, it is a crash, and this is the
-    /// regression guard for exactly that.
-    /// </summary>
+
+
+
+
+
+
     [Theory]
     [InlineData("xs.Add()")]
     [InlineData("xs.Insert(1)")]
@@ -718,10 +718,10 @@ public class PapyrusCodeGenTests : IDisposable
         Compile("GoodArray").Success.Should().BeTrue();
     }
 
-    /// <summary>
-    /// GetMatchingStructs is documented on the Arrays page and has no Fallout 4 opcode, so it is
-    /// refused rather than approximated -- and refused as a diagnostic, not as an exception.
-    /// </summary>
+
+
+
+
     [Fact]
     public void An_array_builtin_with_no_opcode_is_refused_by_name()
     {
@@ -753,12 +753,12 @@ public class PapyrusCodeGenTests : IDisposable
             d => d.Code == PapyrusDiagnosticCodes.NonConstantInitializer);
     }
 
-    // ---- the file itself -------------------------------------------------------------------
 
-    /// <summary>
-    /// The generated file has to survive the writer, and the writer refuses any string it cannot
-    /// index -- which is the check that the string table was rebuilt completely.
-    /// </summary>
+
+
+
+
+
     [Fact]
     public void A_generated_file_writes_and_reads_back_identically()
     {
@@ -800,7 +800,7 @@ public class PapyrusCodeGenTests : IDisposable
         reread.DebugFunctions.Should().Contain(d => d.FunctionName == "OnInit");
     }
 
-    /// <summary>Line numbers are what a stack trace reads; one per instruction, from the source.</summary>
+
     [Fact]
     public void Debug_line_numbers_are_recorded_one_per_instruction()
     {
@@ -817,11 +817,11 @@ public class PapyrusCodeGenTests : IDisposable
         debug.LineNumbers.Should().Equal(3, 4);
     }
 
-    /// <summary>
-    /// A call into DebugOnly code is not compiled to a no-op, it is not compiled. Off by default,
-    /// because three of the four compiler builds measured kept such calls and silently deleting an
-    /// author's logging is the worse failure.
-    /// </summary>
+
+
+
+
+
     [Fact]
     public void A_debug_only_call_is_dropped_only_when_asked_for()
     {
@@ -847,13 +847,13 @@ public class PapyrusCodeGenTests : IDisposable
     }
 }
 
-/// <summary>
-/// The service front door the MCP tool and the GUI panel both call.
-/// </summary>
-/// <remarks>
-/// The unit tests above hold the generator to a shape; these hold the thing a caller actually
-/// reaches to producing a file on disk, and to saying something useful when it will not.
-/// </remarks>
+
+
+
+
+
+
+
 public class PapyrusCompileServiceTests : IDisposable
 {
     private readonly string _root;
@@ -901,7 +901,7 @@ public class PapyrusCompileServiceTests : IDisposable
         pex.Objects.Single().States.Single().Functions.Single().Name.Should().Be("Bump");
     }
 
-    /// <summary>A namespaced script goes where the game loads it from, not into a flat folder.</summary>
+
     [Fact]
     public void A_namespaced_script_is_written_into_namespace_folders()
     {
@@ -911,10 +911,10 @@ public class PapyrusCompileServiceTests : IDisposable
         File.Exists(Path.Combine(_out, "MyNS", "Inner.pex")).Should().BeTrue();
     }
 
-    /// <summary>
-    /// A refusal has to name the actual problem. Almost every one is a missing import root, and a
-    /// message that says only "could not compile" sends the caller looking at their source instead.
-    /// </summary>
+
+
+
+
     [Fact]
     public void A_missing_import_root_is_reported_as_a_missing_import_root()
     {
@@ -944,12 +944,12 @@ public class PapyrusCompileServiceTests : IDisposable
         File.Exists(Path.Combine(_out, "Two.pex")).Should().BeTrue();
     }
 
-    /// <summary>
-    /// The file list and the script index have to agree about which files exist. The framework's
-    /// recursive enumeration skips Hidden and System by default, so a scripts tree inside any
-    /// dot-prefixed folder -- a git checkout, a worktree -- was invisible to a folder compile while
-    /// the resolver read it happily.
-    /// </summary>
+
+
+
+
+
+
     [Fact]
     public void A_folder_compile_sees_scripts_under_a_dotted_or_hidden_directory()
     {
@@ -964,14 +964,14 @@ public class PapyrusCompileServiceTests : IDisposable
         PapyrusAnalysisService.Compile(_root, _out).Should().StartWith("RESULT: 2 succeeded, 0 failed");
         File.Exists(Path.Combine(_out, "Tucked.pex")).Should().BeTrue();
 
-        // And the two front doors must not disagree with each other about the count.
+
         PapyrusAnalysisService.Check(_root, semantic: false).Should().Contain("of 2 file(s)");
     }
 
-    /// <summary>
-    /// A namespaced script is named relative to Source/User, not to its own folder, so a compile
-    /// pointed straight at one has to reach its siblings in other namespaces without being told.
-    /// </summary>
+
+
+
+
     [Fact]
     public void A_script_under_a_Source_User_tree_resolves_its_siblings_without_extra_roots()
     {
@@ -988,7 +988,7 @@ public class PapyrusCompileServiceTests : IDisposable
         File.Exists(Path.Combine(_out, "Alpha", "Caller.pex")).Should().BeTrue();
     }
 
-    /// <summary>A trailing separator must not make the same root count as two.</summary>
+
     [Fact]
     public void Natural_roots_are_normalised_so_a_trailing_separator_does_not_duplicate_one()
     {
@@ -1007,10 +1007,10 @@ public class PapyrusCompileServiceTests : IDisposable
         PapyrusAnalysisService.Compile(pas, _out).Should().Contain("Compile the .psc instead");
     }
 
-    /// <summary>
-    /// Release strips DebugOnly calls, which is what the Creation Kit's -r does and what Bethesda's
-    /// own ObjectReference.pex was built with.
-    /// </summary>
+
+
+
+
     [Fact]
     public void Release_strips_debug_only_calls()
     {
@@ -1036,7 +1036,7 @@ public class PapyrusCompileServiceTests : IDisposable
     }
 }
 
-/// <summary>The user-flag table, which is what takes the Creation Kit off the compile path.</summary>
+
 public class PapyrusUserFlagTableTests
 {
     [Fact]

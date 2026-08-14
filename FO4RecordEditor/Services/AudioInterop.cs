@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace FO4RecordEditor.Services;
 
-// WebView2 host object for the Audio panel: convert to/from xWMA and merge/split .fuz, via
-// AudioService. Same COM rules as the other panel interops: AutoDual, ComVisible, only
-// string/bool/int params and string/Task<string> returns. Conversions run on a background task so a
-// multi-minute music file never blocks the UI thread.
+
+
+
+
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class AudioInterop
@@ -29,8 +29,8 @@ public class AudioInterop
         return HostServices.PickSavePath(title, filter);
     }
 
-    /// <summary>Any ffmpeg-readable audio/video source -> .xwm. bitrateBps: one of xWMAEncode's
-    /// supported bitrates (20000/32000/48000/64000/96000/160000/192000), or 0 for its default (48000).</summary>
+
+
     public Task<string> ConvertToXwm(string source, string output, int bitrateBps) =>
         Task.Run(() =>
         {
@@ -38,7 +38,7 @@ public class AudioInterop
             catch (Exception ex) { DebugLog.Exception("Audio.ConvertToXwm", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>.xwm -> WAV, and on to targetExt (mp3/flac/ogg/...) via ffmpeg if targetExt isn't "wav".</summary>
+
     public Task<string> ConvertFromXwm(string source, string output, string targetExt) =>
         Task.Run(() =>
         {
@@ -46,8 +46,8 @@ public class AudioInterop
             catch (Exception ex) { DebugLog.Exception("Audio.ConvertFromXwm", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>Pack an audio source (encoded to xwm first if it isn't already) + optional .lip into a
-    /// .fuz voice container.</summary>
+
+
     public Task<string> MakeFuz(string audioSource, string lipPath, string fuzOutput, bool noLip) =>
         Task.Run(() =>
         {
@@ -55,7 +55,7 @@ public class AudioInterop
             catch (Exception ex) { DebugLog.Exception("Audio.MakeFuz", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>Split a .fuz into its xwm/lip parts, optionally also decoding the xwm to .wav.</summary>
+
     public Task<string> ExtractFuz(string fuzPath, string xwmOutput, string lipOutput, bool alsoWav) =>
         Task.Run(() =>
         {
@@ -63,7 +63,7 @@ public class AudioInterop
             catch (Exception ex) { DebugLog.Exception("Audio.ExtractFuz", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>Open a folder (or a file's folder) in Windows Explorer. Returns "" on success.</summary>
+
     public string OpenFolder(string path)
     {
         try
@@ -78,8 +78,8 @@ public class AudioInterop
         catch (Exception ex) { return "Error: " + ex.Message; }
     }
 
-    /// <summary>Stage a dropped file's bytes to a temp path and return it (drag-and-drop helper, since
-    /// WebView2 hides dropped files' real OS paths). "ERR:" prefix on failure.</summary>
+
+
     public string StageDroppedFile(string name, string base64)
     {
         try

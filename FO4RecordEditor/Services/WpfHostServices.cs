@@ -1,9 +1,9 @@
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Installs the WPF implementations of the host services the shared interop layer calls through.
-/// The Linux server installs its own; see FO4RecordEditor.Server/LinuxHostServices.cs.
-/// </summary>
+
+
+
+
 public static class WpfHostServices
 {
     public static void Install()

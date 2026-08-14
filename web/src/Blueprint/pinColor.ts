@@ -1,5 +1,5 @@
-// Pin colours come from the existing chip palette, which already has a light-theme override, so
-// they are theme aware without a second set of values.
+
+
 
 const BY_TYPE: Record<string, string> = {
   int: '--chip-5',
@@ -20,8 +20,8 @@ export function pinColorVar(dataType: string): string {
   const known = BY_TYPE[base];
   if (known) return `var(${known})`;
 
-  // Anything else is a script type, and they all read as one family so an object wire is
-  // recognisable at a glance without inventing a colour per script.
+
+
   return `var(${OBJECT_COLOR})`;
 }
 

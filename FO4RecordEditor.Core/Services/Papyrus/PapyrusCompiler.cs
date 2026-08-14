@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-/// <summary>What one compile produced.</summary>
+
 public sealed class PapyrusCompileResult
 {
     internal PapyrusCompileResult(
@@ -19,21 +19,21 @@ public sealed class PapyrusCompileResult
 
     public PapyrusScript? Script { get; }
 
-    /// <summary>The compiled object, or null when anything was reported as an error.</summary>
+
     public PexFile? Pex { get; }
 
     public IReadOnlyList<PapyrusDiagnostic> Diagnostics { get; }
 
-    /// <summary>
-    /// False when a parent script, an import or a named type was not on the roots.
-    /// </summary>
-    /// <remarks>
-    /// The resolver and the type checker stay quiet in that case, deliberately -- see
-    /// <see cref="PapyrusResolution.BaseChainComplete"/>. The back end does not have that luxury,
-    /// because an unresolved callee has unknown arity once optional parameters exist. So a compile
-    /// with incomplete sources usually fails at code generation, and this says why rather than
-    /// leaving the caller to infer it from the message.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
     public bool SourcesComplete { get; }
 
     public bool Success => Pex != null;
@@ -42,51 +42,51 @@ public sealed class PapyrusCompileResult
         Diagnostics.Where(d => d.Severity == PapyrusSeverity.Error);
 }
 
-/// <summary>Options for a compile. Roots are the import path, in priority order.</summary>
+
 public sealed class PapyrusCompileOptions
 {
-    /// <summary>Extra source roots, searched before whatever the index already holds.</summary>
+
     public IList<string> ImportRoots { get; } = new List<string>();
 
-    /// <summary>
-    /// An <c>Institute_Papyrus_Flags.flg</c> to read the user-flag table from. Null looks for one
-    /// under the roots and otherwise uses the built-in Fallout 4 table.
-    /// </summary>
+
+
+
+
     public string? FlagFile { get; set; }
 
     public bool EmitDebugInfo { get; set; } = true;
 
-    /// <summary>See <see cref="PapyrusCodeGenOptions.EmitDebugOnlyCode"/>.</summary>
+
     public bool EmitDebugOnlyCode { get; set; } = true;
 
-    /// <summary>See <see cref="PapyrusCodeGenOptions.EmitBetaOnlyCode"/>.</summary>
+
     public bool EmitBetaOnlyCode { get; set; } = true;
 
     public string UserName { get; set; } = "";
 
     public string ComputerName { get; set; } = "";
 
-    /// <summary>
-    /// Unix seconds stamped into the header. Zero, the default, keeps output reproducible, which is
-    /// what makes a byte-level diff between two compiles of the same source meaningful.
-    /// </summary>
+
+
+
+
     public long CompilationTime { get; set; }
 }
 
-/// <summary>
-/// Source to <c>.pex</c>, with no Creation Kit involved.
-/// </summary>
-/// <remarks>
-/// The one entry point that ties the whole subsystem together: parse, index, resolve, type check,
-/// generate, write. Each of those is separately testable and separately measured; this exists so a
-/// caller does not have to know the order.
-/// <para>
-/// It refuses on the first stage that reports an error rather than pressing on, because a later
-/// stage's output would then be built on a tree it has already been told is wrong. That is the same
-/// reason <see cref="PapyrusCodeGenerator"/> refuses a call it cannot resolve: a wrong <c>.pex</c>
-/// is worse than none, since nothing downstream will tell you it is wrong until the game runs it.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class PapyrusCompiler
 {
     private readonly PapyrusScriptIndex _index;
@@ -94,7 +94,7 @@ public sealed class PapyrusCompiler
     public PapyrusCompiler(PapyrusScriptIndex index) =>
         _index = index ?? throw new ArgumentNullException(nameof(index));
 
-    /// <summary>An index over <paramref name="roots"/>, in the order given.</summary>
+
     public static PapyrusScriptIndex IndexFor(IEnumerable<string> roots)
     {
         var index = new PapyrusScriptIndex();
@@ -134,8 +134,8 @@ public sealed class PapyrusCompiler
         var diagnostics = new List<PapyrusDiagnostic>(script.Diagnostics);
         if (script.HasErrors) return new PapyrusCompileResult(script, null, diagnostics, sourcesComplete: false);
 
-        // Before resolution on purpose: a duplicate name makes the symbol table ambiguous, so
-        // resolving first would bury the real problem under its own consequences.
+
+
         diagnostics.AddRange(PapyrusDeclarationCheck.Check(script));
         if (diagnostics.Any(d => d.Severity == PapyrusSeverity.Error))
             return new PapyrusCompileResult(script, null, diagnostics, sourcesComplete: false);
@@ -171,7 +171,7 @@ public sealed class PapyrusCompiler
         return new PapyrusCompileResult(script, pex, diagnostics, resolution.BaseChainComplete);
     }
 
-    /// <summary>Compiles <paramref name="sourcePath"/> and writes the result beside it or to <paramref name="outputPath"/>.</summary>
+
     public PapyrusCompileResult CompileToFile(
         string sourcePath, string? outputPath = null, PapyrusCompileOptions? options = null)
     {

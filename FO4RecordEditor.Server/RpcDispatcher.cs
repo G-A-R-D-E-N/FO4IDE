@@ -4,15 +4,15 @@ using Newtonsoft.Json.Linq;
 
 namespace FO4RecordEditor.Server;
 
-/// <summary>
-/// Stands in for WebView2's AddHostObjectToScript.
-///
-/// In the WPF shell the React code calls window.chrome.webview.hostObjects.backend.GetConflicts(),
-/// and WebView2 marshals that across as a COM call returning a Promise. Here the same call arrives
-/// as POST /rpc {"target":"backend","method":"GetConflicts","args":[]} and is dispatched by
-/// reflection onto the same interop instance. The registered names must match MainWindow's
-/// AddHostObjectToScript names exactly, because the frontend addresses them by name.
-/// </summary>
+
+
+
+
+
+
+
+
+
 public sealed class RpcDispatcher
 {
     private readonly Dictionary<string, object> _targets = new(StringComparer.OrdinalIgnoreCase);
@@ -46,8 +46,8 @@ public sealed class RpcDispatcher
 
         var result = method.Invoke(target, call);
 
-        // Interop methods return string, bool, void, Task or Task<T>. Unwrap so the JS side sees
-        // the same value the WebView2 proxy would have resolved its Promise with.
+
+
         if (result is Task task)
         {
             await task.ConfigureAwait(false);
@@ -58,8 +58,8 @@ public sealed class RpcDispatcher
         return result;
     }
 
-    /// <summary>Prefer an exact arity match; fall back to one reachable with defaults, which is how
-    /// the JS side gets away with omitting trailing optional parameters.</summary>
+
+
     private static MethodInfo? Resolve(Type type, string name, int argc)
     {
         MethodInfo? loose = null;

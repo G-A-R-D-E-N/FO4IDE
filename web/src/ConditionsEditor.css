@@ -84,8 +84,8 @@
 }
 .ce-line { display: flex; align-items: center; gap: 6px; padding: 7px 9px; }
 
-/* The argument row is a wrapping grid of label-over-control pairs, so a long record name cannot
-   shove the following field onto a ragged second line the way an inline layout does. */
+
+
 .ce-args {
   display: flex;
   flex-wrap: wrap;

@@ -4,13 +4,13 @@ using System.Text;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Summarizes an unfamiliar mod folder's contents by category (meshes/textures/materials/sounds/
-/// scripts/plugins/archives/...) with per-category counts and a few top-level subfolders, so the AI
-/// can get oriented in a mod without walking the tree itself. Pulled from reviewing
-/// Bryant-21/modkit21 (GPL-3.0, permission granted) -- the category rules and special-cased voice
-/// (.fuz)/animation-text-data handling match creation_lib.mod.inspector.catalog_assets exactly.
-/// </summary>
+
+
+
+
+
+
+
 public static class ModInspectService
 {
     private static readonly (string Category, string[] Extensions)[] ExtensionCategories =
@@ -54,7 +54,7 @@ public static class ModInspectService
             var relPath = Path.GetRelativePath(modPath, fullPath);
             var relParts = relPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-            // Never count the decompiled-scripts output tree.
+
             if (relParts.Length >= 2 &&
                 string.Equals(relParts[0], "SCRIPTS", StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(relParts[1], "SOURCE", StringComparison.OrdinalIgnoreCase))

@@ -1,11 +1,11 @@
 namespace FO4RecordEditor.Services.Materials;
 
-/// <summary>
-/// FO4 .bgem ("BGEM") effect-material fields -- the format behind glowing, additive, refractive and
-/// animated surfaces. Names/types/version-conditional layout ported field-for-field from
-/// native/materials/src/bgem.rs::BgemData (Bryant-21/py-creation-lib, GPL-3.0, permission granted),
-/// the same way BgsmData was; see BgemCodec for the read/write order this depends on.
-/// </summary>
+
+
+
+
+
+
 public sealed class BgemData : IMaterialData
 {
     public MaterialHeader Header { get; set; } = new();
@@ -16,23 +16,23 @@ public sealed class BgemData : IMaterialData
     public string NormalTexture { get; set; } = "";
     public string EnvmapMaskTexture { get; set; } = "";
 
-    public string? SpecularTexture { get; set; }        // version >= 11
-    public string? LightingTexture { get; set; }        // version >= 11
-    public string? GlowTexture { get; set; }            // version >= 11
+    public string? SpecularTexture { get; set; }
+    public string? LightingTexture { get; set; }
+    public string? GlowTexture { get; set; }
 
-    public string? GlassRoughnessScratch { get; set; }  // version >= 21
-    public string? GlassDirtOverlay { get; set; }       // version >= 21
-    public bool? GlassEnabled { get; set; }             // version >= 21
+    public string? GlassRoughnessScratch { get; set; }
+    public string? GlassDirtOverlay { get; set; }
+    public bool? GlassEnabled { get; set; }
 
-    // Only present when GlassEnabled is true -- the payload is inline, not a fixed-size block, so
-    // toggling GlassEnabled changes the file's length. See BgemCodec.Write.
+
+
     public float[]? GlassFresnelColor { get; set; }
     public float? GlassBlurScaleBase { get; set; }
-    public float? GlassBlurScaleFactor { get; set; }    // version >= 22
+    public float? GlassBlurScaleFactor { get; set; }
     public float? GlassRefractionScaleBase { get; set; }
 
-    public bool? EnvironmentMapping { get; set; }           // version >= 10
-    public float? EnvironmentMappingMaskScale { get; set; } // version >= 10
+    public bool? EnvironmentMapping { get; set; }
+    public float? EnvironmentMappingMaskScale { get; set; }
 
     public bool BloodEnabled { get; set; }
     public bool EffectLightingEnabled { get; set; }
@@ -51,10 +51,10 @@ public sealed class BgemData : IMaterialData
     public byte EnvmapMinLOD { get; set; }
     public float SoftDepth { get; set; }
 
-    public float[]? EmittanceColor { get; set; }                      // version >= 11
-    public float? AdaptativeEmissiveExposureOffset { get; set; }      // version >= 15
-    public float? AdaptativeEmissiveFinalExposureMin { get; set; }    // version >= 15
-    public float? AdaptativeEmissiveFinalExposureMax { get; set; }    // version >= 15
-    public bool? Glowmap { get; set; }                                // version >= 16
-    public bool? EffectPbrSpecular { get; set; }                      // version >= 20
+    public float[]? EmittanceColor { get; set; }
+    public float? AdaptativeEmissiveExposureOffset { get; set; }
+    public float? AdaptativeEmissiveFinalExposureMin { get; set; }
+    public float? AdaptativeEmissiveFinalExposureMax { get; set; }
+    public bool? Glowmap { get; set; }
+    public bool? EffectPbrSpecular { get; set; }
 }

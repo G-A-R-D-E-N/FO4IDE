@@ -6,14 +6,14 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Builds graph documents for tests without hand-writing JSON.
-/// </summary>
-/// <remarks>
-/// Fixtures written as JSON would all need editing whenever the schema moved. Going through the
-/// model instead means a schema change is a compile error in one file rather than silent breakage
-/// spread across dozens of documents.
-/// </remarks>
+
+
+
+
+
+
+
+
 internal sealed class GraphBuilder
 {
     private readonly GraphDocument _document = new();
@@ -35,14 +35,14 @@ internal sealed class GraphBuilder
         }
     }
 
-    /// <summary>Declares which named state the script starts in.</summary>
+
     public GraphBuilder AutoState(string state)
     {
         _document.Header.AutoState = state;
         return this;
     }
 
-    /// <summary>Declares a custom event this script can raise.</summary>
+
     public GraphBuilder CustomEvent(string name)
     {
         _document.CustomEvents.Add(name);
@@ -64,7 +64,7 @@ internal sealed class GraphBuilder
         return this;
     }
 
-    /// <summary>Adds a node and returns its id.</summary>
+
     public string Node(string definitionId, GraphNodeKind kind, params (string Key, string Value)[] config)
     {
         var id = "n" + (++_sequence);
@@ -75,7 +75,7 @@ internal sealed class GraphBuilder
         return id;
     }
 
-    /// <summary>Adds a node whose kind is taken from the palette.</summary>
+
     public string Node(NodePalette palette, string definitionId, params (string Key, string Value)[] config)
     {
         var definition = palette.Find(definitionId)
@@ -83,7 +83,7 @@ internal sealed class GraphBuilder
         return Node(definitionId, definition.Kind, config);
     }
 
-    /// <summary>Sets a literal on an unconnected input pin.</summary>
+
     public GraphBuilder Value(string nodeId, string pinId, string type, string value)
     {
         var node = _document.Node(nodeId) ?? throw new ArgumentException($"No node '{nodeId}'.");
@@ -102,7 +102,7 @@ internal sealed class GraphBuilder
         return this;
     }
 
-    /// <summary>Chains exec pins in order, using each node's first exec output.</summary>
+
     public GraphBuilder Sequence(NodePalette palette, params string[] nodeIds)
     {
         for (int i = 0; i + 1 < nodeIds.Length; i++)
@@ -123,10 +123,10 @@ internal sealed class GraphBuilder
     }
 }
 
-/// <summary>Shared setup for the graph tests.</summary>
+
 internal static class GraphTestEnvironment
 {
-    /// <summary>An index over the checked-in stub tree.</summary>
+
     public static PapyrusScriptIndex Index() =>
         PapyrusCompiler.IndexFor(new[] { TestRoots.BaseStubs, TestRoots.GraphScripts });
 
@@ -134,7 +134,7 @@ internal static class GraphTestEnvironment
 
     public static GraphCompiler Compiler() => new(Index());
 
-    /// <summary>Compiles with the test-suite setting that turns surviving errors into faults.</summary>
+
     public static GraphCompileResult Compile(GraphDocument document, bool stopAfterSource = false) =>
         Compiler().Compile(document, new GraphCompileOptions
         {

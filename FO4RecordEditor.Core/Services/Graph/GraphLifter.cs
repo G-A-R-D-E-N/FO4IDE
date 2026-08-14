@@ -5,7 +5,7 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>The outcome of turning a parsed script into a graph.</summary>
+
 public sealed class GraphLiftResult
 {
     public GraphDocument? Document { get; init; }
@@ -16,20 +16,20 @@ public sealed class GraphLiftResult
         Document != null && !Diagnostics.Any(d => d.Severity == GraphSeverity.Error);
 }
 
-/// <summary>
-/// Turns a parsed Papyrus script into a graph document: the inverse of the lowering.
-/// </summary>
-/// <remarks>
-/// Built on <see cref="PapyrusResolution"/> rather than on the syntax alone. A definition id names
-/// the script that <em>declares</em> a member, so lifting <c>akOther.GetDistance(...)</c> needs the
-/// static type of the receiver, and the resolver already computes exactly that. Re-deriving it here
-/// would be a second type checker that could disagree with the first.
-/// <para>
-/// Anything this cannot express is <b>refused by name</b>, never dropped or approximated. A lifter
-/// that silently discarded a statement would hand back a graph that looks complete and compiles to
-/// a different script, which is far worse than refusing to open the file.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class GraphLifter
 {
     private readonly PapyrusScriptIndex _index;
@@ -72,7 +72,7 @@ public sealed class GraphLifter
         return new GraphLiftResult { Document = _doc, Diagnostics = _problems };
     }
 
-    // ---- declarations --------------------------------------------------------------------------
+
 
     private void LiftHeader()
     {
@@ -144,7 +144,7 @@ public sealed class GraphLifter
         }
     }
 
-    // ---- callables -----------------------------------------------------------------------------
+
 
     private void LiftCallable((PapyrusDeclaration Decl, string? State) callable)
     {
@@ -207,7 +207,7 @@ public sealed class GraphLifter
         }
     }
 
-    /// <summary>The script in the base chain that declares an event, which names its palette entry.</summary>
+
     private string? DeclaringScriptOf(string eventName)
     {
         var current = _script;
@@ -226,20 +226,20 @@ public sealed class GraphLifter
             current = _index.Resolve(current.Extends);
         }
 
-        // Declared only here, which is legal for a script that defines its own event.
+
         return _script.Extends ?? _script.Name;
     }
 
-    // ---- statements ----------------------------------------------------------------------------
 
-    /// <summary>
-    /// Lifts a block, threading the open execution ends through it.
-    /// </summary>
-    /// <remarks>
-    /// The cursor is a list rather than one pin because a branch leaves two ends open and the next
-    /// statement has to be reachable from both. That is the same shape the lowering reads coming the
-    /// other way, where two arms rejoin at a post-dominator.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
     private List<PinRef> LiftBlock(IEnumerable<PapyrusStatement> body, List<PinRef> open)
     {
         foreach (var statement in body) open = LiftStatement(statement, open);
@@ -273,8 +273,8 @@ public sealed class GraphLifter
                 LiftExpression(expression.Expression, ref open);
                 if (open.Count == before && ReferenceEquals(open, open))
                 {
-                    // A pure expression evaluated for no effect emits nothing, which is a statement
-                    // the graph cannot represent and does not need to.
+
+
                 }
                 return open;
             }
@@ -303,10 +303,10 @@ public sealed class GraphLifter
 
     private List<PinRef> LiftAssign(PapyrusAssignStatement assign, List<PinRef> open)
     {
-        // Papyrus has no compound assignment node, but x += v is only shorthand for x = x + v, so
-        // it is expanded rather than refused. Only for a plain name: on a member or an index the
-        // target would have to be evaluated twice, which is a different program when the
-        // subexpression has effects.
+
+
+
+
         var compound = CompoundId(assign.Operator);
         if (compound != null && assign.Target is not PapyrusIdentifierExpression)
         {
@@ -418,10 +418,10 @@ public sealed class GraphLifter
 
     private List<PinRef> LiftWhile(PapyrusWhileStatement loop, List<PinRef> open)
     {
-        // A condition with a call in it cannot be lifted honestly. The graph evaluates a loop
-        // condition from a data wire, and an impure producer on that wire is bound to a local before
-        // the loop, so it would be tested once rather than on every pass. Refusing beats emitting a
-        // graph that means something else.
+
+
+
+
         if (ContainsCall(loop.Condition))
         {
             Refuse("This loop's condition calls a function. The graph would evaluate it once "
@@ -445,9 +445,9 @@ public sealed class GraphLifter
     private static bool ContainsCall(PapyrusNode node) =>
         node is PapyrusCallExpression || node.Children.Any(ContainsCall);
 
-    // ---- expressions ---------------------------------------------------------------------------
 
-    /// <summary>A value feeding a pin: either another pin to wire from, or a literal to type in.</summary>
+
+
     private sealed record Value(PinRef? Pin, GraphPinValue? Literal);
 
     private Value? LiftExpression(PapyrusExpression expression, ref List<PinRef> open)
@@ -615,10 +615,10 @@ public sealed class GraphLifter
                 NodePalette.PropertyGetId(binding.Owner.Name, member.Name),
                 GraphNodeKind.PropertyGet);
             if (target != null) Attach(target, new PinRef(node, PinIds.Self));
-            // A property read hands back PinIds.Value, not PinIds.Return. NodePalette builds the
-            // getter with pins self and value; naming ret here produced a wire to a pin the
-            // definition never had, which the validator reported as GRA0017 on scripts that were
-            // otherwise perfectly good.
+
+
+
+
             return new Value(new PinRef(node, PinIds.Value), null);
         }
 
@@ -642,7 +642,7 @@ public sealed class GraphLifter
         var id = NodePalette.CallId(binding.Owner.Name, binding.Name, isGlobal);
         var node = Node(id, isGlobal ? GraphNodeKind.Call : GraphNodeKind.Call);
 
-        // The receiver, for a method. A bare call runs on Self, which the graph leaves unwired.
+
         if (!isGlobal && call.Callee is PapyrusMemberExpression receiver)
         {
             var target = LiftExpression(receiver.Target, ref open);
@@ -666,14 +666,14 @@ public sealed class GraphLifter
             if (value != null) Attach(value, new PinRef(node, PinIds.Argument(parameterName)));
         }
 
-        // Impure, so it takes its place in the execution order.
+
         Enter(open, node);
         open = new List<PinRef> { new(node, PinIds.Then) };
 
         return new Value(new PinRef(node, PinIds.Return), null);
     }
 
-    // ---- building ------------------------------------------------------------------------------
+
 
     private string Node(string definitionId, GraphNodeKind kind)
     {
@@ -697,7 +697,7 @@ public sealed class GraphLifter
         _doc.Node(nodeId)!.Config[key] = value;
     }
 
-    /// <summary>Wires every open execution end into a node's exec input.</summary>
+
     private void Enter(List<PinRef> open, string nodeId)
     {
         foreach (var end in open) Wire(end, new PinRef(nodeId, PinIds.Exec));
@@ -716,7 +716,7 @@ public sealed class GraphLifter
         if (value.Literal != null) _doc.Node(target.Node)!.PinValues[target.Pin] = value.Literal;
     }
 
-    // ---- helpers -------------------------------------------------------------------------------
+
 
     private void Refuse(string message, PapyrusSpan span = default) =>
         _problems.Add(new GraphDiagnostic
@@ -740,14 +740,14 @@ public sealed class GraphLifter
     private static string? Text(PapyrusExpression? expression) =>
         expression is PapyrusLiteralExpression literal ? literal.Text : null;
 
-    /// <summary>
-    /// The literal as it will be written back out.
-    /// </summary>
-    /// <remarks>
-    /// A pin value holds emitted source, not a cooked value, and the parser hands back a string
-    /// literal with its quotes already removed. Passing that through produced
-    /// <c>Debug.Notification(opened)</c>, which reads as an undefined name.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private static string LiteralText(PapyrusLiteralExpression literal) =>
         literal.Kind == PapyrusLiteralKind.String
             ? "\"" + literal.Text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""
@@ -762,7 +762,7 @@ public sealed class GraphLifter
         _ => "int",
     };
 
-    /// <summary>The arithmetic behind a compound assignment, or null for a plain one.</summary>
+
     private static string? CompoundId(PapyrusTokenKind op) => op switch
     {
         PapyrusTokenKind.PlusAssign => "add",

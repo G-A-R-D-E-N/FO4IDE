@@ -4,37 +4,37 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Archives;
 
-/// <summary>
-/// FO4 BA2 reader and writer. The reader here is structural and lossless -- it keeps each chunk's
-/// stored bytes verbatim and the DX10 per-file header -- which is what makes a byte-exact rewrite
-/// checkable; Mutagen's own reader exposes neither, so it cannot serve that purpose.
-///
-/// Layout was taken from the real archives, not from memory, and cross-checked against
-/// native/bsarchive/src/fo4/ in Bryant-21/py-creation-lib (GPL-3.0, permission granted):
-///
-///   header   24 bytes: "BTDX", u32 version, 4cc format, u32 fileCount, u64 stringTableOffset
-///   entry    hash(12) = u32 nameHash, 4 ext bytes, u32 dirHash
-///            + u8 0, u8 chunkCount, u16 chunkHeaderSize (0x10 General, 0x18 DirectX)
-///            + DirectX only: u16 height, u16 width, u8 mipCount, u8 dxgiFormat, u8 flags, u8 tileMode
-///   chunk    u64 dataOffset, u32 compressedSize, u32 decompressedSize
-///            + DirectX only: u16 mipFirst, u16 mipLast
-///            + u32 sentinel 0xBAADF00D
-///   strings  u16 length + bytes, one per entry, in entry order, ORIGINAL case
-///
-/// compressedSize == 0 means the chunk is stored raw; that rule is version-independent. Versions 1,
-/// 7 and 8 all occur in vanilla data and share this layout exactly -- version only ever changes the
-/// header size, and then only for v2/v3, which are Starfield-era and never appear in FO4.
-///
-/// Every one of the 81 vanilla archives is fully contiguous: the entry table ends exactly where the
-/// first payload starts, payloads abut with no padding and no shared/deduplicated offsets, and the
-/// last payload ends exactly at the string table. The writer reproduces that, which is why a rewrite
-/// can be byte-identical at all.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static class Ba2Codec
 {
-    private const uint Magic = 0x58445442;        // 'BTDX'
-    private const uint GnrlTag = 0x4C524E47;      // 'GNRL'
-    private const uint Dx10Tag = 0x30315844;      // 'DX10'
+    private const uint Magic = 0x58445442;
+    private const uint GnrlTag = 0x4C524E47;
+    private const uint Dx10Tag = 0x30315844;
     private const uint ChunkSentinel = 0xBAADF00D;
 
     private const int HeaderSize = 24;
@@ -239,11 +239,11 @@ public static class Ba2Codec
         if (archive.HasStringTable)
             foreach (var e in archive.Entries)
             {
-                // The stored bytes, verbatim. Real archives keep the name exactly as authored:
-                // DLCCoast - Main.ba2 carries "Strings/DLCCoast_cn.DLSTRINGS" with a forward slash
-                // while hashing the backslash form, and three Fallout4 - Voices.ba2 names are
-                // Windows-1252 rather than UTF-8. Normalizing or re-encoding either is a byte
-                // difference, and for the 1252 names a corrupting one.
+
+
+
+
+
                 var bytes = e.NameBytes;
                 if (bytes.Length > ushort.MaxValue)
                     throw new InvalidDataException($"'{e.Path}': name too long for the u16-prefixed string table.");
@@ -252,7 +252,7 @@ public static class Ba2Codec
             }
     }
 
-    /// <summary>Inflate a chunk to its original bytes.</summary>
+
     public static byte[] Decompress(Ba2Chunk chunk)
     {
         if (!chunk.Compressed) return chunk.Data;
@@ -271,11 +271,11 @@ public static class Ba2Codec
         return outBuf;
     }
 
-    /// <summary>
-    /// Compress for storage. The engine reads a zlib stream (header and Adler-32 checksum), not a
-    /// raw deflate stream -- writing raw deflate produces an archive that lists correctly and then
-    /// fails on every extraction.
-    /// </summary>
+
+
+
+
+
     public static Ba2Chunk Compress(byte[] data)
     {
         using var output = new MemoryStream();
@@ -283,8 +283,8 @@ public static class Ba2Codec
             zlib.Write(data, 0, data.Length);
         var packed = output.ToArray();
 
-        // A chunk that grew is stored raw. compressedSize == 0 is the format's own "stored" marker,
-        // so there is no cost to this beyond the size check.
+
+
         return packed.Length >= data.Length
             ? Ba2Chunk.Stored(data)
             : new Ba2Chunk(packed, (uint)data.Length, true, 0, 0);

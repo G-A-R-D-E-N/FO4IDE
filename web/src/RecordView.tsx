@@ -59,7 +59,7 @@ const LEVEL_BADGES: Record<string, { label: string; cls: string }> = {
   onlyone:    { label: 'Single Record', cls: 'rv-lvl-onlyone' },
 };
 
-/** Row shading, keyed by ConflictAll severity. */
+
 const LEGEND_ROWS: { cls: string; label: string }[] = [
   { cls: 'rv-s-none', label: 'No conflict' },
   { cls: 'rv-s-benign', label: 'Benign conflict' },
@@ -68,7 +68,7 @@ const LEGEND_ROWS: { cls: string; label: string }[] = [
   { cls: 'rv-s-critical', label: 'Critical conflict' },
 ];
 
-/** Cell states, keyed by ConflictThis. */
+
 const LEGEND_CELLS: { cls: string; label: string }[] = [
   { cls: 'rv-c-notdefined', label: 'Not defined' },
   { cls: 'rv-c-identical', label: 'Identical to master' },
@@ -105,7 +105,7 @@ export default function RecordView(
     activeTab?: RecordTab;
     onTabChange?: (t: RecordTab) => void;
     highlightField?: string;
-    /** Ask the shell to rebuild the Explorer tree: a copy can create or extend a plugin. */
+
     onPluginsChanged?: () => void;
   }
 ) {
@@ -124,8 +124,8 @@ export default function RecordView(
   const [editVal, setEditVal] = useState('');
   const [picker, setPicker] = useState<{ row: ConflictFieldRow; col: number } | null>(null);
 
-  // One dialog mechanism for the whole app (see dialogs.tsx). Promise-shaped, so each call site
-  // reads like the window.* call it replaces and keeps its early-return.
+
+
   const { confirm: askConfirm, prompt: askPrompt, pickPlugin: askForTarget } = useDialogs();
   const [conditions, setConditions] = useState<{ plugin: string; path: string; label: string } | null>(null);
   const [status, setStatus] = useState('');
@@ -134,17 +134,17 @@ export default function RecordView(
 
   const [collapsedGroups, setCollapsedGroups] = useState<Record<number, boolean>>({});
 
-  // xEdit's four column-width modes, ported as CSS layout strategies (Delphi's VirtualStringTree
-  // exposes per-column MinWidth/AutoFitColumns that CSS has no equivalent primitive for, so this is
-  // an honest re-implementation of the same four *intents*, not a line-for-line port):
-  //   standard  -- each plugin column a fixed pixel width, independent of the container (xEdit's
-  //                actual default; can need horizontal scroll with many plugins)
-  //   fitAll    -- plugin columns stretch to exactly fill the available width, evenly (this was the
-  //                tool's ONLY behaviour before this control existed, hence the original complaint:
-  //                a long model-path column and a short boolean column got the same width)
-  //   fitText   -- table-layout:auto; each column sized to its own longest visible value
-  //   fitSmart  -- fitText, but no column may exceed a share of the viewport, so one huge value
-  //                cannot push every other column into a horizontal scrollbar
+
+
+
+
+
+
+
+
+
+
+
   type ColumnWidthMode = 'standard' | 'fitAll' | 'fitText' | 'fitSmart';
   const [columnWidthMode, setColumnWidthMode] = useState<ColumnWidthMode>(
     () => (localStorage.getItem('rvColumnWidthMode') as ColumnWidthMode) || 'fitAll');
@@ -153,7 +153,7 @@ export default function RecordView(
     localStorage.setItem('rvColumnWidthMode', m);
   };
 
-  // Field path flashing from AI write events (highlightField prop → local flashedField state).
+
   const [flashedField, setFlashedField] = useState('');
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -162,19 +162,19 @@ export default function RecordView(
   const [problems, setProblems] = useState<RecordProblem[] | null>(null);
   const [deps, setDeps] = useState<Dependency[] | null>(null);
   const [history, setHistory] = useState<HistoryEntry[] | null>(null);
-  // Which of the per-record scans failed, keyed by scan. A failed scan must be reported as failed,
-  // never rendered as an empty result -- see the effect below.
+
+
   const [scanErrors, setScanErrors] = useState<Record<string, string>>({});
 
-  // Which two plugin columns the compare is anchored to; null means base against the winner.
+
   const [anchors, setAnchors] = useState<[string, string] | null>(null);
   const [compareOnly, setCompareOnly] = useState(false);
 
-  // Compare mode: show only the two anchored plugin columns and hide the rest, which is what the
-  // button has always promised. The entries are the ORIGINAL indices into matrix.Plugins, and those
-  // indices are what every action (SetField, CopyAsOverride, SavePlugin, CompactToEsl) is keyed on --
-  // filtering the array itself would silently retarget a write at the wrong plugin.
-  // With no anchors chosen there is nothing to compare against, so it falls back to showing all.
+
+
+
+
+
   const visibleCols = useMemo(() => {
     const all = matrix.Plugins.map((_, i) => i);
     if (!compareOnly || !anchors) return all;
@@ -205,11 +205,11 @@ export default function RecordView(
     setDeps(null); setHistory(null); setAnchors(null);
     setScanErrors({});
     (async () => {
-      // A FAILED scan must never render as an EMPTY one. These tabs previously fell back to [] on
-      // any error, so a reference scan that threw (GetReferencedBy does exactly that on Linux, where
-      // reading a localized name reaches for a game environment that is not there) displayed
-      // "Nothing in the load order references this record" -- the answer a user relies on before
-      // renumbering or deleting a FormID. Record the failure and say so instead.
+
+
+
+
+
       const fail = (k: string, e: unknown) =>
         setScanErrors(prev => ({ ...prev, [k]: e instanceof Error ? e.message : String(e) }));
       try { setProblems(JSON.parse(await b.GetProblems(matrix.FormKey))); }
@@ -223,14 +223,14 @@ export default function RecordView(
     })();
   }, [matrix.FormKey]);
 
-  // When the AI writes to a field, flash that row and switch to grid view so it's visible.
+
   useEffect(() => {
     if (!highlightField) return;
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
     setFlashedField(highlightField);
     setRecordTab('grid');
     flashTimerRef.current = setTimeout(() => setFlashedField(''), 1800);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [highlightField]);
 
   const winnerIdx = useMemo(() => {
@@ -244,8 +244,8 @@ export default function RecordView(
 
   const f = filter.trim().toLowerCase();
   const vf = valueFilter.trim().toLowerCase();
-  // Either filter flattens the tree, since a match can sit at any depth and hiding its ancestors
-  // would hide the match itself.
+
+
   const filtering = f.length > 0 || vf.length > 0;
 
   const matched = useMemo(() => matrix.Rows.filter(r => {
@@ -267,12 +267,12 @@ export default function RecordView(
       if (r.HasChildren && isCollapsed(r)) collapsedLevels.push(r.Level);
     }
     return out;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [matched, ov, filtering]);
 
-  // ── Conflict tab data ──────────────────────────────────────────────────────
-  // A row is a genuine conflict only when ≥2 plugins have non-empty values that differ.
-  // Rows where all defining plugins agree (ITM overrides) are excluded.
+
+
+
   const isGenuineConflict = (r: ConflictFieldRow) => {
     if (!r.Differs || r.HasChildren) return false;
     const nonEmpty = r.Values.filter(v => v !== '' && v != null);
@@ -282,11 +282,11 @@ export default function RecordView(
 
   const conflictLeafRows = useMemo(
     () => matrix.Rows.filter(isGenuineConflict),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [matrix.Rows]
   );
 
-  // Group conflicting leaf rows by their nearest Level-1 container ancestor.
+
   const conflictGroups = useMemo(() => {
     type CGroup = { label: string; rows: ConflictFieldRow[]; severity: string };
     const groups: CGroup[] = [];
@@ -305,9 +305,9 @@ export default function RecordView(
     }
     if (cur && cur.rows.length > 0) groups.push(cur);
     return groups;
-  }, [matrix.Rows]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [matrix.Rows]);
 
-  // ── Editing ────────────────────────────────────────────────────────────────
+
   const startEdit = (r: ConflictFieldRow, col: number) => {
     setMenu(null);
     if (r.HasChildren) return;
@@ -340,12 +340,12 @@ export default function RecordView(
           await b.DescribeElement(matrix.Plugins[menu.col], matrix.FormKey, menu.row.Field)));
       } catch { setElementActions(null); }
     })();
-  // Re-asking on every open is what keeps the menu honest after an add/remove changes the counts.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+
   }, [menu]);
 
-  // xEdit's "Copy as override into...": ask for the target, then copy. This replaces an inline list
-  // of editable plugins plus a hardcoded ConflictPatch.esp, which offered nothing in a fresh session.
+
+
   const copyAsOverrideInto = async (col: number) => {
     setMenu(null);
     const picked = await askForTarget({
@@ -363,8 +363,8 @@ export default function RecordView(
     setStatus('Copying…');
     try {
       let msg = await b.CopyAsOverride(matrix.Plugins[col], matrix.FormKey, target, false);
-      // The backend refuses rather than silently replacing an override the target already has.
-      // Ask, then repeat the same call with overwrite set. xEdit asks the same question.
+
+
       if (msg.startsWith('EXISTS:')) {
         const proceed = await askConfirm({
           title: 'Record already exists in target plugin',
@@ -376,8 +376,8 @@ export default function RecordView(
         msg = await b.CopyAsOverride(matrix.Plugins[col], matrix.FormKey, target, true);
       }
       setStatus(msg);
-      // Reload so the new override shows as a column in the matrix immediately, and refresh the
-      // Explorer so the target plugin appears/updates there too.
+
+
       await onReload();
       onPluginsChanged?.();
     }
@@ -445,7 +445,7 @@ export default function RecordView(
     catch (e: any) { setStatus('Clean failed: ' + (e?.message || e)); }
   };
 
-  // ── xEdit parity actions ───────────────────────────────────────────────────
+
   const copyAsNewRecord = async (col: number) => {
     setMenu(null);
     const b = back();
@@ -538,8 +538,8 @@ export default function RecordView(
     } catch (e: any) { setStatus('Change referencing records failed: ' + (e?.message || e)); }
   };
 
-  // Dry run first, then a confirm carrying the real count: removing an override that is not truly
-  // identical would silently drop real edits, so the user always sees what is going before it goes.
+
+
   const removeItm = async (col: number) => {
     setMenu(null);
     const b = back();
@@ -573,8 +573,8 @@ export default function RecordView(
     catch (e: any) { setStatus('Add masters failed: ' + (e?.message || e)); }
   };
 
-  // Same dry-run-then-confirm shape as removeItm: this rewrites every FormID in the plugin and
-  // breaks any other plugin's references into it, so the count is shown before anything happens.
+
+
   const renumberPlugin = async (col: number) => {
     setMenu(null);
     const b = back();
@@ -620,15 +620,15 @@ export default function RecordView(
     setStatus(`Copied ${what}: ${text}`);
   };
 
-  // Conditions are not always the record's own list: a magic effect keeps its own at
-  // Effects[0].Conditions, and a perk two deep at Effects[0].Conditions[0].Conditions (the outer
-  // list holds the run-on tab wrapper). Any row under a Conditions segment opens the editor; the
-  // backend resolves the path down to the one editable Condition list.
+
+
+
+
   const conditionsPathOf = (field: string) => (/(^|\.)Conditions(\[|$)/.test(field) ? field : null);
 
-  // xEdit's element menu, per xeMainForm.pas. Add constructs a default entry at the clicked row's
-  // position and leaves you to edit it in the grid -- it never asks for a value up front, and the
-  // menu only offers what the element actually supports.
+
+
+
   const elementAction = async (
     kind: 'add' | 'remove' | 'up' | 'down' | 'clear',
     r: ConflictFieldRow, col: number, template = '',
@@ -654,8 +654,8 @@ export default function RecordView(
     } catch (e: any) { setStatus('Failed: ' + (e?.message || e)); }
   };
 
-  // The Actions menu operates on the winning plugin, which is the one a record-level action
-  // almost always means. Per-column variants stay on the cell context menu.
+
+
   const winnerCol = Math.max(0, matrix.Plugins.lastIndexOf(matrix.Winner));
   const headerActions = useMemo(() => buildActions({
     copyAsOverride: () => {
@@ -673,9 +673,9 @@ export default function RecordView(
     compactToEsl: () => void compactEsl(winnerCol),
     cleanUdr: () => void cleanPlugin(winnerCol),
     deleteRecord: () => void deleteRecord(winnerCol),
-  // These handlers close over matrix/state that changes on every reload; rebuilding the list each
-  // render is cheaper than memoising every handler.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+
+
   }), [matrix.FormKey, matrix.Winner, editablePlugins]);
 
   const askImpact = () => {
@@ -718,7 +718,7 @@ export default function RecordView(
     );
   };
 
-  // Shared grid table used by both Record View tab and Conflicts tab.
+
   const renderGrid = (gridRows: ConflictFieldRow[]) => (
     <table
       className={`rv-grid rv-cw-${columnWidthMode}`}
@@ -782,7 +782,7 @@ export default function RecordView(
   return (
     <div className="rv-container">
 
-      {/* ── Tab bar ───────────────────────────────────────────────── */}
+      {}
       <div className="rv-tab-bar">
         <TabBtn id="grid" current={recordTab} set={setRecordTab}>Record View</TabBtn>
         <TabBtn id="fields" current={recordTab} set={setRecordTab} count={matrix.Rows.length}>Field View</TabBtn>
@@ -798,7 +798,7 @@ export default function RecordView(
         </TabBtn>
       </div>
 
-      {/* ── Workspace header: compare pills, breadcrumb, actions ──── */}
+      {}
       <WorkspaceHeader
         matrix={matrix}
         anchors={anchors}
@@ -810,7 +810,7 @@ export default function RecordView(
         onOpenRecord={(fk, pl) => onOpenRecord?.(fk, pl)}
       />
 
-      {/* ── RECORD VIEW tab ───────────────────────────────────────── */}
+      {}
       {recordTab === 'grid' && (
         <>
           <div className="rv-toolbar">
@@ -885,7 +885,7 @@ export default function RecordView(
         </>
       )}
 
-      {/* ── CONFLICTS tab ─────────────────────────────────────────── */}
+      {}
       {recordTab === 'conflicts' && (
         <ConflictsView
           matrix={matrix}
@@ -895,7 +895,7 @@ export default function RecordView(
           anchors={anchors}
           matrixView={
             <div className="rv-conflicts-tab">
-              {/* Single unified table -- xEdit style with group separator rows */}
+              {}
               <div className="rv-conflict-groups">
                 <table className="rv-grid rv-cg-table" style={{ minWidth: 280 + visibleCols.length * 200 }}>
                   <thead>
@@ -964,7 +964,7 @@ export default function RecordView(
         />
       )}
 
-      {/* ── REFERENCES tab ────────────────────────────────────────── */}
+      {}
       {recordTab === 'references' && (
         <div className="rv-references-tab">
           {refBy === null ? (
@@ -998,7 +998,7 @@ export default function RecordView(
         </div>
       )}
 
-      {/* ── FIELD VIEW tab ────────────────────────────────────────── */}
+      {}
       {recordTab === 'fields' && (
         <div className="rv-list-tab">
           <div className="rv-tab-note">
@@ -1023,7 +1023,7 @@ export default function RecordView(
         </div>
       )}
 
-      {/* ── HISTORY tab ───────────────────────────────────────────── */}
+      {}
       {recordTab === 'history' && (
         <div className="rv-list-tab">
           {history === null ? (
@@ -1032,8 +1032,8 @@ export default function RecordView(
             <div className="rv-tab-empty">No plugin carries this record.</div>
           ) : (
             <>
-              {/* A plugin file has no real version history, so this is the override chain in load
-                  order, which is the honest thing the data can support. */}
+              {
+}
               <div className="rv-tab-note">
                 Override chain in load order. Plugin files carry no edit history, so this is who
                 touched the record, not when it was changed.
@@ -1059,7 +1059,7 @@ export default function RecordView(
         </div>
       )}
 
-      {/* ── DEPENDENCIES tab ──────────────────────────────────────── */}
+      {}
       {recordTab === 'dependencies' && (
         <div className="rv-list-tab">
           {deps === null ? (
@@ -1104,7 +1104,7 @@ export default function RecordView(
         </div>
       )}
 
-      {/* ── Bottom drawer: Problems only ──────────────────────────── */}
+      {}
       <div className={`rv-drawer ${drawerOpen ? 'open' : 'closed'}`}>
         <div className="rv-drawer-tabs">
           <button className="on">
@@ -1131,14 +1131,14 @@ export default function RecordView(
         )}
       </div>
 
-      {/* ── Right-click context menu ──────────────────────────────── */}
+      {}
       {menu && (
         <div className="rv-context" style={{ left: menu.x, top: menu.y }} onClick={e => e.stopPropagation()}>
           {!menu.row.HasChildren && (
             <button onClick={() => startEdit(menu.row, menu.col)}><Pencil size={13} /> Edit value <span className="rv-key">F2</span></button>
           )}
 
-          {/* Structured-list editing: the xEdit "Add"/"Remove" you get on an array element. */}
+          {}
           {conditionsPathOf(menu.row.Field) && (
             <button onClick={() => {
               const plug = matrix.Plugins[menu.col];
@@ -1147,8 +1147,8 @@ export default function RecordView(
               setConditions({ plugin: plug, path: p, label: matrix.EditorID || matrix.FormKey });
             }}><ListFilter size={13} /> Edit conditions…</button>
           )}
-          {/* xEdit's element menu: only what this element actually supports. Add with one accepted
-              type reads Add "Type"; with several it lists them, the way GetAssignTemplates does. */}
+          {
+}
           {elementActions?.canAdd && elementActions.templates.length === 1 && (
             <button onClick={() => elementAction('add', menu.row, menu.col, elementActions.templates[0])}>
               <Plus size={13} /> Add "{elementActions.templates[0]}"
@@ -1184,7 +1184,7 @@ export default function RecordView(
           )}
 
           <div className="rv-context-sep" />
-          {/* xEdit naming and order. Each opens the target picker rather than a native prompt. */}
+          {}
           <button onClick={() => copyAsOverrideInto(menu.col)}><Copy size={13} /> Copy as override into...</button>
           <button onClick={() => copyAsNewRecord(menu.col)}><FilePlus2 size={13} /> Copy as new record into...</button>
           <button onClick={() => deepCopyAsOverride(menu.col)}><FilePlus2 size={13} /> Deep copy as override into...</button>
@@ -1221,7 +1221,7 @@ export default function RecordView(
         </div>
       )}
 
-      {/* ── FormLink record picker ────────────────────────────────── */}
+      {}
       {picker && (
         <RecordPicker
           title={picker.row.DisplayLabel}
@@ -1232,7 +1232,7 @@ export default function RecordView(
         />
       )}
 
-      {/* ── Conditions editor ─────────────────────────────────────── */}
+      {}
       {conditions && (
         <ConditionsEditor
           plugin={conditions.plugin}

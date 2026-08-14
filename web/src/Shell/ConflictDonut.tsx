@@ -11,10 +11,10 @@ const STROKE = 14;
 const R = (SIZE - STROKE) / 2;
 const C = 2 * Math.PI * R;
 
-/**
- * Conflict breakdown as an SVG donut. Deliberately hand-drawn rather than pulling in a chart
- * library for one figure: three arcs on a circle is less code than the dependency would be.
- */
+
+
+
+
 export default function ConflictDonut({ values, flags, formIds }: ConflictDonutProps) {
   const slices: Slice[] = [
     { label: 'Values', value: values, color: 'var(--text-secondary)' },
@@ -34,7 +34,7 @@ export default function ConflictDonut({ values, flags, formIds }: ConflictDonutP
         {total > 0 && slices.map(s => {
           if (s.value === 0) return null;
           const len = (s.value / total) * C;
-          // Each arc starts where the previous one ended; rotating -90deg puts 0 at the top.
+
           const dash = `${len} ${C - len}`;
           const el = (
             <circle

@@ -3,22 +3,22 @@ using FO4RecordEditor.Services;
 
 namespace FO4RecordEditor.Server;
 
-/// <summary>
-/// The cross-platform half of <see cref="HostServices"/>. File pickers go through zenity or
-/// kdialog when one is installed; without either, a picker returns "" and the React panels fall
-/// back to their plain text path fields, which every one of them already has.
-/// </summary>
+
+
+
+
+
 public static class LinuxHostServices
 {
     private static readonly object UiLock = new();
-    private static string? _picker;   // resolved once: "zenity", "kdialog", or "" for none
+    private static string? _picker;
 
     public static void Install()
     {
         HostServices.ShowFileDialog = Show;
         HostServices.ShowMessage = ShowMessage;
-        // No thread affinity here: the collections are only read back through the RPC layer, never
-        // bound to a UI toolkit. A lock is still needed because writes come off Task.Run threads.
+
+
         HostServices.InvokeOnUiThread = a => { lock (UiLock) a(); };
     }
 
@@ -72,7 +72,7 @@ public static class LinuxHostServices
         };
     }
 
-    /// <summary>Win32 filters are "Label|*.a;*.b|Label2|*.c". zenity wants "Label | *.a *.b".</summary>
+
     private static IEnumerable<string> ParseFilter(string filter)
     {
         if (string.IsNullOrWhiteSpace(filter)) yield break;
@@ -90,7 +90,7 @@ public static class LinuxHostServices
         {
             if (Picker == "zenity") Run("zenity", ["--info", "--no-wrap", "--text=" + text]);
             else if (Picker == "kdialog") Run("kdialog", ["--msgbox", text]);
-            else Console.Error.WriteLine("[FO4RecordEditor] " + text);
+            else Console.Error.WriteLine("[FO4IDE] " + text);
         }
         catch (Exception ex) { DebugLog.Exception("HostServices.ShowMessage", ex); }
     }

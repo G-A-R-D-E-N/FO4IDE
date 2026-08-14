@@ -9,10 +9,10 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>Prose for one parameter.</summary>
+
 public sealed record WikiParameterDoc(string? Description, string? DocumentedDefault);
 
-/// <summary>Prose for one function.</summary>
+
 public sealed record WikiFunctionDoc
 {
     public string? Summary { get; init; }
@@ -25,10 +25,10 @@ public sealed record WikiFunctionDoc
         new Dictionary<string, WikiParameterDoc>(StringComparer.OrdinalIgnoreCase);
 }
 
-/// <summary>Prose for one script.</summary>
+
 public sealed record WikiScriptDoc(string? Summary);
 
-/// <summary>How much of a documentation mirror was usable.</summary>
+
 public sealed record WikiDocStats(int PagesIndexed, int PagesParsed, int PagesFailed)
 {
     public static readonly WikiDocStats Empty = new(0, 0, 0);
@@ -36,7 +36,7 @@ public sealed record WikiDocStats(int PagesIndexed, int PagesParsed, int PagesFa
     public bool Available => PagesIndexed > 0;
 }
 
-/// <summary>Where node tooltips come from.</summary>
+
 public interface IWikiDocProvider
 {
     WikiFunctionDoc? Function(string scriptName, string functionName);
@@ -46,11 +46,11 @@ public interface IWikiDocProvider
     WikiDocStats Stats { get; }
 }
 
-/// <summary>The provider used when no mirror is configured.</summary>
-/// <remarks>
-/// Returning null for everything is the whole implementation, and it is what lets every caller treat
-/// documentation as optional without a null check on the provider itself.
-/// </remarks>
+
+
+
+
+
 public sealed class NullWikiDocProvider : IWikiDocProvider
 {
     public static readonly NullWikiDocProvider Instance = new();
@@ -64,26 +64,26 @@ public sealed class NullWikiDocProvider : IWikiDocProvider
     public WikiDocStats Stats => WikiDocStats.Empty;
 }
 
-/// <summary>
-/// Reads an offline Creation Kit wiki mirror for node descriptions.
-/// </summary>
-/// <remarks>
-/// Enrichment only. The script signature is always authoritative for a pin's identity, type, arity
-/// and default; this supplies prose and nothing else, and can never change a pin's type. A mirror
-/// that disagrees about arity is stale, which happens, and the signature wins.
-/// <para>
-/// Degradation is total by design. A missing root, an unreadable file, a page with no syntax
-/// section or a layout the patterns do not match all yield null for that field rather than an
-/// exception, because a tooltip is never worth failing a compile over.
-/// </para>
-/// <para>
-/// The directory is indexed once rather than searched per lookup. A palette build asks about
-/// thousands of members, and globbing three thousand files per question would dominate the cost.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class CkWikiDocProvider : IWikiDocProvider
 {
-    // Page names follow Function_-_Script.html, with the wiki's percent encoding left in place.
+
     private static readonly Regex SectionPattern = new(
         @"<span[^>]*id=""(?<id>Syntax|Parameters|Return_Value)""[^>]*>.*?</h2>(?<body>.*?)(?=<h2|<div id=""catlinks)",
         RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -161,8 +161,8 @@ public sealed class CkWikiDocProvider : IWikiDocProvider
     }
 
     private IEnumerable<string> EnumerateHtml() =>
-        // The shared walker, because the framework's recursion skips hidden entries and throws on
-        // the symlink shapes a Proton or Wine prefix leaves behind.
+
+
         _root == null ? Array.Empty<string>() : PapyrusFileWalk.EnumerateFiles(_root, "*.html");
 
     private WikiFunctionDoc? ReadFunction(string scriptName, string functionName)

@@ -6,9 +6,9 @@ using Mutagen.Bethesda.Archives;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// xEdit parity: cross-plugin asset usage audit (#61).
-/// </summary>
+
+
+
 public static partial class WriteService
 {
     private static readonly HashSet<string> AssetAuditExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -18,12 +18,12 @@ public static partial class WriteService
 
     private static string NormalizeAssetPath(string p) => p.Replace('/', '\\').TrimStart('\\');
 
-    // Generic reflection walk, not a per-record-type switch. Verified before writing this that
-    // Mutagen's own IAssetLinkContainer/EnumerateAssetLinks does NOT cover this: in this Fallout4
-    // record set it is implemented ONLY by Cell/CellBlock/CellSubBlock/Worldspace/WorldspaceBlock/
-    // WorldspaceSubBlock (grep-checked, 6 types total) -- i.e. placed-reference assets, not every
-    // record type's own Model/Icon fields. WEAP/ARMO/STAT/etc. don't implement it at all, so a
-    // reflection walk is the only way to catch every record type's asset-shaped string fields.
+
+
+
+
+
+
     private static void CollectAssetPaths(object? obj, HashSet<string> found, int depth, int maxDepth)
     {
         if (obj == null || depth > maxDepth) return;
@@ -53,15 +53,15 @@ public static partial class WriteService
         }
     }
 
-    /// <summary>
-    /// xEdit's "List used meshes" / "Output used assets filenames" family. Walks every property of a
-    /// plugin's own (native) records via reflection, collecting string values whose extension matches
-    /// a known FO4 asset type, then diffs that set against what the plugin's own on-disk folder
-    /// actually ships (loose files + any BA2 sitting beside it -- the same folder FindPluginPath
-    /// already resolves for this plugin elsewhere in this file). Reports orphans (shipped but
-    /// unreferenced -- candidates for trimming a repack) and dangling (referenced but not found in
-    /// THIS plugin's own folder -- NOT necessarily broken, see the caveat in the result).
-    /// </summary>
+
+
+
+
+
+
+
+
+
     public static string AuditAssetUsage(string plugin, object? env, int recordLimit = 3000)
     {
         var mod = EnsureOpen(plugin, env, out var msg); if (mod == null) return msg;
@@ -91,8 +91,8 @@ public static partial class WriteService
         }
         catch (Exception ex) { DebugLog.Exception("AssetAudit.EnumLoose", ex); }
 
-        // One-shot, not the session-cached scan TextureService keeps for hot lookups -- this runs
-        // once per audit call against a single known folder, not a repeated resolution path.
+
+
         try
         {
             foreach (var archive in Directory.EnumerateFiles(pluginDir, "*.ba2", SearchOption.AllDirectories))
@@ -122,10 +122,10 @@ public static partial class WriteService
         sb.AppendLine($"  Orphaned (shipped, not referenced by this plugin's own records): {orphans.Count}");
         foreach (var o in orphans.Take(30)) sb.AppendLine($"    - {o}");
         if (orphans.Count > 30) sb.AppendLine($"    ... and {orphans.Count - 30} more");
-        // Split "not in this plugin's own folder" into "served by something else in the load order"
-        // (expected -- a shared base-game or other-mod asset) and "served by nothing at all" (the
-        // actually broken kind). #65's AssetResolver is what makes this distinction possible; before
-        // it, every dangling entry had to be reported with a caveat and triaged by hand.
+
+
+
+
         var elsewhere = new List<string>();
         var missing = new List<string>();
         foreach (var d in dangling) (AssetResolver.Exists(d) ? elsewhere : missing).Add(d);

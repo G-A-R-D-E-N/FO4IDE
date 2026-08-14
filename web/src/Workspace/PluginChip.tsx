@@ -6,7 +6,7 @@ interface PluginChipProps {
   onClick?: () => void;
 }
 
-// Reusable plugin chip: a stable colored badge (first letter) plus the plugin file name.
+
 export default function PluginChip({ name, onClick }: PluginChipProps) {
   return (
     <div

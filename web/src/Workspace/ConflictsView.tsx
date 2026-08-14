@@ -12,11 +12,11 @@ export type ConflictLayout = 'cards' | 'matrix';
 
 interface ConflictsViewProps {
   matrix: ConflictMatrix;
-  /** Only rows that actually differ; the caller already has this list for its own counts. */
+
   rows: ConflictFieldRow[];
   layout: ConflictLayout;
   onLayoutChange: (next: ConflictLayout) => void;
-  /** Rendered when layout is 'matrix' -- the existing xEdit-style grid. */
+
   matrixView: React.ReactNode;
   anchors: [string, string] | null;
 }
@@ -26,14 +26,14 @@ const KIND_LABEL: Record<ConflictKind, string> = {
   All: 'All Conflicts', Value: 'Values', Flag: 'Flags', FormID: 'FormIDs',
 };
 
-/**
- * Variant B: one card per conflicting field, base value beside the winning value, with the
- * plugins that also touch it listed alongside.
- *
- * The matrix answers "what does every plugin say"; the cards answer "what changed and who did it",
- * which is the question you have when you are deciding whether an override is wanted. The matrix is
- * still one click away for the times the full column set matters.
- */
+
+
+
+
+
+
+
+
 export default function ConflictsView({
   matrix, rows, layout, onLayoutChange, matrixView, anchors,
 }: ConflictsViewProps) {
@@ -50,8 +50,8 @@ export default function ConflictsView({
     () => (kind === 'All' ? rows : rows.filter(r => (r.Kind ?? 'Value') === kind)),
     [rows, kind]);
 
-  // Group by the subrecord each row hangs off, preserving the order rows arrive in so the cards
-  // read in the same sequence as the grid.
+
+
   const groups = useMemo(() => {
     const out: { key: string; label: string; rows: ConflictFieldRow[] }[] = [];
     const index = new Map<string, number>();
@@ -192,8 +192,8 @@ function ConflictCard({ row, matrix, baseCol, winnerCol }: {
   const baseValue = row.Values[baseCol] ?? '';
   const winValue = row.Values[winnerCol] ?? '';
 
-  // Everyone else that defines this field, which is what makes a two-way card honest about a
-  // three-plugin disagreement instead of hiding it.
+
+
   const others = matrix.Plugins.filter(
     (_, i) => i !== baseCol && i !== winnerCol && (row.Values[i] ?? '') !== '');
 

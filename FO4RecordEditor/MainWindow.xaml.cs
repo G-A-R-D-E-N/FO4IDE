@@ -15,7 +15,7 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
     private readonly ShellViewModel _shell = new();
     private readonly AppInterop _appInterop;
 
-    // Lock objects for cross-thread access
+
     private readonly object _logLock = new();
     private readonly object _errorsLock = new();
 
@@ -28,7 +28,7 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
         System.Windows.Data.BindingOperations.EnableCollectionSynchronization(_shell.Log.Entries, _logLock);
         System.Windows.Data.BindingOperations.EnableCollectionSynchronization(_shell.Errors, _errorsLock);
 
-        // Forward loader progress to the React UI as web messages (status text + progress bar).
+
         _appInterop = new AppInterop(_shell, (msg, pct) =>
         {
             if (!string.IsNullOrEmpty(msg)) SetStatus(msg);
@@ -63,31 +63,31 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
     {
         var env = await CoreWebView2Environment.CreateAsync(null, System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FO4RecordEditor_Main_WebView2"));
         await AppWebView.EnsureCoreWebView2Async(env);
-        
+
         AppWebView.CoreWebView2.AddHostObjectToScript("appInterop", _appInterop);
         AppWebView.CoreWebView2.AddHostObjectToScript("backend", new BackendInterop(_shell));
-        // Claude AI panel bridge. The agent's onText/onToolStatus callbacks can fire off the UI
-        // thread, so marshal every web-message post through the Dispatcher before PostWebMessageAsJson.
+
+
         AppWebView.CoreWebView2.AddHostObjectToScript("chat", new Services.ChatInterop(_shell,
             payload => Dispatcher.BeginInvoke(() =>
                 AppWebView.CoreWebView2?.PostWebMessageAsJson(Newtonsoft.Json.JsonConvert.SerializeObject(payload)))));
-        // React Settings panel (replaces the WPF SettingsDialog).
+
         AppWebView.CoreWebView2.AddHostObjectToScript("settings", new Services.SettingsInterop(_shell));
-        // Papyrus panel: compile (.psc -> .pex) + decompile (.pex -> .psc) + CK wiki lookup.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("papyrus", new Services.PapyrusInterop(_shell));
-        // NIF panel: author / inspect / verify / repair FO4 NIFs via niftool.exe.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("nif", new Services.NifInterop());
-        // Materials tab (lives inside the NIF panel): inspect/edit .bgsm and .bgem shader fields.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("material", new Services.MaterialInterop());
-        // Masters panel: inspect/reorder a plugin's master table + toggle its ESL flag.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("masters", new Services.MastersInterop(_shell));
-        // Archive panel: list/extract BA2/BSA contents.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("archive", new Services.ArchiveInterop());
-        // Audio panel: convert to/from xWMA, merge/split .fuz.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("audio", new Services.AudioInterop());
-        // Cell Viewer panel: read a cell's placed references + batch-convert their meshes to geometry.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("cell", new Services.CellInterop(_shell));
-        // Blueprint panel: the node graph that validates and compiles down to Papyrus.
+
         AppWebView.CoreWebView2.AddHostObjectToScript("graph", new Services.GraphInterop(_shell));
 
 #if DEBUG
@@ -129,14 +129,14 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
 
     public void SetStatus(string text)
     {
-        // Send status to React
+
         var msg = new { Type = "SetStatus", Text = text };
         AppWebView.CoreWebView2?.PostWebMessageAsJson(Newtonsoft.Json.JsonConvert.SerializeObject(msg));
     }
 
     public void SetProgress(double value)
     {
-        // Send progress to React
+
         var msg = new { Type = "SetProgress", Value = value };
         AppWebView.CoreWebView2?.PostWebMessageAsJson(Newtonsoft.Json.JsonConvert.SerializeObject(msg));
     }

@@ -61,7 +61,7 @@ public class KnowledgeGraphTests
             .Which.FormKey.Should().Be("000800:Master.esm");
         var winner = g.GetByFormKey("000800:Master.esm")!;
         winner.SourcePlugin.Should().Be("B.esp");
-        winner.IsWinningOverride.Should().BeTrue();   // winner reports the flag correctly
+        winner.IsWinningOverride.Should().BeTrue();
     }
 
     [Fact]

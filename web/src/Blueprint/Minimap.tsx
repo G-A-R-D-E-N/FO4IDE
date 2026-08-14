@@ -11,19 +11,19 @@ interface Props {
   defs: Record<string, BpNodeDef>;
   selection: string[];
   view: BpViewport;
-  /** Size of the visible canvas, so the viewport rectangle is drawn to scale. */
+
   stage: { width: number; height: number };
-  /** Centre the canvas on a point in graph coordinates. */
+
   onGoTo: (x: number, y: number) => void;
 }
 
-/**
- * An overview of the whole graph with the visible area marked on it.
- *
- * Drawn from node boxes only, not wires. A wire at this scale is a couple of pixels and adds
- * clutter rather than information; what the reader needs is where the mass of the graph is and
- * where they currently are within it.
- */
+
+
+
+
+
+
+
 export default function Minimap({ doc, defs, selection, view, stage, onGoTo }: Props) {
   const bounds = useMemo(() => graphBounds(doc, defs), [doc, defs]);
   const fit = useMemo(() => minimapFit(bounds, WIDTH, HEIGHT), [bounds]);
@@ -31,7 +31,7 @@ export default function Minimap({ doc, defs, selection, view, stage, onGoTo }: P
 
   if (!bounds) return null;
 
-  // The visible area in graph coordinates, derived from the canvas transform.
+
   const visible = {
     x: -view.x / view.k,
     y: -view.y / view.k,

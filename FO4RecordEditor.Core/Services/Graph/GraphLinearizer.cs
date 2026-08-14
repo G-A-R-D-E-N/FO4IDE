@@ -5,16 +5,16 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>
-/// Turns one validated graph into the intermediate representation the writer prints.
-/// </summary>
-/// <remarks>
-/// Two halves that meet in the middle. Exec edges become statement order, walked as regions so a
-/// branch's arms nest and rejoin at the post-dominator. Data edges become expressions, pulled
-/// backwards from each input: a pure producer inlines at every use, and an impure one is bound to a
-/// local at its point in the exec sequence, which fixes evaluation order by construction rather than
-/// by an ordering analysis.
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
 public sealed class GraphLinearizer
 {
     private readonly GraphDocument _document;
@@ -37,7 +37,7 @@ public sealed class GraphLinearizer
 
     public IReadOnlyList<GraphDiagnostic> Diagnostics => _problems;
 
-    /// <summary>State carried while lowering one callable.</summary>
+
     private sealed class Frame
     {
         public required GraphNameTable Names { get; init; }
@@ -46,22 +46,22 @@ public sealed class GraphLinearizer
         public List<IrLocal> Locals { get; } = new();
         public HashSet<string> Emitted { get; } = new(StringComparer.Ordinal);
 
-        /// <summary>Locals this callable declares, so a second declaration of one is refused.</summary>
+
         public HashSet<string> DeclaredLocals { get; } = new(StringComparer.OrdinalIgnoreCase);
         public string? ReturnTypeName { get; init; }
         public bool ReturnIsArray { get; init; }
 
-        /// <summary>The loops enclosing the region being lowered, innermost last.</summary>
+
         public List<LoopFrame> Loops { get; } = new();
     }
 
-    /// <summary>
-    /// One enclosing loop, and the sentinel a Break inside it needs.
-    /// </summary>
-    /// <remarks>
-    /// The sentinel is allocated lazily, on the first Break that targets this loop, so a loop nobody
-    /// breaks out of emits exactly what it emitted before this existed.
-    /// </remarks>
+
+
+
+
+
+
+
     private sealed class LoopFrame
     {
         public required string NodeId { get; init; }
@@ -69,7 +69,7 @@ public sealed class GraphLinearizer
         public string? Sentinel { get; set; }
     }
 
-    /// <summary>Lowers every entry node in the document.</summary>
+
     public IrScript? Lower(PapyrusScriptIndex index)
     {
         var callables = new List<IrCallable>();
@@ -84,8 +84,8 @@ public sealed class GraphLinearizer
             if (callable != null) callables.Add(callable);
         }
 
-        // Reachability is the one check that cannot be answered from a single entry: each entry is
-        // its own root, so every sibling event looks unreachable from where any one of them stands.
+
+
         _problems.AddRange(GraphExecFlow.CheckReachability(_document, _validation.Definitions, flows));
 
         if (_problems.Any(d => d.Severity == GraphSeverity.Error)) return null;
@@ -146,7 +146,7 @@ public sealed class GraphLinearizer
             ReturnIsArray = IsArray(returnType),
         };
 
-        // The entry's parameter outputs are named directly, so a pull from one yields the parameter.
+
         foreach (var pin in definition.DataOutputs)
         {
             if (!pin.Id.StartsWith(PinIds.ParameterPrefix, StringComparison.OrdinalIgnoreCase)) continue;
@@ -185,8 +185,8 @@ public sealed class GraphLinearizer
             EntryNodeId = entry.Id,
             IsEvent = definition.Kind == GraphNodeKind.EventEntry,
             IsGlobal = entry.ConfigString("global") == "true",
-            // A remote or custom event handler is written Owner.Name, so the writer needs the type
-            // the event is raised by, not the script being written.
+
+
             RemoteObjectType = definition.IsRemoteEvent ? definition.OwnerScript : null,
             StateName = entry.ConfigString("state"),
             ReturnTypeName = frame.ReturnTypeName,
@@ -197,13 +197,13 @@ public sealed class GraphLinearizer
         };
     }
 
-    /// <summary>
-    /// Statements from one node up to but not including a stopping point.
-    /// </summary>
-    /// <remarks>
-    /// The stopping point is the enclosing branch's post-dominator, which is exactly where the arms
-    /// rejoin. Walking past it would emit the shared tail once per arm.
-    /// </remarks>
+
+
+
+
+
+
+
     private List<IrStatement> LowerRegion(string? nodeId, string? stopAt, Frame frame)
     {
         var statements = new List<IrStatement>();
@@ -264,9 +264,9 @@ public sealed class GraphLinearizer
 
                 case GraphNodeKind.Return:
                 {
-                    // A wire or a value typed straight into the pin. Reading only the wire made
-                    // Return the one data input that ignored a literal, so a graph with 1 typed
-                    // into it was told its Return node needed a value.
+
+
+
                     IrExpression? value = null;
                     var valuePin = new PinRef(nodeId, PinIds.Value);
                     if (_document.Into(valuePin).Any() || node.PinValues.ContainsKey(PinIds.Value))
@@ -306,9 +306,9 @@ public sealed class GraphLinearizer
 
                 case GraphNodeKind.Continue:
                 {
-                    // Nothing to emit. Falling off the end of the body is where Continue goes, and
-                    // because Continue is terminal the branch it sits in has no post-dominator, so
-                    // the rest of the body was already lowered into the sibling arm.
+
+
+
                     InLoop(nodeId, "Continue", frame);
                     return statements;
                 }
@@ -327,13 +327,13 @@ public sealed class GraphLinearizer
         return statements;
     }
 
-    /// <summary>
-    /// A ForEach lowered to a While over an index.
-    /// </summary>
-    /// <remarks>
-    /// Papyrus has no foreach, so this is sugar and nothing more. The index and the element become
-    /// ordinary locals, which is exactly what a person writing the loop by hand would do.
-    /// </remarks>
+
+
+
+
+
+
+
     private IEnumerable<IrStatement> LowerForEach(GraphNode node, Frame frame, List<IrStatement> into)
     {
         var array = Pull(new PinRef(node.Id, PinIds.Array), frame, into);
@@ -364,8 +364,8 @@ public sealed class GraphLinearizer
         body.AddRange(LowerRegion(frame.Flow.TargetOf(node.Id, PinIds.Body), node.Id, frame));
         frame.Loops.RemoveAt(frame.Loops.Count - 1);
 
-        // The step is appended after the body region, not inside it, so a Continue still advances
-        // the index. Continue ends the region early; it does not skip what the loop itself emits.
+
+
         body.Add(new IrAssign(
             new IrName(indexName),
             new IrBinary("+", new IrName(indexName), new IrLiteral("1")) { TypeName = "int" })
@@ -388,7 +388,7 @@ public sealed class GraphLinearizer
         yield return new IrWhile(bounds, body) { NodeId = node.Id };
     }
 
-    /// <summary>Everything that is one statement, or none.</summary>
+
     private IEnumerable<IrStatement> LowerSimple(
         GraphNode node, NodeDefinition definition, Frame frame, List<IrStatement> into)
     {
@@ -404,10 +404,10 @@ public sealed class GraphLinearizer
 
             case GraphNodeKind.LocalDeclare:
             {
-                // A local that outlives nothing but this call. Papyrus declares locals at function
-                // scope, so this only records the declaration and the writer hoists it; the node's
-                // position in the exec flow decides where the initial assignment lands, not where
-                // the name comes into being.
+
+
+
+
                 var name = node.ConfigString("name") ?? "";
                 var written = node.ConfigString("type") ?? "var";
 
@@ -460,8 +460,8 @@ public sealed class GraphLinearizer
                 var consumed = _document.OutOf(new PinRef(node.Id, PinIds.Return)).Any();
                 if (!consumed)
                 {
-                    // No consumer, so no local: emitting one would be a wasted assignment a person
-                    // would not have written.
+
+
                     yield return new IrExpressionStatement(call) { NodeId = node.Id };
                     yield break;
                 }
@@ -478,33 +478,33 @@ public sealed class GraphLinearizer
         }
     }
 
-    /// <summary>
-    /// Folds "temp = work; name = temp" into "name = work".
-    /// </summary>
-    /// <remarks>
-    /// Every impure node binds its result to a local, which is what fixes evaluation order. When the
-    /// only thing that reads that local is an assignment to another name, the local is pure
-    /// overhead: <c>x = IsEnabled()</c> came out as <c>t = IsEnabled()</c> followed by
-    /// <c>x = t</c>, which is two instructions and a declaration for one idea.
-    /// <para>
-    /// Guarded three ways. The temporary must be read exactly once in the whole body, so a result
-    /// shared between two uses keeps its local. It must not be a local the author declared, since
-    /// that name is theirs whether or not it is used twice. And the folded statements must be
-    /// adjacent, so nothing can run between the call and the assignment.
-    /// </para>
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static void CollapseTemporaries(List<IrStatement> body, Frame frame) =>
         CollapseIn(body, body, frame);
 
-    /// <summary>
-    /// Folds within one block, counting reads across the whole callable.
-    /// </summary>
-    /// <remarks>
-    /// Nested blocks are folded too, because the shape appears just as readily inside an If as at
-    /// the top of a function. The read count is always taken over the entire body: a temporary read
-    /// once inside a branch and again after it is still read twice, and folding it would move the
-    /// call inside the branch.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
     private static void CollapseIn(List<IrStatement> block, List<IrStatement> whole, Frame frame)
     {
         foreach (var statement in block)
@@ -546,7 +546,7 @@ public sealed class GraphLinearizer
         }
     }
 
-    /// <summary>How many times a name is read anywhere in a body, assignment targets excluded.</summary>
+
     private static int CountReads(IEnumerable<IrStatement> body, string name)
     {
         var count = 0;
@@ -608,17 +608,17 @@ public sealed class GraphLinearizer
         }
     }
 
-    /// <summary>
-    /// Where one exec pin leads, unless that would close the loop.
-    /// </summary>
-    /// <remarks>
-    /// A back edge is the loop repeating, not a statement to emit, so region lowering must never
-    /// walk one. Stopping at the enclosing loop's node id is not enough on its own: when a branch
-    /// inside a loop has one arm that terminates, the branch's post-dominator collapses to nothing,
-    /// the other arm is lowered with no stopping point, and it walks the back edge into the loop
-    /// header and lowers the whole loop again. That recursion overflows the stack rather than
-    /// tripping the iteration guard, which is per call.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
     private string? Step(string nodeId, string pinId, Frame frame)
     {
         var target = frame.Flow.TargetOf(nodeId, pinId);
@@ -626,7 +626,7 @@ public sealed class GraphLinearizer
         return frame.Flow.BackEdges.Contains((nodeId, target)) ? null : target;
     }
 
-    /// <summary>Refuses a loop exit that has no loop to exit, naming the node.</summary>
+
     private bool InLoop(string nodeId, string what, Frame frame)
     {
         if (frame.Loops.Count > 0) return true;
@@ -638,7 +638,7 @@ public sealed class GraphLinearizer
         return false;
     }
 
-    /// <summary>A fresh bool local for one loop's Break.</summary>
+
     private static string DeclareSentinel(Frame frame)
     {
         var name = frame.Names.Allocate("broke");
@@ -646,19 +646,19 @@ public sealed class GraphLinearizer
         return name;
     }
 
-    /// <summary>
-    /// The loop condition, with the Break sentinel folded in when one was needed.
-    /// </summary>
-    /// <remarks>
-    /// Papyrus has no break, so leaving a loop early means making its condition false. The sentinel
-    /// is reset immediately before the loop rather than once at the top of the function, so a loop
-    /// nested inside another one starts each outer pass able to run again.
-    /// <para>
-    /// Nothing guards the rest of the body, because there is no rest to guard: a Break is terminal,
-    /// so the branch holding it has no post-dominator and everything after it was already lowered
-    /// into the sibling arm.
-    /// </para>
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static IrExpression GuardedBy(
         LoopFrame loop, IrExpression condition, Frame frame, List<IrStatement> before)
     {
@@ -689,13 +689,13 @@ public sealed class GraphLinearizer
         return null;
     }
 
-    /// <summary>Folds an else that is exactly one if into an elseif chain.</summary>
+
     private static IrIf Fold(
         IrExpression condition, List<IrStatement> thenBody, List<IrStatement> elseBody, string nodeId)
     {
-        // An empty Then arm with a real Else is what a Continue produces, and nobody writes
-        // "If (x) Else ... EndIf" by hand. Inverting is left to the elseif fold below when that
-        // applies, since folding reads better than a negated condition wrapping a chain.
+
+
+
         if (thenBody.Count == 0 && elseBody.Count > 0
             && !(elseBody.Count == 1 && elseBody[0] is IrIf))
         {
@@ -715,22 +715,22 @@ public sealed class GraphLinearizer
         return new IrIf(branches, elseBody.Count == 0 ? null : elseBody) { NodeId = nodeId };
     }
 
-    /// <summary>Logical negation, undoing a double negative rather than stacking one.</summary>
+
     private static IrExpression Negate(IrExpression condition) =>
         condition is IrUnary { Operator: "!" } already
             ? already.Operand
             : new IrUnary("!", condition) { TypeName = "bool", NodeId = condition.NodeId };
 
-    // ---- data pull ---------------------------------------------------------------------------
 
-    /// <summary>
-    /// The expression feeding one input pin.
-    /// </summary>
-    /// <remarks>
-    /// A pure producer is rebuilt inline at each use, which is always correct and needs no ordering
-    /// analysis. An impure one has already been bound to a local by the time control flow reached
-    /// this consumer, so the expression is just that local's name.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
     private IrExpression Pull(PinRef pin, Frame frame, List<IrStatement> into)
     {
         var wire = _document.Into(pin).FirstOrDefault();
@@ -746,8 +746,8 @@ public sealed class GraphLinearizer
 
         if (!definition.IsPure)
         {
-            // Reaching an impure producer that has not run yet means the consumer sits on a path
-            // that does not pass through it.
+
+
             _problems.Add(new GraphDiagnostic
             {
                 Code = GraphDiagnosticCodes.UseBeforeAssignment,
@@ -846,8 +846,8 @@ public sealed class GraphLinearizer
 
             if (!supplied && pin.IsOptional)
             {
-                // A skipped optional forces every later argument to be named, which is the one shape
-                // a positional emitter gets silently wrong.
+
+
                 skipped = true;
                 continue;
             }
@@ -864,7 +864,7 @@ public sealed class GraphLinearizer
             ? definition.MemberName ?? definition.Title
             : definition.MemberName ?? definition.Title;
 
-        // An array member is called on the array, not on a receiver pin.
+
         if (definition.Kind == GraphNodeKind.ArrayOp)
             receiver = Pull(new PinRef(node.Id, PinIds.Array), frame, into);
 
@@ -877,14 +877,14 @@ public sealed class GraphLinearizer
         };
     }
 
-    /// <summary>
-    /// The receiver of a call or property access, or null when it is implicit.
-    /// </summary>
-    /// <remarks>
-    /// A global function has no receiver but is written on its script, so the script name is emitted
-    /// as the target. An unwired self pin means the call is on this script, which is only legal when
-    /// the member's owner is on this graph's own chain.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private IrExpression? PullReceiver(
         GraphNode node, NodeDefinition definition, Frame frame, List<IrStatement> into)
     {
@@ -912,7 +912,7 @@ public sealed class GraphLinearizer
         return null;
     }
 
-    /// <summary>Declares a local for a value and records it as the node's result.</summary>
+
     private string Bind(
         string nodeId, Frame frame, string hint, string typeName, bool isArray,
         IrExpression value, List<IrStatement> into, bool declareOnly = false)

@@ -5,10 +5,10 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Fixture HTML mirrors the CK wiki's real exported MediaWiki markup verbatim (verified against
-// GetBaseObject_-_ActiveMagicEffect.html and ActiveMagicEffect_Script.html in the actual mirror
-// before writing PapyrusWikiService's parser), so these tests exercise the real parsing logic
-// against realistic input rather than a simplified stand-in.
+
+
+
+
 public class PapyrusWikiServiceTests
 {
     private static string FunctionPageHtml() => """

@@ -2,16 +2,16 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Which parameters each condition function actually takes, transcribed from xEdit's own table
-/// (<c>TES5Edit/Core/wbDefinitionsFO4.pas</c>, <c>wbConditionFunctions</c>: 479 functions, each with
-/// up to three <c>TConditionParameterType</c> slots). All 479 names match Mutagen's
-/// <c>Condition.Function</c> enum exactly, so the table keys straight off the function name.
-///
-/// This is what stops the condition editor showing two blank FormKey boxes on every row: 259 of the
-/// 479 functions take NO parameters at all, and most of the rest take exactly one, of a specific
-/// record type. Only the functions with parameters are listed below; anything absent takes none.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
 public static class ConditionFunctions
 {
     private static readonly string[] Table =
@@ -251,16 +251,16 @@ public static class ConditionFunctions
         return d;
     }
 
-    /// <summary>The parameter types a function takes, in order. Empty when it takes none.</summary>
+
     public static string[] ParamsOf(string function) =>
         ByName.TryGetValue(function ?? "", out var p) ? p : Array.Empty<string>();
 
-    /// <summary>
-    /// How one parameter should be edited. "record" carries a comma-separated record-class filter
-    /// for the picker (the same format SearchRecords takes); "number" and "text" are plain inputs.
-    /// The nine enum types xEdit lists are edited as numbers: their FO4 value tables are not in the
-    /// definitions we have, and a made-up dropdown would be worse than an honest number.
-    /// </summary>
+
+
+
+
+
+
     public static (string kind, string types) EditorFor(string paramType) => paramType switch
     {
         "Actor"           => ("record", "PlacedNpc"),
@@ -300,8 +300,8 @@ public static class ConditionFunctions
         _ => ("number", ""),
     };
 
-    /// <summary>The whole table as JSON for the frontend: function name to its parameter slots,
-    /// each with a label, an editor kind and a picker filter.</summary>
+
+
     public static string AsJson() => JsonSerializer.Serialize(
         ByName.ToDictionary(
             kv => kv.Key,
@@ -311,7 +311,7 @@ public static class ConditionFunctions
                 return new { label = Spaced(p), kind, types };
             }).ToArray()));
 
-    // "ActorValue" reads better as "Actor Value" in a field label.
+
     private static string Spaced(string pascal)
     {
         var sb = new System.Text.StringBuilder(pascal.Length + 4);

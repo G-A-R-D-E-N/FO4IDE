@@ -1,4 +1,4 @@
-/* Status bar spans the grid bottom row. */
+
 .status-bar {
   grid-area: status;
   height: 24px;

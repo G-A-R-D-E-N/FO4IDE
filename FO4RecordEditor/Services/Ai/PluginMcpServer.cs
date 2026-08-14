@@ -6,11 +6,11 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// In-process MCP server (Streamable HTTP / JSON-RPC) exposing the plugin tools so the
-/// Claude Code CLI can read the live loaded plugin data -- the same tools the Anthropic
-/// agent uses, backed by the same executor against the same in-memory mods.
-/// </summary>
+
+
+
+
+
 public sealed class PluginMcpServer : IDisposable
 {
     private const string ProtocolVersion = "2024-11-05";
@@ -82,7 +82,7 @@ public sealed class PluginMcpServer : IDisposable
             var root = doc.RootElement;
             var method = root.TryGetProperty("method", out var mEl) ? mEl.GetString() : null;
 
-            // Notifications (no id) -> just acknowledge.
+
             if (!root.TryGetProperty("id", out var idEl))
             {
                 ctx.Response.StatusCode = 202;

@@ -4,24 +4,24 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>One fixture: a graph, and the script a person would have written for the same job.</summary>
-/// <remarks>
-/// The reference source is what makes the roundtrip gate mean something. Comparing generated output
-/// only against itself would pass for a compiler and decompiler that are wrong in mirror image
-/// ways; anchoring one end to hand-written Papyrus is what rules that out.
-/// </remarks>
+
+
+
+
+
+
 internal sealed record GraphFixture(string Name, Func<GraphDocument> Build, string Reference)
 {
     public override string ToString() => Name;
 }
 
-/// <summary>
-/// The standard pattern suite, each modelled on a real vanilla script shape.
-/// </summary>
-/// <remarks>
-/// Built through <see cref="GraphBuilder"/> rather than checked in as JSON: a schema change is then
-/// one compile error instead of silent breakage spread across two dozen documents.
-/// </remarks>
+
+
+
+
+
+
+
 internal static class GraphFixtures
 {
     public static IReadOnlyList<GraphFixture> All => Build();
@@ -37,7 +37,7 @@ internal static class GraphFixtures
                 () => build(new GraphBuilder("Fixture", "ObjectReference")),
                 reference));
 
-        // 01: the simplest whole script. Modelled on PulowskShelterScript's OnActivate.
+
         Add("01_OnActivateNotify", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnActivate");
@@ -53,7 +53,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 02: an event parameter reaching a call argument.
+
         Add("02_EventParameterFlows", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnActivate");
@@ -69,7 +69,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 03: if and else that rejoin, the shape post-dominators exist for.
+
         Add("03_BranchRejoins", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -106,7 +106,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 04: an if with no else, which emits no else clause at all.
+
         Add("04_BranchNoElse", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -131,7 +131,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 05: a while loop with a tail after it.
+
         Add("05_WhileLoop", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -163,7 +163,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 06: an optional parameter left off the end.
+
         Add("06_TrailingOptionalOmitted", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -180,7 +180,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 07: a skipped middle optional, which forces named arguments.
+
         Add("07_NamedArgumentAfterSkip", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -198,7 +198,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 08: one impure call feeding two consumers binds one local.
+
         Add("08_SharedCallBindsOneLocal", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -223,7 +223,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 09: arithmetic inlined at its use site.
+
         Add("09_ArithmeticInlines", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -247,7 +247,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 10: a comparison feeding a branch.
+
         Add("10_ComparisonBranch", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -278,7 +278,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 11: a script variable written then read.
+
         Add("11_VariableRoundTrip", graph =>
         {
             graph.Variable("Counter", "int");
@@ -305,7 +305,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 12: an auto property.
+
         Add("12_AutoProperty", graph =>
         {
             graph.Variable("Target", "ObjectReference", isProperty: true);
@@ -324,7 +324,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 13: a receiver taken from a pin, calling onto another type.
+
         Add("13_ReceiverFromPin", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -350,7 +350,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 14: an inherited call with no receiver, since the script is on that chain.
+
         Add("14_InheritedCallNoReceiver", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -365,7 +365,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 15: an explicit cast, which the graph always requires a node for.
+
         Add("15_ExplicitCast", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnActivate");
@@ -389,7 +389,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 16: a not operator over a call result.
+
         Add("16_NotOperator", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -416,7 +416,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 17: short circuit booleans through one shared slot.
+
         Add("17_ShortCircuit", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -453,7 +453,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 18: a function with a return value on both arms.
+
         Add("18_FunctionReturnsOnBothArms", graph =>
         {
             var entry = graph.Node(palette, BuiltinNodeDefinitions.FunctionEntry,
@@ -489,7 +489,7 @@ internal static class GraphFixtures
             EndFunction
             """);
 
-        // 19: a void function called for its effect.
+
         Add("19_VoidFunction", graph =>
         {
             var entry = graph.Node(palette, BuiltinNodeDefinitions.FunctionEntry, ("name", "Reset"));
@@ -507,7 +507,7 @@ internal static class GraphFixtures
             EndFunction
             """);
 
-        // 20: two entries in one document.
+
         Add("20_TwoEntries", graph =>
         {
             var load = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -532,7 +532,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 21: Self passed as an argument.
+
         Add("21_SelfAsArgument", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -549,7 +549,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 22: a global utility function on a script that extends nothing.
+
         fixtures.Add(new GraphFixture("22_GlobalUtilityScript", () =>
         {
             var graph = new GraphBuilder("Fixture");
@@ -570,7 +570,7 @@ internal static class GraphFixtures
             EndFunction
             """));
 
-        // 23: a nested branch inside an arm.
+
         Add("23_NestedBranch", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -609,7 +609,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 24: a hex form id literal, which the lexer accepts and the emitter must pass through.
+
         Add("24_HexFormId", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -632,8 +632,8 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 25: a two state machine with an auto state, the shape most vanilla activators use to make
-        // themselves single use while something plays out.
+
+
         Add("25_AutoStateMachine", graph =>
         {
             graph.AutoState("Waiting");
@@ -670,9 +670,9 @@ internal static class GraphFixtures
             EndState
             """);
 
-        // 26: a listener. A remote handler for an event another object raises, a custom event this
-        // script declares, and a handler for a custom event a different script raises. All three
-        // are written Owner.Name, which is the shape every dotted handler in the wild has.
+
+
+
         Add("26_RemoteAndCustomEvents", graph =>
         {
             graph.CustomEvent("Ready");
@@ -701,7 +701,7 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 27: Break. Papyrus has no break, so leaving early means making the condition false.
+
         Add("27_BreakLeavesTheLoop", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -748,8 +748,8 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-        // 28: Continue, which emits nothing at all. Falling off the end of the If is where it goes,
-        // and the ForEach step sits outside that If so the index still advances.
+
+
         Add("28_ContinueSkipsThePass", graph =>
         {
             graph.Variable("Items", "Form[]", isProperty: true);

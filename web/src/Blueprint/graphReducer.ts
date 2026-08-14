@@ -1,10 +1,10 @@
 import type { BpDocument, BpNode, BpNodeDef, BpWire } from './graphModel';
 import { newId } from './graphModel';
 
-// Every mutation goes through here. That is what makes undo free: because the reducer never
-// mutates and shares structure, an undo snapshot is the previous document object itself, so a
-// hundred-deep history of a three-hundred-node graph costs a hundred pointers rather than a
-// hundred deep copies.
+
+
+
+
 
 export interface BpSelection {
   nodes: string[];
@@ -80,8 +80,8 @@ export function graphReducer(state: GraphState, action: GraphAction): GraphState
     }
 
     case 'MOVE_NODES': {
-      // One dispatch per drag, not per pointer move: the gesture writes the DOM directly and only
-      // commits here on release, so a drag is exactly one undo step.
+
+
       const moving = new Set(action.ids);
       return pushHistory(state, {
         ...state.doc,
@@ -118,8 +118,8 @@ export function graphReducer(state: GraphState, action: GraphAction): GraphState
       });
 
     case 'ADD_WIRE': {
-      // Cardinality is enforced here rather than at the call site, so every route that adds a wire
-      // obeys it: a value input takes one source, a control output leads to one node.
+
+
       const { wire, defs } = action;
       const fromDef = defs[wire.from.node];
       const toDef = defs[wire.to.node];
@@ -159,8 +159,8 @@ export function graphReducer(state: GraphState, action: GraphAction): GraphState
     }
 
     case 'SET_POSITIONS': {
-      // Absolute, unlike MOVE_NODES, because a layout computes where every node belongs rather than
-      // how far it should shift. One history entry, so a layout is undone in one step.
+
+
       const moved = action.positions;
       return pushHistory(state, {
         ...state.doc,
@@ -195,7 +195,7 @@ export function graphReducer(state: GraphState, action: GraphAction): GraphState
     }
 
     case 'SELECT':
-      // Selection never pushes history: undoing a click would be surprising.
+
       return {
         ...state,
         selection: action.additive

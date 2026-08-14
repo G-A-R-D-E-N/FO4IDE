@@ -5,15 +5,15 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-/// <summary>A C++ type as it appears in an F4SE native signature.</summary>
-/// <remarks>
-/// Only the three shapes F4SE signatures actually use are modelled: a plain name
-/// (<c>BSFixedString</c>), a pointer to one (<c>TESForm*</c>), and <c>VMArray&lt;T&gt;</c>. Scoped
-/// names such as <c>BGSMod::Attachment::Mod</c> are carried whole in <see cref="Name"/>.
-/// </remarks>
+
+
+
+
+
+
 public sealed record CppTypeRef(string Name, bool IsPointer = false, CppTypeRef? ElementType = null)
 {
-    /// <summary>The <c>VMArray</c> template name, the only generic the marshaller carries.</summary>
+
     public const string ArrayTemplate = "VMArray";
 
     public bool IsArray => ElementType != null;
@@ -25,13 +25,13 @@ public sealed record CppTypeRef(string Name, bool IsPointer = false, CppTypeRef?
 
     public override string ToString() => Format();
 
-    /// <summary>
-    /// Parses a signature type, tolerating the spacing real F4SE source contains.
-    /// </summary>
-    /// <remarks>
-    /// <c>TESObjectMISC *</c> with a space before the star occurs in the shipped source, so the
-    /// pointer marker is stripped after trimming rather than matched against a fixed spelling.
-    /// </remarks>
+
+
+
+
+
+
+
     public static bool TryParse(string? text, out CppTypeRef? type)
     {
         type = null;
@@ -53,7 +53,7 @@ public sealed record CppTypeRef(string Name, bool IsPointer = false, CppTypeRef?
         bool pointer = false;
         while (trimmed.EndsWith('*'))
         {
-            // A second star would be a pointer to pointer, which the marshaller cannot carry.
+
             if (pointer) return false;
             pointer = true;
             trimmed = trimmed[..^1].TrimEnd();
@@ -68,32 +68,32 @@ public sealed record CppTypeRef(string Name, bool IsPointer = false, CppTypeRef?
         TryParse(text, out var type) ? type! : throw new FormatException($"Not a signature type: '{text}'.");
 }
 
-/// <summary>A Papyrus type as written, which is all an emitter or an extractor needs.</summary>
+
 public readonly record struct PapyrusTypeText(string Name, bool IsArray = false)
 {
     public override string ToString() => IsArray ? Name + "[]" : Name;
 }
 
-/// <summary>
-/// Converts between Papyrus types and the C++ types F4SE marshals them as, in both directions.
-/// </summary>
-/// <remarks>
-/// The tables here are not recalled: they were derived by aligning all 225 registrations in the
-/// F4SE 0.6.23 source against the <c>native</c> declarations in its shipped <c>.psc</c>, which
-/// matched 223 of them position for position and produced exactly one Papyrus type per C++ type.
-/// <see cref="F4SETypeMapTests"/> pins every row, and the corpus sweep re-derives the alignment
-/// against a real F4SE tree when one is available.
-/// <para>
-/// Two rows are deliberately many to one. <c>UInt32</c>, <c>SInt32</c> and bare <c>int</c> all carry
-/// Papyrus <c>int</c>, because the marshaller has a specialisation for each; the forward direction
-/// therefore needs to be told which is wanted, and the reverse direction collapses them.
-/// <c>VMRefOrInventoryObj</c> carries <c>ObjectReference</c> like <c>TESObjectREFR*</c> does, but is
-/// a receiver-only form and so is never chosen going forward.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class F4SETypeMap
 {
-    /// <summary>Papyrus class name to the C++ type F4SE uses for it, pointer-ness included.</summary>
+
     private static readonly (string Papyrus, string Cpp, bool Pointer)[] FormTypeRows =
     {
         ("Form", "TESForm", true),
@@ -128,14 +128,14 @@ public sealed class F4SETypeMap
         ("WaterType", "TESWaterForm", true),
         ("Weapon", "TESObjectWEAP", true),
 
-        // Not a form pointer: the marshaller carries a script handle by value.
+
         ("ScriptObject", "VMObject", false),
     };
 
-    /// <summary>C++ spellings that carry a Papyrus type but are never emitted for it.</summary>
+
     private static readonly (string Cpp, string Papyrus)[] ReverseOnlyRows =
     {
-        // A receiver that accepts either a placed reference or an inventory item.
+
         ("VMRefOrInventoryObj", "ObjectReference"),
         ("UInt32", "int"),
         ("int", "int"),
@@ -148,21 +148,21 @@ public sealed class F4SETypeMap
 
     private readonly HashSet<string> _structNames;
 
-    /// <param name="structNames">
-    /// Papyrus struct names in play. A struct marshals as a value of the same name, so the forward
-    /// direction has to be told which unknown names are structs rather than script types.
-    /// </param>
+
+
+
+
     public F4SETypeMap(IEnumerable<string>? structNames = null) =>
         _structNames = new HashSet<string>(structNames ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>The tag type a global function takes in place of a receiver.</summary>
+
     public const string StaticFunctionTag = "StaticFunctionTag";
 
-    /// <summary>Papyrus class name to C++ base type, for every form type the table knows.</summary>
+
     public static IReadOnlyDictionary<string, string> FormTypes =>
         FormTypeRows.ToDictionary(r => r.Papyrus, r => r.Cpp, StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>The struct names this map was told about.</summary>
+
     public IReadOnlyCollection<string> StructNames => _structNames;
 
     private static Dictionary<string, (string, bool)> BuildByPapyrus()
@@ -195,15 +195,15 @@ public sealed class F4SETypeMap
         return map;
     }
 
-    /// <summary>
-    /// The C++ type an F4SE native uses to carry <paramref name="papyrus"/>.
-    /// </summary>
-    /// <param name="unsigned">
-    /// Emit <c>UInt32</c> rather than <c>SInt32</c> for <c>int</c>. F4SE uses the unsigned form for
-    /// indices and bit fields and the signed one where negatives are meaningful, and nothing in the
-    /// Papyrus type says which, so the caller decides.
-    /// </param>
-    /// <param name="refusal">Why the conversion was refused, when it was.</param>
+
+
+
+
+
+
+
+
+
     public bool TryToCpp(PapyrusTypeText papyrus, bool unsigned, out CppTypeRef? cpp, out string? refusal)
     {
         cpp = null;
@@ -247,7 +247,7 @@ public sealed class F4SETypeMap
 
         if (_structNames.Contains(papyrus.Name))
         {
-            // DECLARE_STRUCT typedefs a VMStruct to the struct's own name, carried by value.
+
             cpp = new CppTypeRef(papyrus.Name);
             return true;
         }
@@ -258,7 +258,7 @@ public sealed class F4SETypeMap
         return false;
     }
 
-    /// <summary>The Papyrus type an F4SE C++ type carries.</summary>
+
     public bool TryToPapyrus(CppTypeRef? cpp, out PapyrusTypeText papyrus, out string? refusal)
     {
         papyrus = default;
@@ -294,8 +294,8 @@ public sealed class F4SETypeMap
             return true;
         }
 
-        // An unmapped pointer is a form type nothing has named, and guessing its Papyrus class from
-        // the C++ spelling is exactly the kind of invention that produces a wrong declaration.
+
+
         if (cpp.IsPointer)
         {
             refusal = $"'{cpp.Format()}' is a pointer to a type the form table does not name";
@@ -312,16 +312,16 @@ public sealed class F4SETypeMap
         return false;
     }
 
-    /// <summary>
-    /// The include block an emitted module carries.
-    /// </summary>
-    /// <remarks>
-    /// This reproduces the block real F4SE modules use rather than computing a minimal set. A
-    /// minimal set would need each type's defining header, and the shipped headers forward declare
-    /// most types in several places, so deriving that reliably is not possible from this repository
-    /// and getting it wrong yields C++ that does not compile. Since nothing here can compile C++
-    /// (see <c>docs/internal/GRAPH_F4SE.md</c>), matching observed practice is the honest option.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
     public static IReadOnlyList<string> CoreIncludes { get; } = new[]
     {
         "f4se/PapyrusVM.h",
@@ -329,7 +329,7 @@ public sealed class F4SETypeMap
         "f4se/PapyrusArgs.h",
     };
 
-    /// <summary>Game headers added when a module names a form type or a struct.</summary>
+
     public static IReadOnlyList<string> GameIncludes { get; } = new[]
     {
         "f4se/GameForms.h",
@@ -339,7 +339,7 @@ public sealed class F4SETypeMap
         "f4se/GameRTTI.h",
     };
 
-    /// <summary>The include list for a module using <paramref name="types"/>.</summary>
+
     public IReadOnlyList<string> RequiredIncludesFor(IEnumerable<CppTypeRef> types)
     {
         var includes = new List<string>(CoreIncludes);
@@ -356,7 +356,7 @@ public sealed class F4SETypeMap
             type.IsArray ? NeedsGameHeaders(type.ElementType!) : type.IsPointer;
     }
 
-    /// <summary>The <c>NativeFunctionN</c> template instantiation for one binding, as text.</summary>
+
     public static string TemplateInstantiation(
         bool latent, int arity, string cppBaseType, CppTypeRef returnType, IEnumerable<CppTypeRef> parameters)
     {

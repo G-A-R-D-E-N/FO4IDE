@@ -10,11 +10,11 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-// Cross-platform host for FO4RecordEditor. Serves the same React bundle the WPF shell loads into
-// WebView2, and exposes the same interop objects over HTTP instead of AddHostObjectToScript.
+
+
 
 DebugLog.Init();
-DebugLog.Info("App", "=== FO4RecordEditor (server) launching ===",
+DebugLog.Info("App", "=== FO4IDE (server) launching ===",
     $"base={AppContext.BaseDirectory} cwd={Environment.CurrentDirectory}");
 
 string? ArgValue(string name)
@@ -24,8 +24,8 @@ string? ArgValue(string name)
 }
 bool HasFlag(string name) => Array.Exists(args, a => a == name);
 
-// Headless MCP mode, same contract as the Windows build's `--mcp`. This is what makes the Wine
-// setup unnecessary on Linux: the MCP server now runs natively.
+
+
 if (HasFlag("--mcp"))
 {
     RunMcpHeadless();
@@ -38,8 +38,8 @@ ElementRenderer.Init(MutagenLoader.FormatFormLink, MutagenLoader.FormatCondition
 var shell = new ShellViewModel();
 var events = new EventStream();
 
-// Same twelve names MainWindow registers with AddHostObjectToScript. The frontend addresses these
-// by name, so they must not drift apart.
+
+
 var rpc = new RpcDispatcher();
 rpc.Register("appInterop", new AppInterop(shell, (msg, pct) =>
 {
@@ -98,7 +98,7 @@ app.MapPost("/rpc", async (HttpContext ctx) =>
     }
     catch (Exception ex)
     {
-        // Unwrap reflection's wrapper so the browser console shows the interop method's own error.
+
         var real = (ex as System.Reflection.TargetInvocationException)?.InnerException ?? ex;
         DebugLog.Exception("rpc", real);
         return Results.Content(
@@ -107,8 +107,8 @@ app.MapPost("/rpc", async (HttpContext ctx) =>
     }
 });
 
-// The WebView2 shell pushes progress/chat/MCP events with PostWebMessageAsJson. Here they arrive as
-// server-sent events and the frontend shim re-raises them as the same 'message' events.
+
+
 app.MapGet("/events", async (HttpContext ctx, CancellationToken ct) =>
 {
     ctx.Response.Headers.ContentType = "text/event-stream";
@@ -130,13 +130,13 @@ app.MapGet("/events", async (HttpContext ctx, CancellationToken ct) =>
 
 app.MapGet("/api/health", () => Results.Json(new { ok = true, targets = rpc.TargetNames }));
 
-// Hash routing: every non-file path has to fall through to index.html or a refresh 404s. But a
-// stray top-level *navigation* to a hash-less path (a manual URL, a refresh on a deep path, or the
-// WebView breaking out of the SPA) would boot index.html onto its default '/' route and read as a
-// blank/secondary page. Photino/WebKitGTK cannot veto a same-window navigation, so redirect browser
-// navigations back to the SPA entry here, at the one point every same-origin navigation funnels
-// through (this covers WebView2 and WKWebView too). fetch/EventSource/asset loads are not
-// navigations and keep serving index.html unchanged.
+
+
+
+
+
+
+
 app.MapFallback(async ctx =>
 {
     if (SpaFallback.ShouldRedirect(ctx.Request.Path.Value, ctx.Request.Method, ctx.Request.Headers.Accept.ToString()))
@@ -149,12 +149,12 @@ app.MapFallback(async ctx =>
 });
 
 var url = $"http://{host}:{port}/#/main";
-Console.WriteLine($"FO4RecordEditor is running at {url}");
+Console.WriteLine($"FO4IDE is running at {url}");
 Console.WriteLine($"Log: {DebugLog.Path}");
 
 if (HasFlag("--headless"))
 {
-    // Serve only. Useful for attaching a browser from elsewhere, or for running under a debugger.
+
     app.Run();
     return;
 }
@@ -167,9 +167,9 @@ else OpenNativeWindow(url);
 await app.StopAsync();
 return;
 
-// ---------------------------------------------------------------------------
 
-/// <summary>Ask the OS for a free port rather than guessing one that may be taken.</summary>
+
+
 static int FreePort(string host)
 {
     var l = new TcpListener(IPAddress.Parse(host), 0);
@@ -179,24 +179,24 @@ static int FreePort(string host)
     return port;
 }
 
-/// <summary>
-/// The app's own window: WebKitGTK on Linux, WebView2 on Windows, WKWebView on macOS. This is the
-/// counterpart of the WPF shell's WebView2 control, so the app gets a real titlebar, its own
-/// taskbar entry and its own icon rather than being a page inside somebody's browser.
-/// <para>
-/// Must run on the main thread, and blocks until the window closes, which is what ends the process.
-/// </para>
-/// </summary>
+
+
+
+
+
+
+
+
 static void OpenNativeWindow(string url)
 {
-    // WebKitGTK's DMA-BUF renderer is the usual cause of a blank or black window on proprietary
-    // drivers and on some compositors. Opt out unless the user has already made a choice.
+
+
     if (OperatingSystem.IsLinux() &&
         Environment.GetEnvironmentVariable("WEBKIT_DISABLE_DMABUF_RENDERER") == null)
         Environment.SetEnvironmentVariable("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
 
     new Photino.NET.PhotinoWindow()
-        .SetTitle("FO4RecordEditor")
+        .SetTitle("FO4IDE")
         .SetUseOsDefaultSize(false)
         .SetSize(1600, 1000)
         .SetUseOsDefaultLocation(true)
@@ -205,10 +205,10 @@ static void OpenNativeWindow(string url)
         .WaitForClose();
 }
 
-/// <summary>
-/// The `--browser` fallback: an app-mode browser window. Kept for machines with no working
-/// WebKitGTK, and for debugging with real devtools.
-/// </summary>
+
+
+
+
 static void OpenInBrowser(string url)
 {
     string[][] candidates =
@@ -227,7 +227,7 @@ static void OpenInBrowser(string url)
             for (int i = 1; i < c.Length; i++) psi.ArgumentList.Add(c[i]);
             if (Process.Start(psi) != null) return;
         }
-        catch { /* not installed; try the next one */ }
+        catch {  }
     }
     Console.WriteLine("Could not open a browser automatically. Open the URL above yourself.");
 }

@@ -6,28 +6,28 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// The BA2 layout here was read off the real archives, not recalled, and cross-checked against
-// native/bsarchive/src/fo4/ in Bryant-21/py-creation-lib (GPL-3.0, permission granted).
-//
-// RealArchivesRewriteByteForByte is the proof that matters: read every vanilla .ba2 structurally,
-// write it back out, compare the whole file. That sweep has been run and passes on all 79 archives
-// in a real Fallout 4 Data folder (~31 GB, versions 1/7/8, both General and DirectX), zero
-// differences and zero failures. Two real defects were found and fixed only because it compares
-// whole files rather than sampling:
-//
-//   1. DLCCoast - Main.ba2 stores "Strings/DLCCoast_cn.DLSTRINGS" with a FORWARD slash while hashing
-//      the backslash form. Normalizing the stored name on write is a byte difference.
-//   2. Three names in Fallout4 - Voices.ba2 are Windows-1252, not UTF-8 (Mar\xEDa_F.fuz,
-//      Mar\xEDa_M.fuz, S\xE1nchez_F.fuz). Round-tripping those through a UTF-8 string replaces the
-//      byte with U+FFFD and grows the file, which is why entries keep raw name bytes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class Ba2WriterTests
 {
     private readonly ITestOutputHelper _out;
     public Ba2WriterTests(ITestOutputHelper o) => _out = o;
 
-    // Verified against real entries in Fallout4 - Meshes.ba2: these are the stored hashes for these
-    // exact names. The CRC is NOT standard CRC-32 (no final complement, zero init), so a stock
-    // implementation gives the wrong answer for every one of them.
+
+
+
     [Theory]
     [InlineData(@"Meshes\Weapons\HandMade\Muzzles\HandMadeMuzzleParentObject.nif", 0x9B990F90u, 0xFF78256Eu, 0x0066696Eu)]
     [InlineData(@"Meshes\Weapons\HandMade\Grips\HandMadePistolGrip.nif", 0xBB6215A0u, 0xF6CEE42Au, 0x0066696Eu)]
@@ -40,8 +40,8 @@ public class Ba2WriterTests
         h.Extension.Should().Be(extension);
     }
 
-    // The hash uses the slash-normalized, lowercased form even when the stored name keeps a forward
-    // slash -- taken from DLCCoast - Main.ba2's real "Strings/DLCCoast_cn.DLSTRINGS" entry.
+
+
     [Fact]
     public void HashNormalizesSlashesEvenWhenTheStoredNameDoesNot()
     {
@@ -87,8 +87,8 @@ public class Ba2WriterTests
         Ba2Codec.Decompress(read.Entries[0].Chunks[0]).Should().Equal(payload);
     }
 
-    // compressedSize == 0 is the format's own "stored raw" marker; a chunk that grew must take it,
-    // and the reader must not then try to inflate raw bytes.
+
+
     [Fact]
     public void IncompressibleDataIsStoredRaw()
     {
@@ -117,12 +117,12 @@ public class Ba2WriterTests
         Ba2Codec.Decompress(read.Entries[0].Chunks[0]).Should().BeEmpty();
     }
 
-    // Names are stored as bytes, not a string, so a Windows-1252 name survives a rewrite unchanged.
+
     [Fact]
     public void NonUtf8NamesSurviveARewrite()
     {
-        // Built from bytes, not from a C# string literal, so the source file's own encoding cannot
-        // change what is being tested. 0xED is 'i-acute' in Windows-1252 and invalid as UTF-8.
+
+
         var prefix = System.Text.Encoding.ASCII.GetBytes(@"Sound\Voice\Fallout4.esm\RobotMrHandy\Mar");
         var suffix = System.Text.Encoding.ASCII.GetBytes("a_F.fuz");
         var raw = prefix.Concat(new byte[] { 0xED }).Concat(suffix).ToArray();
@@ -209,8 +209,8 @@ public class Ba2WriterTests
         }
     }
 
-    // The whole-corpus proof. Skips with a logged reason when no Data folder is reachable, and hard
-    // fails instead under FO4RE_REQUIRE_FIXTURES, so a skip is never silently recorded as a pass.
+
+
     [Fact]
     public void RealArchivesRewriteByteForByte()
     {

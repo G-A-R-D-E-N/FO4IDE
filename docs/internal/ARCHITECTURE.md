@@ -1,4 +1,4 @@
-# FO4RecordEditor: Architecture & Contributor Facts
+# FO4IDE: Architecture & Contributor Facts
 
 How the editor is put together: the components, the data flow, and the invariants the code
 depends on. Contributor-facing; user documentation lives in the [README](README.md) and
@@ -11,7 +11,7 @@ depends on. Contributor-facing; user documentation lives in the [README](README.
 - **The app repo is self-contained.** `FO4RecordEditor/` is its own git root; commits there do
   not touch any surrounding workspace repo.
 - **The app is a WebView2 shell, not WPF.** `MainWindow.xaml` is a WPF-UI `FluentWindow` hosting a
-  single `WebView2`. The window title is `NexusEdit`. The real UI is React under `web/src/`
+  single `WebView2`. The window title is `FO4IDE`. The real UI is React under `web/src/`
   (`MainShell.tsx`, `RecordView.tsx`, `ChatPanel.tsx`).
 - **The IPC contract.** React calls
   `window.chrome.webview.hostObjects.backend.<Method>()` → `Services/BackendInterop.cs`. Every

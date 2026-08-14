@@ -6,22 +6,22 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The .pex writer, checked against the reader it inverts.
-/// </summary>
-/// <remarks>
-/// The bar here is byte-identical round tripping, not "it parses back". A writer that loses a field
-/// quietly still round trips through a model comparison if the reader drops the same field, so the
-/// bytes are the only check that closes that loop. <see cref="PexCorpusTests"/> applies the same bar
-/// to real compiler output; this file covers the shapes a corpus might not contain and the failures
-/// a corpus cannot produce.
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
 public class PexWriterTests
 {
-    // A file exercising every construct the format has: struct with a defaulted member, object
-    // variable, auto property, full property with both handlers, a state with a function carrying
-    // locals and a vararg call, every PexValue type, debug info, property groups, struct orders and
-    // user flags.
+
+
+
+
     private static PexFile Sample()
     {
         var strings = new[]
@@ -97,7 +97,7 @@ public class PexWriterTests
         var run = new PexFunction { Name = "Run", ReturnType = "None", DocString = "docs", UserFlags = 2, IsGlobal = true };
         run.Params.Add(new PexTypedName { Name = "arg", Type = "Int" });
         run.Locals.Add(new PexTypedName { Name = "temp", Type = "String" });
-        // callmethod: 3 fixed operands then a vararg list. Two varargs here, one of them None.
+
         run.Instructions.Add(new PexInstruction
         {
             OpCode = 23, Mnemonic = "callmethod", FixedArgCount = 3, HasVarArgs = true,
@@ -195,8 +195,8 @@ public class PexWriterTests
         back.StructOrders.Single().MemberNames.Should().Equal("X", "Y");
     }
 
-    // The reason the writer keeps the table verbatim instead of rebuilding it: rebuilding would
-    // renumber every index, and nothing about the format requires the new numbering to match.
+
+
     [Fact]
     public void The_string_table_is_written_in_its_original_order()
     {
@@ -206,8 +206,8 @@ public class PexWriterTests
         back.StringTable.Should().Equal(pex.StringTable);
     }
 
-    // Sixteen of the 1,496 loose .pex on the development machine carry four bytes past the last
-    // object. Dropping them would silently produce a shorter file than the one that was read.
+
+
     [Fact]
     public void Bytes_past_the_last_object_survive_the_round_trip()
     {
@@ -238,10 +238,10 @@ public class PexWriterTests
         back.ToBytes().Should().Equal(bytes);
     }
 
-    // The object header carries a byte count, and getting it wrong is the failure most likely to
-    // produce a file that still reads back through our own reader (which had ignored the field)
-    // while the game rejects it. Real files use two conventions; a fresh object gets the majority
-    // one, and the other has to survive a round trip because 16 real files depend on it.
+
+
+
+
     [Theory]
     [InlineData(true, 4)]
     [InlineData(false, 0)]
@@ -269,17 +269,17 @@ public class PexWriterTests
     private static void ReadObjectSizeField(byte[] bytes, out uint size, out long bodyBytes)
     {
 
-        // Walk the header to the single object's size field.
+
         using var ms = new MemoryStream(bytes);
         using var r = new BinaryReader(ms, System.Text.Encoding.Latin1);
-        r.ReadUInt32();                                     // magic
-        r.ReadByte(); r.ReadByte(); r.ReadUInt16();         // version, gameId
-        r.ReadInt64();                                      // compilation time
+        r.ReadUInt32();
+        r.ReadByte(); r.ReadByte(); r.ReadUInt16();
+        r.ReadInt64();
         SkipStr(r); SkipStr(r); SkipStr(r);
         int strCount = r.ReadUInt16();
         for (int i = 0; i < strCount; i++) SkipStr(r);
-        r.ReadByte();                                       // hasDebugInfo
-        r.ReadInt64();                                      // modification time
+        r.ReadByte();
+        r.ReadInt64();
         int fnCount = r.ReadUInt16();
         for (int i = 0; i < fnCount; i++)
         {
@@ -302,14 +302,14 @@ public class PexWriterTests
         int ufCount = r.ReadUInt16();
         for (int i = 0; i < ufCount; i++) { r.ReadUInt16(); r.ReadByte(); }
         r.ReadUInt16().Should().Be(1, "the sample has one object");
-        r.ReadUInt16();                                     // object name index
+        r.ReadUInt16();
         size = r.ReadUInt32();
         bodyBytes = bytes.Length - ms.Position;
     }
 
     private static void SkipStr(BinaryReader r) => r.ReadBytes(r.ReadUInt16());
 
-    // ---- refusals, rather than corrupt output ----
+
 
     [Fact]
     public void A_string_missing_from_the_table_is_refused_rather_than_written_wrong()
@@ -338,7 +338,7 @@ public class PexWriterTests
     {
         var pex = Sample();
         var ret = new PexInstruction { OpCode = 26, Mnemonic = "return", FixedArgCount = 1 };
-        pex.Objects[0].Properties[1].ReadHandler!.Instructions[0] = ret;   // return with no operand
+        pex.Objects[0].Properties[1].ReadHandler!.Instructions[0] = ret;
 
         var write = () => pex.ToBytes();
 

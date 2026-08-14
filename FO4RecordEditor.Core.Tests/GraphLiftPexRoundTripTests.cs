@@ -9,31 +9,31 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The same round trip as <see cref="GraphLiftRoundTripTests"/>, but starting from a compiled
-/// binary: source, .pex, decompiled text, graph, .pex, compared instruction for instruction against
-/// the first .pex.
-/// </summary>
-/// <remarks>
-/// This is the only thing that says the "open a .pex into the canvas" path is trustworthy, because
-/// it is the only path that runs the decompiler and the lifter as a pair. The source round trip
-/// does not exercise the decompiler at all.
-/// <para>
-/// It is not expected to reach the source round trip's 28/28, and that is a property of the
-/// decompiler, not of the lifter: PAPYRUS.md records function bodies as best effort, and
-/// GraphRoundTripTests already measured two specific fidelity limits (implicit zero initialisation
-/// rendered as an explicit assignment, and a discarded call result dropped). The number is
-/// therefore reported per stage with every failure named, and pinned to a baseline so a regression
-/// fails rather than quietly lowering the bar.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class GraphLiftPexRoundTripTests
 {
     private readonly ITestOutputHelper _output;
 
     public GraphLiftPexRoundTripTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>Where a fixture stopped, in the order the stages run.</summary>
+
     private enum Stage
     {
         Matched,
@@ -52,14 +52,14 @@ public class GraphLiftPexRoundTripTests
 
     private static string StripResultLine(string decompiled)
     {
-        // The decompiler prefixes a RESULT: line for its prose callers.
+
         var newline = decompiled.IndexOf('\n');
         return newline >= 0 && decompiled.StartsWith("RESULT:", StringComparison.Ordinal)
             ? decompiled[(newline + 1)..]
             : decompiled;
     }
 
-    /// <summary>Runs one fixture from hand-written source all the way back to a .pex.</summary>
+
     private static Outcome RunOne(GraphFixture fixture)
     {
         var root = Directory.CreateTempSubdirectory("fo4re-lift-pex-");
@@ -76,7 +76,7 @@ public class GraphLiftPexRoundTripTests
                     string.Join(" | ", original.Diagnostics.Select(d => $"{d.Code} {d.Message}")));
             }
 
-            // The binary is the input from here on, exactly as it would be off disk.
+
             var pexPath = Path.Combine(root.FullName, "Fixture.pex");
             original.Pex.WriteFile(pexPath);
 
@@ -95,7 +95,7 @@ public class GraphLiftPexRoundTripTests
                     string.Join(" | ", parseErrors.Select(d => $"{d.Code} {d.Message}")));
             }
 
-            // The decompiled text is what the panel would lift, so it is what gets published here.
+
             File.WriteAllText(Path.Combine(root.FullName, "Fixture.psc"), text);
             var lifted = new GraphLifter(Index(root.FullName)).Lift(parsed);
             if (!lifted.Success || lifted.Document == null)
@@ -146,15 +146,15 @@ public class GraphLiftPexRoundTripTests
             + "raising the baseline is the only way to record an improvement");
     }
 
-    /// <summary>
-    /// Fixtures that survive the binary round trip today. Measured, not chosen.
-    /// </summary>
-    /// <remarks>
-    /// It started at 12 of 28. The other 16 were four decompiler defects, each named and fixed
-    /// rather than absorbed into the baseline: locals hoisted to a declaration that compiles to a
-    /// zero assignment the original never had, a call whose result nothing reads dropped with its
-    /// temporary, a short circuit read as two separate Ifs so the first operand stopped guarding
-    /// anything, and the compiler's own cast to Bool written back as an author's cast.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
     private const int PexRoundTripBaseline = 28;
 }

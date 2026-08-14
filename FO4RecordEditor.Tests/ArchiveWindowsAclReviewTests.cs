@@ -10,8 +10,8 @@ namespace FO4RecordEditor.Tests;
 
 public sealed class ArchiveWindowsAclReviewTests
 {
-    // Wine reports IsWindows()==true, but its ACL layer can block indefinitely on
-    // GetAccessControl, and these tests assert real-Windows DACL semantics anyway.
+
+
     private static bool IsRealWindows() =>
         OperatingSystem.IsWindows()
         && Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wine") is null;

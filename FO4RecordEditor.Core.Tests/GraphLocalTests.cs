@@ -4,15 +4,15 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Function locals declared by the graph rather than produced by the lowering.
-/// </summary>
-/// <remarks>
-/// Every other local in a generated script exists because an impure node's result had to be bound
-/// somewhere. That covers what a graph author draws, and it does not cover mutable state: a loop
-/// counter is read, added to and written back, which no arrangement of data wires expresses. This
-/// node is the missing piece, and it is what makes a script with a counter representable at all.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class GraphLocalTests
 {
     private static string Source(GraphDocument document)
@@ -66,7 +66,7 @@ public class GraphLocalTests
     [Fact]
     public void A_local_can_be_read_and_written_back()
     {
-        // The shape the data wires cannot express: read it, add to it, store it again.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -99,8 +99,8 @@ public class GraphLocalTests
     [Fact]
     public void A_local_survives_being_declared_inside_a_loop_body()
     {
-        // Papyrus declares locals at function scope, so the declaration is hoisted once even though
-        // the node sits inside the body.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -163,7 +163,7 @@ public class GraphLocalTests
     [Fact]
     public void The_same_name_in_two_functions_is_fine()
     {
-        // Locals are per callable, so two functions may each have a counter.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 

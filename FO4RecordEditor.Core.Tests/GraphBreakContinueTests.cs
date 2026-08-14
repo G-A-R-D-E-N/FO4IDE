@@ -5,16 +5,16 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Leaving a loop early, which Papyrus has no keyword for.
-/// </summary>
-/// <remarks>
-/// Break becomes a bool that makes the loop condition false. Continue emits nothing at all: falling
-/// off the end of the body is exactly where it goes, and because both nodes are terminal the branch
-/// holding one has no post-dominator, so the rest of the body is already lowered into the sibling
-/// arm. That is measured in <see cref="GraphFixtures"/> 27 and 28 against hand-written Papyrus,
-/// not argued.
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
 public class GraphBreakContinueTests
 {
     private static string Source(GraphDocument document)
@@ -24,7 +24,7 @@ public class GraphBreakContinueTests
         return result.Source!;
     }
 
-    /// <summary>A loop whose body runs one node, then branches to <paramref name="exitKind"/>.</summary>
+
     private static GraphBuilder LoopWithExit(NodePalette palette, string exitKind, out string exitNode)
     {
         var graph = new GraphBuilder("Fixture", "ObjectReference");
@@ -78,7 +78,7 @@ public class GraphBreakContinueTests
     [Fact]
     public void A_loop_nobody_breaks_out_of_gets_no_sentinel()
     {
-        // The sentinel is allocated on the first Break, so the common loop is unchanged.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = LoopWithExit(palette, BuiltinNodeDefinitions.Continue, out _);
 
@@ -122,8 +122,8 @@ public class GraphBreakContinueTests
     [Fact]
     public void A_break_in_the_inner_loop_leaves_only_the_inner_loop()
     {
-        // The reset sits immediately before the inner While, inside the outer body, so each outer
-        // pass starts with the inner loop able to run again.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -150,7 +150,7 @@ public class GraphBreakContinueTests
 
         var source = Source(graph.Document);
 
-        // Only the inner loop's condition carries the sentinel.
+
         var lines = source.Split('\n').Select(l => l.Trim()).ToList();
         var outerLine = lines.FindIndex(l => l == "While (enabled)");
         var innerLine = lines.FindIndex(l => l == "While (enabled && !broke)");
@@ -195,8 +195,8 @@ public class GraphBreakContinueTests
     [Fact]
     public void A_break_does_not_count_as_leaving_the_function()
     {
-        // Break reaches the loop's Completed target, which is judged there. Treating it as a path
-        // out of the function would refuse this perfectly good returning function.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -233,8 +233,8 @@ public class GraphBreakContinueTests
     [Fact]
     public void A_loop_whose_only_exit_is_a_break_still_has_to_return()
     {
-        // The neutrality must not become leniency: with Completed unwired there is no path to a
-        // Return at all, and that still has to be refused.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -279,7 +279,7 @@ public class GraphBreakContinueTests
     [Fact]
     public void An_empty_then_arm_is_inverted_rather_than_left_empty()
     {
-        // "If (x) Else ... EndIf" is valid and nobody writes it. Continue is what produces it.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = LoopWithExit(palette, BuiltinNodeDefinitions.Continue, out _);
 

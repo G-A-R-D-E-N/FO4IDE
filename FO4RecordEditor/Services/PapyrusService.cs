@@ -5,44 +5,44 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Compiles Papyrus source (.psc -> .pex), so the AI can author a script's records AND compile the
-/// script in one workflow.
-/// </summary>
-/// <remarks>
-/// Two engines. <b>Built-in</b> is this tool's own compiler in
-/// <c>FO4RecordEditor.Core/Services/Papyrus/</c> -- lexer, parser, script index, resolver, type
-/// checker, code generator, <c>.pex</c> writer -- and needs no Creation Kit at all. <b>Creation
-/// Kit</b> shells out to <c>PapyrusCompiler.exe</c>. <see cref="Engine.Auto"/>, the default, prefers
-/// the CK when one is installed, so nothing about an existing setup changes, and falls back to the
-/// built-in engine otherwise, which is the whole point of issue #78: the tool no longer stops at the
-/// edge of what a CK-less machine can do.
-/// <para>
-/// The CK compiler implicitly adds its working directory as an import folder, so it is always run
-/// from the compile's own work dir (the script's folder, or the namespace root when the file's
-/// layout genuinely matches its ScriptName) rather than the host's CWD. Never point that at a large
-/// tree: it walks every import root recursively. The built-in engine has no such hazard -- it
-/// indexes lazily and parses on demand.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static class PapyrusService
 {
     private const string DefaultFlags = "Institute_Papyrus_Flags.flg";
 
-    /// <summary>Which compiler runs.</summary>
+
     public enum Engine
     {
-        /// <summary>The Creation Kit when it is installed, the built-in compiler when it is not.</summary>
+
         Auto,
 
-        /// <summary>This tool's own compiler. No Creation Kit involved.</summary>
+
         BuiltIn,
 
-        /// <summary>Shell out to <c>PapyrusCompiler.exe</c>.</summary>
+
         CreationKit,
     }
 
-    /// <summary>Parses an engine name, defaulting to <see cref="Engine.Auto"/> for anything unrecognised.</summary>
+
     public static Engine ParseEngine(string? name) => (name ?? "").Trim().ToLowerInvariant() switch
     {
         "builtin" or "built-in" or "native" or "internal" => Engine.BuiltIn,
@@ -66,8 +66,8 @@ public static class PapyrusService
 
         if (chosen == Engine.BuiltIn || (chosen == Engine.Auto && !haveCreationKit))
         {
-            // A .pas rejection is worth keeping identical between the engines; the built-in one
-            // makes the same check for the same reason.
+
+
             var result = PapyrusAnalysisService.Compile(
                 source, output, imports, release, debugInfo,
                 string.IsNullOrWhiteSpace(flags) ? null : flags.Trim().Trim('"'));
@@ -88,9 +88,9 @@ public static class PapyrusService
             return result;
         }
 
-        // .pas is Papyrus ASSEMBLY, not source. PapyrusCompiler compiles .psc; .pas is assembled by
-        // PapyrusAssembler.exe (a different tool). This is the usual "I compiled the decompiler's
-        // Assembly-listing output" mistake -- point the user at the .psc path instead.
+
+
+
         if (isFile && source.EndsWith(".pas", StringComparison.OrdinalIgnoreCase))
             return "That's a Papyrus ASSEMBLY file (.pas), not source. PapyrusCompiler compiles .psc SOURCE.\n" +
                    "Fix: Decompile this script again with 'Assembly listing' UNCHECKED to get a .psc, then compile that.\n" +
@@ -102,19 +102,19 @@ public static class PapyrusService
                    "compiler_path pointing at it, or " + ToolPaths.Describe("papyrus") + ". " +
                    "Or use engine='builtin', which needs no Creation Kit.";
 
-        // Determine the compile target + working dir, handling namespaced scripts. The FO4 compiler
-        // derives a script's object name from its path RELATIVE to an import root, so a namespaced
-        // script "IHO:IHO_Foo" must live at <root>\IHO\IHO_Foo.psc AND be targeted by its object name
-        // ("IHO:IHO_Foo"), not the bare filename. For a single namespaced file we read its ScriptName,
-        // target the object name, and use the namespace's parent folder as the import root.
+
+
+
+
+
         string workDir, target;
         string? stagingDir = null;
         if (isDir)
         {
-            // The compiler derives each script's object name from its path relative to an import root,
-            // so namespaced scripts ("IHO:IHO_Foo") sitting FLAT in a folder fail to read. Stage every
-            // .psc into a temp tree matching its declared namespace (IHO\IHO_Foo.psc), then compile
-            // that -- makes both flat and already-structured folders work.
+
+
+
+
             stagingDir = StageNamespacedFolder(source);
             workDir = stagingDir ?? source;
             target = workDir;
@@ -125,14 +125,14 @@ public static class PapyrusService
             string fileDir = Path.GetDirectoryName(full)!;
             string objName = "";
             try { objName = ExtractScriptName(File.ReadAllText(full)); } catch { }
-            // Ascend one folder per namespace segment to reach the import root -- but ONLY while the
-            // folder being left is actually named after that segment. The declared ScriptName drives
-            // the depth, so an unbounded ascent walks up as many levels as the script cares to claim
-            // and hands the result to the compiler as both an import root and its working directory:
-            // the same whole-tree enumeration the parent-folder import root used to cause, reachable
-            // through a differently-shaped path. A layout that doesn't match was never going to
-            // resolve anyway (the compiler looks for <root>\A\B\Foo.psc), so it failed after the
-            // enumeration rather than instead of it -- this just fails fast and stays put.
+
+
+
+
+
+
+
+
             var segments = objName.Split(':', StringSplitOptions.RemoveEmptyEntries);
             int depth = segments.Length - 1;
             string root = fileDir;
@@ -157,13 +157,13 @@ public static class PapyrusService
             }
         }
 
-        // Import roots: caller-supplied + base game scripts + the work dir.
-        // The work dir's PARENT is deliberately NOT an import root. The compiler walks every import
-        // root recursively, so a single .psc sitting anywhere shallow made it enumerate the parent's
-        // whole tree -- for a script near the workspace root that is ~695k files, and it either
-        // stalls or dies on a >260-char path long before it compiles anything. Sibling-folder
-        // imports that used to work by accident now have to be passed explicitly via `imports`
-        // (the tool's own parameter) or configured once in Settings > Papyrus base imports.
+
+
+
+
+
+
+
         var imp = new List<string>();
         if (!string.IsNullOrWhiteSpace(imports))
             imp.AddRange(imports.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -172,7 +172,7 @@ public static class PapyrusService
         imp.Add(workDir);
         var importArg = string.Join(";", imp.Distinct(StringComparer.OrdinalIgnoreCase));
 
-        // Default output: the ORIGINAL source folder for a dir compile (not the temp staging dir).
+
         string outDir = !string.IsNullOrWhiteSpace(output) ? output.Trim().Trim('"') : (isDir ? source : workDir);
         try { Directory.CreateDirectory(outDir); } catch (Exception ex) { return $"Cannot create output dir '{outDir}': {ex.Message}"; }
         var args = new StringBuilder();
@@ -194,15 +194,15 @@ public static class PapyrusService
         var sb = new StringBuilder();
         try
         {
-            // A batch of 90 scripts emits heavily on BOTH streams, so they must be drained
-            // concurrently -- see ProcessRunner for why sequential reads deadlock.
+
+
             var run = ProcessRunner.Run(psi, TimeSpan.FromSeconds(300));
             if (!run.Started) return "Failed to start the Papyrus compiler process.";
             if (run.TimedOut) return "Papyrus compile timed out after 300s (killed).";
 
-            // Not run.Combined: this parser splits on '\n' and must keep the untrimmed shape.
+
             var combined = (run.StdOut + "\n" + run.StdErr).Replace("\r", "");
-            // Lead with a parse-friendly RESULT line (so Claude/the GUI can read success at a glance).
+
             var batch = combined.Split('\n').FirstOrDefault(l => l.Contains("Batch compile", StringComparison.OrdinalIgnoreCase));
             var mOk = System.Text.RegularExpressions.Regex.Match(batch ?? "", @"(\d+)\s+succeeded,\s+(\d+)\s+failed");
             if (mOk.Success)
@@ -214,7 +214,7 @@ public static class PapyrusService
             sb.AppendLine($"workdir : {workDir}");
             sb.AppendLine($"args    : {args}");
             sb.AppendLine();
-            // Surface the lines that matter (errors + the summary) rather than the full per-file noise.
+
             var important = combined.Split('\n')
                 .Where(l => l.Trim().Length > 0)
                 .Where(l => l.Contains("error", StringComparison.OrdinalIgnoreCase)
@@ -241,9 +241,9 @@ public static class PapyrusService
         }
     }
 
-    // Stage every .psc under a folder into a temp tree whose layout matches each script's declared
-    // namespace (IHO:IHO_Foo -> IHO\IHO_Foo.psc), so the compiler can resolve namespaced scripts even
-    // when the input folder is flat. Returns the staging dir, or null if there's nothing to stage.
+
+
+
     private static string? StageNamespacedFolder(string folder)
     {
         string[] files;
@@ -270,13 +270,13 @@ public static class PapyrusService
         catch { try { Directory.Delete(staging, true); } catch { } return null; }
     }
 
-    /// <summary>
-    /// Decompile a compiled Papyrus .pex back to source (.psc) using the in-process FO4 decompiler
-    /// (no external tool). 'source' is a single .pex or a folder. For a single file, the source text
-    /// is returned inline unless write=true. For a folder, all .pex are decompiled and written to
-    /// 'output' (default: the source folder) and a summary is returned. assembly=true emits a faithful
-    /// bytecode disassembly instead of reconstructed source.
-    /// </summary>
+
+
+
+
+
+
+
     public static string Decompile(string source, string? output, bool assembly, bool write)
     {
         if (string.IsNullOrWhiteSpace(source)) return "Provide 'source' (a .pex file or a folder of .pex).";
@@ -289,9 +289,9 @@ public static class PapyrusService
             try { text = PapyrusDecompiler.Decompile(source, assembly); }
             catch (Exception ex) { return $"Decompile failed for {Path.GetFileName(source)}: {ex.Message}"; }
 
-            // Save when EITHER "write" is on OR an output folder was given (setting a folder = intent
-            // to save). With neither, this is an inline preview only -- make that explicit so it's not
-            // mistaken for a save that produced no file.
+
+
+
             bool doWrite = write || !string.IsNullOrWhiteSpace(output);
             if (!doWrite)
                 return text + "\n\n; ---------------------------------------------------------------\n" +
@@ -306,7 +306,7 @@ public static class PapyrusService
 
         if (Directory.Exists(source))
         {
-            // Recurse so a whole mod's Scripts folder (with .pex anywhere under it) decompiles fully.
+
             var files = Directory.GetFiles(source, "*.pex", SearchOption.AllDirectories);
             if (files.Length == 0) return $"RESULT: 0 decompiled. No .pex files found under {source}.";
             string outDir = string.IsNullOrWhiteSpace(output) ? source : output.Trim().Trim('"');
@@ -334,9 +334,9 @@ public static class PapyrusService
         return $"Source not found: {source}";
     }
 
-    // Compute the output path for decompiled text, placing namespaced scripts ("IHO:IHO_Foo") into
-    // namespace subfolders (out\IHO\IHO_Foo.psc) so the result recompiles as-is. Assembly (.pas) and
-    // un-namespaced scripts write flat. Creates the directory.
+
+
+
     private static string NamespacedOutPath(string outDir, string text, string fallbackBaseName, string ext, bool assembly)
     {
         string rel = fallbackBaseName + ext;
@@ -351,8 +351,8 @@ public static class PapyrusService
         return full;
     }
 
-    // Known FO4 Papyrus script-extender frameworks: (symbol substring, framework name, Nexus URL).
-    // Matched against unresolved type/function names so a failed compile can point at the right mod.
+
+
     private static readonly (string match, string name, string url)[] KnownExtenders =
     {
         ("hudframework",      "HUDFramework",            "https://www.nexusmods.com/fallout4/mods/20309"),
@@ -362,9 +362,9 @@ public static class PapyrusService
         ("baka",              "Baka Framework",          "https://www.nexusmods.com/fallout4/search/?gsearch=Baka+Framework&gsearchtype=mods"),
     };
 
-    // When a compile fails on unresolved types/functions, identify the missing symbols and point the
-    // user at the script extender that provides them (F4SE + vanilla base are already on the path, so a
-    // remaining unresolved symbol almost always means another extender's Scripts\Source is missing).
+
+
+
     private static string DiagnoseDependencies(string compilerOutput)
     {
         var patterns = new[]
@@ -402,7 +402,7 @@ public static class PapyrusService
         return sb.ToString();
     }
 
-    // Read the declared object name ("IHO:IHO_Foo") from a .psc / decompiled source. "" if not found.
+
     private static string ExtractScriptName(string text)
     {
         foreach (var raw in text.Split('\n'))
@@ -414,7 +414,7 @@ public static class PapyrusService
                 var toks = l.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 if (toks.Length >= 2) return toks[1].Trim();
             }
-            break; // first meaningful line should be ScriptName; stop otherwise
+            break;
         }
         return "";
     }

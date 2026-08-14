@@ -7,22 +7,22 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// xEdit-parity operations that act on whole plugins rather than one field: duplicating a record
-/// under a fresh FormID, stripping Identical-to-Master overrides, and building a merged patch.
-/// They share <see cref="WriteService"/>'s helpers (EnsureOpen / NormalizePlugin /
-/// TryRemoveFromGroup / AddOverrideReturning) and follow the same "dry run first" contract as
-/// <see cref="WriteService.RevertOverridesFrom"/>.
-/// </summary>
+
+
+
+
+
+
+
 public static partial class WriteService
 {
-    // ── Copy as new record ──────────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Duplicate a record into a target plugin under a BRAND NEW FormID (xEdit's "Copy as new
-    /// record into..."), instead of overriding the original the way copy_as_override does. This is
-    /// how you make a variant of an existing item. The target plugin is opened or created.
-    /// </summary>
+
+
+
+
+
+
     public static string CopyAsNewRecord(object? env, string sourcePlugin, string id, string targetPlugin, string? newEditorId)
     {
         if (!ResolveFk(env, id, out var fk))
@@ -62,8 +62,8 @@ public static partial class WriteService
         return $"Copied {fk} into {name} as NEW record {newFk} ('{dup.EditorID}'). save_plugin to persist.";
     }
 
-    // Find the mod's typed group whose element type matches the record and Add() the instance.
-    // Mirrors AddOverrideReturning's group discovery, but for a record that is not an override.
+
+
     private static bool TryAddToGroup(IFallout4Mod mod, Type getterType, IMajorRecord rec, out string err)
     {
         foreach (var prop in mod.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -88,20 +88,20 @@ public static partial class WriteService
         return false;
     }
 
-    // ── Remove Identical to Master ──────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// The xEdit "Remove Identical to Master records" half of a cleaning pass (clean_plugin does
-    /// the UDR half). An ITM is an override whose every field equals the version it overrides, so
-    /// it costs a conflict row and a load-order slot while changing nothing.
-    ///
-    /// Comparison is Mutagen's generated structural equality over the whole record, not the
-    /// display walker, so it is exact and full-depth. It also compares the record header's version
-    /// control bytes, which means the check errs toward KEEPING a record: a false "not identical"
-    /// is harmless, a false "identical" would delete real edits.
-    ///
-    /// Defaults to a dry run that lists what it would remove; pass apply=true to actually remove.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static string RemoveIdenticalToMaster(object? env, string plugin, bool apply, int limit = 2000)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg);
@@ -116,7 +116,7 @@ public static partial class WriteService
             scanned++;
             var contexts = MutagenLoader.GetRecordContexts(env, rec.FormKey);
             int mine = contexts.FindIndex(c => string.Equals(c.plugin, name, StringComparison.OrdinalIgnoreCase));
-            if (mine <= 0) continue;                      // new record here, or not visible in the load order
+            if (mine <= 0) continue;
 
             var previous = contexts[mine - 1];
             if (!RecordsAreIdentical(previous.rec, rec)) continue;
@@ -152,9 +152,9 @@ public static partial class WriteService
         return msg;
     }
 
-    // Mutagen generates a full-depth structural Equals on every record class; both sides implement
-    // the same getter interface whether they came from a binary overlay or an in-memory edit, so
-    // object.Equals dispatches to it. Different record types are never equal.
+
+
+
     private static bool RecordsAreIdentical(IMajorRecordGetter a, IMajorRecordGetter b)
     {
         if (ReferenceEquals(a, b)) return true;
@@ -163,7 +163,7 @@ public static partial class WriteService
         catch { return false; }
     }
 
-    // Remove one record from whichever of the mod's groups holds it.
+
     private static bool TryRemoveRecord(IFallout4Mod mod, FormKey fk, out string err)
     {
         foreach (var groupProp in mod.GetType().GetProperties()
@@ -178,16 +178,16 @@ public static partial class WriteService
         return false;
     }
 
-    // ── Create Merged Patch ─────────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// xEdit's "Create Merged Patch": build a patch plugin carrying the WINNING version of every
-    /// record that two or more of the selected plugins touch, so the load order resolves the way
-    /// the user intends without hand-copying each record.
-    ///
-    /// plugins is a comma-separated list of plugin filenames; empty means every non-base plugin in
-    /// the load order. Defaults to a dry run.
-    /// </summary>
+
+
+
+
+
+
+
+
+
     public static string CreateMergedPatch(object? env, string plugins, string patchPlugin, bool apply, int limit = 5000)
     {
         if (string.IsNullOrWhiteSpace(patchPlugin))
@@ -207,7 +207,7 @@ public static partial class WriteService
         if (order.Count < 2)
             return ToolError.Fail($"A merged patch needs at least two source plugins; matched {order.Count}.");
 
-        // Which FormKeys does more than one selected plugin touch, and who wins?
+
         var owner = new Dictionary<FormKey, string>();
         var winner = new Dictionary<FormKey, string>();
         var contested = new HashSet<FormKey>();
@@ -221,7 +221,7 @@ public static partial class WriteService
                     if (!string.Equals(first, name, StringComparison.OrdinalIgnoreCase)) contested.Add(fk);
                 }
                 else owner[fk] = name;
-                winner[fk] = name;   // last writer in load order wins
+                winner[fk] = name;
             }
         }
 
@@ -255,8 +255,8 @@ public static partial class WriteService
         return result;
     }
 
-    // The load order as Fallout 4 mods, in load order, with in-editor plugins swapped in place
-    // (or appended when they are new) so a freshly authored patch participates immediately.
+
+
     private static List<(string name, IFallout4ModGetter mod)> LoadOrderMods(object? env)
     {
         var order = new List<(string name, IFallout4ModGetter mod)>();

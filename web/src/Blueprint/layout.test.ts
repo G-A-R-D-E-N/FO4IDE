@@ -18,7 +18,7 @@ import {
   type BpWire,
 } from './graphModel';
 
-// Layout is pure, so the arrangement can be checked as arithmetic rather than looked at.
+
 
 const pin = (id: string, kind: 'exec' | 'data', dir: 'in' | 'out'): BpPinDef => ({
   id,
@@ -30,12 +30,12 @@ const pin = (id: string, kind: 'exec' | 'data', dir: 'in' | 'out'): BpPinDef => 
 });
 
 const DEFS: Record<string, BpNodeDef> = {
-  // A statement: exec in and out.
+
   step: {
     type: 'step', label: 'Step', category: 'Flow', kind: 'Call', isPure: false, isGlobal: false,
     pins: [pin('exec', 'exec', 'in'), pin('then', 'exec', 'out'), pin('ret', 'data', 'out')],
   },
-  // A branch: one exec in, two exec out.
+
   branch: {
     type: 'branch', label: 'Branch', category: 'Flow', kind: 'Branch', isPure: false, isGlobal: false,
     pins: [
@@ -43,7 +43,7 @@ const DEFS: Record<string, BpNodeDef> = {
       pin('cond', 'data', 'in'),
     ],
   },
-  // An expression: no exec pins at all.
+
   literal: {
     type: 'literal', label: 'Literal', category: 'Values', kind: 'Literal', isPure: true, isGlobal: false,
     pins: [pin('value', 'data', 'out'), pin('a', 'data', 'in')],
@@ -91,7 +91,7 @@ describe('autoLayout', () => {
   });
 
   it('uses the longest path, so a node never sits left of something that must run first', () => {
-    // a -> b -> c and also a -> c. c must land in column 2, not column 1.
+
     const d = doc(
       [node('a', 'step'), node('b', 'step'), node('c', 'step')],
       [
@@ -120,8 +120,8 @@ describe('autoLayout', () => {
   });
 
   it('puts an expression just left of what reads it, not at the far left', () => {
-    // The literal feeds a node three columns in. Left at column 0 it would drag a wire across the
-    // whole canvas.
+
+
     const d = doc(
       [node('a', 'step'), node('b', 'step'), node('c', 'branch'), node('lit', 'literal')],
       [
@@ -175,7 +175,7 @@ describe('autoLayout', () => {
   });
 
   it('terminates on a loop instead of pushing the target rightwards for ever', () => {
-    // The back edge would otherwise raise its own target's rank on every pass.
+
     const d = doc(
       [node('a', 'step'), node('b', 'step'), node('c', 'step')],
       [
@@ -210,7 +210,7 @@ describe('autoLayout', () => {
   });
 
   it('ignores data wires when deciding what runs after what', () => {
-    // Only exec wires order statements. A data wire between two statements must not move either.
+
     const d = doc(
       [node('a', 'step'), node('b', 'step')],
       [wire('w1', 'a', 'ret', 'b', 'cond')],
@@ -266,7 +266,7 @@ describe('minimapFit', () => {
   it('centres what it fits', () => {
     const fit = minimapFit({ x: 0, y: 0, w: 100, h: 100 }, 200, 100, 0);
 
-    // Square graph in a wide box: scaled to the height, centred horizontally.
+
     expect(fit.scale).toBe(1);
     expect(fit.offsetX).toBe(50);
     expect(fit.offsetY).toBe(0);

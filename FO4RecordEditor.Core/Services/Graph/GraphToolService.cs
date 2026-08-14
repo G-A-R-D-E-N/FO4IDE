@@ -6,17 +6,17 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>
-/// The prose surface the MCP tools call, kept out of the executor so it can be tested directly.
-/// </summary>
-/// <remarks>
-/// Every entry point returns text a reader can act on rather than a payload that needs decoding,
-/// matching what the Papyrus analysis tools already do. Failures are strings, not exceptions,
-/// because the caller on the other side of the tool boundary cannot catch one.
-/// </remarks>
+
+
+
+
+
+
+
+
 public static class GraphToolService
 {
-    /// <summary>Validates a graph document and reports every problem against its node.</summary>
+
     public static string Validate(string graphPath, string? imports = null)
     {
         if (!TryLoad(graphPath, out var document, out var failure)) return failure!;
@@ -36,7 +36,7 @@ public static class GraphToolService
         return text.ToString().TrimEnd();
     }
 
-    /// <summary>Compiles a graph, optionally writing the source and the compiled object.</summary>
+
     public static string Compile(
         string graphPath, string? output = null, string? imports = null, bool sourceOnly = false)
     {
@@ -54,8 +54,8 @@ public static class GraphToolService
             foreach (var diagnostic in result.Diagnostics) text.AppendLine(Describe(diagnostic, document!));
             if (result.Source != null)
             {
-                // Showing the source on failure is the difference between a fixable report and a
-                // dead end, since the author never wrote this text and cannot inspect it otherwise.
+
+
                 text.AppendLine().AppendLine("Generated source:").AppendLine(result.Source);
             }
             return text.ToString().TrimEnd();
@@ -93,7 +93,7 @@ public static class GraphToolService
         return text.ToString().TrimEnd();
     }
 
-    /// <summary>Searches the node palette, so a caller can find what a graph may contain.</summary>
+
     public static string SearchPalette(string query, string? imports = null, int limit = 30)
     {
         var compiler = new GraphCompiler(IndexFor(null, imports));
@@ -108,7 +108,7 @@ public static class GraphToolService
         return text.ToString().TrimEnd();
     }
 
-    /// <summary>The pins one node type offers, which is what a caller needs to wire it.</summary>
+
     public static string DescribeNode(string nodeType, string? imports = null)
     {
         var compiler = new GraphCompiler(IndexFor(null, imports));
@@ -150,13 +150,13 @@ public static class GraphToolService
         return false;
     }
 
-    /// <summary>
-    /// Import roots for a graph: the configured base scripts, plus anything the caller adds.
-    /// </summary>
-    /// <remarks>
-    /// The graph's own folder is included so a project's scripts resolve without configuration,
-    /// which mirrors how the Papyrus analysis tools treat a script's own directory.
-    /// </remarks>
+
+
+
+
+
+
+
     private static PapyrusScriptIndexRoots IndexFor(string? graphPath, string? imports) =>
         new(graphPath, imports);
 
@@ -177,11 +177,11 @@ public static class GraphToolService
     }
 }
 
-/// <summary>Builds the index a graph tool call resolves against.</summary>
-/// <remarks>
-/// A small indirection so the roots are assembled in one place: the graph's own folder, the
-/// caller's extra roots, and whatever the tool paths supply for the base game.
-/// </remarks>
+
+
+
+
+
 public sealed class PapyrusScriptIndexRoots
 {
     private readonly Papyrus.PapyrusScriptIndex _index;

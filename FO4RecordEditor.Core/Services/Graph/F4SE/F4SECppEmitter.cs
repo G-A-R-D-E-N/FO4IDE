@@ -5,23 +5,23 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-/// <summary>
-/// Emits the <c>.h</c> and <c>.cpp</c> pair for one module: signatures, stubs and registrations.
-/// </summary>
-/// <remarks>
-/// The shape follows the shipped F4SE modules: a header declaring
-/// <c>namespace papyrusX { void RegisterFuncs(VirtualMachine* vm); }</c>, and a translation unit
-/// holding the struct declarations, one stub per native, and a <c>RegisterFuncs</c> that registers
-/// them all and then applies function flags.
-/// <para>
-/// Bodies are stubs between preserved-region markers. Each carries a guard macro that fails the
-/// build unless the developer opts into stubs, so an unimplemented native cannot ship by accident
-/// while still leaving a half-finished plugin buildable on purpose.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class F4SECppEmitter
 {
-    /// <summary>The macro a stub body invokes, and the opt-out that silences it.</summary>
+
     public const string UnimplementedMacro = "F4SE_BINDING_UNIMPLEMENTED";
 
     public const string AllowStubsMacro = "F4SE_BINDING_ALLOW_STUBS";
@@ -34,7 +34,7 @@ public sealed class F4SECppEmitter
 
     public F4SECppEmitter(IEnumerable<string>? structNames = null) => _map = new F4SETypeMap(structNames);
 
-    /// <summary>The header file for one module.</summary>
+
     public string EmitHeader(PluginBinding plugin, ModuleBinding module)
     {
         var text = new StringBuilder();
@@ -57,7 +57,7 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-    /// <summary>The translation unit for one module.</summary>
+
     public string EmitSource(PluginBinding plugin, ModuleBinding module)
     {
         var ns = NamespaceOf(plugin, module);
@@ -100,7 +100,7 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-    /// <summary>One native's signature and its preserved-region stub body.</summary>
+
     private string StubFor(NativeBinding native)
     {
         var text = new StringBuilder();
@@ -117,7 +117,7 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-    /// <summary>The C++ signature of one native, receiver included.</summary>
+
     public string SignatureOf(NativeBinding native)
     {
         var returnType = CppOf(native.ReturnType, native.ReturnUnsigned)?.Format() ?? "void";
@@ -135,16 +135,16 @@ public sealed class F4SECppEmitter
         return $"{returnType} {native.FunctionName}({string.Join(", ", parameters)})";
     }
 
-    /// <summary>
-    /// A default-constructed return, so a stub compiles once the guard is opted out of.
-    /// </summary>
+
+
+
     private string? ReturnStatementFor(NativeBinding native)
     {
         var type = CppOf(native.ReturnType, native.ReturnUnsigned);
         if (type == null || type.Name == "void") return null;
 
-        // Value initialisation covers every shape the marshaller carries: pointers become null,
-        // arithmetic types become zero, and VMArray, BSFixedString and structs default construct.
+
+
         return $"return {type.Format()}();";
     }
 
@@ -183,7 +183,7 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-    /// <summary>The aggregator that registers every module, so the plugin shell never changes.</summary>
+
     public string EmitRegistrationsHeader(PluginBinding plugin) =>
         GeneratedBanner + "\n"
         + "#pragma once\n\n"
@@ -207,7 +207,7 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-    /// <summary>The C++ namespace a module's functions live in.</summary>
+
     public static string NamespaceOf(PluginBinding plugin, ModuleBinding module) =>
         string.IsNullOrEmpty(module.CppNamespace)
             ? $"papyrus{plugin.Name}{module.Name}"
@@ -222,13 +222,13 @@ public sealed class F4SECppEmitter
     public static string SourceFileName(PluginBinding plugin, ModuleBinding module) =>
         BaseFileName(plugin, module) + ".cpp";
 
-    /// <summary>
-    /// The receiver parameter's name.
-    /// </summary>
-    /// <remarks>
-    /// Lower-camelled from the C++ type so it reads like hand-written F4SE. Scoped names keep only
-    /// their last segment, so <c>BGSMod::Attachment::Mod</c> becomes <c>mod</c>.
-    /// </remarks>
+
+
+
+
+
+
+
     private static string ReceiverNameFor(NativeBinding native)
     {
         var name = native.CppBaseType;

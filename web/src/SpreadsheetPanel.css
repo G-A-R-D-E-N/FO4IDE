@@ -1,4 +1,4 @@
-/* Spreadsheet panel -- reuses PapyrusPanel.css for the modal shell/banner; adds the grid + toolbar. */
+
 .spreadsheet-modal {
   width: min(1100px, 94vw);
   max-width: 94vw;

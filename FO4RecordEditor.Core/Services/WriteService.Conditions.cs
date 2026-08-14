@@ -5,20 +5,20 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// The read half of condition editing. <see cref="WriteService.SetConditions"/> replaces the whole
-/// list, so anything that wants to add or change ONE condition (the right-click "Add condition"
-/// path in the grid, or an AI editing an existing rule) first has to read the current list back in
-/// the exact JSON shape SetConditions accepts. That round trip is what this file provides.
-/// </summary>
+
+
+
+
+
+
 public static partial class WriteService
 {
-    /// <summary>
-    /// The record's Conditions list as a JSON array in set_conditions' own schema, so it can be
-    /// edited and handed straight back. Reads the given plugin's version of the record (the
-    /// in-editor copy when one is open), or the winning version when plugin is empty.
-    /// Returns "[]" for a record that has a Conditions list but no entries.
-    /// </summary>
+
+
+
+
+
+
     public static string GetConditionsJson(object? env, string plugin, string recordId)
     {
         IMajorRecordGetter? rec = null;
@@ -49,11 +49,11 @@ public static partial class WriteService
         return JsonSerializer.Serialize(outp);
     }
 
-    /// <summary>Every condition function name the editor accepts, for a picker. Sorted.</summary>
+
     public static string ConditionFunctionNames() =>
         JsonSerializer.Serialize(Enum.GetNames<Condition.Function>().OrderBy(n => n, StringComparer.OrdinalIgnoreCase).ToArray());
 
-    /// <summary>Run-on targets a condition can evaluate against, for a picker.</summary>
+
     public static string ConditionRunOnNames() =>
         JsonSerializer.Serialize(Enum.GetNames<Condition.RunOnType>());
 
@@ -85,8 +85,8 @@ public static partial class WriteService
         return d;
     }
 
-    // The inverse of ParseOperator, so a read/edit/write round trip does not silently rewrite the
-    // operator into its enum spelling.
+
+
     private static string OperatorToString(CompareOperator op) => op switch
     {
         CompareOperator.EqualTo => "==",

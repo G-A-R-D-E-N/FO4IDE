@@ -9,28 +9,28 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-/// <summary>
-/// The per-mod index is lazy and type-scoped: it eagerly stores only per-signature COUNTS, and
-/// materializes a signature's records the first time that signature is asked for. These tests pin
-/// down that it still answers exactly what the old eager full index answered.
-/// </summary>
-/// <remarks>
-/// Why this needs real data: the trap being guarded against is invisible on a synthetic mod.
-/// Type-scoped enumeration must be handed the GETTER INTERFACE (<c>IWeaponGetter</c>). Handing it the
-/// concrete record class does not throw -- it silently returns the wrong set. Measured against
-/// Fallout4.esm: <c>typeof(Weapon)</c> yields 0 records where 252 exist, <c>typeof(PlacedObject)</c>
-/// yields 0 where 1,244,528 exist, and <c>typeof(Cell)</c> yields 5 where 40,165 exist. A binary
-/// overlay's records are <c>WeaponBinaryOverlay</c> and friends, which implement the interface but
-/// are not the class.
-/// <para>
-/// The second trap, also only visible on real data: for polymorphic on-disk record families the
-/// scoped enumeration returns the WHOLE family rather than the requested subtype. On Fallout4.esm
-/// 17 of 147 signatures behave this way -- every <c>GameSetting*</c> variant yields all 2,039 GMSTs,
-/// every <c>Global*</c> yields all 1,346 GLOBs, the <c>ObjectModification</c> family yields all
-/// 2,409 OMODs. It is always a superset, never a subset, which is why filtering on the exact
-/// registration name is the correct fix rather than a workaround.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [Collection("MutagenLoaderCache")]
 public class TypeScopedIndexTests : IDisposable
 {
@@ -57,7 +57,7 @@ public class TypeScopedIndexTests : IDisposable
         return true;
     }
 
-    /// <summary>Ground truth built the old way: one eager walk, bucketed by signature.</summary>
+
     private static (Dictionary<string, int> counts, Dictionary<string, List<string>> firstRows) Truth(string path)
     {
         var counts = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -97,8 +97,8 @@ public class TypeScopedIndexTests : IDisposable
     }
 
     [Theory]
-    // A small ordinary type, the largest one in the game, and three members of polymorphic
-    // families that the registration-name filter exists to keep honest.
+
+
     [InlineData("Weapon")]
     [InlineData("PlacedObject")]
     [InlineData("GameSettingFloat")]
@@ -125,9 +125,9 @@ public class TypeScopedIndexTests : IDisposable
         if (Skip()) return;
         Install();
 
-        // 252 WEAP out of 1,549,276 records, 80% of which are PlacedObject. Retaining the whole
-        // plugin here is the 1836 MB regression this design exists to prevent, so assert that the
-        // records held afterwards are on the order of the type asked for, not the plugin.
+
+
+
         MutagenLoader.QueryRecordsOfType(null, ModName, "Weapon", limit: 25, offset: 0).Should().NotBeEmpty();
 
         MutagenLoader.ModIndexRetainedRecords.Should().BeLessThan(10_000,

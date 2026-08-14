@@ -10,14 +10,14 @@ public class GmstDiagnosticTests : IDisposable
     private const string Instance = @"D:\Games\ModlistDownloads";
     private static bool Available => Directory.Exists(Path.Combine(Instance, "profiles"));
 
-    // Load() writes the process-global environment (LinkCache, MasterIsEsl, PluginSourcePaths, ...)
-    // by contract; restore it so this env doesn't leak into later test classes.
+
+
     private readonly GlobalStateIsolation _state = new();
     public void Dispose() => _state.Dispose();
 
-    // Regression guard: a record (IMajorRecordGetter) also implements IFormLinkIdentifier, so a
-    // careless "FormLinks are leaves" guard treated the whole record as a leaf and the walker
-    // produced ZERO fields. This asserts a simple record (a game setting) still expands.
+
+
+
     [Fact]
     public void RecordsStillExpandToFields()
     {

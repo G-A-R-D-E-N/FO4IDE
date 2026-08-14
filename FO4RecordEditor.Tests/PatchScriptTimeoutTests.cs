@@ -5,8 +5,8 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// run_script had no CancellationToken, so `while(true){}` wedged the thread forever -- and for the
-// stdio MCP server that thread IS the server.
+
+
 public class PatchScriptTimeoutTests
 {
     private readonly ITestOutputHelper _out;

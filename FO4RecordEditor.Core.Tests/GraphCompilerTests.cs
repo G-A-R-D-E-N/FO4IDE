@@ -6,15 +6,15 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Graph to source to compiled object, end to end.
-/// </summary>
-/// <remarks>
-/// Compiles with <c>TreatPapyrusErrorsAsInternalFaults</c> on, so any Papyrus error that survives to
-/// the generated source is reported as a gap in the graph validator rather than as the author's
-/// problem. That turns this file into a ratchet: every new lowering shape has to be validated well
-/// enough that the compiler never sees a bad script.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class GraphCompilerTests
 {
     private readonly ITestOutputHelper _output;
@@ -30,7 +30,7 @@ public class GraphCompilerTests
         return result;
     }
 
-    // ---- the simplest whole graph -------------------------------------------------------------
+
 
     [Fact]
     public void An_event_calling_a_global_compiles_to_pex()
@@ -68,12 +68,12 @@ public class GraphCompilerTests
         result.Source.Should().Contain("GetDistance(akActionRef)");
     }
 
-    // ---- control flow -------------------------------------------------------------------------
+
 
     [Fact]
     public void A_branch_emits_an_if_and_rejoins_once_after_the_merge()
     {
-        // The whole reason post-dominators are computed: the tail must appear once, not per arm.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -153,7 +153,7 @@ public class GraphCompilerTests
         result.Source.Should().Contain("\"tick\"").And.Contain("\"done\"");
     }
 
-    // ---- arguments ----------------------------------------------------------------------------
+
 
     [Fact]
     public void A_trailing_optional_that_is_not_supplied_disappears()
@@ -176,7 +176,7 @@ public class GraphCompilerTests
     [Fact]
     public void A_skipped_middle_optional_forces_named_arguments()
     {
-        // The one shape a naive positional emitter gets silently wrong.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -194,13 +194,13 @@ public class GraphCompilerTests
         result.Source.Should().NotContain("AddItem(None, true)");
     }
 
-    // ---- values -------------------------------------------------------------------------------
+
 
     [Fact]
     public void An_impure_call_used_twice_binds_one_local_rather_than_calling_twice()
     {
-        // Evaluation order is fixed by the exec graph, which is the whole reason calls are never
-        // treated as pure.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -302,7 +302,7 @@ public class GraphCompilerTests
         result.Source.Should().Contain("ObjectReference Property Target Auto");
     }
 
-    // ---- self and receivers -------------------------------------------------------------------
+
 
     [Fact]
     public void A_call_on_this_scripts_own_chain_needs_no_receiver()
@@ -342,7 +342,7 @@ public class GraphCompilerTests
         result.Source.Should().Contain(".GetLevel()");
     }
 
-    // ---- the pipeline itself ------------------------------------------------------------------
+
 
     [Fact]
     public void Stopping_after_source_yields_source_and_no_compiled_object()
@@ -361,8 +361,8 @@ public class GraphCompilerTests
     [Fact]
     public void The_generated_source_always_reparses_cleanly()
     {
-        // One assertion that catches a whole class of emitter bugs: whatever shape is produced, the
-        // parser has to accept it.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -403,8 +403,8 @@ public class GraphCompilerTests
     [Fact]
     public void Validation_and_compilation_never_disagree()
     {
-        // The canvas validates on every edit and compiles on demand. If those two used different
-        // rules, a graph could show green and then fail to build.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 

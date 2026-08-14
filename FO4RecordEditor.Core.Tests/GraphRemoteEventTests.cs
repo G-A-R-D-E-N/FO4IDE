@@ -6,15 +6,15 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Handlers for events another object raises, and the custom events a script declares.
-/// </summary>
-/// <remarks>
-/// The emitted shape is not a guess. Across 697 shipped and mod scripts, all 76 dotted handlers are
-/// <c>Event Type.Name(Type akSender, ...)</c>: the sender comes first and carries the raising
-/// script's type, and the only difference between a remote event and a custom one is whether the
-/// tail is the source event's parameters or a single <c>Var[]</c>.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class GraphRemoteEventTests
 {
     private static string Source(GraphDocument document)
@@ -71,7 +71,7 @@ public class GraphRemoteEventTests
     [Fact]
     public void The_sender_and_the_payload_are_readable_as_parameters()
     {
-        // A handler that cannot reach its own arguments would be decorative.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "Quest");
 
@@ -139,8 +139,8 @@ public class GraphRemoteEventTests
     [Fact]
     public void A_local_override_and_a_remote_handler_of_the_same_event_coexist()
     {
-        // OnLoad() and ObjectReference.OnLoad() are different declarations. Keying the duplicate
-        // check on the bare name alone would refuse a script that is perfectly legal.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -182,8 +182,8 @@ public class GraphRemoteEventTests
     [Fact]
     public void The_palette_shows_the_signature_the_node_actually_emits()
     {
-        // The local override and the remote handler differ by the dotted name and the sender, so
-        // reusing the declaring event's signature would describe a node the author cannot place.
+
+
         var palette = GraphTestEnvironment.Palette();
 
         var withParameters = palette.Search("ObjectReference.OnActivate", limit: 20).Entries
@@ -208,10 +208,10 @@ public class GraphRemoteEventTests
     [Fact]
     public void A_custom_event_handler_decompiles_back_to_its_dotted_name()
     {
-        // The compiled object names a dotted handler "::remote_<Type>_<Name>", and both halves can
-        // contain underscores, so the name alone cannot be split. Splitting on "_On" reconstructed
-        // built-in events and produced a flat "Type_Name" for every custom event, whose name the
-        // author chooses and need not begin with On.
+
+
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "Quest");
 

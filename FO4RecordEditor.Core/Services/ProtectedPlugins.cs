@@ -2,14 +2,14 @@ using System.IO;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// The vanilla game masters. Single source of truth -- read-only scanners treat these as
-/// always-resolvable, and the write layer refuses to open or overwrite them.
-///
-/// These files ship with the game and are not regenerable by the user: overwriting one means a
-/// Steam re-validate or a reinstall, and any mod built against the damaged copy is silently wrong
-/// until then. A typo in a plugin name was previously enough to do it.
-/// </summary>
+
+
+
+
+
+
+
+
 public static class ProtectedPlugins
 {
     public static readonly IReadOnlySet<string> VanillaMasters = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -19,11 +19,11 @@ public static class ProtectedPlugins
         "DLCUltraHighResolution.esm",
     };
 
-    /// <summary>True if <paramref name="pluginFileName"/> is a vanilla master (name only, no path).</summary>
+
     public static bool IsProtected(string? pluginFileName) =>
         !string.IsNullOrWhiteSpace(pluginFileName) && VanillaMasters.Contains(pluginFileName);
 
-    /// <summary>True if <paramref name="path"/> points at a file named like a vanilla master.</summary>
+
     public static bool PathIsProtected(string? path) =>
         !string.IsNullOrWhiteSpace(path) && IsProtected(Path.GetFileName(path));
 
@@ -35,12 +35,12 @@ public static class ProtectedPlugins
 
     private static readonly string[] AllowedExtensions = { ".esp", ".esm", ".esl" };
 
-    /// <summary>
-    /// Validates an explicit save destination. Returns null when the path is acceptable, or an
-    /// explanation when it is not. Guards the extension, path traversal, and vanilla-master names,
-    /// because SavePlugin creates missing parent directories and then File.Replace/File.Move over
-    /// whatever is already at the destination.
-    /// </summary>
+
+
+
+
+
+
     public static string? ValidateSavePath(string path)
     {
         if (string.IsNullOrWhiteSpace(path)) return "Save path is empty.";
@@ -49,8 +49,8 @@ public static class ProtectedPlugins
         try { full = Path.GetFullPath(path); }
         catch (Exception ex) { return $"Invalid save path '{path}': {ex.Message}"; }
 
-        // Checks below run on the NORMALIZED path, so '...\mods\..\Data\Fallout4.esm' is caught by
-        // the protected-name check rather than sneaking through as a non-matching literal.
+
+
         var fileName = Path.GetFileName(full);
         if (string.IsNullOrWhiteSpace(fileName))
             return $"Save path '{path}' does not name a file.";

@@ -6,13 +6,13 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Turning scripts into node types.
-/// </summary>
-/// <remarks>
-/// Runs against the checked-in stub tree, so it exercises the same path a real install would take
-/// without needing one.
-/// </remarks>
+
+
+
+
+
+
+
 public class NodePaletteTests
 {
     private static NodePalette Palette() =>
@@ -25,7 +25,7 @@ public class NodePaletteTests
         return definition!;
     }
 
-    // ---- generated definitions ----------------------------------------------------------------
+
 
     [Fact]
     public void An_instance_function_gets_a_self_pin_and_an_argument_pin_per_parameter()
@@ -75,8 +75,8 @@ public class NodePaletteTests
     [Fact]
     public void An_array_return_type_is_kept_as_an_array()
     {
-        // Utility has none, so use a stub member that does return one if present; otherwise assert
-        // the shape through a known array-typed parameter instead.
+
+
         var definition = Definition("call:ScriptObject.CallFunction");
         definition.Pin("arg:aParams")!.Type!.IsArray.Should().BeTrue();
         definition.Pin("arg:aParams")!.Type!.TypeName.Should().BeEquivalentTo("Var");
@@ -106,8 +106,8 @@ public class NodePaletteTests
     [Fact]
     public void A_property_yields_a_pure_getter_and_an_impure_setter()
     {
-        // Nothing in the stub tree declares a property, so this is asserted on a synthetic script
-        // to keep the stubs minimal.
+
+
         var root = System.IO.Directory.CreateTempSubdirectory("fo4re-palette-");
         try
         {
@@ -133,13 +133,13 @@ public class NodePaletteTests
         }
     }
 
-    // ---- purity -------------------------------------------------------------------------------
+
 
     [Fact]
     public void No_generated_call_is_ever_marked_pure()
     {
-        // Papyrus annotates nothing as pure. Guessing would let the emitter reorder side effects
-        // across an exec boundary, so a call is always sequenced.
+
+
         var palette = Palette();
         foreach (var script in new[] { "ObjectReference", "Actor", "Game", "Utility", "Math" })
         {
@@ -174,13 +174,13 @@ public class NodePaletteTests
         }
     }
 
-    // ---- built-ins ----------------------------------------------------------------------------
+
 
     [Fact]
     public void The_array_builtins_match_what_the_resolver_actually_binds()
     {
-        // The resolver's own table is private, so this asserts behaviourally: every offered member
-        // has to resolve on a real array, and a made-up one must not.
+
+
         var root = System.IO.Directory.CreateTempSubdirectory("fo4re-arraymember-");
         try
         {
@@ -245,7 +245,7 @@ public class NodePaletteTests
         BuiltinNodeDefinitions.OperatorToken("op.nonsense").Should().BeNull();
     }
 
-    // ---- searching ----------------------------------------------------------------------------
+
 
     [Fact]
     public void Search_finds_a_member_by_name_and_reports_the_true_total()
@@ -260,7 +260,7 @@ public class NodePaletteTests
     [Fact]
     public void Search_caps_results_but_still_reports_how_many_were_hidden()
     {
-        // A capped list is only honest if the caller can say "showing N of M".
+
         var result = Palette().Search("Get", limit: 3);
 
         result.Entries.Should().HaveCount(3);
@@ -290,14 +290,14 @@ public class NodePaletteTests
     [Fact]
     public void Search_results_carry_no_pins()
     {
-        // Inlining pins would take a sixty result payload from kilobytes to hundreds of kilobytes.
+
         var entry = Palette().Search("AddItem", limit: 1).Entries.Single();
 
         entry.Signature.Should().NotBeNullOrEmpty();
         entry.Id.Should().Be("call:ObjectReference.AddItem");
     }
 
-    // ---- ids ----------------------------------------------------------------------------------
+
 
     [Theory]
     [InlineData("call:ObjectReference.AddItem", "ObjectReference", "AddItem")]
@@ -321,8 +321,8 @@ public class NodePaletteTests
     [Fact]
     public void Definition_ids_are_stable_across_two_builds()
     {
-        // A saved graph reattaches by id, so instability here would orphan every node in a document
-        // the moment the palette was rebuilt.
+
+
         var first = Palette().ForScript("ObjectReference").Select(d => d.Id).OrderBy(x => x).ToList();
         var second = Palette().ForScript("ObjectReference").Select(d => d.Id).OrderBy(x => x).ToList();
 
@@ -357,7 +357,7 @@ public class NodePaletteTests
         NodePalette.LocalNameHint(member).Should().Be(expected);
     }
 
-    // ---- documentation ------------------------------------------------------------------------
+
 
     [Fact]
     public void A_palette_with_no_wiki_mirror_still_builds()

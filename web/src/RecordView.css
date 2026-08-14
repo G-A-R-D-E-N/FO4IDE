@@ -7,7 +7,7 @@
   background: var(--bg-primary);
 }
 
-/* Toolbar */
+
 .rv-toolbar {
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@
   text-overflow: ellipsis; max-width: 45%;
 }
 
-/* Breadcrumb */
+
 .rv-breadcrumb {
   display: flex; align-items: center; gap: 6px;
   padding: 4px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -53,7 +53,7 @@
 .rv-bc-cat { color: var(--text-primary); font-weight: 600; }
 .rv-bc-rec { color: #9a85b0; font-weight: 600; }
 
-/* Comparison grid */
+
 .rv-grid-scroll { flex: 1; overflow: auto; }
 .rv-grid {
   border-collapse: collapse; table-layout: fixed;
@@ -78,38 +78,38 @@
 
 .rv-prop-col { width: 300px; max-width: 300px; }
 
-/* Column width modes (xEdit: Standard / Fit All / Fit Text / Fit Smart), applied on the .rv-grid
-   element itself. Base .rv-grid above (table-layout:fixed, no per-plugin-column width) IS Fit All --
-   the browser divides remaining space evenly across unsized columns, which was this tool's only
-   behaviour before these modes existed. The others override that. */
+
+
+
+
 .rv-cw-standard { table-layout: fixed; }
 .rv-cw-standard th:not(.rv-prop-col),
 .rv-cw-standard td:not(.rv-prop-col) { width: 200px; max-width: 200px; }
 
 .rv-cw-fitText, .rv-cw-fitSmart {
-  table-layout: auto;   /* size each column to its own content, xEdit's AutoFitColumns intent */
+  table-layout: auto;
 }
 .rv-cw-fitText th:not(.rv-prop-col), .rv-cw-fitText td:not(.rv-prop-col),
 .rv-cw-fitSmart th:not(.rv-prop-col), .rv-cw-fitSmart td:not(.rv-prop-col) {
   white-space: nowrap;
 }
-/* Fit Smart adds xEdit's ceiling: content sizing is fine until one huge value would blow the whole
-   grid wide, at which point that one column should wrap and clip rather than drag every other
-   column into a horizontal scrollbar with it. */
+
+
+
 .rv-cw-fitSmart th:not(.rv-prop-col), .rv-cw-fitSmart td:not(.rv-prop-col) {
   white-space: normal;
   max-width: min(480px, 40vw);
   overflow-wrap: break-word;
 }
-/* Sticky left column -- always needs an opaque background so scrolled content doesn't show through.
-   Use td.rv-sticky / th.rv-sticky specificity (0,1,1) to beat .rv-diff td (0,1,1) and
-   .rv-grid tr:hover td (0,2,1) rules below. */
+
+
+
 td.rv-sticky, th.rv-sticky {
   position: sticky; left: 0; z-index: 10;
   background: var(--bg-secondary); border-right: 1px solid var(--border-color);
 }
 thead th.rv-sticky { z-index: 21; background: var(--bg-secondary); }
-/* Keep sticky col opaque when row is highlighted */
+
 .rv-diff td.rv-sticky       { background: var(--bg-secondary); }
 .rv-grid tr:hover td.rv-sticky { background: var(--bg-hover); }
 
@@ -119,7 +119,7 @@ thead th.rv-sticky { z-index: 21; background: var(--bg-secondary); }
   border-right: 1px solid rgba(255, 255, 255, 0.04);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: top;
 }
-/* Flat backgrounds; differing rows get a faint emphasis + accent edge (xEdit-like). */
+
 .rv-diff td { background: rgba(192, 144, 90, 0.04); }
 .rv-diff .rv-prop-col { box-shadow: inset 2px 0 0 rgba(192, 144, 90, 0.5); }
 .rv-grid tr:hover td { background: rgba(255, 255, 255, 0.04); }
@@ -132,54 +132,54 @@ thead th.rv-sticky { z-index: 21; background: var(--bg-secondary); }
 .rv-expand:hover { color: var(--text-primary); }
 .rv-expand-spacer { display: inline-block; width: 15px; }
 
-/* Section headers */
+
 .rv-section-row td.rv-section { background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); }
 td.rv-section {
   font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.5px;
   text-transform: uppercase; color: var(--text-secondary); font-weight: 700; padding: 5px 8px;
 }
 
-/* Status-driven cell coloring (backend Statuses, commit C1). Status is shown with a BACKGROUND
-   TINT plus readable text so real conflicts pop on the deep-dark surface. Identical-to-master
-   recedes (dim, no tint); win/lose are clearly highlighted so the eye finds them fast. */
+
+
+
 .rv-cell { font-family: 'JetBrains Mono', monospace; cursor: default; }
 
-/* Field absent / not defined in this plugin - no tint, very dim text. */
+
 .rv-c-notdefined,
 .rv-c-none      { color: var(--text-muted); }
 
-/* Identical to the winning value - recedes (dim text, no tint). */
+
 .rv-c-identical { color: var(--text-muted); }
 
-/* Master record - subtle purple tint. */
+
 .rv-c-master    { background: color-mix(in srgb, var(--conflict-purple) 50%, transparent); color: var(--text-primary); }
 
-/* Sole definer - subtle neutral tint. */
+
 .rv-c-only      { background: color-mix(in srgb, var(--bg-hover) 70%, transparent); color: var(--text-primary); }
 
-/* Override that matches the winner (last in chain) - subtle green tint. */
+
 .rv-c-override  { background: color-mix(in srgb, var(--status-base) 14%, transparent); color: var(--text-primary); }
 
-/* The value the game uses - amber/orange tint, slightly bold. Must stand out. */
+
 .rv-c-win {
   background: color-mix(in srgb, var(--status-warning) 26%, transparent);
   box-shadow: inset 2px 0 0 var(--status-warning);
   color: var(--text-primary); font-weight: 600;
 }
 
-/* Overridden / losing value - red tint so it is obvious it is being replaced. */
+
 .rv-c-lose {
   background: color-mix(in srgb, var(--status-changed) 20%, transparent);
   color: var(--text-primary);
 }
 
-/* Winner marker icon sits just before the value. */
+
 .rv-win-icon {
   color: var(--status-warning); margin-right: 4px;
   vertical-align: -1px; flex: 0 0 auto;
 }
 
-/* Record-level conflict rollup pill (matrix.Level), shown in the breadcrumb. */
+
 .rv-lvl-badge {
   margin-left: 8px; font-size: 9px; letter-spacing: 0.4px;
   font-family: 'Inter', sans-serif; font-weight: 700;
@@ -214,14 +214,14 @@ td.rv-section {
 
 .rv-empty { padding: 24px; color: var(--text-secondary); font-family: 'Inter', sans-serif; }
 
-/* Inline cell editor */
+
 .rv-edit-input {
   width: 100%; background: #1b1b1f; border: 1px solid var(--accent-color);
   border-radius: 3px; color: #fff; font-family: 'JetBrains Mono', monospace;
   font-size: 11px; padding: 2px 4px; outline: none;
 }
 
-/* Bottom drawer */
+
 .rv-drawer { flex: 0 0 auto; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; }
 .rv-drawer.open { height: 168px; }
 .rv-drawer.closed { height: auto; }
@@ -256,7 +256,7 @@ td.rv-section {
 .rv-prob-row { display: flex; align-items: center; gap: 8px; padding: 3px 4px; color: #c79a9a; }
 .rv-prob-icon { color: #b07a7a; flex: 0 0 auto; }
 
-/* Right-click context menu */
+
 .rv-context {
   position: fixed; z-index: 1000; min-width: 210px;
   background: var(--bg-secondary); border: 1px solid var(--border-color);
@@ -290,7 +290,7 @@ td.rv-section {
 .rv-ref-clickable { cursor: pointer; }
 .rv-ref-clickable:hover { background: var(--bg-hover, #2a2d2e); }
 
-/* ── Record-level tab bar ─────────────────────────────────────────────────── */
+
 .rv-tab-bar {
   display: flex;
   align-items: center;
@@ -343,7 +343,7 @@ td.rv-section {
   border-color: color-mix(in srgb, var(--accent-color) 40%, transparent);
 }
 
-/* ── Conflicts tab ────────────────────────────────────────────────────────── */
+
 .rv-conflicts-tab {
   flex: 1;
   display: flex;
@@ -351,7 +351,7 @@ td.rv-section {
   overflow: hidden;
 }
 
-/* Stat bar */
+
 .rv-conflict-stats-bar {
   display: flex;
   align-items: center;
@@ -392,7 +392,7 @@ td.rv-section {
   border: 1px solid color-mix(in srgb, var(--chip-2) 30%, transparent);
 }
 
-/* Conflict groups -- single-table xEdit style */
+
 .rv-conflict-groups {
   flex: 1;
   overflow: auto;
@@ -400,7 +400,7 @@ td.rv-section {
 }
 .rv-cg-table { margin: 0; width: 100%; }
 
-/* Severity badge colors (also used inside separator rows) */
+
 .rv-cg-sev-badge-conflict {
   background: color-mix(in srgb, var(--status-changed) 18%, transparent);
   color: var(--status-changed);
@@ -417,7 +417,7 @@ td.rv-section {
   border-color: color-mix(in srgb, var(--status-warning) 35%, transparent);
 }
 
-/* Group separator row */
+
 .rv-cg-sep td {
   padding: 5px 12px;
   background: var(--bg-tertiary);
@@ -448,7 +448,7 @@ td.rv-section {
 .rv-sep-chevron      { transition: transform 0.15s; color: var(--text-muted); flex: 0 0 auto; }
 .rv-sep-chevron-open { transform: rotate(90deg); }
 
-/* AI write flash: row pulses green when the AI just modified that field */
+
 .rv-row-flash td {
   animation: rv-flash 1.8s ease-out forwards;
 }
@@ -466,7 +466,7 @@ td.rv-section {
   100% { background: transparent; box-shadow: none; }
 }
 
-/* ── References tab ───────────────────────────────────────────────────────── */
+
 .rv-references-tab {
   flex: 1;
   display: flex;
@@ -489,7 +489,7 @@ td.rv-section {
   font-size: 11px;
 }
 
-/* ── Stub / empty states ──────────────────────────────────────────────────── */
+
 .rv-tab-empty {
   flex: 1;
   display: flex;
@@ -514,7 +514,7 @@ td.rv-section {
   color: var(--text-muted);
 }
 
-/* ---- History / Dependencies tabs ---- */
+
 
 .rv-list-tab {
   flex: 1 1 auto;
@@ -570,7 +570,7 @@ td.rv-section {
 .rv-row-link { cursor: pointer; }
 .rv-row-link:hover { background: var(--bg-hover); }
 
-/* A dangling FormLink is a crash risk, so it is coloured like one rather than listed plainly. */
+
 .rv-row-bad td { color: var(--status-changed); }
 
 .rv-tag {
@@ -590,18 +590,18 @@ td.rv-section {
 
 .rv-breadcrumb-slim { padding-top: 4px; padding-bottom: 4px; }
 
-/* A field that differs across plugins, marked in the flat Field View. */
+
 .rv-row-diff td:first-child { border-left: 2px solid var(--status-warning); }
 
-/* ---- xEdit-style density ----
-   The grid is a reading surface, not a form. xEdit fits roughly twice the rows we did in the same
-   height, and that density is the point: you scan a record instead of scrolling it. */
+
+
+
 
 .rv-grid td { padding: 1px 7px; line-height: 1.45; }
 .rv-grid th { padding: 3px 7px; font-size: 10px; }
 .rv-grid tr { height: 19px; }
 
-/* One tight filter row, replacing the stack of header bands that sat above the grid. */
+
 .rv-toolbar { padding: 3px 8px; gap: 6px; }
 
 .rv-tb-label {
@@ -617,7 +617,7 @@ td.rv-section {
 .rv-toggle-btn { padding: 2px 7px; }
 .rv-status-filter { font-size: 11px; padding: 2px 4px; }
 
-/* Which plugin's tree the record was opened from, which the winner column does not tell you. */
+
 .rv-tb-src {
   margin-left: auto;
   font-size: 10.5px;
@@ -630,7 +630,7 @@ td.rv-section {
 
 .rv-tb-src + .rv-status { margin-left: 8px; }
 
-/* The workspace header is one row now, not two plus a duplicate breadcrumb. */
+
 .ws-header .ws-row { padding: 3px 8px; }
 .ws-compare { border-bottom: none; }
 
@@ -645,17 +645,17 @@ td.rv-section {
   white-space: nowrap;
 }
 
-/* ---- Conflict palette, rebuilt ----
-   The row carries the conflict state and the cells stop painting their own blocks. Previously every
-   cell tinted itself by status, so a conflicting record showed a purple master column beside an
-   amber winner column beside red losers: a wall of colour with no focal point. xEdit tints the ROW
-   by its state and leaves the cells nearly plain, which is why most of its grid reads as calm and
-   the few rows that matter jump out.
 
-   Status names follow xEdit's own vocabulary (TConflictThis in its sources): Not Defined, Identical
-   To Master, Single Record, Master, Override Without Conflict, Conflict Winner, Conflict Loser.
-   The hues are ours: xEdit's default colour table is not vendored here, so these are chosen to read
-   on this dark surface rather than claimed to match its exact values. */
+
+
+
+
+
+
+
+
+
+
 
 .rv-s-none      { background: transparent; }
 .rv-s-benign    { background: color-mix(in srgb, var(--status-base) 5%, transparent); }
@@ -663,12 +663,12 @@ td.rv-section {
 .rv-s-conflict  { background: color-mix(in srgb, var(--status-warning) 11%, transparent); }
 .rv-s-critical  { background: color-mix(in srgb, var(--status-changed) 13%, transparent); }
 
-/* A thin edge on the field name is enough to find a conflicting row while scrolling. */
+
 .rv-s-conflict .rv-prop-col { box-shadow: inset 2px 0 0 var(--status-warning); }
 .rv-s-critical .rv-prop-col { box-shadow: inset 2px 0 0 var(--status-changed); }
 
-/* Cells: text does the work now. Only the winner keeps a mark, because "what does the game
-   actually use" is the one question the grid must answer instantly. */
+
+
 .rv-grid td.rv-cell { background: none; }
 
 .rv-c-notdefined, .rv-c-none { color: var(--text-muted); }
@@ -685,11 +685,11 @@ td.rv-section {
   box-shadow: inset 2px 0 0 var(--status-warning);
 }
 
-/* Hover must still win over the row tint or the pointer loses its row. */
+
 .rv-grid tr:hover td { background: var(--bg-hover); }
 .rv-grid tr:hover td.rv-c-win { background: color-mix(in srgb, var(--status-warning) 22%, transparent); }
 
-/* ---- Legend ---- */
+
 
 .rv-legend-btn {
   display: flex;

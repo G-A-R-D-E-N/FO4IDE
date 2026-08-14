@@ -9,35 +9,35 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// The DDS side of a texture (DX10) archive. Nothing here is recalled: the format table, the mip
-// arithmetic and the chunk-split rule were all derived from real data and are checked back against
-// it by the two corpus tests below.
-//
-// VanillaChunkLayoutIsReproduced is the proof that matters. It walks every texture entry in every
-// vanilla DX10 archive and asserts that (a) the mip arithmetic reconciles each stored chunk's
-// decompressed size exactly, and (b) the split rule predicts the stored chunk mip ranges. That
-// sweep has been run against a real Fallout 4 Data folder: 37 DX10 archives, 42,036 texture
-// entries, 0 size mismatches, 0 layout mismatches.
-//
-// Three rules that a sampling test would have got wrong, and that the sweep settled:
-//   1. The split is by PIXEL COUNT, not by byte size and not by longest edge. A 512x256 BC3 mip is
-//      131,072 bytes and goes in the tail; a 1024x256 BC1 mip is the same 131,072 bytes and gets its
-//      own chunk. Byte size and max-dimension rules both fail on the non-square textures.
-//   2. There are never more than three single-mip chunks. A 4096x4096 texture would earn a fourth
-//      by pixel count alone, and vanilla still ships it with three.
-//   3. Cube maps are 6 surfaces, which the arithmetic only reconciles when the ArraySize multiplier
-//      is applied (72 vanilla entries).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class DdsCodecTests
 {
     private readonly ITestOutputHelper _out;
     public DdsCodecTests(ITestOutputHelper o) => _out = o;
 
     [Theory]
-    [InlineData(71, 4, 4, 8)]        // BC1: one block, 8 bytes
-    [InlineData(71, 1, 1, 8)]        // a 1x1 mip still occupies a whole block
+    [InlineData(71, 4, 4, 8)]
+    [InlineData(71, 1, 1, 8)]
     [InlineData(77, 256, 256, 65536)]
     [InlineData(83, 1024, 1024, 1048576)]
-    [InlineData(87, 16, 16, 1024)]   // uncompressed BGRA, 4 bytes a pixel
+    [InlineData(87, 16, 16, 1024)]
     public void MipSizeMatchesBlockArithmetic(byte dxgi, int w, int h, long expected)
         => DdsCodec.MipSize(dxgi, w, h).Should().Be(expected);
 
@@ -70,15 +70,15 @@ public class DdsCodecTests
         act.Should().Throw<InvalidDataException>().WithMessage("*FourCC*");
     }
 
-    // The vanilla split rule, spelled out as the shapes it actually produces. Numbers come from the
-    // real archives -- e.g. every 1024x1024 with a full mip chain in vanilla is exactly 3 chunks.
+
+
     [Theory]
     [InlineData(256, 256, 9, "0-8")]
     [InlineData(512, 512, 10, "0-0,1-9")]
     [InlineData(1024, 1024, 11, "0-0,1-1,2-10")]
     [InlineData(2048, 2048, 12, "0-0,1-1,2-2,3-11")]
-    [InlineData(4096, 4096, 13, "0-0,1-1,2-2,3-12")]   // capped at three single-mip chunks
-    [InlineData(1024, 512, 11, "0-0,1-10")]            // by pixel count, not by longest edge
+    [InlineData(4096, 4096, 13, "0-0,1-1,2-2,3-12")]
+    [InlineData(1024, 512, 11, "0-0,1-10")]
     [InlineData(1024, 256, 11, "0-0,1-10")]
     [InlineData(256, 512, 10, "0-9")]
     [InlineData(2048, 1024, 12, "0-0,1-1,2-11")]
@@ -123,7 +123,7 @@ public class DdsCodecTests
         got.Path.Should().Be(@"Textures\test\thing_d.dds");
         got.Texture.Should().Be(entry.Texture);
 
-        // The payload is the DDS minus its header, and the chunks in order are exactly that payload.
+
         var rebuilt = got.Chunks.SelectMany(Ba2Codec.Decompress).ToArray();
         rebuilt.Should().Equal(dds.Skip(128).ToArray());
     }
@@ -142,7 +142,7 @@ public class DdsCodecTests
             var act = () => Ba2Packer.Pack(new[] { dir }, output, format: Ba2Format.DirectX);
             act.Should().Throw<InvalidDataException>().WithMessage("*not a .dds*");
         }
-        finally { try { Directory.Delete(dir, true); } catch { /* temp */ } }
+        finally { try { Directory.Delete(dir, true); } catch {  } }
     }
 
     [Fact]
@@ -154,11 +154,11 @@ public class DdsCodecTests
         act.Should().Throw<InvalidDataException>().WithMessage("*only*bytes follow*");
     }
 
-    /// <summary>
-    /// The corpus check: every texture entry in every vanilla DX10 archive, against both the mip
-    /// arithmetic and the split rule. This is what makes the numbers above claims about the game's
-    /// data rather than about a handful of hand-written cases.
-    /// </summary>
+
+
+
+
+
     [Fact]
     public void VanillaChunkLayoutIsReproduced()
     {
@@ -180,12 +180,12 @@ public class DdsCodecTests
         report.UnknownFormats.Should().BeEmpty();
     }
 
-    /// <summary>
-    /// The end-to-end version: rebuild each vanilla entry as a .dds, pack it, and compare the entry
-    /// that comes out. A correct split rule with a wrong slice offset would pass the check above and
-    /// fail this one. Run against a real Data folder: 42,036 entries, 41,964 rebuilt with identical
-    /// header, chunk ranges and payload bytes, 72 cube maps stored as one chunk by design, 0 problems.
-    /// </summary>
+
+
+
+
+
+
     [Fact]
     public void VanillaEntriesRebuildThroughTheWriter()
     {
@@ -224,7 +224,7 @@ public class DdsCodecTests
     private static string Describe(IEnumerable<(int First, int Last)> ranges)
         => string.Join(",", ranges.Select(r => $"{r.First}-{r.Last}"));
 
-    /// <summary>A minimal but real DDS header, so the parser is exercised on bytes rather than a mock.</summary>
+
     private static byte[] BuildDds(string fourCc, int width, int height, int mips, byte dxgi = 0, bool withPayload = false)
     {
         var isDx10 = fourCc == "DX10";
@@ -250,21 +250,21 @@ public class DdsCodecTests
         var bytes = new byte[headerSize + payload];
         void U32(int offset, uint v) => BitConverter.GetBytes(v).CopyTo(bytes, offset);
 
-        U32(0, 0x20534444);                 // "DDS "
-        U32(4, 124);                        // dwSize
-        U32(8, 0x0002100F);                 // caps|height|width|pixelformat|mipmapcount|linearsize
+        U32(0, 0x20534444);
+        U32(4, 124);
+        U32(8, 0x0002100F);
         U32(12, (uint)height);
         U32(16, (uint)width);
         U32(28, (uint)mips);
-        U32(76, 32);                        // DDS_PIXELFORMAT.dwSize
-        U32(80, 0x4);                       // DDPF_FOURCC
+        U32(76, 32);
+        U32(80, 0x4);
         U32(84, BitConverter.ToUInt32(System.Text.Encoding.ASCII.GetBytes(fourCc)));
-        U32(108, 0x401008);                 // caps: texture|mipmap|complex
+        U32(108, 0x401008);
         if (isDx10)
         {
             U32(128, dxgi);
-            U32(132, 3);                    // D3D10_RESOURCE_DIMENSION_TEXTURE2D
-            U32(140, 1);                    // arraySize
+            U32(132, 3);
+            U32(140, 1);
         }
         return bytes;
     }

@@ -8,20 +8,20 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Structured-record authoring that the generic <see cref="WriteService.SetField"/> /
-/// <see cref="WriteService.AddListItem"/> path cannot express, because the target lists hold
-/// STRUCTS (not FormLinks): leveled-list entries, perk entry-point effects, quest
-/// stages/objectives/aliases, and spell/enchantment magic-effect chains. Each method mirrors the
-/// JSON + reflection style of <see cref="WriteService.SetConditions"/> and reuses the shared
-/// helpers (EnsureOpen / FindMutableRecord / ResolveFk / ApplyParam / ParseOperator).
-/// </summary>
+
+
+
+
+
+
+
+
 public static partial class WriteService
 {
-    // ── run_script escape hatch: create a brand-new record from a patch script ───────────────────
-    /// <summary>Create a new record (any signature create_record supports) in the patch plugin and
-    /// return the mutable instance, so a run_script can author NEW records (not just override
-    /// existing ones). Mirrors OverrideForScript: opens/creates the patch plugin on first use.</summary>
+
+
+
+
     public static IFallout4MajorRecord? CreateForScript(string patchPlugin, object? env, string sig, string editorId)
     {
         var (name, path) = NormalizePlugin(patchPlugin);
@@ -41,9 +41,9 @@ public static partial class WriteService
         return rec;
     }
 
-    // ── leveled list entries (LVLI / LVLN) ───────────────────────────────────────────────────────
-    /// <summary>Append a weighted entry (reference + level + count + chance-none) to a LeveledItem
-    /// or LeveledNpc. These lists are structs, so add_list_item cannot build them.</summary>
+
+
+
     public static string AddLeveledEntry(string plugin, string recordId, string reference,
         int level, int count, double chanceNonePercent, object? env)
     {
@@ -52,7 +52,7 @@ public static partial class WriteService
         if (!ResolveFk(env, reference, out var fk)) return $"Could not resolve reference '{reference}'.";
 
         var chance = new Percent(Math.Clamp(chanceNonePercent, 0, 100) / 100.0);
-        // Leveled entries store level/count as Int16; clamp so large values don't wrap negative.
+
         short lvl = (short)Math.Clamp(level, 1, short.MaxValue);
         short cnt = (short)Math.Clamp(count, 1, short.MaxValue);
         try
@@ -85,13 +85,13 @@ public static partial class WriteService
         return $"Added leveled entry ({reference} lvl{level} x{count}) to {recordId} in {plugin}. save_plugin to persist.";
     }
 
-    // ── perk effects (PERK) ──────────────────────────────────────────────────────────────────────
-    /// <summary>Replace a perk's Effects list. JSON array of objects, each with "kind":
-    /// "ability" {ability}, "modifyValue" {entryPoint, modification:Set|Add|Multiply, value},
-    /// or "activateChoice" {buttonLabel, spell?, entryPoint?=Activate}. Common optional fields:
-    /// rank, priority, and conditions (same condition objects as set_conditions, plus optional
-    /// tabIndex). Entry-point names are APerkEntryPointEffect.EntryType values (e.g. Activate,
-    /// CalculateMyCriticalHitChance, ModAttackDamage).</summary>
+
+
+
+
+
+
+
     public static string SetPerkEffects(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -113,8 +113,8 @@ public static partial class WriteService
                 {
                     case "ability":
                     {
-                        // An ability effect with no resolvable ability does nothing in-game; refuse it
-                        // rather than silently adding a dead effect.
+
+
                         if (!el.TryGetProperty("ability", out var abEl) || abEl.GetString() is not { } abStr
                             || !ResolveFk(env, abStr, out var abFk))
                         { failures.Add($"#{idx}: 'ability' kind needs a resolvable 'ability'"); continue; }
@@ -137,13 +137,13 @@ public static partial class WriteService
                     case "activatechoice":
                     {
                         var ac = new PerkEntryPointAddActivateChoice();
-                        // default entry point for an Activate-choice perk is "Activate"
+
                         if (!el.TryGetProperty("entryPoint", out _))
                             ac.EntryPoint = APerkEntryPointEffect.EntryType.Activate;
                         else if (!TrySetEntryPoint(ac, el, failures, idx)) continue;
                         if (el.TryGetProperty("buttonLabel", out var blEl) && blEl.GetString() is { } bl)
                             ac.ButtonLabel = bl;
-                        // 'spell' is optional, but if given it must resolve -- don't silently drop it.
+
                         if (el.TryGetProperty("spell", out var spEl) && spEl.GetString() is { Length: > 0 } spStr)
                         {
                             if (!ResolveFk(env, spStr, out var spFk))
@@ -161,7 +161,7 @@ public static partial class WriteService
                 eff.Rank = (byte)JInt(el, "rank", 0);
                 eff.Priority = (byte)JInt(el, "priority", 0);
 
-                // conditions: each wrapped in a PerkCondition (tabIndex groups them)
+
                 var tabs = new HashSet<byte>();
                 if (el.TryGetProperty("conditions", out var condArr) && condArr.ValueKind == JsonValueKind.Array)
                 {
@@ -201,15 +201,15 @@ public static partial class WriteService
         return true;
     }
 
-    // ── spell / enchantment magic-effect chains (SPEL / ENCH) ────────────────────────────────────
-    /// <summary>Replace a Spell/ObjectEffect(ENCH) Effects list. JSON array of objects:
-    /// {effect:"&lt;MGEF&gt;", magnitude?, area?, duration?, conditions?:[...]}.</summary>
+
+
+
     public static string SetMagicEffects(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
         var rec = FindMutableRecord(mod, recordId); if (rec == null) return ToolError.Fail($"Record '{recordId}' not found in {plugin}.");
-        // Restrict to Spell/ObjectEffect(ENCH) -- other records (ALCH/INGR/...) also expose an Effects
-        // list, and we don't want a mistyped record to silently clobber them.
+
+
         if (rec is not (Spell or ObjectEffect))
             return $"set_magic_effects requires a SPEL or ENCH record, got {rec.GetType().Name}.";
 
@@ -252,10 +252,10 @@ public static partial class WriteService
         return msg + " save_plugin to persist.";
     }
 
-    // ── quest internals (QUST) ───────────────────────────────────────────────────────────────────
-    /// <summary>Replace a quest's reference aliases. JSON array: {id:int, name, forcedReference?,
-    /// uniqueActor?, flags?}. Currently builds QuestReferenceAlias (the common forced/unique case,
-    /// e.g. a player alias with forcedReference "000014:Fallout4.esm").</summary>
+
+
+
+
     public static string SetQuestAliases(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -292,8 +292,8 @@ public static partial class WriteService
         return msg + " save_plugin to persist.";
     }
 
-    /// <summary>Replace a quest's stages. JSON array: {index:int, logEntry?:string,
-    /// flags?:"RunOnStart,RunOnStop", complete?:bool}.</summary>
+
+
     public static string SetQuestStages(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -328,8 +328,8 @@ public static partial class WriteService
         return $"Set {built.Count} quest stage(s) on {recordId} in {plugin}. save_plugin to persist.";
     }
 
-    /// <summary>Replace a quest's objectives. JSON array: {index:int, displayText:string,
-    /// flags?:"ORObjective"}.</summary>
+
+
     public static string SetQuestObjectives(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -360,11 +360,11 @@ public static partial class WriteService
         return $"Set {built.Count} quest objective(s) on {recordId} in {plugin}. save_plugin to persist.";
     }
 
-    /// <summary>
-    /// Replace a MESG record's menu buttons. MenuButtons is an ExtendedList&lt;MessageButton&gt;, i.e. a
-    /// STRUCT list, so add_list_item (FormLinks only) cannot author it. Buttons are returned by
-    /// Message.Show() as their zero-based index, in this order.
-    /// </summary>
+
+
+
+
+
     public static string SetMessageButtons(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -377,7 +377,7 @@ public static partial class WriteService
             using var doc = JsonDocument.Parse(string.IsNullOrWhiteSpace(json) ? "[]" : json);
             foreach (var el in doc.RootElement.EnumerateArray())
             {
-                // Accept either a bare string ("Move") or an object ({"text":"Move"}).
+
                 var text = el.ValueKind == JsonValueKind.String
                     ? el.GetString()
                     : (el.TryGetProperty("text", out var tEl) ? tEl.GetString() : null);
@@ -390,8 +390,8 @@ public static partial class WriteService
         m.MenuButtons.Clear();
         foreach (var b in built) m.MenuButtons.Add(b);
 
-        // A MESG only renders as a button menu when the MessageBox flag is set; without it the game
-        // shows a corner notification and Show() returns immediately with no selection.
+
+
         TrySetNullableEnumFlags(m, "Flags", "MessageBox");
 
         MutagenLoader.InvalidateModIndex(plugin); NotifyChanged(plugin);
@@ -399,15 +399,15 @@ public static partial class WriteService
         return $"Set {built.Count} menu button(s) on {recordId} in {plugin} and flagged it MessageBox. Show() returns: {idx}. save_plugin to persist.";
     }
 
-    /// <summary>
-    /// Replace a FURN record's marker parameters -- the entry markers that tell the engine WHERE to
-    /// put the actor using it. MarkerParameters is a STRUCT list, so nothing else in this tool could
-    /// author it, and create_record FURN produces a shell with none. A furniture with zero markers
-    /// cannot be entered at all: a bed reports "someone else is using it" and a workbench reads as
-    /// unusable. Vanilla's equivalents all carry at least one {enabled, entryTypes:255} marker.
-    /// JSON array: [{"enabled":true,"entryTypes":255,"offsetX":0,"offsetY":0,"offsetZ":0,"rotationZ":0}]
-    /// or just [{}] for a single default front/back/left/right marker at the origin.
-    /// </summary>
+
+
+
+
+
+
+
+
+
     public static string SetFurnitureMarkers(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -441,9 +441,9 @@ public static partial class WriteService
         return $"Set {built.Count} furniture marker(s) on {recordId} in {plugin}. save_plugin to persist.";
     }
 
-    // ── shared JSON / reflection helpers ─────────────────────────────────────────────────────────
-    // Build one FO4 Condition from a JSON element (same schema as set_conditions). Reuses the
-    // private ApplyParam / ParseOperator / ResolveFk from the main partial.
+
+
+
     private static Condition? BuildConditionFromJson(JsonElement el, object? env, out string err)
     {
         err = "";
@@ -477,8 +477,8 @@ public static partial class WriteService
         return c2;
     }
 
-    // Accept both JSON numbers and numeric strings ("5") -- LLMs frequently quote numbers, and
-    // silently defaulting to 0 would produce wrong-but-valid records.
+
+
     private static int JInt(JsonElement el, string name, int def)
     {
         if (!el.TryGetProperty(name, out var p)) return def;
@@ -496,8 +496,8 @@ public static partial class WriteService
         return def;
     }
 
-    // Parse a comma-separated flag list onto a (possibly Nullable) enum property via reflection,
-    // so we don't hard-code each record's flag enum type.
+
+
     private static void TrySetNullableEnumFlags(object obj, string propName, string? csv)
     {
         if (string.IsNullOrWhiteSpace(csv)) return;
@@ -507,7 +507,7 @@ public static partial class WriteService
         if (!t.IsEnum) return;
         long acc = 0;
         foreach (var part in csv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-            try { acc |= Convert.ToInt64(Enum.Parse(t, part, true)); } catch { /* skip unknown flag */ }
+            try { acc |= Convert.ToInt64(Enum.Parse(t, part, true)); } catch {  }
         p.SetValue(obj, Enum.ToObject(t, acc));
     }
 }

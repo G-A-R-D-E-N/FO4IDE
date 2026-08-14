@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        Title="NexusEdit" Height="960" Width="1600"
+        Title="FO4IDE" Height="960" Width="1600"
         WindowState="Maximized"
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="Mica"
@@ -13,11 +13,11 @@
         UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>   <!-- title bar -->
-      <RowDefinition Height="*"/>      <!-- app body -->
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <ui:TitleBar Grid.Row="0" Title="NexusEdit" Height="36">
+    <ui:TitleBar Grid.Row="0" Title="FO4IDE" Height="36">
       <ui:TitleBar.Icon>
         <ui:SymbolIcon Symbol="Database24"/>
       </ui:TitleBar.Icon>
@@ -27,7 +27,7 @@
       <wv2:WebView2 x:Name="AppWebView" />
     </Grid>
 
-    <!-- Command palette overlay -->
+
     <Border x:Name="PaletteOverlay" Grid.RowSpan="2" Background="#88000000" Visibility="Collapsed">
       <ContentControl x:Name="PaletteHost" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,80,0,0"/>
     </Border>

@@ -8,21 +8,21 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Cross checks the recovered C++ registrations against the Papyrus declarations of the same
-/// functions, and diffs the two shipped F4SE versions.
-/// </summary>
-/// <remarks>
-/// Opt-in on <c>FO4RE_F4SE_SRC</c>, pointed at a directory holding <c>f4se-master</c> and
-/// <c>f4se_0_06_23</c> style trees. Unset, it no-ops.
-/// </remarks>
+
+
+
+
+
+
+
+
 public class F4SEOracleCorpusTests
 {
     private readonly ITestOutputHelper _output;
 
     public F4SEOracleCorpusTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>One F4SE tree: where its C++ is, and where its Papyrus declarations are.</summary>
+
     private sealed record Tree(string Label, string CppDirectory, string MergedScripts, string? VanillaScripts);
 
     private static IReadOnlyList<Tree> Trees()
@@ -33,7 +33,7 @@ public class F4SEOracleCorpusTests
         {
             foreach (var directory in Directory.EnumerateDirectories(root))
             {
-                // The 0.7.8 layout: f4se/*.cpp beside scripts/modified and scripts/vanilla.
+
                 var cpp = Path.Combine(directory, "f4se");
                 var modified = Path.Combine(directory, "scripts", "modified");
                 var vanilla = Path.Combine(directory, "scripts", "vanilla");
@@ -45,13 +45,13 @@ public class F4SEOracleCorpusTests
                     continue;
                 }
 
-                // The 0.6.23 layout: src/f4se/f4se/*.cpp beside a fully merged Data/Scripts/Source.
+
                 var cpp2 = Path.Combine(directory, "src", "f4se", "f4se");
                 var merged = Path.Combine(directory, "Data", "Scripts", "Source");
                 if (Directory.Exists(cpp2) && Directory.Exists(merged))
                 {
-                    // Vanilla copies for this tree live in the sibling 0.7.8 checkout; they are the
-                    // same pristine base scripts, which is what makes the subtraction possible here.
+
+
                     var sibling = Directory.EnumerateDirectories(root)
                         .Select(d => Path.Combine(d, "scripts", "vanilla"))
                         .FirstOrDefault(Directory.Exists);
@@ -131,8 +131,8 @@ public class F4SEOracleCorpusTests
             _output.WriteLine($"  REMOVED {binding.PapyrusClass}.{binding.FunctionName}/{binding.Arity}");
         foreach (var change in delta.Changed.Take(25)) _output.WriteLine("  CHANGED " + change);
 
-        // The diff is a report, not a pass or fail. The only thing asserted is that it accounts for
-        // the difference in surface size, which is what makes the report trustworthy.
+
+
         (newer.Natives.Count - older.Natives.Count)
             .Should().Be(delta.Added.Count - delta.Removed.Count,
                 "every net registration difference should be named as added or removed");

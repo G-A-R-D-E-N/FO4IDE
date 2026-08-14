@@ -1,13 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
-    Plain net10.0, referencing ONLY FO4RecordEditor.Core (net8.0; a newer TFM consumes an
-    older library), deliberately not the WPF shell. FO4RecordEditor.Tests targets
-    net9.0-windows through its reference to FO4RecordEditor.csproj, so its test host cannot run
-    on Linux at all. Anything testable without WPF belongs here instead, where `dotnet test`
-    works on every platform the project builds on. net10.0 keeps the suite runnable on machines
-    that only have the modern runtime (e.g. self-hosted CI runners with no net8 installed).
-  -->
+
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -31,11 +24,7 @@
     <ProjectReference Include="..\FO4RecordEditor.Core\FO4RecordEditor.Core.csproj" />
   </ItemGroup>
 
-  <!--
-    Fixture data copied beside the test binary. BaseStubs is the reduced base script tree the graph
-    gate compiles against, so that gate runs on a bare checkout instead of waiting on
-    FO4RE_PSC_ROOTS. See Fixtures/BaseStubs/README.md for what it is and what it deliberately is not.
-  -->
+
   <ItemGroup>
     <Content Include="Fixtures\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

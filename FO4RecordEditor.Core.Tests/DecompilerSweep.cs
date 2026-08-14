@@ -9,27 +9,27 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// How faithfully the decompiler reads back a real script: source, .pex, decompiled text, .pex, and
-/// the same instructions at both ends.
-/// </summary>
-/// <remarks>
-/// The decompiler is the front half of opening a .pex into the canvas, and until this existed the
-/// only evidence for it was 28 fixtures. Those fixtures are small and were written to exercise the
-/// lowering, so they say little about what a 900 line quest script does to a body structurer.
-/// <para>
-/// Both .pex files here are ours, so this measures the decompiler against the compiler and not
-/// against the Creation Kit; <see cref="PapyrusDifferentialTests"/> is what anchors the compiler
-/// itself, and it needs a corpus of Bethesda built .pex files that a Linux checkout does not have.
-/// What this does catch is the whole class of defect where the decompiler reads a body as a
-/// different program, which is the one that matters for ingest, and it catches it on real input.
-/// </para>
-/// <para>
-/// Gated on <c>FO4RE_PSC_ROOTS</c> and silent without it, like the other corpus sweeps. It reports a
-/// number rather than asserting a threshold, for the reason the lifter sweep gives: the figure moves
-/// with the corpus, and its failure list is the work list.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class DecompilerSweep
 {
     private readonly ITestOutputHelper _output;
@@ -73,9 +73,9 @@ public class DecompilerSweep
                     if (parsed.HasErrors) continue;
 
                     var first = new PapyrusCompiler(index).Compile(parsed, sourceFileName: name);
-                    // Only scripts this compiler already handles can say anything about the
-                    // decompiler. The ones it does not are PapyrusCorpusTests' subject, not this
-                    // sweep's, and counting them here would just restate that number.
+
+
+
                     if (!first.Success || first.Pex == null) continue;
 
                     original = first.Pex;
@@ -93,7 +93,7 @@ public class DecompilerSweep
 
                     if (text.Contains(".code", StringComparison.OrdinalIgnoreCase))
                     {
-                        // A body it could not structure, handed back as assembly on purpose.
+
                         assembly++;
                         continue;
                     }

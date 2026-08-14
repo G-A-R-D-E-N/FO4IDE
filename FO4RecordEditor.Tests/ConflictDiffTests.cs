@@ -10,8 +10,8 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// A weapon's Keywords list is an unordered set; the conflict diff must compare it order-insensitively
-// (like xEdit's "(sorted)" subrecords) so a reordered-but-identical list is NOT flagged as a conflict.
+
+
 public class ConflictDiffTests
 {
     private static object BuildEnv(out string weaponFk, string[] keywordsA, string[] keywordsB)
@@ -25,7 +25,7 @@ public class ConflictDiffTests
         a.Weapons.Add(wa);
 
         var b = new Fallout4Mod(ModKey.FromNameAndExtension("B.esp"), Fallout4Release.Fallout4);
-        var wb = new Weapon(fk, Fallout4Release.Fallout4) { EditorID = "TestWeap", Keywords = new() };   // override of A's record
+        var wb = new Weapon(fk, Fallout4Release.Fallout4) { EditorID = "TestWeap", Keywords = new() };
         foreach (var k in keywordsB) wb.Keywords!.Add(new FormLink<IKeywordGetter>(FormKey.Factory(k)));
         b.Weapons.Add(wb);
 

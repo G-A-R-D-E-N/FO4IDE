@@ -1,18 +1,18 @@
-/* NIF panel -- reuses PapyrusPanel.css for the modal/form/output shell.
-   Only override the output body to a monospace, JSON-friendly readout. */
+
+
 .nif-output {
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-/* View / Edit: fill almost the whole window so the viewport is large and field text isn't cut off. */
+
 .nif-modal-wide {
   width: 97vw;
   max-width: 97vw;
   height: 96vh;
   max-height: 96vh;
 }
-/* Edit mode: wider left sidebar so names/values don't truncate; viewport still dominates. */
+
 .papyrus-body.nif-edit-body { grid-template-columns: 520px 1fr; }
 
 .nif-view-output {
@@ -52,9 +52,9 @@
   opacity: 0.8;
 }
 
-/* ===== Edit mode ======================================================== */
-/* Layout: the property editor is a compact LEFT SIDEBAR (the 380px form column);
-   the 3D preview fills the dominant right column. */
+
+
+
 .nif-edit-sidebar {
   padding: 0;
   overflow: hidden;
@@ -98,7 +98,7 @@
   padding-right: 4px;
 }
 
-/* group header (Nodes / Shapes / Extra) */
+
 .nif-egroup { margin-bottom: 10px; }
 .nif-egroup-head {
   display: flex;
@@ -124,7 +124,7 @@
   padding: 1px 7px;
 }
 
-/* one block card */
+
 .nif-eblock {
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 6px;
@@ -162,7 +162,7 @@
   flex: 0 0 auto;
 }
 
-/* fields */
+
 .nif-efields { padding: 4px 9px 8px; }
 .nif-frow {
   display: flex;
@@ -174,7 +174,7 @@
   margin-left: -6px;
 }
 .nif-frow.dirty { border-left-color: #00a8a8; }
-/* inline layout: [label 34%] [control 1fr] on one line */
+
 .nif-frow-labelline { display: flex; align-items: center; gap: 4px; flex: 0 0 34%; min-width: 0; }
 .nif-flabel {
   flex: 1;
@@ -185,7 +185,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* stacked layout: label line on top, control gets the FULL width below (paths, names, vectors) */
+
 .nif-frow-stack { flex-direction: column; align-items: stretch; gap: 2px; }
 .nif-frow-stack .nif-frow-labelline { flex: 0 0 auto; }
 .nif-frow-stack .nif-fctl { flex: 0 0 auto; width: 100%; }
@@ -255,7 +255,7 @@
 }
 .nif-mini-btn:hover, .nif-revert:hover { background: rgba(0, 168, 168, 0.2); color: #cfeff0; }
 
-/* shader-flag checkbox grid (full-width field) */
+
 .nif-frow-flags { flex-direction: column; align-items: stretch; gap: 5px; }
 .nif-flags-head { display: flex; align-items: center; gap: 6px; }
 .nif-flags-grid {
@@ -278,7 +278,7 @@
 .nif-flagchip.on { color: #cfeff0; }
 .nif-flagchip input { accent-color: #00a8a8; margin: 0; }
 
-/* toggle switch */
+
 .nif-switch { position: relative; display: inline-block; width: 34px; height: 18px; cursor: pointer; }
 .nif-switch input { opacity: 0; width: 0; height: 0; }
 .nif-switch span {
@@ -296,7 +296,7 @@
 .nif-switch input:checked + span { background: #00a8a8; }
 .nif-switch input:checked + span::before { transform: translateX(16px); }
 
-/* sticky footer */
+
 .nif-editor-footer {
   display: flex;
   align-items: center;

@@ -3,16 +3,16 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-// Object model + byte-for-byte reader for a Fallout 4 compiled Papyrus (.pex) file.
-// Format per the Champollion-validated spec: little-endian, magic 0xFA57C0DE, version 3.9, gameID 2.
-// Strings are u16-length-prefixed (Windows-1252), referenced elsewhere by u16 index into the table.
+
+
+
 
 public enum PexValueType : byte { None = 0, Identifier = 1, String = 2, Integer = 3, Float = 4, Bool = 5 }
 
 public sealed class PexValue
 {
     public PexValueType Type;
-    public string Str = "";   // resolved string for Identifier/String
+    public string Str = "";
     public int Int;
     public float Float;
     public bool Bool;
@@ -34,10 +34,10 @@ public sealed class PexInstruction
 {
     public byte OpCode;
     public string Mnemonic = "";
-    public int FixedArgCount;      // number of non-vararg operands
+    public int FixedArgCount;
     public bool HasVarArgs;
-    public List<PexValue> Args = new();   // fixed args first, then the vararg list (if any)
-    public int Line;               // source line (from debug info), 0 if unknown
+    public List<PexValue> Args = new();
+    public int Line;
 
     public IEnumerable<PexValue> VarArgs => Args.Skip(FixedArgCount);
 }
@@ -46,7 +46,7 @@ public sealed class PexTypedName { public string Name = ""; public string Type =
 
 public sealed class PexFunction
 {
-    public string Name = "";          // empty for property getter/setter bodies
+    public string Name = "";
     public string ReturnType = "None";
     public string DocString = "";
     public uint UserFlags;
@@ -104,14 +104,14 @@ public sealed class PexObject
     public uint UserFlags;
     public string AutoStateName = "";
 
-    // Whether this object's `size` field counts its own four bytes. Both conventions exist in real
-    // compiler output: of the 1,496 loose .pex on the development machine, 1,480 include the field
-    // and 16 count the body alone. The reader records which one it saw so the writer can reproduce
-    // it; the default is the majority, which is what a freshly emitted object should use.
-    //
-    // It is not the user/machine stamp that separates them -- 1,321 files with a non-"Papyrus"/
-    // "Compiler" stamp still use the majority convention -- so the producing toolchain is not
-    // identified here, only the two encodings it has to survive.
+
+
+
+
+
+
+
+
     public bool SizeIncludesItself = true;
 
     public List<PexStruct> Structs = new();
@@ -125,7 +125,7 @@ public sealed class PexUserFlag { public string Name = ""; public byte Index; }
 public sealed class PexDebugFunction
 {
     public string ObjectName = "", StateName = "", FunctionName = "";
-    public byte FunctionType;          // 0 method, 1 getter, 2 setter
+    public byte FunctionType;
     public List<ushort> LineNumbers = new();
 }
 
@@ -144,9 +144,9 @@ public sealed class PexStructOrder
 
 public sealed partial class PexFile
 {
-    // Bytes left in the file after the last object. Real compiler output usually has none, but 16 of
-    // the 1,496 loose .pex on this machine carry four, and a writer that dropped them could not
-    // reproduce those files. Captured so the round trip stays honest rather than nearly-honest.
+
+
+
     public byte[] TrailingBytes = Array.Empty<byte>();
 
     public byte MajorVersion, MinorVersion;
@@ -162,7 +162,7 @@ public sealed partial class PexFile
     public List<PexUserFlag> UserFlags = new();
     public List<PexObject> Objects = new();
 
-    // ---- opcode metadata: (mnemonic, fixedArgs, varargs). Index = opcode byte. FO4 set (0x00-0x2E). ----
+
     public static readonly (string name, int args, bool varargs)[] OpCodes =
     {
         ("nop", 0, false), ("iadd", 3, false), ("fadd", 3, false), ("isub", 3, false), ("fsub", 3, false),
@@ -174,7 +174,7 @@ public sealed partial class PexFile
         ("return", 1, false), ("strcat", 3, false), ("propget", 3, false), ("propset", 3, false),
         ("array_create", 2, false), ("array_length", 2, false), ("array_getelement", 3, false), ("array_setelement", 3, false),
         ("array_findelement", 4, false), ("array_rfindelement", 4, false),
-        // Fallout 4 additions:
+
         ("is", 3, false), ("struct_create", 1, false), ("struct_get", 3, false), ("struct_set", 3, false),
         ("array_findstruct", 5, false), ("array_rfindstruct", 5, false),
         ("array_add", 3, false), ("array_insert", 3, false), ("array_removelast", 1, false),
@@ -188,7 +188,7 @@ public sealed partial class PexFile
         return Read(r);
     }
 
-    /// <summary>Reads a .pex from an already-open stream. The counterpart of <see cref="Write"/>.</summary>
+
     public static PexFile Read(Stream stream)
     {
         using var r = new BinaryReader(stream, Encoding.Latin1, leaveOpen: true);
@@ -216,11 +216,11 @@ public sealed partial class PexFile
             GameId = r.ReadUInt16(),
             CompilationTime = r.ReadInt64(),
         };
-        // Fallout 4 is gameId 2 at format 3.9. The other Papyrus games share the magic and the
-        // overall shape but not the details -- Starfield is gameId 4 at 3.12 and has value type tags
-        // Fallout 4 never emits, which used to surface here as "Invalid value type tag 14" hundreds
-        // of bytes later. Say what is actually wrong instead. One such file exists on the
-        // development machine: a Fallout 4 script accidentally built with a Starfield compiler.
+
+
+
+
+
         if (pex.GameId != 2)
             throw new InvalidDataException(
                 $"This .pex is for game id {pex.GameId} at format {pex.MajorVersion}.{pex.MinorVersion}; " +
@@ -230,12 +230,12 @@ public sealed partial class PexFile
         pex.UserName = ReadStr(r);
         pex.ComputerName = ReadStr(r);
 
-        // String table
+
         int strCount = r.ReadUInt16();
         for (int i = 0; i < strCount; i++) pex.StringTable.Add(ReadStr(r));
         string S(ushort idx) => idx < pex.StringTable.Count ? pex.StringTable[idx] : $"<str#{idx}>";
 
-        // Debug info
+
         pex.HasDebugInfo = r.ReadByte() != 0;
         if (pex.HasDebugInfo)
         {
@@ -254,7 +254,7 @@ public sealed partial class PexFile
                 for (int l = 0; l < lineCount; l++) df.LineNumbers.Add(r.ReadUInt16());
                 pex.DebugFunctions.Add(df);
             }
-            // Fallout 4 additions: property groups, then struct orders.
+
             int pgCount = r.ReadUInt16();
             for (int i = 0; i < pgCount; i++)
             {
@@ -279,12 +279,12 @@ public sealed partial class PexFile
             }
         }
 
-        // User flags
+
         int ufCount = r.ReadUInt16();
         for (int i = 0; i < ufCount; i++)
             pex.UserFlags.Add(new PexUserFlag { Name = S(r.ReadUInt16()), Index = r.ReadByte() });
 
-        // Objects
+
         int objCount = r.ReadUInt16();
         for (int i = 0; i < objCount; i++)
         {
@@ -297,7 +297,7 @@ public sealed partial class PexFile
             obj.UserFlags = r.ReadUInt32();
             obj.AutoStateName = S(r.ReadUInt16());
 
-            // Structs
+
             int structCount = r.ReadUInt16();
             for (int s = 0; s < structCount; s++)
             {
@@ -319,7 +319,7 @@ public sealed partial class PexFile
                 obj.Structs.Add(st);
             }
 
-            // Variables
+
             int varCount = r.ReadUInt16();
             for (int v = 0; v < varCount; v++)
             {
@@ -333,7 +333,7 @@ public sealed partial class PexFile
                 });
             }
 
-            // Properties
+
             int propCount = r.ReadUInt16();
             for (int p = 0; p < propCount; p++)
             {
@@ -355,7 +355,7 @@ public sealed partial class PexFile
                 obj.Properties.Add(prop);
             }
 
-            // States
+
             int stateCount = r.ReadUInt16();
             for (int st = 0; st < stateCount; st++)
             {
@@ -371,8 +371,8 @@ public sealed partial class PexFile
                 obj.States.Add(state);
             }
 
-            // See PexObject.SizeIncludesItself. Anything that matches neither convention keeps the
-            // majority default; the round-trip test is what surfaces such a file if one appears.
+
+
             if (bodyStart >= 0)
             {
                 long body = r.BaseStream.Position - bodyStart;
@@ -382,12 +382,12 @@ public sealed partial class PexFile
             pex.Objects.Add(obj);
         }
 
-        // Anything past the last object. See PexFile.TrailingBytes.
+
         var rest = r.BaseStream;
         if (rest.CanSeek && rest.Position < rest.Length)
             pex.TrailingBytes = r.ReadBytes((int)(rest.Length - rest.Position));
 
-        // Attach debug line numbers to instructions.
+
         AttachLineNumbers(pex);
         return pex;
     }
@@ -470,7 +470,7 @@ public sealed partial class PexFile
     {
         var obj = pex.Objects.FirstOrDefault(o => o.Name.Equals(objName, StringComparison.OrdinalIgnoreCase));
         if (obj == null) return null;
-        if (fnType == 1 || fnType == 2) // property getter/setter
+        if (fnType == 1 || fnType == 2)
         {
             var prop = obj.Properties.FirstOrDefault(p => p.Name.Equals(fnName, StringComparison.OrdinalIgnoreCase));
             return fnType == 1 ? prop?.ReadHandler : prop?.WriteHandler;

@@ -1,22 +1,22 @@
 :root {
-  /* Surfaces - darkest (app) to lightest (hover) */
-  --bg-primary: #0d0e11;    /* app background */
-  --bg-secondary: #16171b;  /* panel */
-  --bg-tertiary: #1c1d22;   /* raised surface */
-  --bg-hover: #23252b;      /* hover state */
 
-  /* Borders */
-  --border-color: #2a2c33;  /* subtle */
-  --border-strong: #3a3d45; /* stronger separator */
+  --bg-primary: #0d0e11;
+  --bg-secondary: #16171b;
+  --bg-tertiary: #1c1d22;
+  --bg-hover: #23252b;
 
-  /* Text */
+
+  --border-color: #2a2c33;
+  --border-strong: #3a3d45;
+
+
   --text-primary: #e6e6e6;
   --text-secondary: #9aa0aa;
   --text-muted: #6b7079;
-  --text-highlight: #f85149;  /* attention / changed text */
-  --text-identical: #56d364;  /* unchanged / matching text */
+  --text-highlight: #f85149;
+  --text-identical: #56d364;
 
-  /* Conflict Colors - retuned to harmonize with deep dark surfaces */
+
   --conflict-green: #1b3a26;
   --conflict-yellow: #4a4119;
   --conflict-orange: #5e3a18;
@@ -24,32 +24,32 @@
   --conflict-red: #4d1f1f;
   --conflict-empty: #0d0e11;
 
-  /* Accent - GREEN primary brand + primary actions */
-  --accent-color: #3fb950;   /* base green */
-  --accent-hover: #46c45a;   /* hover green */
-  --accent-dim: #2ea043;     /* pressed / dim green */
-  --accent-success: #3fb950; /* success stays green */
-  --accent-info: #388bfd;    /* legacy blue, opt-in only */
 
-  /* Status colors - for conflict cards, value diffs, icons */
-  --status-base: #56d364;    /* unchanged / master value (green text) */
-  --status-changed: #f85149; /* overridden / losing value (red) */
-  --status-warning: #d29922; /* amber */
-  --status-ok: #3fb950;      /* check icon (green) */
-  --status-info: #388bfd;    /* info (blue) */
+  --accent-color: #3fb950;
+  --accent-hover: #46c45a;
+  --accent-dim: #2ea043;
+  --accent-success: #3fb950;
+  --accent-info: #388bfd;
 
-  /* Plugin chip palette - distinct, legible dots/chips on dark */
-  --chip-1: #3fb950; /* green */
-  --chip-2: #a371f7; /* purple */
-  --chip-3: #388bfd; /* blue */
-  --chip-4: #d29922; /* amber */
-  --chip-5: #2dd4bf; /* teal */
-  --chip-6: #f778ba; /* pink */
-  --chip-7: #f0883e; /* orange */
-  --chip-8: #56d4dd; /* cyan */
 
-  /* Radii / shadows */
-  /* Canvas grid line. Light theme overrides it below. */
+  --status-base: #56d364;
+  --status-changed: #f85149;
+  --status-warning: #d29922;
+  --status-ok: #3fb950;
+  --status-info: #388bfd;
+
+
+  --chip-1: #3fb950;
+  --chip-2: #a371f7;
+  --chip-3: #388bfd;
+  --chip-4: #d29922;
+  --chip-5: #2dd4bf;
+  --chip-6: #f778ba;
+  --chip-7: #f0883e;
+  --chip-8: #56d4dd;
+
+
+
   --bp-grid: rgba(255, 255, 255, 0.045);
   --radius: 6px;
   --radius-sm: 4px;
@@ -92,7 +92,7 @@ body {
   background: var(--text-muted);
 }
 
-/* ── Light theme ── Professional slate-grey palette; conflict cells use solid fills. ── */
+
 [data-theme="light"] {
   --bg-primary: #eef0f4;
   --bg-secondary: #f6f7f9;
@@ -131,8 +131,8 @@ body {
   --bp-grid: rgba(0, 0, 0, 0.06);
 }
 
-/* Light mode -- solid conflict cell colors for maximum readability on white. */
-/* Make the glass panel a light card instead of a frosted-dark slab. */
+
+
 [data-theme="light"] .glass-panel {
   background: var(--bg-secondary);
   backdrop-filter: none;
@@ -151,7 +151,7 @@ body {
 [data-theme="light"] .rv-c-none      { color: #c8cdd5; background: transparent; }
 [data-theme="light"] .rv-win-icon    { color: #b45309; }
 
-/* Light mode -- table surfaces */
+
 [data-theme="light"] .rv-grid th           { background: var(--bg-tertiary); color: var(--text-secondary); }
 [data-theme="light"] td.rv-sticky,
 [data-theme="light"] th.rv-sticky          { background: var(--bg-secondary); }
@@ -173,7 +173,7 @@ body {
 }
 
 .glass-panel {
-  background: rgba(22, 23, 27, 0.8); /* matches --bg-secondary panel surface */
+  background: rgba(22, 23, 27, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);

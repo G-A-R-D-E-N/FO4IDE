@@ -11,7 +11,7 @@
             <ui:ControlsDictionary />
         </ResourceDictionary.MergedDictionaries>
 
-        <!-- Override System Selection Colors to VSCode Blue -->
+
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#04395E" />
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#37373D" />

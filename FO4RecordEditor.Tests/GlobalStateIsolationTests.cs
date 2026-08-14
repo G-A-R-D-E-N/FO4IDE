@@ -10,12 +10,12 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-/// <summary>
-/// Regression guard for the process-global leak fix: a class that loads an environment into
-/// MutagenLoader.LinkCache without restoring it leaves its records answering every later FormLink
-/// resolution in the run. These tests prove GlobalStateIsolation's dispose really restores
-/// resolution (and the registry snapshot), not just the pointer.
-/// </summary>
+
+
+
+
+
+
 public class GlobalStateIsolationTests
 {
     private static Mo2ProfileLoader.Mo2GameEnvironment BuildEnv(string modName, string editorId, out FormKey fk)
@@ -41,7 +41,7 @@ public class GlobalStateIsolationTests
     [Fact]
     public void AfterARestore_ResolutionReturnsToThePreExistingEnvironment()
     {
-        // The environment a later test class would legitimately resolve against.
+
         var previous = BuildEnv("Prev.esp", editorId: "PrevWeapon", out var prevFk);
         MutagenLoader.LinkCache = previous.LinkCache;
 
@@ -50,16 +50,16 @@ public class GlobalStateIsolationTests
             FormKey leakFk;
             using (var isolation = new GlobalStateIsolation())
             {
-                // Simulate a leaky prior class: load a different environment while the scope is open.
+
                 var leaked = BuildEnv("Leak.esp", editorId: "LeakWeapon", out leakFk);
                 MutagenLoader.LinkCache = leaked.LinkCache;
 
-                // The leak is live while the scope is open, so the post-restore assertions cannot
-                // pass vacuously.
-                MutagenLoader.DescribeFormKey(null, leakFk.ToString()).Should().Contain("LeakWeapon");
-            }   // dispose restores the pre-existing cache
 
-            // After the restore, resolution consults the legitimate environment again.
+
+                MutagenLoader.DescribeFormKey(null, leakFk.ToString()).Should().Contain("LeakWeapon");
+            }
+
+
             MutagenLoader.DescribeFormKey(null, prevFk.ToString()).Should().Contain("PrevWeapon");
             MutagenLoader.DescribeFormKey(null, leakFk.ToString()).Should().NotContain("LeakWeapon");
         }
@@ -69,19 +69,19 @@ public class GlobalStateIsolationTests
         }
     }
 
-    /// <summary>
-    /// Pins the rest of the snapshot contract: every registry dictionary, both LRU caps, the
-    /// per-mod index cache, and ConflictScanner's cache.
-    /// </summary>
+
+
+
+
     [Fact]
     public void Dispose_RestoresTheRegistryDictionariesCapsAndCaches()
     {
-        // Captured before the seeded state; disposed last to return the process to defaults.
+
         var pristine = new GlobalStateIsolation();
 
         try
         {
-            // Pre-existing state a later class would legitimately see.
+
             MutagenLoader.LooseMods["A.esp"] = "loose-mod";
             MutagenLoader.LooseModPaths["A.esp"] = @"C:\mods\A.esp";
             MutagenLoader.PluginSourcePaths["A.esp"] = @"C:\mods\A.esp";
@@ -91,9 +91,9 @@ public class GlobalStateIsolationTests
             MutagenLoader.MaxCachedModIndexes = 7;
             MutagenLoader.MaxCachedIndexRecords = 12_345;
 
-            using (var isolation = new GlobalStateIsolation())   // captures the seeded state
+            using (var isolation = new GlobalStateIsolation())
             {
-                // A leaky class mutates everything in scope: adds, removes, and changes caps.
+
                 MutagenLoader.LooseMods["B.esp"] = "leaked";
                 MutagenLoader.LooseMods.TryRemove("A.esp", out _);
                 MutagenLoader.LooseModPaths["B.esp"] = @"C:\mods\B.esp";
@@ -104,10 +104,10 @@ public class GlobalStateIsolationTests
                 MutagenLoader.MaxCachedModIndexes = 99;
                 MutagenLoader.MaxCachedIndexRecords = 99;
                 MutagenLoader.SeedModIndexForTest("B.esp", new object());
-                ConflictScanner.ScanCached(BuildEnv("Prev.esp", "PrevWeapon", out _));   // populates its cache
+                ConflictScanner.ScanCached(BuildEnv("Prev.esp", "PrevWeapon", out _));
 
-                // The mutations are live while the scope is open, so the restores cannot pass
-                // vacuously.
+
+
                 MutagenLoader.LooseMods.Keys.Should().BeEquivalentTo("B.esp");
                 MutagenLoader.LooseModPaths.Keys.Should().BeEquivalentTo("B.esp");
                 MutagenLoader.PluginSourcePaths.Keys.Should().BeEquivalentTo("B.esp");
@@ -117,9 +117,9 @@ public class GlobalStateIsolationTests
                 MutagenLoader.MaxCachedIndexRecords.Should().Be(99);
                 MutagenLoader.ModIndexCacheCount.Should().BeGreaterThan(0);
                 ConflictScanner.HasCache.Should().BeTrue();
-            }   // dispose restores the seeded state
+            }
 
-            // Registries and caps are back to the pre-existing state; the caches were cleared.
+
             MutagenLoader.LooseMods.Should().BeEquivalentTo(new[] { new KeyValuePair<string, object>("A.esp", "loose-mod") });
             MutagenLoader.LooseModPaths.Should().BeEquivalentTo(new[] { new KeyValuePair<string, string>("A.esp", @"C:\mods\A.esp") });
             MutagenLoader.PluginSourcePaths.Should().BeEquivalentTo(new[] { new KeyValuePair<string, string>("A.esp", @"C:\mods\A.esp") });
@@ -136,7 +136,7 @@ public class GlobalStateIsolationTests
         }
         finally
         {
-            // Hand the process back to pristine defaults.
+
             pristine.Dispose();
         }
     }

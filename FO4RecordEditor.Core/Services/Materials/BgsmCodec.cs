@@ -2,13 +2,13 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Materials;
 
-/// <summary>
-/// Little-endian byte reader matching native/materials/src/base.rs::Reader exactly (Bryant-21/
-/// py-creation-lib, GPL-3.0, permission granted). read_string() is the GENERIC length-prefixed
-/// reader used for the header -- it returns the raw bytes verbatim, including any embedded
-/// trailing NUL a texture-path field was written with (see WriteBgsmString below). Do not add
-/// trimming here; a byte-exact round-trip depends on returning exactly what was on disk.
-/// </summary>
+
+
+
+
+
+
+
 internal sealed class MatReader
 {
     private readonly byte[] _data;
@@ -38,7 +38,7 @@ internal sealed class MatReader
     public float[] ReadColor3() => new[] { ReadF32(), ReadF32(), ReadF32() };
 }
 
-/// <summary>Matching little-endian writer (base.rs::Writer).</summary>
+
 internal sealed class MatWriter
 {
     private readonly List<byte> _data = new();
@@ -47,8 +47,8 @@ internal sealed class MatWriter
     public void WriteU32(uint v) => _data.AddRange(BitConverter.GetBytes(v));
     public void WriteF32(float v) => _data.AddRange(BitConverter.GetBytes(v));
 
-    /// <summary>Generic length-prefixed write (header strings, none exist in BGSM/BGEM today
-    /// but kept for parity with base.rs::Writer::write_string). Empty string -> len=0, no bytes.</summary>
+
+
     public void WriteString(string value)
     {
         if (string.IsNullOrEmpty(value)) { WriteU32(0); return; }
@@ -57,12 +57,12 @@ internal sealed class MatWriter
         _data.AddRange(bytes);
     }
 
-    /// <summary>
-    /// BGSM texture/path strings are length-prefixed AND null-terminated -- an empty slot is
-    /// len=1,byte=0x00, NEVER len=0. FO4's own BGSM parser misaligns the rest of the stream on a
-    /// zero-length string in a texture slot (manifests as pink materials in-game), per
-    /// bgsm.rs::write_bgsm_string's own comment. Ported verbatim, not simplified.
-    /// </summary>
+
+
+
+
+
+
     public void WriteBgsmString(string? value)
     {
         value ??= "";
@@ -75,20 +75,20 @@ internal sealed class MatWriter
     public byte[] ToArray() => _data.ToArray();
 }
 
-/// <summary>
-/// FO4 .bgsm binary codec. Field order and version-conditional branches are a byte-for-byte port
-/// of native/materials/src/{base.rs,bgsm.rs} (Bryant-21/py-creation-lib, GPL-3.0, permission
-/// granted) -- verified against that source before writing this, not guessed, because a wrong
-/// field order here silently corrupts a real mod's material on the next write.
-/// </summary>
+
+
+
+
+
+
 public static class BgsmCodec
 {
-    public const uint Signature = 0x4D534742; // 'BGSM' little-endian
+    public const uint Signature = 0x4D534742;
 
     internal static MaterialHeader ParseHeader(MatReader r) => ParseHeader(r, Signature, "BGSM");
 
-    /// <summary>The header is shared by .bgsm and .bgem (base.rs::read_header takes the expected
-    /// signature the same way), so only the magic differs.</summary>
+
+
     internal static MaterialHeader ParseHeader(MatReader r, uint expectedSignature, string formatName)
     {
         var h = new MaterialHeader { Signature = r.ReadU32() };

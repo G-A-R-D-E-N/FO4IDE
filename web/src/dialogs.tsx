@@ -1,15 +1,15 @@
-// App-wide replacement for window.confirm / window.prompt / window.alert.
-//
-// Native dialogs were wrong here for three reasons: in the Photino/WebKitGTK window they render as a
-// bare OS box that does not look like the app, they block the whole webview thread, and prompt()
-// gives a single unvalidated text field for questions that are really a choice from a list (which is
-// why "into which plugin?" was a filename you had to know by heart).
-//
-// The API is promise-shaped so a call site reads almost the same as the native one it replaces:
-//     if (!(await confirm({ ... }))) return;
-//     const name = await prompt({ ... });
-//     const picked = await pickPlugin({ ... });
-// Every one returns null/false on cancel, so existing early-return logic survives unchanged.
+
+
+
+
+
+
+
+
+
+
+
+
 
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
 import PluginTargetDialog, { type TargetRequest, type TargetResult } from './PluginTargetDialog';
@@ -20,7 +20,7 @@ export interface ConfirmRequest {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
-  /** Red confirm button, for anything that destroys or rewrites data. */
+
   danger?: boolean;
 }
 
@@ -31,7 +31,7 @@ export interface PromptRequest {
   placeholder?: string;
   description?: string;
   confirmLabel?: string;
-  /** Reject the value with this message when it returns one. */
+
   validate?: (value: string) => string | null;
 }
 
@@ -105,7 +105,7 @@ function ConfirmDialog({ req, onResolve }: { req: ConfirmRequest; onResolve: (v:
         ref={el => el?.focus()}
       >
         <div className="ptd-header"><span className="ptd-title">{req.title}</span></div>
-        {/* pre-wrap: several callers pass a multi-line dry-run report straight through. */}
+        {}
         <div className="ptd-desc ptd-desc-block">{req.message}</div>
         <div className="ptd-actions">
           <span className="ptd-keys">Enter to confirm, Esc to cancel</span>

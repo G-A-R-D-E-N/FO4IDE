@@ -3,25 +3,25 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-// The write half of the .pex format: the exact inverse of PexFile.Read, in the same order, so the
-// two can be read side by side. Issue #78 phase 2 needs a back end, and the cheapest correct one is
-// the inverse of a reader already validated against every .pex on the machine.
-//
-// The contract this aims at is byte-identical round tripping: read a compiler-produced file, write
-// it back, get the same bytes. That is a far stronger check than "the game loads it", and it is the
-// only one available without the game. Two things the reader had been free to ignore had to be
-// pinned down before it could hold:
-//
-//   * The per-object `size` field has TWO conventions in the wild -- 1,480 of the 1,496 real .pex
-//     on the development machine count the field's own four bytes, and 16 count only the body.
-//     Neither is rare enough to ignore, so the reader records which one it saw and this writes it
-//     back. See PexObject.SizeIncludesItself.
-//   * Some files have bytes after the last object (see PexFile.TrailingBytes).
-//
-// The string table is reused verbatim rather than rebuilt, so indices land where they were. If a
-// file ever did carry a duplicate string, the later index would collapse onto the earlier one and
-// the round trip would differ in indices while staying semantically identical; no such file exists
-// in the corpus (0 of 1,496).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 public sealed partial class PexFile
 {
@@ -42,7 +42,7 @@ public sealed partial class PexFile
     {
         using var w = new BinaryWriter(stream, Encoding.Latin1, leaveOpen: true);
 
-        // Index lookup over the table as it stands. First occurrence wins; see the note above.
+
         var index = new Dictionary<string, ushort>(StringTable.Count, StringComparer.Ordinal);
         for (int i = 0; i < StringTable.Count; i++)
         {
@@ -119,8 +119,8 @@ public sealed partial class PexFile
         {
             w.Write(Idx(obj.Name));
 
-            // The body is written to a buffer first because its own length has to precede it, and
-            // that length includes the four bytes of the length field.
+
+
             var body = new MemoryStream();
             using (var bw = new BinaryWriter(body, Encoding.Latin1, leaveOpen: true))
                 WriteObjectBody(bw, obj, Idx);
@@ -233,7 +233,7 @@ public sealed partial class PexFile
             for (int a = 0; a < meta.args; a++) WriteValue(w, instr.Args[a], Idx);
             if (meta.varargs)
             {
-                // The vararg count is itself an operand, written as an Integer value.
+
                 WriteValue(w, new PexValue { Type = PexValueType.Integer, Int = instr.Args.Count - meta.args }, Idx);
                 for (int a = meta.args; a < instr.Args.Count; a++) WriteValue(w, instr.Args[a], Idx);
             }

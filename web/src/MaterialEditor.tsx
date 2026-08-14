@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { Save, RotateCcw, ChevronDown, ChevronRight, Undo2 } from 'lucide-react';
 import type { MaterialHost, MaterialField } from './backend';
 
-// [r,g,b] 0..1  <->  #rrggbb -- same convention NifEditor's color fields use, so the two panels
-// behave identically even though BGSM values are stored/edited as strings, not numbers.
+
+
 const toHex = (v: number[]) =>
   '#' + v.slice(0, 3).map(c => Math.round(Math.min(1, Math.max(0, c)) * 255).toString(16).padStart(2, '0')).join('');
 const fromHex = (h: string): number[] => {
@@ -16,13 +16,13 @@ const parseColor = (s: string): number[] => {
 };
 const formatColor = (arr: number[]) => arr.map(n => Number(n.toFixed(3))).join(', ');
 
-/**
- * Material shader field editor (.bgsm and .bgem): bool -> switch, float/int -> number input, color -> picker + raw
- * value, everything else -> text input. Mirrors NifEditor's dirty-tracking/revert UX exactly (same
- * CSS classes) but groups fields by section (Material / Header) instead of by NIF block, and saves
- * through MaterialInterop.SetFields (one field-name -> new-value-string map per Save) instead of
- * NIF's typed edit list.
- */
+
+
+
+
+
+
+
 export default function MaterialEditor(
   { fields, path, material, onSaved, appendLog }: {
     fields: MaterialField[];
@@ -62,7 +62,7 @@ export default function MaterialEditor(
     setSaving(true);
     try {
       const payload = JSON.stringify(edits);
-      const res = await material.SetFields(path, payload, '');   // overwrite in place
+      const res = await material.SetFields(path, payload, '');
       const ok = /^Set \d+ field/.test(res);
       appendLog(`${ok ? '✓' : '✗'} ${ok ? res : 'save failed -- ' + res}`);
       if (ok) setEdits({});

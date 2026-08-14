@@ -4,7 +4,7 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// The error-marking contract the MCP transports rely on to set JSON-RPC isError.
+
 public class ToolErrorTests
 {
     [Fact]
@@ -34,8 +34,8 @@ public class ToolErrorTests
         result.Text.Should().Be("Set EditorID = 'Foo'");
     }
 
-    // These read as "nothing here" but describe a clean or empty result, not a failure. A naive
-    // "starts with No " heuristic would flag a clean plugin as broken.
+
+
     [Theory]
     [InlineData("No conflicts found")]
     [InlineData("No problems found for 000800:Foo.esp.")]
@@ -47,7 +47,7 @@ public class ToolErrorTests
         ToolError.Unwrap(text).IsError.Should().BeFalse();
     }
 
-    // Backstop for tool bodies not yet migrated to Fail().
+
     [Theory]
     [InlineData("Could not resolve 'Foo'.")]
     [InlineData("Failed to open 'Foo.esp' for editing: denied")]
@@ -61,8 +61,8 @@ public class ToolErrorTests
         ToolError.Unwrap(text).IsError.Should().BeTrue();
     }
 
-    // Anchored to the first line, so failure vocabulary quoted inside a record dump cannot flip a
-    // successful read into an error.
+
+
     [Fact]
     public void FailurePhraseLaterInBody_DoesNotFlipASuccessfulRead()
     {

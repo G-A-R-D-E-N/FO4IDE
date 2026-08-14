@@ -8,11 +8,11 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Queries backing the redesigned navigator, workspace header and detail rail. These answer
-/// "what is in this load order" and "what does this record look like from every angle", which the
-/// per-plugin drill-down API above was never shaped to do.
-/// </summary>
+
+
+
+
+
 public static partial class MutagenLoader
 {
     public sealed record ActivePluginDto(string Name, string Kind, int LoadOrder, bool Editable, long Size);
@@ -28,28 +28,28 @@ public static partial class MutagenLoader
     public sealed record HistoryEntryDto(string Plugin, int LoadOrder, string Action, int ChangedFields, string LastModified);
     public sealed record LoadOrderSummaryDto(int TotalRecords, int PluginCount, IReadOnlyList<string> Plugins);
 
-    /// <summary>
-    /// A plugin's kind, from its own header flags rather than its extension: an .esp carrying the
-    /// Master flag really is a master to the game, and .esl-flagged plugins occupy the FE slot.
-    /// </summary>
+
+
+
+
     private static string PluginKind(object? mod, string name)
     {
         try
         {
             dynamic m = mod!;
             bool master = (bool)m.ModHeader.Flags.HasFlag(Mutagen.Bethesda.Fallout4.Fallout4ModHeader.HeaderFlag.Master);
-            // The ESL/light flag is spelled "Small" in the header, and it wins over Master for
-            // display: an .esm carrying it still lands in the FE slot.
+
+
             bool light = (bool)m.ModHeader.Flags.HasFlag(Mutagen.Bethesda.Fallout4.Fallout4ModHeader.HeaderFlag.Small);
             if (light) return "light";
             if (master) return "master";
         }
-        catch { /* fall through to the extension */ }
+        catch {  }
         var ext = Path.GetExtension(name).ToLowerInvariant();
         return ext == ".esm" ? "master" : ext == ".esl" ? "light" : "plugin";
     }
 
-    /// <summary>The load order as the navigator's File Browser shows it, newest override last.</summary>
+
     public static List<ActivePluginDto> GetActivePlugins(object? envObj)
     {
         var result = new List<ActivePluginDto>();
@@ -67,11 +67,11 @@ public static partial class MutagenLoader
         return result;
     }
 
-    /// <summary>
-    /// Record types present across the whole load order, with counts. The old tree was
-    /// plugin -> type -> record; the navigator is type-first, so the counts have to be summed
-    /// across plugins rather than read from one mod's index.
-    /// </summary>
+
+
+
+
+
     public static List<RecordTypeDto> GetRecordTypeIndex(object? envObj)
     {
         var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -88,11 +88,11 @@ public static partial class MutagenLoader
             .ToList();
     }
 
-    /// <summary>
-    /// Records of one type across the load order, winning version only, for the navigator's lazy
-    /// expand. Deduplicated by FormKey because an overridden record appears in every plugin that
-    /// touches it and the navigator wants one row per record, not one per override.
-    /// </summary>
+
+
+
+
+
     public static List<SearchHit> GetRecordsOfTypeAcrossLoadOrder(
         object? envObj, string sig, string filter, int limit = 500, int offset = 0)
     {
@@ -126,11 +126,11 @@ public static partial class MutagenLoader
         return hits;
     }
 
-    /// <summary>
-    /// The containment breadcrumb. Only placed references sit in a real worldspace/cell hierarchy;
-    /// everything else gets the short "which plugin owns the winning version" path, so the header
-    /// never renders an empty strip.
-    /// </summary>
+
+
+
+
+
     public static List<BreadcrumbNodeDto> GetContainmentPath(object? envObj, string formKeyStr)
     {
         var path = new List<BreadcrumbNodeDto>();
@@ -142,8 +142,8 @@ public static partial class MutagenLoader
         try
         {
             var lc = (Mutagen.Bethesda.Plugins.Cache.ILinkCache)((dynamic)envObj).LinkCache;
-            // ResolveSimpleContext walks Parent links up the CELL/WRLD tree; a non-placed record
-            // simply has none, which is why this is a best-effort chain and not a required one.
+
+
             var ctx = lc.ResolveAllSimpleContexts<IMajorRecordGetter>(fk).FirstOrDefault();
             var chain = new List<BreadcrumbNodeDto>();
             var parent = ctx?.Parent;
@@ -157,7 +157,7 @@ public static partial class MutagenLoader
             chain.Reverse();
             path.AddRange(chain);
         }
-        catch { /* no hierarchy for this record type */ }
+        catch {  }
 
         var self = contexts[^1].rec;
         path.Add(new BreadcrumbNodeDto("Record", Describe(self), self.FormKey.ToString()));
@@ -171,7 +171,7 @@ public static partial class MutagenLoader
         return string.IsNullOrWhiteSpace(eid) ? id : $"{id} <{eid}>";
     }
 
-    /// <summary>Header fields for the detail rail.</summary>
+
     public static RecordDetailsDto? GetRecordDetails(object? envObj, string formKeyStr)
     {
         if (!FormKey.TryFactory(formKeyStr, out var fk)) return null;
@@ -181,8 +181,8 @@ public static partial class MutagenLoader
         var (winnerPlugin, winner) = contexts[^1];
         var sig = SignatureOf(winner);
 
-        // A placed reference's "Base Form" is what it is an instance of, which is the single most
-        // useful jump target in the rail. Non-REFR records have no base and report themselves.
+
+
         string baseLabel = "", baseKey = "";
         try
         {
@@ -195,7 +195,7 @@ public static partial class MutagenLoader
                 baseLabel = baseCtx.Count > 0 ? Describe(baseCtx[^1].rec) : bk.ID.ToString("X8");
             }
         }
-        catch { /* not a placed reference */ }
+        catch {  }
 
         return new RecordDetailsDto(
             FormKey: winner.FormKey.ToString(),
@@ -210,23 +210,23 @@ public static partial class MutagenLoader
             OverrideCount: Math.Max(0, contexts.Count - 1));
     }
 
-    /// <summary>
-    /// The record's type name. Registration.Name is the same source BuildConflictMatrix uses for
-    /// ConflictMatrix.Type, so the rail and the grid agree. The obvious-looking
-    /// Registration.TriggeringRecordType.Type throws on binary overlays, which silently fell back
-    /// to the CLR type name and produced "WeaponBinaryOverlay" instead of "Weapon".
-    /// </summary>
+
+
+
+
+
+
     private static string SignatureOf(IMajorRecordGetter r)
     {
         try { return (string)((dynamic)r).Registration.Name; }
         catch { return r.GetType().Name.Replace("BinaryOverlay", "").Replace("Binary", ""); }
     }
 
-    /// <summary>
-    /// "Plugins Affecting This Record": one row per plugin carrying a version, with how many fields
-    /// it changed and how many of those actually conflict. Changes and conflicts are read off the
-    /// same conflict matrix the grid renders, so the numbers cannot disagree with the grid.
-    /// </summary>
+
+
+
+
+
     public static List<PluginMatrixRowDto> GetRecordPluginMatrix(object? envObj, string formKeyStr)
     {
         var rows = new List<PluginMatrixRowDto>();
@@ -236,10 +236,10 @@ public static partial class MutagenLoader
         for (int col = 0; col < matrix.Plugins.Count; col++)
         {
             var plugin = matrix.Plugins[col];
-            // Two counts that cannot contradict each other: how many fields this plugin sets, and
-            // how many of those lose to a later plugin. An earlier attempt counted a "master"
-            // status as a conflict but not a change, so a base column reported more conflicts than
-            // changes, which reads as a bug even though both numbers were individually defensible.
+
+
+
+
             int winnerCol = matrix.Plugins.Count - 1;
             int changes = 0, conflicts = 0;
             foreach (var row in matrix.Rows)
@@ -272,11 +272,11 @@ public static partial class MutagenLoader
         return rows;
     }
 
-    /// <summary>
-    /// What the winning version needs to resolve: every outgoing FormLink, plus the masters it
-    /// implies. A dangling link is reported with an empty EditorId and Plugin rather than dropped,
-    /// because "this dependency does not resolve" is exactly what the panel exists to surface.
-    /// </summary>
+
+
+
+
+
     public static List<DependencyDto> GetDependencies(object? envObj, string formKeyStr, int cap = 300)
     {
         var deps = new List<DependencyDto>();
@@ -304,11 +304,11 @@ public static partial class MutagenLoader
         return deps;
     }
 
-    /// <summary>
-    /// The override timeline. There is no real version history in a plugin file, so this is the
-    /// honest approximation the plan called for: one entry per plugin that carries the record, in
-    /// load order, labelled by what it did to it.
-    /// </summary>
+
+
+
+
+
     public static List<HistoryEntryDto> GetHistory(object? envObj, string formKeyStr)
     {
         var entries = new List<HistoryEntryDto>();
@@ -324,7 +324,7 @@ public static partial class MutagenLoader
         return entries;
     }
 
-    /// <summary>Totals for the status bar. The record count is the real total, not the plugin count.</summary>
+
     public static LoadOrderSummaryDto GetLoadOrderSummary(object? envObj)
     {
         var names = new List<string>();

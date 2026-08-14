@@ -43,7 +43,7 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
   const canvasApi = useRef<CanvasApi | null>(null);
   const { dirty, markSaved } = useSavedDoc(state.doc);
 
-  // ---- palette ----------------------------------------------------------------------------
+
 
   const signature = useCallback(async (type: string): Promise<BpNodeDef | null> => {
     if (defs[type]) return defs[type];
@@ -55,8 +55,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
     return parsed;
   }, [defs, graph]);
 
-  // Debounced and sequence guarded. The previous list stays rendered while a query is in flight,
-  // because blanking it on every keystroke was already a recorded complaint about the cell search.
+
+
   const searchSeq = useRef(0);
   useEffect(() => {
     if (!graph) return undefined;
@@ -69,13 +69,13 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
         setEntries(parsed.entries);
         setTotal(parsed.total);
       } catch {
-        // A failed search must not take the panel down with it.
+
       }
     }, 200);
     return () => clearTimeout(timer);
   }, [search, graph]);
 
-  // ---- validation -------------------------------------------------------------------------
+
 
   const validateSeq = useRef(0);
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
         setValidation(JSON.parse(raw));
         setValidatedDoc(doc);
       } catch {
-        // Same reasoning as the search: never let a background check close the panel.
+
       }
     }, 600);
     return () => clearTimeout(timer);
@@ -124,7 +124,7 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
       : errorCount > 0 ? 'error'
         : warningCount > 0 ? 'warn' : 'ok';
 
-  // ---- actions ----------------------------------------------------------------------------
+
 
   const createNode = useCallback(async (
     type: string, x: number, y: number, from?: { node: string; pin: string },
@@ -200,8 +200,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
       const parsed = JSON.parse(raw) as
         { ok: boolean; document: BpDocument | null; diagnostics: BpDiagnostic[] };
 
-      // A refusal names the construct, the node and the line, so it goes to the problems list. A
-      // status line saying only that the file did not open would throw away the reason.
+
+
       setValidation({ diagnostics: parsed.diagnostics });
       if (!parsed.ok || !parsed.document) {
         setStatus('Could not read that script into a graph. See the problems list.');
@@ -214,8 +214,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
       doc = JSON.parse(raw) as BpDocument;
     }
 
-    // Collected here rather than read from `defs`: setDefs has not settled by the time the layout
-    // runs, so the state hook would still be missing every node this document just introduced.
+
+
     const loaded: Record<string, BpNodeDef> = { ...defs };
     for (const node of doc.nodes) {
       const def = await signature(node.def);
@@ -225,11 +225,11 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
     dispatch({ type: 'LOAD', doc });
 
     if (isScript) {
-      // The lifter positions nodes in a plain cascade, which is unreadable past a handful of them.
+
       const positions = autoLayout(doc, loaded);
       if (Object.keys(positions).length > 0) dispatch({ type: 'SET_POSITIONS', positions });
-      // Deliberately not marked saved: a lifted script is a new graph that exists nowhere on disk,
-      // and saying otherwise would let it be closed without a prompt.
+
+
       setStatus(`Opened ${path.split(/[\\/]/).pop()} as a graph.`);
     } else {
       markSaved(doc);
@@ -237,19 +237,19 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
     }
   });
 
-  // ---- clipboard --------------------------------------------------------------------------
 
-  // Owns its own key bindings, so the operation and the thing that triggers it cannot drift apart.
+
+
   const clipboard = useGraphClipboard(state, dispatch);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
 
-  // One dispatch, so a layout is one undoable step rather than a move per node.
+
   const tidy = useCallback(() => {
     const positions = autoLayout(state.doc, defs);
     if (Object.keys(positions).length > 0) dispatch({ type: 'SET_POSITIONS', positions });
   }, [state.doc, defs]);
 
-  // ---- keyboard ---------------------------------------------------------------------------
+
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -277,11 +277,11 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
 
   useEffect(() => setLS('scriptName', state.doc.header.scriptName), [state.doc.header.scriptName]);
 
-  // ---- render -----------------------------------------------------------------------------
+
 
   return (
     <div className="papyrus-overlay">
-      {/* No click-outside-to-close: a stray click must never discard a graph. */}
+      {}
       <div className="papyrus-modal glass-panel nif-modal-wide" onClick={(e) => e.stopPropagation()}>
         <div className="papyrus-header">
           <div className="papyrus-title">Blueprint</div>
@@ -370,8 +370,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
 
             {menu && (
               <>
-                {/* A full-surface backdrop rather than a document listener: it closes on any click,
-                    including a click on the menu's own edge, without racing the button handlers. */}
+                {
+}
                 <div className="bp-menu-backdrop" onPointerDown={() => setMenu(null)} />
                 <div className="bp-menu" style={{ left: menu.x, top: menu.y }}>
                   <button disabled={state.selection.nodes.length === 0}

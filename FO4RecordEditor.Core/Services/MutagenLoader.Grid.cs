@@ -3,21 +3,21 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// xEdit parity: spreadsheet bulk editors (#51), GUI half. The backend generic reflection-driven
-/// column model already existed for the AI-facing text table (QueryRecordSummaries); what was
-/// actually missing was a structured (JSON, untruncated) version a React grid could render and a
-/// human could edit, and the grid component itself (SpreadsheetPanel.tsx).
-/// </summary>
+
+
+
+
+
+
 public static partial class MutagenLoader
 {
-    /// <summary>
-    /// Structured (not padded-text) version of QueryRecordSummaries for the web GUI's spreadsheet
-    /// panel: { columns: string[], rows: [{ formKey, editorId, cells: string[] }], total, offset }.
-    /// Reuses the SAME column-discovery logic (DiscoverGridColumns), just with more columns allowed
-    /// (12 vs the AI table's 8) since there's no ~8KB text budget to protect here, and full
-    /// (untruncated) cell text since a human editing a table wants the real value, not "...".
-    /// </summary>
+
+
+
+
+
+
+
     public static string GetRecordsGridJson(object? envObj, string plugin, string sig, int limit, int offset = 0)
     {
         var mod = ResolveMod(plugin, envObj);
@@ -57,11 +57,11 @@ public static partial class MutagenLoader
         return JsonSerializer.Serialize(new { columns, rows, total = recs.Count, offset });
     }
 
-    /// <summary>
-    /// A readable summary of a list cell. "[4 items]" told the user nothing and could not be acted
-    /// on: it is the same string for four keywords and for four components. Name the first few
-    /// entries instead, and only fall back to a count once the list is too long to show.
-    /// </summary>
+
+
+
+
+
     private static string SummarizeEnumerable(IEnumerable ie)
     {
         const int show = 3;
@@ -79,8 +79,8 @@ public static partial class MutagenLoader
                 else
                 {
                     text = item.ToString() ?? "";
-                    // A struct entry with no ToString() override yields its own class name, which is
-                    // noise ("...ConstructibleObjectComponentBinaryOverlay") and worse than a count.
+
+
                     var t = item.GetType();
                     if (text.Length == 0 || text == t.FullName || text == t.ToString()) continue;
                 }
@@ -88,10 +88,10 @@ public static partial class MutagenLoader
                 parts.Add(text);
                 rendered++;
             }
-            catch { /* one bad entry must not lose the whole cell */ }
+            catch {  }
         }
         if (total == 0) return "";
-        if (parts.Count == 0) return total == 1 ? "[1 item]" : $"[{total} items]";   // nothing renderable: a count is honest
+        if (parts.Count == 0) return total == 1 ? "[1 item]" : $"[{total} items]";
         var head = string.Join(", ", parts);
         return total > parts.Count ? $"{head}, +{total - parts.Count} more" : head;
     }

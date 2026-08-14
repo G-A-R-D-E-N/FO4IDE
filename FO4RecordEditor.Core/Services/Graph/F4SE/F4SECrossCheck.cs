@@ -4,59 +4,59 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-/// <summary>One binding that disagrees with the Papyrus declaration of the same function.</summary>
+
 public sealed record CrossCheckMismatch(string Class, string Function, string What, string Cpp, string Psc)
 {
     public override string ToString() => $"{Class}.{Function} {What}: cpp={Cpp} psc={Psc}";
 }
 
-/// <summary>What comparing the C++ registrations against the Papyrus declarations found.</summary>
+
 public sealed record CrossCheckResult
 {
     public required int Recovered { get; init; }
     public required int Declared { get; init; }
     public required int Matched { get; init; }
 
-    /// <summary>Registered in C++ with no Papyrus declaration to check against.</summary>
+
     public IReadOnlyList<NativeBinding> CppOnly { get; init; } = Array.Empty<NativeBinding>();
 
-    /// <summary>Declared in Papyrus with no C++ registration found.</summary>
+
     public IReadOnlyList<OracleNative> PscOnly { get; init; } = Array.Empty<OracleNative>();
 
     public IReadOnlyList<CrossCheckMismatch> Mismatches { get; init; } = Array.Empty<CrossCheckMismatch>();
 
-    /// <summary>Latent registrations, which the Papyrus side cannot express and so cannot confirm.</summary>
+
     public int LatentOnlyInCpp { get; init; }
 
-    /// <summary>NoWait registrations, likewise invisible to Papyrus.</summary>
+
     public int NoWaitOnlyInCpp { get; init; }
 
     public bool Agrees => CppOnly.Count == 0 && PscOnly.Count == 0 && Mismatches.Count == 0;
 }
 
-/// <summary>
-/// Compares recovered C++ registrations against the Papyrus declarations of the same functions.
-/// </summary>
-/// <remarks>
-/// Two independently produced descriptions of the same boundary, so agreement is evidence that the
-/// scanner and the type map are both right. Latency and <c>NoWait</c> are excluded from matching on
-/// purpose and counted separately, because no <c>.psc</c> can carry them: overstating what this
-/// check covers would be worse than the gap itself.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public static class F4SECrossCheck
 {
-    /// <summary>Compares recovered registrations against the declarations an oracle produced.</summary>
+
     public static CrossCheckResult Compare(IEnumerable<NativeBinding> recovered, F4SENativeOracle oracle) =>
         Compare(recovered, oracle.Natives);
 
-    /// <summary>
-    /// Compares recovered registrations against a set of declarations.
-    /// </summary>
-    /// <remarks>
-    /// Taking the declarations rather than the oracle keeps this usable by a caller that already
-    /// has them, including the emit-then-read-back round trip, which has no source tree to build an
-    /// oracle from.
-    /// </remarks>
+
+
+
+
+
+
+
+
     public static CrossCheckResult Compare(
         IEnumerable<NativeBinding> recovered, IEnumerable<OracleNative> declarations)
     {
@@ -131,19 +131,19 @@ public static class F4SECrossCheck
         };
     }
 
-    /// <summary>
-    /// Whether two written types are the same type.
-    /// </summary>
-    /// <remarks>
-    /// Papyrus is case insensitive, so names compare case insensitively.
-    /// <para>
-    /// A struct owned by another script is written <c>Owner:Struct</c> in Papyrus, while the C++
-    /// side has only the bare typedef name the <c>DECLARE_STRUCT</c> macro produced. The shipped
-    /// <c>ObjectReference.ApplyMaterialSwap</c> returns <c>MatSwap:RemapData[]</c> against a C++
-    /// <c>VMArray&lt;RemapData&gt;</c>, and both spellings are correct. So a qualified name is
-    /// compared on the part after the colon when the other side carries no qualifier.
-    /// </para>
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static bool SameType(PapyrusTypeText a, PapyrusTypeText b)
     {
         if (a.IsArray != b.IsArray) return false;
@@ -152,8 +152,8 @@ public static class F4SECrossCheck
         bool aQualified = a.Name.Contains(':');
         bool bQualified = b.Name.Contains(':');
 
-        // Two qualified names that differ really are different types, so only an unqualified name
-        // is allowed to match a qualified one.
+
+
         if (aQualified == bQualified) return false;
 
         return Unqualified(a.Name).Equals(Unqualified(b.Name), StringComparison.OrdinalIgnoreCase);

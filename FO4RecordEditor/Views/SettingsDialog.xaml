@@ -12,7 +12,7 @@
       <ComboBoxItem Content="Ollama (local)" Tag="ollama"/>
     </ComboBox>
 
-    <!-- Model (used by Anthropic API + Claude Code) -->
+
     <StackPanel x:Name="ModelPanel">
       <TextBlock Text="Model" FontWeight="SemiBold" Margin="0,14,0,4"/>
       <ComboBox x:Name="ModelBox" IsEditable="True">
@@ -35,7 +35,7 @@
                  Text="Anthropic: use a full model id. Claude Code: 'opus' / 'sonnet' / 'haiku' or a full id."/>
     </StackPanel>
 
-    <!-- Anthropic API settings -->
+
     <StackPanel x:Name="AnthropicPanel">
       <TextBlock Text="Anthropic API Key" Margin="0,14,0,4"/>
       <PasswordBox x:Name="ApiKeyBox" Background="#252526" Foreground="#D4D4D4"/>
@@ -43,7 +43,7 @@
                  Foreground="#7FB37F" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0"/>
     </StackPanel>
 
-    <!-- Claude Code settings -->
+
     <StackPanel x:Name="ClaudeCodePanel" Visibility="Collapsed">
       <TextBlock Text="Claude Code CLI path" Margin="0,14,0,4"/>
       <Grid>
@@ -58,7 +58,7 @@
                  Text="Uses your Claude Code sign-in — no API key needed. Leave as 'claude' if it is on your PATH."/>
     </StackPanel>
 
-    <!-- Ollama settings -->
+
     <StackPanel x:Name="OllamaPanel" Visibility="Collapsed">
       <TextBlock Text="Ollama URL" Margin="0,14,0,4"/>
       <TextBox x:Name="OllamaUrlBox" Background="#252526" Foreground="#D4D4D4"/>
@@ -66,7 +66,7 @@
       <TextBox x:Name="OllamaModelBox" Background="#252526" Foreground="#D4D4D4"/>
     </StackPanel>
 
-    <!-- Output folder (where the AI's save_plugin writes) -->
+
     <TextBlock Text="Output Folder (AI-authored plugins)" FontWeight="SemiBold" Margin="0,16,0,4"/>
     <Grid>
       <Grid.ColumnDefinitions>
@@ -79,7 +79,7 @@
     <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
                Text="Where save_plugin writes. Leave blank to use the app's Output folder."/>
 
-    <!-- Game Data folder override for Load Env -->
+
     <TextBlock Text="Game Data Folder (Load Env)" FontWeight="SemiBold" Margin="0,16,0,4"/>
     <Grid>
       <Grid.ColumnDefinitions>

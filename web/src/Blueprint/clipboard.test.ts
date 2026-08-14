@@ -20,7 +20,7 @@ function doc(nodes: BpNode[], wires: BpWire[]): BpDocument {
   return d;
 }
 
-/** The hook driven by the real reducer, which is how the panel wires it. */
+
 function mount(nodes: BpNode[], wires: BpWire[], selected: string[]) {
   return renderHook(() => {
     const [state, dispatch] = useReducer(graphReducer, {
@@ -63,8 +63,8 @@ describe('copySelection', () => {
 });
 
 describe('keyboard wiring', () => {
-  // The defect this closes is that the reducer supported paste and nothing ever called it, so the
-  // point of these is that the KEYS reach the reducer, not that the reducer works.
+
+
 
   it('Ctrl+C then Ctrl+V adds a copy', () => {
     const { result } = mount([node('a')], [], ['a']);
@@ -93,7 +93,7 @@ describe('keyboard wiring', () => {
     press('d');
     expect(result.current.state.doc.nodes).toHaveLength(2);
 
-    // The clipboard still holds the original copy, so paste is unaffected by the duplicate.
+
     press('v');
     expect(result.current.state.doc.nodes).toHaveLength(3);
   });
@@ -112,7 +112,7 @@ describe('keyboard wiring', () => {
   });
 
   it('ignores the shortcut while typing in a field', () => {
-    // Otherwise copying text out of the script name box would silently copy nodes as well.
+
     const { result } = mount([node('a')], [], ['a']);
 
     const input = document.createElement('input');

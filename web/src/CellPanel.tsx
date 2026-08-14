@@ -20,36 +20,36 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   const [geometry, setGeometry] = useState<CellGeoMap>({});
   const [log, setLog] = useState<string[]>([]);
 
-  // Dedicated Info/Log tabs -- the log used to be squeezed into a fixed 160px strip at the bottom of
-  // the same scrolling column as stats/layers/hotkeys, which on a cell with a lot of layers meant
-  // scrolling past everything else just to read it (2026-07-20 feedback). hasUnseenError flags the
-  // Log tab button when something failed while the user was looking at Info, instead of silently
-  // relying on them to think to switch tabs and scroll down.
+
+
+
+
+
   const [sidebarTab, setSidebarTab] = useState<'info' | 'log'>('info');
   const [hasUnseenError, setHasUnseenError] = useState(false);
 
-  // Click-to-select + per-type visibility + per-reference hide (CK "1" cycle -> hidden).
+
   const [selected, setSelected] = useState<CellPlacedReference | null>(null);
   const [hiddenTypes, setHiddenTypes] = useState<Set<string>>(new Set());
   const [hiddenRefs, setHiddenRefs] = useState<Set<string>>(new Set());
 
-  // Undo/redo for visibility changes (CK "Ctrl+Z"/"Ctrl+Y"). A single combined snapshot of BOTH
-  // hiddenTypes and hiddenRefs -- so Ctrl+Z sensibly reverses the last visibility action regardless
-  // of whether it was a per-mesh hide, a layer toggle, or "unhide all"/"show all". Capped so an
-  // extended hide/show session can't grow the stack unbounded.
+
+
+
+
   type VisSnapshot = { types: Set<string>; refs: Set<string> };
   const HISTORY_CAP = 50;
   const undoStackRef = useRef<VisSnapshot[]>([]);
   const redoStackRef = useRef<VisSnapshot[]>([]);
-  // The stacks are plain refs (not reactive); bumping this state is just what forces a re-render so
-  // JSX reading undoStackRef.current.length (to enable/disable a button) reflects the latest push/pop.
+
+
   const [, setHistoryTick] = useState(0);
 
   const snapshotVisibility = (): VisSnapshot => ({ types: new Set(hiddenTypes), refs: new Set(hiddenRefs) });
   const pushUndo = () => {
     undoStackRef.current.push(snapshotVisibility());
     if (undoStackRef.current.length > HISTORY_CAP) undoStackRef.current.shift();
-    redoStackRef.current = []; // a new action invalidates any pending redo
+    redoStackRef.current = [];
     setHistoryTick(t => t + 1);
   };
   const applySnapshot = (s: VisSnapshot) => { setHiddenTypes(s.types); setHiddenRefs(s.refs); };
@@ -69,29 +69,29 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   };
   const resetVisibilityHistory = () => { undoStackRef.current = []; redoStackRef.current = []; };
 
-  // Env-loaded gate: an empty plugin list means "nothing loaded yet" -- point the user at the
-  // Explorer sidebar's Load Env / Open MO2 buttons instead of letting them type a cell id blind
-  // into a panel that can't possibly resolve anything yet.
-  const [pluginCount, setPluginCount] = useState<number | null>(null);   // null = still checking
 
-  // Persistent dropdown: search bar on top, a list underneath that's ALWAYS rendered once a
-  // modlist is loaded (never appears/disappears based on typing). A new search REPLACES the list
-  // only when its results actually arrive -- the previous list stays put (just dimmed) while a
-  // query is in flight, so typing never blanks-then-repopulates the panel. That flash-on-every-
-  // keystroke was the direct complaint that led to this rewrite.
-  const [matches, setMatches] = useState<CellSearchHit[] | null>(null);  // null = not loaded yet
+
+
+  const [pluginCount, setPluginCount] = useState<number | null>(null);
+
+
+
+
+
+
+  const [matches, setMatches] = useState<CellSearchHit[] | null>(null);
   const [matchesLoading, setMatchesLoading] = useState(false);
   const searchSeq = useRef(0);
 
-  // Real N/total progress for the geometry-conversion phase (niftool runs one real child process
-  // per unique mesh -- polled from NifService.GeoBatchDone/Total while the batch call is in flight,
-  // not an indeterminate spinner).
+
+
+
   const [geoProgress, setGeoProgress] = useState<{ done: number; total: number } | null>(null);
 
-  // A shape whose diffuse never resolves just renders flat grey, which is indistinguishable from a
-  // mesh that genuinely has no texture -- so an entire missing texture root used to look like a
-  // rendering quirk rather than a setup problem. Reported per load, same summary the Godot cell
-  // editor prints.
+
+
+
+
   const [texStats, setTexStats] = useState<CellTextureStats | null>(null);
   const texStatsLoggedRef = useRef('');
 
@@ -109,8 +109,8 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
     if (line.includes('✗') && sidebarTab !== 'log') setHasUnseenError(true);
   };
 
-  // Logged once per distinct tally so the coalesced updates during a load don't spam the log; the
-  // final tally for a cell is the one that sticks.
+
+
   const onTextureStats = useCallback((s: CellTextureStats) => {
     setTexStats(s);
     const failed = s.resolveFail + s.decodeFail;
@@ -121,7 +121,7 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
     if (texStatsLoggedRef.current === line) return;
     texStatsLoggedRef.current = line;
     appendLog(`${failed > 0 ? '✗' : 'ℹ'} ${line}`);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const checkPlugins = async () => {
     if (!cell) { setPluginCount(0); return; }
@@ -132,20 +132,20 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
     } catch { setPluginCount(0); }
   };
 
-  useEffect(() => { checkPlugins(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  // Re-check when the panel regains focus (covers "opened Cell Viewer, then loaded a modlist,
-  // then came back") without needing a manual refresh button.
+  useEffect(() => { checkPlugins(); }, []);
+
+
   useEffect(() => {
     const onFocus = () => checkPlugins();
     window.addEventListener('focus', onFocus);
     return () => window.removeEventListener('focus', onFocus);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const noEnv = pluginCount === 0;
 
-  // Debounced search-as-you-type against the loaded load order. Empty query still searches (limit
-  // cells in whatever order the load order returns them) so the panel reads as a real, immediately
-  // browsable dropdown the moment a modlist is loaded, not an empty box waiting for input.
+
+
+
   useEffect(() => {
     if (!cell || noEnv) { setMatches(null); return; }
     const mySeq = ++searchSeq.current;
@@ -153,7 +153,7 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
     const t = setTimeout(async () => {
       try {
         const raw = await cell.SearchCells(cellId.trim(), 30);
-        if (searchSeq.current !== mySeq) return; // a newer keystroke superseded this search
+        if (searchSeq.current !== mySeq) return;
         setMatches(JSON.parse(raw) as CellSearchHit[]);
       } catch {
         if (searchSeq.current === mySeq) setMatches([]);
@@ -164,11 +164,11 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
     return () => clearTimeout(t);
   }, [cellId, cell, noEnv]);
 
-  // Exterior cells (#67): a worldspace's cells are addressed by grid coordinate, not by a name you
-  // could type into the cell search above -- the interior picker only ever finds cells that HAVE an
-  // EditorID/Name, which most exterior cells do not. Kept as a second mode on the same panel rather
-  // than a second panel, since everything downstream (geometry batch, viewport, layers) is identical
-  // once a cell is resolved.
+
+
+
+
+
   const [pickMode, setPickMode] = useState<'cell' | 'grid'>(() => (LS('pickMode', 'cell') === 'grid' ? 'grid' : 'cell'));
   const [worldspace, setWorldspace] = useState(() => LS('worldspace', ''));
   const [wsMatches, setWsMatches] = useState<CellSearchHit[] | null>(null);
@@ -237,8 +237,8 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
       const refs = parsed.references ?? [];
       appendLog(`• loaded ${parsed.cellEditorId || parsed.cellFormKey} -- ${refs.length} reference(s), ${parsed.withModelCount ?? 0} with a model`);
 
-      // Include SCOL member statics' own model paths -- these need converting too, whether or not the
-      // SCOL's own precombined modelPath above resolves (the viewport picks whichever actually worked).
+
+
       const scolModels = refs.flatMap(r => (r.scolParts ?? []).map(p => p.modelPath));
       const uniqueModels = Array.from(new Set(
         [...refs.map(r => r.modelPath).filter((p): p is string => !!p), ...scolModels]));
@@ -250,7 +250,7 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
         try {
           const raw = await cell.GetGeometryBatchProgress();
           setGeoProgress(JSON.parse(raw) as { done: number; total: number });
-        } catch { /* a missed poll tick isn't worth surfacing */ }
+        } catch {  }
       }, 200);
       let geoRaw: string;
       try {
@@ -291,9 +291,9 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   const failedModelCount = Object.values(geometry).filter(g => 'error' in g).length;
   const banner = statusBanner(status, busy);
 
-  // Group references the SAME way the viewport tags its meshes: a ref with a resolved mesh groups
-  // under its record type; anything drawn as a marker (no model, or its mesh failed to resolve)
-  // groups under "(markers)". Sorted by count so the biggest clutter sources are on top.
+
+
+
   const typeGroups = useMemo(() => {
     const m = new Map<string, number>();
     for (const r of references) {
@@ -313,7 +313,7 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   };
   const showAllTypes = () => { pushUndo(); setHiddenTypes(new Set()); };
 
-  // CK-hotkey actions (the viewport calls these; the sidebar buttons reuse them).
+
   const hideSelected = () => {
     if (!selected) return;
     pushUndo();
@@ -322,9 +322,9 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   const unhideAll = () => { pushUndo(); setHiddenRefs(new Set()); };
   const toggleMarkers = () => toggleType(MARKER_LAYER);
 
-  // Gizmo drag-end save (the "full gyro" move/rotate feature). Design confirmed with the user:
-  // prompt for a patch plugin name the first time a reference is moved this session, then auto-save
-  // every subsequent move into the same patch -- no repeated prompts per drag.
+
+
+
   const gizmoPatchRef = useRef<string | null>(null);
   const moveEnd = useCallback(async (ref: CellPlacedReference) => {
     const c = getCell();
@@ -355,17 +355,17 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
       appendLog('✗ move failed: ' + (e instanceof Error ? e.message : String(e)));
       return;
     }
-    // Refresh the sidebar's live Pos readout for the moved reference (the underlying ref object was
-    // already mutated in place by the viewport, so this just copies the current values into a fresh
-    // object to trigger a re-render -- see CellViewport's onMoveEnd doc comment).
+
+
+
     setSelected(prev => prev && prev.formKey === ref.formKey
       ? { ...prev, position: { ...ref.position }, rotation: { ...ref.rotation } }
       : prev);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
-  // No click-outside-to-close: a Cell Viewer session (selection, hidden meshes/layers, undo
-  // history) is easy to lose to a stray click on a huge cell like Switchboard. Only the explicit
-  // X button closes it now.
+
+
+
   return (
     <div className="papyrus-overlay">
       <div className="papyrus-modal glass-panel nif-modal-wide">

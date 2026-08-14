@@ -39,10 +39,10 @@ public class PapyrusAnalysisServiceTests
         result.Should().StartWith("RESULT: 1 clean, 0 with syntax errors, 0 with name or type errors");
     }
 
-    /// <summary>
-    /// The syntax-only caveat has to survive where it is still true, or a clean result reads as
-    /// "this compiles" when nothing checked that.
-    /// </summary>
+
+
+
+
     [Fact]
     public void Check_without_the_semantic_pass_still_says_it_only_parsed()
     {
@@ -65,10 +65,10 @@ public class PapyrusAnalysisServiceTests
         result.Should().Contain(PapyrusDiagnosticCodes.UnresolvedName);
     }
 
-    /// <summary>
-    /// A file whose parent is missing is neither confirmed clean nor confirmed broken, and the
-    /// summary has to say which -- otherwise "clean" silently means "could not tell".
-    /// </summary>
+
+
+
+
     [Fact]
     public void Check_counts_files_whose_sources_were_incomplete_separately()
     {
@@ -147,7 +147,7 @@ public class PapyrusAnalysisServiceTests
         root.Write("Parent.psc", "ScriptName Parent\nFunction DoStuff()\n{Parent version}\nEndFunction\n");
         var child = root.Write("Child.psc", "ScriptName Child extends Parent\nFunction F()\n  DoStuff()\nEndFunction\n");
 
-        // Line 3, column 3 is the 'D' of DoStuff.
+
         var result = PapyrusAnalysisService.Definition(child, 3, 3);
 
         result.Should().Contain("RESULT: Function DoStuff");
@@ -176,16 +176,16 @@ public class PapyrusAnalysisServiceTests
         PapyrusAnalysisService.Definition(file, 99, 1).Should().Contain("outside");
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // JSON surface, which the editor panel drives on every keystroke
-    // ---------------------------------------------------------------------------------------------
+
+
+
 
     [Fact]
     public void Analyze_returns_diagnostics_and_outline_from_buffer_text_not_from_disk()
     {
         using var root = new SourceRoot();
-        // What is ON DISK is valid; the BUFFER is not. "Errors as you type" is about the buffer, so
-        // analysing the file instead would report the last save and show no error at all.
+
+
         var file = root.Write("A.psc", "ScriptName A\nint Property Health auto\n");
         var buffer = "ScriptName A\nint Property Health auto\nFunction F(\nEndFunction\n";
 
@@ -259,8 +259,8 @@ public class PapyrusAnalysisServiceTests
     [Fact]
     public void Symbol_at_works_on_an_unsaved_buffer_with_no_path()
     {
-        // No path means no index root, so cross-file lookup degrades -- but this script's own
-        // members must still resolve, or a scratch buffer would have no navigation at all.
+
+
         var text = "ScriptName A\nint Property Health auto\nFunction F()\n  Health = 1\nEndFunction\n";
         var json = JObject.Parse(PapyrusAnalysisService.SymbolAtJson(text, null, text.IndexOf("Health = 1", StringComparison.Ordinal)));
 

@@ -1,8 +1,8 @@
-/* Cell Viewer panel -- reuses PapyrusPanel.css (modal shell) + NifPanel.css (viewport sizing). */
+
 
 .cell-viewport { background: #17181c; }
 
-/* Real N/total progress bar during geometry conversion -- replaces the indeterminate spinner. */
+
 .cell-progress {
   padding: 10px 14px;
   border-bottom: 1px solid var(--border-color, #2b2b2b);
@@ -29,14 +29,14 @@
   transition: width 0.15s ease-out;
 }
 
-/* .papyrus-run has margin-top:auto by default (it's meant to sit at the bottom of a sidebar with
-   nothing below it, per NifPanel/ArchivePanel). This panel has stats/legend/log AFTER the button,
-   so that auto margin would blow a huge gap open above it -- cancel it here. */
+
+
+
 .cell-load-btn { margin-top: 0; }
 
-/* Persistent dropdown: search input on top, a fixed-height list underneath that's ALWAYS rendered
-   (not an absolutely-positioned overlay that appears/disappears while typing -- that read as
-   flashing/flickering on every keystroke pause, which is exactly what this layout fixes). */
+
+
+
 .cell-dropdown {
   display: flex;
   flex-direction: column;
@@ -73,8 +73,8 @@
 }
 @keyframes cell-spin { to { transform: rotate(360deg); } }
 
-/* Fixed height so the panel never resizes/jumps as results change -- only the ROWS inside change,
-   the list's own footprint stays put. */
+
+
 .cell-dropdown-list {
   height: 260px;
   overflow-y: auto;
@@ -95,12 +95,12 @@
 }
 .cell-suggest-row:last-child { border-bottom: none; }
 .cell-suggest-row:hover { background: rgba(0, 168, 168, 0.12); }
-/* The worldspace list PICKS rather than loads (the X/Y still have to be filled in), so the chosen
-   row has to stay visibly chosen -- unlike the cell list, where clicking a row loads immediately. */
+
+
 .cell-suggest-row.selected { background: rgba(0, 168, 168, 0.2); }
 
-/* Shorter than the cell list: the grid mode has to fit X/Y inputs and the Load button underneath,
-   and a load order holds a few dozen worldspaces rather than thousands of cells. */
+
+
 .cell-dropdown-list-short { height: 150px; }
 
 .cell-mode-tabs {
@@ -213,13 +213,13 @@
 .cell-swatch-nomodel { background: #5a6472; }
 .cell-swatch-failed { background: #d08a4a; }
 
-/* Info/Log sidebar tabs (2026-07-20 -- the log used to be a fixed 160px strip squeezed below
-   everything else in the same scrolling column; on a cell with a lot of layers that meant scrolling
-   past the whole Info panel just to read it). The tab bar stays put; whichever pane is active fills
-   the rest of the sidebar's height on its own scroll, so the Log tab gets the full column instead of
-   a small leftover strip. */
+
+
+
+
+
 .cell-sidebar {
-  overflow-y: hidden;   /* the ACTIVE pane scrolls itself, not this outer column too */
+  overflow-y: hidden;
 }
 .cell-sidebar-tabs {
   display: flex;
@@ -268,7 +268,7 @@
   overflow-y: auto;
 }
 
-/* Selected-reference info card (click a mesh in the viewport). */
+
 .cell-selected {
   display: flex;
   flex-direction: column;
@@ -300,7 +300,7 @@
 .cell-selected-row span { color: var(--muted, #9aa0aa); }
 .cell-selected-row strong { color: #e6e8ec; font-weight: 500; text-align: right; word-break: break-all; }
 
-/* Layer list -- hide/show whole record types (the CK "layers" analog). */
+
 .cell-layers { display: flex; flex-direction: column; gap: 2px; margin: 4px 0; }
 .cell-layers-head {
   display: flex; align-items: center; justify-content: space-between;
@@ -318,7 +318,7 @@
 .cell-layer-name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cell-layer-count { color: var(--muted, #9aa0aa); font-variant-numeric: tabular-nums; font-size: 10px; }
 
-/* Hide-selected button + hotkey hints. */
+
 .cell-hide-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   margin-top: 6px; padding: 5px 8px;

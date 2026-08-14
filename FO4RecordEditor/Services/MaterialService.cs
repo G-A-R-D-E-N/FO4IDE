@@ -8,16 +8,16 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Inspect and edit FO4 material files (get/set individual shader fields -- Smoothness,
-/// SpecularColor, texture paths, PBR flags, etc.) without a visual material editor. Pulled from
-/// reviewing Bryant-21/modkit21 (GPL-3.0, permission granted): their material_tools library has a
-/// full BGSM/BGEM field editor that isn't even wired into their own CLI. BgsmCodec and BgemCodec
-/// are byte-exact ports of their Rust parser/writers -- see their header comments.
-///
-/// Both .bgsm (lighting) and .bgem (effect) materials are supported, dispatched on the file's own
-/// magic rather than its extension (MaterialCodec).
-/// </summary>
+
+
+
+
+
+
+
+
+
+
 public static class MaterialService
 {
     public static string Inspect(string path)
@@ -67,9 +67,9 @@ public static class MaterialService
         return $"Set {field} = {value} in '{Path.GetFileName(path)}', wrote to '{dest}'.";
     }
 
-    /// <summary>Structured field list for the Materials GUI panel (name/section/type/value per field,
-    /// omitting fields this file's BGSM version doesn't carry). bgsm_inspect (the AI tool) returns
-    /// plain text instead; this is the JSON counterpart the panel renders real controls from.</summary>
+
+
+
     public static string InspectJson(string path)
     {
         var (data, err) = LoadMaterial(path);
@@ -88,9 +88,9 @@ public static class MaterialService
         });
     }
 
-    /// <summary>Apply many field edits in ONE load-modify-write cycle (the panel's "Save" button --
-    /// avoids re-reading/re-writing the file once per changed field). Aborts before writing anything
-    /// to disk if any field fails to resolve or parse, so a bad edit never lands partially applied.</summary>
+
+
+
     public static string SetFields(string path, Dictionary<string, string> fields, string? outPath)
     {
         var (data, err) = LoadMaterial(path);
@@ -131,7 +131,7 @@ public static class MaterialService
     {
         foreach (var prop in obj.GetType().GetProperties())
         {
-            if (prop.Name == nameof(IMaterialData.Header)) continue;   // nested object, not a leaf field
+            if (prop.Name == nameof(IMaterialData.Header)) continue;
             var val = prop.GetValue(obj);
             if (val == null) continue;
             list.Add(new
@@ -172,7 +172,7 @@ public static class MaterialService
         foreach (var prop in obj.GetType().GetProperties())
         {
             var val = prop.GetValue(obj);
-            if (val == null) continue;   // an unset optional field means this version doesn't carry it
+            if (val == null) continue;
             sb.AppendLine($"  {prop.Name} = {FormatValue(val)}");
         }
     }
@@ -186,8 +186,8 @@ public static class MaterialService
         _ => val.ToString() ?? "",
     };
 
-    // Header and body fields never share a name, so a case-insensitive lookup on each in turn is
-    // unambiguous. 'Header' itself is excluded -- it names a nested object, not a settable field.
+
+
     private static (object target, PropertyInfo? prop) ResolveField(IMaterialData data, string field)
     {
         const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;

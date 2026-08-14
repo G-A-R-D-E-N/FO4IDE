@@ -8,14 +8,14 @@ using Xunit;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The path between a file on disk and a graph on the canvas.
-/// </summary>
-/// <remarks>
-/// The lifter is proved elsewhere, twice over: from source by GraphLiftRoundTripTests and from a
-/// compiled object by GraphLiftPexRoundTripTests. What is left to pin here is everything around it,
-/// which is where a file path, an extension and an import root can each go wrong on their own.
-/// </remarks>
+
+
+
+
+
+
+
+
 public class GraphScriptLoaderTests
 {
     private const string Source = """
@@ -49,9 +49,9 @@ public class GraphScriptLoaderTests
     [Fact]
     public void A_compiled_script_becomes_the_same_graph_as_its_source()
     {
-        // The point of the .pex path: what lands on the canvas has to be the program the object
-        // holds, not merely something that loads. Compiling both ends and comparing instructions is
-        // the same standard the round trip tests use.
+
+
+
         var directory = Directory.CreateTempSubdirectory("fo4re-loader-pex-");
         try
         {
@@ -65,7 +65,7 @@ public class GraphScriptLoaderTests
 
             var pexPath = Path.Combine(directory.FullName, "Fixture.pex");
             original.Pex!.WriteFile(pexPath);
-            // Removed, so nothing can resolve through the source file by accident.
+
             File.Delete(sourcePath);
 
             var result = GraphScriptLoader.Load(pexPath, Roots);
@@ -85,9 +85,9 @@ public class GraphScriptLoaderTests
     [Fact]
     public void A_script_that_refuses_to_lift_comes_back_with_the_reason_and_no_document()
     {
-        // The same construct GraphLiftRoundTripTests refuses: a loop whose condition calls a
-        // function. It matters here that the refusal survives the trip out, because the panel puts
-        // it in the problems list and a swallowed one would look like an empty canvas.
+
+
+
         var directory = Directory.CreateTempSubdirectory("fo4re-loader-refuse-");
         try
         {
@@ -115,9 +115,9 @@ public class GraphScriptLoaderTests
     [Fact]
     public void A_script_is_checked_against_its_own_folder()
     {
-        // Self passed where the base type is wanted only resolves when the script itself is on the
-        // roots, and the caller does not put it there. Without that step this is the shape that
-        // fails, and it fails as a type error rather than as anything that names the real cause.
+
+
+
         var directory = Directory.CreateTempSubdirectory("fo4re-loader-roots-");
         try
         {
@@ -138,17 +138,17 @@ public class GraphScriptLoaderTests
         finally { directory.Delete(recursive: true); }
     }
 
-    /// <summary>
-    /// A lifted property read wires the pin the getter actually has.
-    /// </summary>
-    /// <remarks>
-    /// The lifter used to hand back <c>ret</c> for a property read while NodePalette builds the
-    /// getter with <c>self</c> and <c>value</c>, so the document referred to a pin that had never
-    /// existed and the validator reported GRA0017 on scripts that were perfectly good. Measured over
-    /// 400 vanilla scripts it was 45 occurrences. Lifting alone does not catch it: the document
-    /// loads fine and only validation notices, which is why this test validates rather than
-    /// asserting on the shape of the graph.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
     [Fact]
     public void A_lifted_property_read_validates_against_the_pin_the_getter_declares()
     {

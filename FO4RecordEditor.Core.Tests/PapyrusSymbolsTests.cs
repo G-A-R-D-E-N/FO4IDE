@@ -6,7 +6,7 @@ namespace FO4RecordEditor.Core.Tests;
 
 public class PapyrusSymbolsTests
 {
-    /// <summary>Offset of the caret, marked in the source with a '|' that is stripped before parsing.</summary>
+
     private static (string Source, int Offset) Caret(string marked)
     {
         var offset = marked.IndexOf('|');
@@ -78,8 +78,8 @@ EndFunction
     [Fact]
     public void A_local_declared_after_the_caret_does_not_capture_the_reference()
     {
-        // "variables inside functions must be defined before use" -- Variable Reference. The
-        // reference below belongs to the script variable, not the later local of the same name.
+
+
         var (source, offset) = Caret(@"ScriptName S
 int shared
 Function F()
@@ -213,8 +213,8 @@ EndFunction
     [Fact]
     public void An_unresolvable_reference_returns_null_rather_than_a_guess()
     {
-        // Phase 1 has no type checker, so a member reached through an expression whose type is not
-        // written down cannot be resolved. A wrong jump would be worse than none.
+
+
         var (source, offset) = Caret(@"ScriptName S
 Function F()
   GetSomething().Totally|Unknown()

@@ -4,15 +4,15 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Named states, and the rules Papyrus puts on them.
-/// </summary>
-/// <remarks>
-/// A state that is carried on the entry node but never emitted is the worst kind of wrong: the
-/// script compiles, and every handler quietly ends up in the empty state, so a state machine runs
-/// all of its arms at once. These tests read the generated source rather than only checking that
-/// compilation succeeded, because success was never the thing at risk.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class GraphStateTests
 {
     private static string Source(GraphDocument document)
@@ -59,7 +59,7 @@ public class GraphStateTests
         source.Should().Contain("State Busy");
         source.Should().Contain("EndState");
 
-        // The empty-state handler stays outside, and the Busy one is indented inside the block.
+
         var stateStart = source.IndexOf("State Busy", System.StringComparison.Ordinal);
         var stateEnd = source.IndexOf("EndState", System.StringComparison.Ordinal);
         source[stateStart..stateEnd].Should().Contain("Enable()");
@@ -101,8 +101,8 @@ public class GraphStateTests
     [Fact]
     public void A_starting_state_nothing_declares_is_refused()
     {
-        // Otherwise the emitter writes an Auto State header for a block that never appears, and the
-        // Papyrus error lands on generated source the author never wrote.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = TwoStates(palette, out _, out _);
         graph.AutoState("Missing");
@@ -149,7 +149,7 @@ public class GraphStateTests
     [Fact]
     public void The_same_event_in_two_different_states_is_not_a_duplicate()
     {
-        // This is the whole point of a state machine, so it must not trip the duplicate check.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = TwoStates(palette, out _, out _);
 
@@ -180,8 +180,8 @@ public class GraphStateTests
     [Fact]
     public void Sibling_entries_do_not_make_each_other_look_unreachable()
     {
-        // Each entry is its own root, so reachability asked one entry at a time reports every node
-        // belonging to the other one. A script with two events is the ordinary case.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -202,7 +202,7 @@ public class GraphStateTests
     [Fact]
     public void A_node_no_entry_reaches_is_still_reported()
     {
-        // The document-wide check has to stay a real check, not one that never fires.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 

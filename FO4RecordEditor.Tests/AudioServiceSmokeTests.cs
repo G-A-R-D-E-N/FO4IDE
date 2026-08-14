@@ -7,24 +7,24 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// Exercises the real bundled ffmpeg/xWMAEncode/BmlFuzTools binaries end to end: wav -> xwm -> wav,
-// and xwm+lip -> fuz -> xwm+lip. Generates its own tiny PCM WAV fixture rather than depending on a
-// checked-in sample, so there's nothing to keep in sync.
-//
-// Skips loudly when the local tools\audio\ bundle is absent, rather than passing.
+
+
+
+
+
 public class AudioServiceSmokeTests
 {
     private readonly ITestOutputHelper _out;
     public AudioServiceSmokeTests(ITestOutputHelper o) => _out = o;
 
-    // A one-tone-second, 8kHz mono, 16-bit PCM WAV -- the smallest thing xWMAEncode will accept
-    // (its own bitrate table has an 8kHz-mono-adjacent 22050Hz-mono entry; anything off that table
-    // gets resampled internally per its own -? help text, so this doesn't need to match exactly).
+
+
+
     private static string WriteSampleWav(string path)
     {
         const int sampleRate = 8000;
         const short channels = 1, bitsPerSample = 16;
-        var samples = new short[sampleRate]; // 1 second
+        var samples = new short[sampleRate];
         for (int i = 0; i < samples.Length; i++)
             samples[i] = (short)(Math.Sin(2 * Math.PI * 440 * i / sampleRate) * 8000);
 
@@ -35,7 +35,7 @@ public class AudioServiceSmokeTests
         short blockAlign = (short)(channels * bitsPerSample / 8);
 
         w.Write("RIFF"u8.ToArray()); w.Write(36 + dataSize); w.Write("WAVE"u8.ToArray());
-        w.Write("fmt "u8.ToArray()); w.Write(16); w.Write((short)1 /* PCM */); w.Write(channels);
+        w.Write("fmt "u8.ToArray()); w.Write(16); w.Write((short)1 ); w.Write(channels);
         w.Write(sampleRate); w.Write(byteRate); w.Write(blockAlign); w.Write(bitsPerSample);
         w.Write("data"u8.ToArray()); w.Write(dataSize);
         foreach (var s in samples) w.Write(s);

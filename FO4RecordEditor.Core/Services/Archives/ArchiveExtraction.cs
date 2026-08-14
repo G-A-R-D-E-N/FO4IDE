@@ -4,22 +4,22 @@ using Mutagen.Bethesda.Archives;
 
 namespace FO4RecordEditor.Services.Archives;
 
-/// <summary>
-/// One fully validated archive entry and the destination selected for it. Paths are planned for the
-/// whole batch before any directory or file is created so a hostile or ambiguous entry cannot leave
-/// a partial extraction behind before it is rejected.
-/// </summary>
+
+
+
+
+
 internal sealed record ArchiveExtractionPlanItem(IArchiveFile Entry, string DestinationPath);
 
-/// <summary>
-/// Cross-platform, fail-closed archive extraction planning and writes.
-///
-/// BA2/BSA paths use Windows separators even when the editor runs on Linux. They also come from an
-/// untrusted file, so treating an entry path as an ordinary relative path is unsafe: rooted paths,
-/// dot segments, Windows drive/ADS syntax, case aliases and existing symlinks can all redirect or
-/// overwrite an extraction. This helper validates the complete set, canonicalizes directory casing,
-/// checks containment, and writes each payload through a same-directory temporary file.
-/// </summary>
+
+
+
+
+
+
+
+
+
 internal static class ArchiveExtraction
 {
     private static readonly char[] ArchiveSeparators = { '\\', '/' };
@@ -42,11 +42,11 @@ internal static class ArchiveExtraction
         string[] Segments,
         string LogicalPath);
 
-    /// <summary>
-    /// Builds the complete extraction plan without touching disk. The comparison rules are
-    /// intentionally Windows-like on every platform because Fallout asset lookup is case-insensitive
-    /// and an extraction prepared on Linux must not contain two files that alias on Windows.
-    /// </summary>
+
+
+
+
+
     internal static bool TryCreatePlan(
         IReadOnlyList<IArchiveFile> entries,
         string outputDirectory,
@@ -207,10 +207,10 @@ internal static class ArchiveExtraction
         return true;
     }
 
-    /// <summary>
-    /// Writes one planned entry through a temporary file in the destination directory. The original
-    /// destination is not truncated if decompression or the temporary write fails.
-    /// </summary>
+
+
+
+
     internal static bool TryWritePlannedEntry(
         ArchiveExtractionPlanItem item,
         string outputRoot,
@@ -231,8 +231,8 @@ internal static class ArchiveExtraction
             EnsureSafeDirectoryTree(outputRoot, destinationDirectory);
             EnsureSafeDestinationFile(destination);
 
-            // Decompress/read before opening anything at the final destination. A corrupt archive
-            // therefore cannot truncate an existing extracted file before GetBytes() reports failure.
+
+
             var bytes = item.Entry.GetBytes();
             tempPath = CreateTemporaryPath(destinationDirectory);
 
@@ -248,9 +248,9 @@ internal static class ArchiveExtraction
                 stream.Flush(flushToDisk: true);
             }
 
-            // Re-check the directory chain and target immediately before replacement. This cannot
-            // eliminate every hostile filesystem race, but it closes the ordinary pre-existing
-            // symlink/reparse escape and narrows the remaining TOCTOU window considerably.
+
+
+
             EnsureSafeDirectoryTree(outputRoot, destinationDirectory);
             EnsureSafeDestinationFile(destination);
             PreserveExistingUnixMode(destination, tempPath);
@@ -273,7 +273,7 @@ internal static class ArchiveExtraction
         }
     }
 
-    /// <summary>Atomic write for ExtractFile, whose destination is explicitly chosen by the caller.</summary>
+
     internal static bool TryWriteExplicitFile(string destinationPath, byte[] bytes, out string error)
     {
         error = "";
@@ -381,9 +381,9 @@ internal static class ArchiveExtraction
                 return false;
             }
 
-            // NTFS limits a component to 255 UTF-16 code units, while common Unix filesystems such
-            // as ext4 limit it to 255 encoded bytes. Enforce both before planning so a later entry
-            // cannot fail after earlier files in the batch have already been written.
+
+
+
             if (segment.Length > 255 || Encoding.UTF8.GetByteCount(segment) > 255)
             {
                 error = $"entry segment '{DisplayPath(segment)}' exceeds the portable 255-unit filename limit.";
@@ -412,9 +412,9 @@ internal static class ArchiveExtraction
     {
         if (spellings.Count == 1) return spellings.First();
 
-        // A lowercase spelling is the least surprising result for the known Scripts/scripts BA2
-        // split and is deterministic regardless of archive enumeration order. Otherwise preserve a
-        // deterministic archive spelling rather than lowercasing every path in the extraction.
+
+
+
         var lowercase = spellings
             .Where(value => string.Equals(value, value.ToLowerInvariant(), StringComparison.Ordinal))
             .OrderBy(value => value, StringComparer.Ordinal)
@@ -545,10 +545,10 @@ internal static class ArchiveExtraction
     {
         if (OperatingSystem.IsWindows() && File.Exists(destination))
         {
-            // File.Replace maps to ReplaceFile on Windows, which carries the existing file's DACL,
-            // encryption, compression, named streams, and other metadata onto the replacement.
-            // Fail closed if that metadata merge cannot be completed rather than falling back to a
-            // move that silently replaces the ACL with the temporary file's inherited descriptor.
+
+
+
+
             File.Replace(temporaryPath, destination, destinationBackupFileName: null);
             return;
         }
@@ -581,8 +581,8 @@ internal static class ArchiveExtraction
             if (IsReparsePoint(current))
                 throw new IOException($"Path ancestor '{current}' is a symbolic link or reparse point.");
 
-            // Once a component does not exist, no deeper component can exist without the
-            // parent appearing first. Stop inspecting without creating anything.
+
+
             if (!File.Exists(current) && !Directory.Exists(current)) break;
         }
     }

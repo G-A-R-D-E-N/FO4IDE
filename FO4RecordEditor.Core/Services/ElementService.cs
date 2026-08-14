@@ -6,38 +6,38 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// xEdit's element menu, as it actually behaves. Read from
-/// <c>xeMainForm.pas: pmuViewPopup / mniViewAddClick / mniViewRemoveClick / mniViewMoveUpClick</c>:
-///
-/// - <b>Add never prompts.</b> It calls <c>TargetElement.Assign(TargetIndex, template, False)</c>,
-///   which constructs a new element of the container's own type, then
-///   <c>SetToDefaultIfAsCreatedEmpty</c>, then focuses it for inline editing. Asking the user to
-///   type a FormKey up front is not what it does.
-/// - <b>Add targets the parent container and inserts at the clicked row's index</b>, because
-///   <c>GetAddElement</c> walks UP from the focused node until it finds an element, keeping the node
-///   index as the insert position. Right-clicking <c>Condition [2]</c> inserts a new condition at 2.
-/// - <b>Add becomes a submenu when the container accepts more than one type</b>
-///   (<c>GetAssignTemplates</c>), and reads <c>Add "Name"</c> when there is exactly one. Our
-///   equivalent is the concrete subclasses of an abstract element type: a Conditions list holds the
-///   abstract <c>Condition</c>, whose real members are ConditionFloat and ConditionGlobal.
-/// - Remove / Move up / Move down / Clear are each shown only when the element supports them
-///   (<c>IsRemovable</c>, <c>CanMoveUp</c>, <c>CanMoveDown</c>, <c>IsClearable</c>).
-///
-/// Not covered here, because they depend on xEdit's multi-record selection and sibling compare,
-/// which this editor does not have: Copy to selected records, Remove from selected, Compare
-/// referenced row, Sort, Stick, and member switching for unions.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static class ElementService
 {
-    /// <summary>
-    /// What the element menu should offer for one grid row, so the UI shows only legal actions.
-    ///
-    /// Capability is read from the record's concrete SETTER type, not from the instance in front of
-    /// us: a record loaded from disk is a binary overlay whose list properties surface as
-    /// <c>IReadOnlyList</c>, so asking the instance "are you a list I can add to" answers no for
-    /// every unopened plugin. Counts still come from the instance, because only it knows them.
-    /// </summary>
+
+
+
+
+
+
+
+
     public static string DescribeElement(object? env, string plugin, string recordId, string path)
     {
         var rec = FindRecordForRead(env, plugin, recordId);
@@ -63,14 +63,14 @@ public static class ElementService
 
     private struct Described
     {
-        public Type? ElementType;   // element type of the list the path lands in or on
-        public int Index;           // index within it when the path names an entry, else -1
-        public int Count;           // how many entries that list currently holds
-        public bool IsList;         // the final segment is the list itself
+        public Type? ElementType;
+        public int Index;
+        public int Count;
+        public bool IsList;
     }
 
-    // Walk the path over the concrete setter TYPE (for capability) and the getter INSTANCE (for
-    // counts) at the same time, so an unopened, overlay-backed record still describes correctly.
+
+
     private static bool TryDescribe(IMajorRecordGetter rec, string path, out Described d, out string error)
     {
         d = new Described { Index = -1 }; error = "";
@@ -106,15 +106,15 @@ public static class ElementService
                 d.IsList = false;
                 curType = elem;
                 curVal = ItemAt(curVal, i);
-                // An abstract element type tells us nothing about the entry we actually landed on;
-                // the instance does, and the path continues from there.
+
+
                 if (curVal != null) curType = curVal.GetType();
             }
         }
         return true;
     }
 
-    // The element type of any sequence property (IList<T>, IReadOnlyList<T>, ExtendedList<T>).
+
     private static Type? SequenceElementType(Type t)
     {
         if (t == typeof(string)) return null;
@@ -143,11 +143,11 @@ public static class ElementService
         return null;
     }
 
-    /// <summary>
-    /// xEdit "Add": construct a new element of the container's type and insert it at the clicked
-    /// row's position (append when the row IS the container). No value is asked for -- the new
-    /// element is default-constructed and then edited in the grid.
-    /// </summary>
+
+
+
+
+
     public static string AddElement(string plugin, string recordId, string path, string? template, object? env)
     {
         var mod = WriteService.GetMutableFor(plugin, env, out var openMsg);
@@ -177,7 +177,7 @@ public static class ElementService
                $"(now {list.Count}). Edit its fields in the grid, then save_plugin.";
     }
 
-    /// <summary>xEdit "Remove": drop the element the path names. The path must name an entry, not the list.</summary>
+
     public static string RemoveElement(string plugin, string recordId, string path, object? env)
     {
         var mod = WriteService.GetMutableFor(plugin, env, out var openMsg);
@@ -197,8 +197,8 @@ public static class ElementService
         return $"Removed {path} from {recordId} in {name} (now {list.Count}). save_plugin to persist.";
     }
 
-    /// <summary>xEdit "Move up" / "Move down": reorder within the list. Order is meaningful for
-    /// conditions, leveled entries and effects, so this is a real edit, not cosmetic.</summary>
+
+
     public static string MoveElement(string plugin, string recordId, string path, int delta, object? env)
     {
         var mod = WriteService.GetMutableFor(plugin, env, out var openMsg);
@@ -222,7 +222,7 @@ public static class ElementService
         return $"Moved {path} to index {to} on {recordId} in {name}. save_plugin to persist.";
     }
 
-    /// <summary>xEdit "Clear": empty the list the path names, without removing the field itself.</summary>
+
     public static string ClearElement(string plugin, string recordId, string path, object? env)
     {
         var mod = WriteService.GetMutableFor(plugin, env, out var openMsg);
@@ -242,21 +242,21 @@ public static class ElementService
         return $"Cleared {path} on {recordId} in {name} ({had} item(s) removed). save_plugin to persist.";
     }
 
-    // ── path resolution ─────────────────────────────────────────────────────────────────────────
+
 
     private readonly struct Resolved
     {
         public Resolved(IList? targetList, int index, bool isList) { TargetList = targetList; Index = index; IsList = isList; }
-        /// <summary>The list the path lands in or on. Null when the path names no list at all.</summary>
+
         public IList? TargetList { get; }
-        /// <summary>Index within TargetList when the path names an ENTRY; -1 when it names the list.</summary>
+
         public int Index { get; }
-        /// <summary>True when the final segment is the list itself rather than one of its entries.</summary>
+
         public bool IsList { get; }
     }
 
-    // Walk "Effects[0].Conditions[1]" from the record. Mirrors GetAddElement's walk: the last list
-    // seen is the container, and the last index is where the click landed inside it.
+
+
     private static bool TryResolve(object record, string path, out Resolved resolved, out string error)
     {
         resolved = default; error = "";
@@ -307,7 +307,7 @@ public static class ElementService
         return br > 0 ? path[..br] : path;
     }
 
-    // ── element construction ────────────────────────────────────────────────────────────────────
+
 
     private static Type ElementTypeOf(IList list)
     {
@@ -317,12 +317,12 @@ public static class ElementService
         return typeof(object);
     }
 
-    /// <summary>
-    /// xEdit's GetAssignTemplates, in our terms. A list of a concrete type has exactly one template.
-    /// A list of an abstract type or interface has one per usable implementation -- a Conditions
-    /// list holds the abstract Condition, whose members are ConditionFloat and ConditionGlobal, and
-    /// that is the case where xEdit shows a submenu instead of a single "Add".
-    /// </summary>
+
+
+
+
+
+
     private static string[] TemplatesFor(Type elemType)
     {
         if (IsFormLink(elemType)) return new[] { FriendlyTypeName(elemType) };
@@ -362,9 +362,9 @@ public static class ElementService
         return match;
     }
 
-    // A FormLink list element is an interface, so it cannot be constructed directly; a null link is
-    // the right empty value, and the grid's record picker fills it in -- the same two steps xEdit
-    // takes (add an empty entry, then edit it).
+
+
+
     private static bool IsFormLink(Type t)
     {
         if (!t.IsGenericType) return false;
@@ -394,7 +394,7 @@ public static class ElementService
         return $"{bare}<{arg.Name}>";
     }
 
-    // ── record lookup ───────────────────────────────────────────────────────────────────────────
+
 
     private static IMajorRecordGetter? FindRecordForRead(object? env, string plugin, string recordId)
     {

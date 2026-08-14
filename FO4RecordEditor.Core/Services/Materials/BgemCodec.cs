@@ -2,19 +2,19 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Materials;
 
-/// <summary>
-/// FO4 .bgem binary codec. Field order and version-conditional branches are a byte-for-byte port of
-/// native/materials/src/bgem.rs (Bryant-21/py-creation-lib, GPL-3.0, permission granted), read
-/// directly rather than inferred from the BGSM layout -- the two formats share only the header, and
-/// a wrong field order silently corrupts a real mod's material on the next write.
-///
-/// Texture strings use the same length-prefixed AND null-terminated convention BGSM does
-/// (MatWriter.WriteBgsmString): an empty slot is len=1/0x00, never len=0, or FO4's own parser
-/// misaligns everything after it and the material renders pink.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
 public static class BgemCodec
 {
-    public const uint Signature = 0x4D454742; // 'BGEM' little-endian
+    public const uint Signature = 0x4D454742;
 
     public static BgemData Parse(byte[] data)
     {
@@ -161,11 +161,11 @@ public static class BgemCodec
     }
 }
 
-/// <summary>
-/// Picks the codec from the file's own magic rather than its extension. A material's format is a
-/// property of its bytes; mods do ship .bgsm-named files that are really BGEM and the engine reads
-/// the magic, so dispatching on the extension would refuse files the game itself accepts.
-/// </summary>
+
+
+
+
+
 public static class MaterialCodec
 {
     public static IMaterialData Parse(byte[] data)
@@ -178,12 +178,12 @@ public static class MaterialCodec
             $"Not a BGSM or BGEM material: magic 0x{sig:X8} (expected 0x{BgsmCodec.Signature:X8} or 0x{BgemCodec.Signature:X8}).");
     }
 
-    /// <summary>
-    /// Writes with the signature the concrete type demands, not whatever is sitting in the header.
-    /// Header.Signature is a plain settable field reachable from bgsm_set_field, and it is 0 on a
-    /// freshly constructed object -- either way, writing it verbatim produces a file whose magic
-    /// disagrees with its body, which then fails to dispatch on the next read.
-    /// </summary>
+
+
+
+
+
+
     public static byte[] Write(IMaterialData data)
     {
         switch (data)

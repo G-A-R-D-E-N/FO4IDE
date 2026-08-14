@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { emptyDocument, type BpNode, type BpWire } from './graphModel';
 import { graphReducer, initialState, type GraphState } from './graphReducer';
 
-// The reducer is the only place a graph is ever mutated, so it is the only place a frontend defect
-// can corrupt a document. Everything here is pure, which is why these tests need no DOM.
+
+
 
 const node = (id: string, x = 0, y = 0): BpNode => ({
   id,
@@ -48,8 +48,8 @@ describe('PASTE', () => {
   });
 
   it('rewires a pasted wire to the copies, not to the originals', () => {
-    // The failure this guards against is silent: a wire that still points at the source nodes looks
-    // fine on the canvas until the copy is moved or deleted.
+
+
     const state = withGraph([node('a'), node('b')], [wire('w1', 'a', 'b')]);
 
     const next = graphReducer(state, {
@@ -72,7 +72,7 @@ describe('PASTE', () => {
   });
 
   it('drops a wire whose other end was not copied', () => {
-    // Half a wire is not a wire. Keeping it would leave an endpoint pointing outside the selection.
+
     const state = withGraph([node('a'), node('b')], [wire('w1', 'a', 'b')]);
 
     const next = graphReducer(state, {
@@ -137,7 +137,7 @@ describe('PASTE', () => {
 
 describe('DELETE_SELECTION', () => {
   it('removes wires attached to a deleted node', () => {
-    // A wire pointing at a node that no longer exists is a document the compiler cannot load.
+
     const state = withGraph([node('a'), node('b')], [wire('w1', 'a', 'b')], ['a']);
 
     const next = graphReducer(state, { type: 'DELETE_SELECTION' });

@@ -4,18 +4,18 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Functions that declare a return value, and whether control can leave them without one.
-/// </summary>
-/// <remarks>
-/// Papyrus does not refuse this itself. A returning function that falls off the end compiles and
-/// hands back the type's zero value at runtime, so the mistake reaches the game as a quest that
-/// quietly does nothing. The refusal has to happen here or nowhere.
-/// <para>
-/// Each refusal asserts the node the escape was found at, not just the code, because naming the
-/// function alone would leave the author reading every arm of it.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
 public class GraphReturnFlowTests
 {
     private static GraphDiagnostic RefusedForFallingOff(GraphDocument document)
@@ -101,7 +101,7 @@ public class GraphReturnFlowTests
     [Fact]
     public void A_loop_whose_body_always_returns_still_has_to_return_after_the_loop()
     {
-        // The condition can be false on the first test, in which case the body never runs at all.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -189,7 +189,7 @@ public class GraphReturnFlowTests
     [Fact]
     public void A_void_function_that_falls_off_the_end_is_fine()
     {
-        // Reaching the end of a function that returns nothing is how most of them finish.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 

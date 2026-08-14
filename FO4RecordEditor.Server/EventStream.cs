@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Server;
 
-/// <summary>
-/// The server-sent-events equivalent of CoreWebView2.PostWebMessageAsJson: one fan-out point that
-/// every open page receives. Bounded and drop-oldest, because a page that stops reading must never
-/// be able to stall the thread that raised the event (chat streaming raises a lot of them).
-/// </summary>
+
+
+
+
+
 public sealed class EventStream
 {
     private readonly ConcurrentDictionary<Channel<string>, byte> _subscribers = new();
@@ -29,7 +29,7 @@ public sealed class EventStream
 
     public void Push(object payload)
     {
-        // Newlines would split one SSE frame into several, so the JSON goes out on a single line.
+
         var json = JsonConvert.SerializeObject(payload).Replace("\r", "").Replace("\n", "");
         foreach (var ch in _subscribers.Keys) ch.Writer.TryWrite(json);
     }

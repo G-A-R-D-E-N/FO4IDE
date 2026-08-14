@@ -42,7 +42,7 @@ public class MaterialServiceTests
         {
             var result = MaterialService.Inspect(path);
             result.Should().Contain("Smoothness = 0.5");
-            result.Should().Contain("DiffuseTexture = tex\\d.dds");   // trailing \0 trimmed for display
+            result.Should().Contain("DiffuseTexture = tex\\d.dds");
             result.Should().NotContain("Pbr =", "version 2 doesn't carry a PBR field, it should be omitted not shown as false");
         }
         finally { try { File.Delete(path); } catch { } }
@@ -112,7 +112,7 @@ public class MaterialServiceTests
         MaterialService.Inspect(@"C:\does\not\exist.bgsm").Should().Contain("not found");
     }
 
-    // ---- JSON methods (used by the GUI Materials panel, MaterialInterop) ----
+
 
     [Fact]
     public void InspectJson_ReturnsTypedFieldsGroupedBySection()
@@ -177,7 +177,7 @@ public class MaterialServiceTests
                 new Dictionary<string, string> { ["Smoothness"] = "0.99", ["NotReal"] = "1" }, null)
                 .Should().Contain("Unknown BGSM field");
 
-            // The valid 'Smoothness' edit must NOT have been persisted either -- all-or-nothing.
+
             var reparsed = BgsmCodec.Parse(File.ReadAllBytes(path));
             reparsed.Smoothness.Should().Be(0.5f, "a batch with one bad field must write nothing at all");
         }

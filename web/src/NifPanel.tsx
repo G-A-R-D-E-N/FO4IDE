@@ -15,18 +15,18 @@ const setLS = (k: string, v: string | boolean) => localStorage.setItem('nif.' + 
 export default function NifPanel({ onClose }: { onClose: () => void }) {
   const [mode, setMode] = useState<Mode>(() => (LS('mode', 'view') as Mode));
 
-  // 3D viewport state
+
   const [geo, setGeo] = useState<NifGeo | null>(null);
   const [wireframe, setWireframe] = useState(() => LSB('wireframe', false));
   const [textured, setTextured] = useState(() => LSB('textured', true));
   const [texRoot, setTexRoot] = useState(() => LS('texRoot', ''));
   const [geoInfo, setGeoInfo] = useState('');
-  const [geoPath, setGeoPath] = useState('');  // the nif the loaded geo came from (for texture resolve)
+  const [geoPath, setGeoPath] = useState('');
 
-  // Edit mode state
+
   const [tree, setTree] = useState<NifTree | null>(null);
 
-  // import fields
+
   const [objPath, setObjPath] = useState(() => LS('objPath', ''));
   const [outNif, setOutNif] = useState(() => LS('outNif', ''));
   const [material, setMaterial] = useState(() => LS('material', ''));
@@ -35,11 +35,11 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
   const [collision, setCollision] = useState(() => LSB('collision', false));
   const [fromBlender, setFromBlender] = useState(() => LSB('fromBlender', false));
 
-  // inspect / verify / fix fields
+
   const [nifPath, setNifPath] = useState(() => LS('nifPath', ''));
   const [fixOut, setFixOut] = useState(() => LS('fixOut', ''));
 
-  // materials mode state
+
   const [matPath, setMatPath] = useState(() => LS('matPath', ''));
   const [matFields, setMatFields] = useState<MaterialField[] | null>(null);
   const [matFileName, setMatFileName] = useState('');
@@ -85,7 +85,7 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
   const browseTexRoot = async () => { if (nif) { const p = await nif.BrowseForFolder('Select a texture root (Data or Textures folder)'); if (p) setTexRoot(p); } };
   const browseMat = async () => { const m = getMaterial(); if (m) { const p = await m.BrowseForFile('Select a material', 'FO4 material (*.bgsm;*.bgem)|*.bgsm;*.bgem|BGSM lighting material (*.bgsm)|*.bgsm|BGEM effect material (*.bgem)|*.bgem|All files|*.*'); if (p) setMatPath(p); } };
 
-  // drag & drop an .obj (import) or .nif (inspect/verify/fix)
+
   const onDrop = useCallback(async (e: DragEvent) => {
     e.preventDefault(); setDragOver(false);
     if (!nif) return;
@@ -126,7 +126,7 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
     } finally { setBusy(false); }
   };
 
-  // Edit mode: load the editable property tree, plus geo for the live preview.
+
   const loadTree = async (path?: string) => {
     const p = (path ?? nifPath).trim();
     if (!nif || !p) return;
@@ -139,14 +139,14 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
       setTree(parsed);
       setGeoInfo(`${parsed.blocks.length} editable block(s)`);
       appendLog(`• editing ${baseName(p)}`);
-      loadGeo(p);   // side-by-side preview
+      loadGeo(p);
     } catch (e) {
       setTree(null);
       setGeoInfo('Could not load tree: ' + (e instanceof Error ? e.message : String(e)));
     } finally { setBusy(false); }
   };
 
-  // Materials mode: load the field list for the editor.
+
   const loadMaterial = async (path?: string) => {
     const p = (path ?? matPath).trim();
     const m = getMaterial();
@@ -166,7 +166,7 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
     } finally { setBusy(false); }
   };
 
-  // After a save, reload the tree (refreshes values/ids) and the preview (new textures/colors).
+
   const onEditorSaved = () => { loadTree(nifPath); };
 
   const run = async () => {

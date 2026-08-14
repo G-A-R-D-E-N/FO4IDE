@@ -21,50 +21,50 @@ public enum PapyrusSymbolKind
     Import,
 }
 
-/// <summary>One named thing, with enough position information to jump to it.</summary>
+
 public sealed class PapyrusSymbol
 {
     public string Name { get; init; } = string.Empty;
 
     public PapyrusSymbolKind Kind { get; init; }
 
-    /// <summary>One-line signature for hover and for an outline's detail column.</summary>
+
     public string Signature { get; init; } = string.Empty;
 
     public string? Documentation { get; init; }
 
-    /// <summary>Owning script or struct name, or null at script level.</summary>
+
     public string? Container { get; init; }
 
-    /// <summary>File the declaration is in, when known.</summary>
+
     public string? File { get; init; }
 
-    /// <summary>Span of the whole declaration.</summary>
+
     public PapyrusSpan Span { get; init; }
 
-    /// <summary>Span of just the name, which is what a jump should select.</summary>
+
     public PapyrusSpan NameSpan { get; init; }
 
     public override string ToString() => $"{Kind} {Name}";
 }
 
-/// <summary>
-/// Editor-facing queries over a parsed script: outline, go-to-definition and hover.
-/// </summary>
-/// <remarks>
-/// <b>What this is not.</b> There is no type inference here. Resolution is by name, in the order a
-/// reader would search: locals and parameters of the enclosing function, then the script's own
-/// members, then up the <c>Extends</c> chain, then scripts by name through the index. That answers
-/// "where is this declared" correctly for the overwhelming majority of real references and cannot
-/// answer it for a member reached through an expression whose type is not written down --
-/// <c>GetOwner().MyProperty</c> needs a type checker, which is phase 2.
-/// <para>
-/// Where it cannot resolve, it returns null rather than a guess. A wrong jump is worse than none.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static class PapyrusSymbols
 {
-    /// <summary>Flat outline of everything a script declares, in source order within each kind.</summary>
+
     public static IReadOnlyList<PapyrusSymbol> DocumentSymbols(PapyrusScript script)
     {
         var symbols = new List<PapyrusSymbol>
@@ -133,18 +133,18 @@ public static class PapyrusSymbols
             NameSpan = decl.NameSpan,
         };
 
-    /// <summary>
-    /// The declaration referred to at <paramref name="offset"/>, or null when it cannot be resolved.
-    /// </summary>
-    /// <param name="index">Used to follow <c>Extends</c> and to resolve other scripts by name.</param>
-    /// <param name="script">The parsed script the caret is in.</param>
-    /// <param name="offset">0-based character offset of the caret.</param>
+
+
+
+
+
+
     public static PapyrusSymbol? FindDefinition(PapyrusScriptIndex index, PapyrusScript script, int offset)
     {
         var path = script.PathTo(offset);
         if (path.Count == 0) return null;
 
-        // Standing on a declaration's own name is a request for that declaration, not a lookup.
+
         for (var i = path.Count - 1; i >= 0; i--)
         {
             if (path[i] is PapyrusDeclaration decl && decl.NameSpan.Length > 0 && decl.NameSpan.Contains(offset))
@@ -168,10 +168,10 @@ public static class PapyrusSymbols
 
         var node = path[path.Count - 1];
 
-        // A written type: resolve it as a script name, or as a struct in this script or another.
+
         if (node is PapyrusTypeRef typeRef) return ResolveTypeName(index, script, typeRef.Name);
 
-        // The Extends clause is not a node of its own; it lives on the script.
+
         if (script.Extends != null && script.ExtendsSpan.Contains(offset))
         {
             return ResolveTypeName(index, script, script.Extends);
@@ -182,9 +182,9 @@ public static class PapyrusSymbols
             return ResolveIdentifier(index, script, path, identifier.Name, offset);
         }
 
-        // Member access or a qualified call. Without types, the only case that can be answered
-        // honestly is a receiver that is itself a script name -- Debug.Trace, Utility.Wait,
-        // MyNamespace:MyScript.MyGlobal -- plus members of this script's own chain.
+
+
+
         for (var i = path.Count - 1; i >= 0; i--)
         {
             if (path[i] is not PapyrusMemberExpression member) continue;
@@ -203,9 +203,9 @@ public static class PapyrusSymbols
                 }
             }
 
-            // "self.Foo" and "parent.Foo" both land on this script's chain, and so does any member
-            // name that happens to be unique to it. This last fallback is a heuristic and is the
-            // reason a type checker is still the right phase 2.
+
+
+
             var own = index.FindMember(script, member.Name, out var owner);
             if (own != null && owner != null) return Make(own, KindOf(own), owner.Name, owner.FilePath);
             return null;
@@ -214,7 +214,7 @@ public static class PapyrusSymbols
         return null;
     }
 
-    /// <summary>Hover text for the caret position: a signature, plus the doc comment if there is one.</summary>
+
     public static string? Hover(PapyrusScriptIndex index, PapyrusScript script, int offset)
     {
         var symbol = FindDefinition(index, script, offset);
@@ -228,7 +228,7 @@ public static class PapyrusSymbols
     {
         if (string.IsNullOrEmpty(name)) return null;
 
-        // Built-in value types have no declaration to jump to.
+
         switch (name.ToLowerInvariant())
         {
             case "int":
@@ -242,7 +242,7 @@ public static class PapyrusSymbols
                 return null;
         }
 
-        // A struct is written either bare (same script) or as Script:Struct.
+
         var colon = name.LastIndexOf(':');
         if (colon > 0)
         {
@@ -277,14 +277,14 @@ public static class PapyrusSymbols
         };
     }
 
-    /// <summary>
-    /// Resolves a bare identifier, innermost scope outward.
-    /// </summary>
-    /// <remarks>
-    /// Locals are only considered if they are declared *before* the caret, which is the language's
-    /// own rule -- "variables inside functions must be defined before use" -- and is what stops a
-    /// later shadowing definition from capturing an earlier reference.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private static PapyrusSymbol? ResolveIdentifier(
         PapyrusScriptIndex index,
         PapyrusScript script,
@@ -328,7 +328,7 @@ public static class PapyrusSymbols
         var member = index.FindMember(script, name, out var owner);
         if (member != null && owner != null) return Make(member, KindOf(member), owner.Name, owner.FilePath);
 
-        // An imported script contributes its global functions and structs unqualified.
+
         foreach (var import in script.Imports)
         {
             var imported = index.Resolve(import.Name);
@@ -337,7 +337,7 @@ public static class PapyrusSymbols
             if (hit != null) return Make(hit, KindOf(hit), imported.Name, imported.FilePath);
         }
 
-        // Last, the name may be a script: "Debug", "Utility", or a type used as a global receiver.
+
         return ResolveTypeName(index, script, name);
     }
 
@@ -350,7 +350,7 @@ public static class PapyrusSymbols
         return null;
     }
 
-    /// <summary>Every define statement in a body, including the ones nested in if and while blocks.</summary>
+
     private static IEnumerable<PapyrusDefineStatement> Defines(IEnumerable<PapyrusStatement> body)
     {
         foreach (var statement in body)

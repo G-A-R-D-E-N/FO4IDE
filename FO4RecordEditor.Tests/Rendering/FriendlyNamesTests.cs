@@ -12,12 +12,12 @@ public class FriendlyNamesTests
         FriendlyNames.Label("EditorID").Should().Be("Editor ID");
         FriendlyNames.Label("CreatedObject").Should().Be("Created Object");
 
-        // Deliberate semantic rename, not a truncation: the COBJ field names the bench a recipe
-        // routes to, and the UI calls that column "Workbench".
+
+
         FriendlyNames.Label("WorkbenchKeyword").Should().Be("Workbench");
 
-        // Unmapped names are auto-split, not passed through -- the override map exists only for
-        // labels that differ from the auto-split result.
+
+
         FriendlyNames.Label("SomeUnmappedField").Should().Be("Some Unmapped Field");
         FriendlyNames.Label("[0]").Should().Be("[0]");
     }

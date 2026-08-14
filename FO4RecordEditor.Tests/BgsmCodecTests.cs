@@ -5,12 +5,12 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// BuildV2Reference hand-encodes a version-2 BGSM byte-for-byte, independently of BgsmCodec's own
-// Writer (so this doesn't just test the codec against itself), following the exact field order in
-// native/materials/src/{base.rs,bgsm.rs} (Bryant-21/py-creation-lib, GPL-3.0, permission granted).
-// This same codec was also verified byte-identical against all 400 real .bgsm files found in this
-// workspace (versions 1-2) before this suite was written; those files aren't embedded here since
-// they're third-party/other-project assets, not something to ship in this now-public repo.
+
+
+
+
+
+
 public class BgsmCodecTests
 {
     private static void WriteBgsmStr(BinaryWriter bw, string s)
@@ -26,70 +26,70 @@ public class BgsmCodecTests
         var ms = new MemoryStream();
         using var bw = new BinaryWriter(ms);
 
-        // -- header, version 2 --
-        bw.Write((uint)0x4D534742);           // 'BGSM'
-        bw.Write((uint)2);                     // version
-        bw.Write((uint)2);                     // tile flags: tileU=true, tileV=false
-        bw.Write(0f); bw.Write(0f); bw.Write(1f); bw.Write(1f);   // uOffset,vOffset,uScale,vScale
-        bw.Write(1f);                          // alpha
-        bw.Write((byte)0); bw.Write((uint)0); bw.Write((uint)0);  // alphaBlendMode 0/1/2
-        bw.Write((byte)0); bw.Write((byte)0);  // alphaTestRef, alphaTest(bool as byte)
-        bw.Write((byte)1); bw.Write((byte)1);  // zBufferWrite, zBufferTest
-        bw.Write((byte)0); bw.Write((byte)0);  // ssr, wetSsr
-        bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0); // decal,twoSided,decalNoFade,nonOccluder
-        bw.Write((byte)0); bw.Write((byte)0); bw.Write(0f);       // refraction,refractionFalloff,refractionPower
-        bw.Write((byte)0); bw.Write(0f);       // version<10: envMapping(bool), envMappingMaskScale(f32)
-        bw.Write((byte)0);                     // grayscaleToPaletteColor
-        // version<6: no maskWrites
 
-        // -- body, version 2 (not >2, so texture-slot else-branch; no PBR/Translucency/Terrain blocks) --
+        bw.Write((uint)0x4D534742);
+        bw.Write((uint)2);
+        bw.Write((uint)2);
+        bw.Write(0f); bw.Write(0f); bw.Write(1f); bw.Write(1f);
+        bw.Write(1f);
+        bw.Write((byte)0); bw.Write((uint)0); bw.Write((uint)0);
+        bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((byte)1); bw.Write((byte)1);
+        bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((byte)0); bw.Write((byte)0); bw.Write(0f);
+        bw.Write((byte)0); bw.Write(0f);
+        bw.Write((byte)0);
+
+
+
         WriteBgsmStr(bw, "tex\\d.dds");
         WriteBgsmStr(bw, "tex\\n.dds");
-        WriteBgsmStr(bw, "");                  // SmoothSpecTexture
-        WriteBgsmStr(bw, "");                  // GreyscaleTexture
-        WriteBgsmStr(bw, "");                  // EnvmapTexture
-        WriteBgsmStr(bw, "");                  // GlowTexture
-        WriteBgsmStr(bw, "");                  // InnerLayerTexture
-        WriteBgsmStr(bw, "");                  // WrinklesTexture
-        WriteBgsmStr(bw, "");                  // DisplacementTexture
+        WriteBgsmStr(bw, "");
+        WriteBgsmStr(bw, "");
+        WriteBgsmStr(bw, "");
+        WriteBgsmStr(bw, "");
+        WriteBgsmStr(bw, "");
+        WriteBgsmStr(bw, "");
+        WriteBgsmStr(bw, "");
 
-        bw.Write((byte)0);                     // EnableEditorAlphaRef
-        // version<8: RimLighting block
+        bw.Write((byte)0);
+
         bw.Write((byte)0); bw.Write(0f); bw.Write(0f); bw.Write((byte)0); bw.Write(0f);
 
-        bw.Write((byte)1);                     // SpecularEnabled
-        bw.Write(1f); bw.Write(1f); bw.Write(1f);  // SpecularColor
-        bw.Write(1f);                          // SpecularMult
-        bw.Write(0.8f);                        // Smoothness
-        bw.Write(1f);                          // FresnelPower
-        bw.Write(1f); bw.Write(1f); bw.Write(0f);  // wetness spec scale/power/minvar
-        bw.Write(1f);                          // version<10: WetnessControlEnvMapScale
-        bw.Write(1f); bw.Write(0f);            // WetnessControlFresnelPower, WetnessControlMetalness
-        // version not >2: no PBR block
+        bw.Write((byte)1);
+        bw.Write(1f); bw.Write(1f); bw.Write(1f);
+        bw.Write(1f);
+        bw.Write(0.8f);
+        bw.Write(1f);
+        bw.Write(1f); bw.Write(1f); bw.Write(0f);
+        bw.Write(1f);
+        bw.Write(1f); bw.Write(0f);
 
-        WriteBgsmStr(bw, "");                  // RootMaterialPath
-        bw.Write((byte)0);                     // AnisoLighting
-        bw.Write((byte)0);                     // EmitEnabled=false -> no EmittanceColor
-        bw.Write(0f);                          // EmittanceMult
-        bw.Write((byte)0);                     // ModelSpaceNormals
-        bw.Write((byte)0);                     // ExternalEmittance
-        // version<12: no LumEmittance; version<13: no AdaptativeEmissive block
-        bw.Write((byte)0);                     // version<8: BackLighting
-        bw.Write((byte)1);                     // ReceiveShadows
-        bw.Write((byte)0);                     // HideSecret
-        bw.Write((byte)1);                     // CastShadows
-        bw.Write((byte)0);                     // DissolveFade
-        bw.Write((byte)0);                     // AssumeShadowmask
-        bw.Write((byte)0);                     // Glowmap
-        bw.Write((byte)0); bw.Write((byte)0);  // version<7: EnvironmentMappingWindow, EnvironmentMappingEye
-        bw.Write((byte)0);                     // Hair
-        bw.Write(1f); bw.Write(1f); bw.Write(1f);  // HairTintColor
-        bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0); // Tree,Facegen,SkinTint,Tessellate
-        // version<3: displacement/tessellation block
+
+        WriteBgsmStr(bw, "");
+        bw.Write((byte)0);
+        bw.Write((byte)0);
+        bw.Write(0f);
+        bw.Write((byte)0);
+        bw.Write((byte)0);
+
+        bw.Write((byte)0);
+        bw.Write((byte)1);
+        bw.Write((byte)0);
+        bw.Write((byte)1);
+        bw.Write((byte)0);
+        bw.Write((byte)0);
+        bw.Write((byte)0);
+        bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((byte)0);
+        bw.Write(1f); bw.Write(1f); bw.Write(1f);
+        bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0); bw.Write((byte)0);
+
         bw.Write(0f); bw.Write(0f); bw.Write(0f); bw.Write(0f); bw.Write(0f);
-        bw.Write(0f);                          // GrayscaleToPaletteScale
-        bw.Write((byte)0);                     // version>=1: SkewSpecularAlpha
-        // version<3: no Terrain block at all
+        bw.Write(0f);
+        bw.Write((byte)0);
+
 
         return ms.ToArray();
     }
@@ -111,13 +111,13 @@ public class BgsmCodecTests
         d.CastShadows.Should().BeTrue();
         d.HideSecret.Should().BeFalse();
 
-        // Fields that don't exist at version 2 must stay null, not a default like false/0.
+
         d.Pbr.Should().BeNull();
         d.CustomPorosity.Should().BeNull();
         d.Terrain.Should().BeNull();
         d.LumEmittance.Should().BeNull();
         d.UseAdaptativeEmissive.Should().BeNull();
-        d.Translucency.Should().BeNull();          // v<8 uses RimLighting instead
+        d.Translucency.Should().BeNull();
         d.RimLighting.Should().NotBeNull();
     }
 
@@ -130,10 +130,10 @@ public class BgsmCodecTests
         rewritten.Should().Equal(reference);
     }
 
-    // Real corpus (400 files, all workspace .bgsm) only ever hit versions 1-2, so the higher-version
-    // branches (Translucency/PBR/AdaptativeEmissive/Terrain) have no real-file coverage. This
-    // round-trips a hand-populated v13 object through Write->Parse to catch a symmetric encode/decode
-    // bug in those branches specifically, since no ground-truth v13 file exists to hand-encode against.
+
+
+
+
     [Fact]
     public void RoundTrip_Version13_ExercisesHighVersionBranches()
     {
@@ -193,7 +193,7 @@ public class BgsmCodecTests
         reparsed.TerrainRotationAngle.Should().Be(45f);
         reparsed.EmittanceColor.Should().Equal(1f, 0.5f, 0f);
 
-        // Full second round-trip must be byte-stable once parsed back.
+
         BgsmCodec.Write(reparsed).Should().Equal(bytes);
     }
 

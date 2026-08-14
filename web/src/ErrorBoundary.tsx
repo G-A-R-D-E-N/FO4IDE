@@ -1,12 +1,12 @@
-// Turn a fatal render error into a readable panel instead of a blank window.
-//
-// React unmounts the entire tree when a render throws and nothing catches it. In a browser tab that
-// is merely bad; in the Photino/WebKitGTK window it is indistinguishable from the app failing to
-// launch -- you get a black rectangle with no message, no console and no way to tell what happened.
-// That is exactly how a single null dereference while opening a record presented itself.
-//
-// So the whole app renders inside this boundary. A crash now shows what broke and offers a way back,
-// and the error still reaches the console for the debug log.
+
+
+
+
+
+
+
+
+
 
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
@@ -21,8 +21,8 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // Keep the console record: this is what a bug report needs, and the native window has no devtools.
-    console.error('[FO4RecordEditor] UI error:', error, info.componentStack);
+
+    console.error('[FO4IDE] UI error:', error, info.componentStack);
     this.setState({ info: info.componentStack ?? '' });
   }
 

@@ -11,12 +11,12 @@ export default function RecordPicker(
 ) {
   const [query, setQuery] = useState('');
   const [hits, setHits] = useState<SearchHit[] | null>(null);
-  const [filterOn, setFilterOn] = useState(!!refTypes);   // restrict to the field's valid record types
+  const [filterOn, setFilterOn] = useState(!!refTypes);
   const timer = useRef<number | null>(null);
 
-  const activeFilter = filterOn && refTypes ? refTypes : '';   // csv of concrete record classes
+  const activeFilter = filterOn && refTypes ? refTypes : '';
 
-  // Debounced search across the load order (the search itself runs off-thread in C#).
+
   useEffect(() => {
     const b = back();
     if (!b) return;

@@ -8,9 +8,9 @@ import './ChatPanel.css';
 
 interface ChatMsg { role: 'system' | 'user' | 'assistant'; text: string; images?: string[] }
 
-// The Claude Code provider streams activity lines inline: "🔧 tool(args)", "💭 reasoning", "↳ result".
-// ✍️ write events are injected by our McpLive handler when the AI commits a plugin edit.
-// Pull them out so prose renders as markdown and the activity shows as compact, dim rows.
+
+
+
 const ACTIVITY = [
   { e: '🔧', kind: 'tool' as const },
   { e: '💭', kind: 'think' as const },
@@ -18,13 +18,13 @@ const ACTIVITY = [
   { e: '✍️', kind: 'write' as const },
 ];
 function parseActivity(line: string) {
-  const t = line.trim().replace(/^_+|_+$/g, '').trim();   // strip markdown italics the provider adds
+  const t = line.trim().replace(/^_+|_+$/g, '').trim();
   for (const a of ACTIVITY) if (t.startsWith(a.e)) return { kind: a.kind, text: t.slice(a.e.length).trim() };
   return null;
 }
 
 function RichText({ text }: { text: string }) {
-  // Split the message into prose runs (markdown) and activity rows.
+
   const blocks: Array<{ type: 'prose'; text: string } | { type: 'activity'; kind: string; text: string }> = [];
   let prose: string[] = [];
   const flush = () => { if (prose.join('').trim()) blocks.push({ type: 'prose', text: prose.join('\n') }); prose = []; };
@@ -68,7 +68,7 @@ const GREETING: ChatMsg = {
 };
 
 export default function ChatPanel() {
-  // Per-session message buffers + busy flags, so multiple chats stream independently without bleeding.
+
   const { confirm: askConfirm, prompt: askPrompt } = useDialogs();
   const [buffers, setBuffers] = useState<Record<string, ChatMsg[]>>({});
   const [busyMap, setBusyMap] = useState<Record<string, boolean>>({});
@@ -81,15 +81,15 @@ export default function ChatPanel() {
   busyMapRef.current = busyMap;
   const [commands, setCommands] = useState<SlashCommand[]>([]);
   const [cmdIndex, setCmdIndex] = useState(0);
-  const [attachments, setAttachments] = useState<string[]>([]);   // pending image data URLs
+  const [attachments, setAttachments] = useState<string[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Messages typed while the AI is busy are held here and sent sequentially after AiDone.
+
   const pendingQueues = useRef<Record<string, Array<{ text: string; imgs: string[] }>>>({});
   const [queueCounts, setQueueCounts] = useState<Record<string, number>>({});
 
-  // The active chat's view.
+
   const messages = buffers[currentId] ?? [GREETING];
   const busy = !!busyMap[currentId];
   const queueCount = queueCounts[currentId] ?? 0;
@@ -100,7 +100,7 @@ export default function ChatPanel() {
   const dtoToMsgs = (dto: ChatSessionFull): ChatMsg[] =>
     dto.messages.length === 0 ? [GREETING] : dto.messages.map(m => ({ role: m.isUser ? 'user' : 'assistant', text: m.text } as ChatMsg));
 
-  // Read image File(s) into data URLs and queue them as attachments.
+
   const addImageFiles = (files: FileList | File[] | null) => {
     if (!files) return;
     for (const f of Array.from(files)) {
@@ -127,10 +127,10 @@ export default function ChatPanel() {
   const refreshSessions = async () => {
     const c = host();
     if (!c) return;
-    try { setSessions(JSON.parse(await c.ListSessions())); } catch { /* ignore */ }
+    try { setSessions(JSON.parse(await c.ListSessions())); } catch {  }
   };
 
-  // Core send path -- used by user input, the queue drain, and slash commands.
+
   const sendDirect = async (sid: string, text: string, imgs: string[]) => {
     const c = host();
     if (!c) return;
@@ -150,8 +150,8 @@ export default function ChatPanel() {
     refreshSessions();
   };
 
-  // Drain the next queued message for a session after AiDone. Uses a ref so the once-mounted
-  // message handler always calls the latest closure (which captures current sendDirect).
+
+
   const drainFnRef = useRef<(sid: string) => void>(() => {});
   drainFnRef.current = (sid: string) => {
     const q = pendingQueues.current[sid] ?? [];
@@ -162,7 +162,7 @@ export default function ChatPanel() {
     sendDirect(sid, next.text, next.imgs);
   };
 
-  // Streamed AI + session events from C#.
+
   useEffect(() => {
     const onMessage = (e: any) => {
       const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
@@ -177,7 +177,7 @@ export default function ChatPanel() {
           if (sid) {
             setBusyFor(sid, false);
             if (data.Stopped) setMsgs(sid, p => appendToLastAssistant(p, '\n[stopped]'));
-            // Process the next queued message (if any) after this response finishes.
+
             setTimeout(() => drainFnRef.current(sid), 80);
           }
           break;
@@ -185,9 +185,9 @@ export default function ChatPanel() {
         case 'AiRetry': if (sid) { setMsgs(sid, p => [...p, { role: 'assistant', text: '' }]); setBusyFor(sid, true); } break;
         case 'AiReload': if (data.Session) setBuffers(b => ({ ...b, [data.Session.id]: dtoToMsgs(data.Session) })); break;
         case 'McpLive':
-          // Inject a highlighted write-activity row into the streaming AI response so the user can
-          // see exactly which plugin field the AI modified. The record view auto-reloads separately
-          // (MainShell's message handler does that).
+
+
+
           if (data.IsWrite) {
             const activeSid = sid ?? Object.entries(busyMapRef.current).find(([, v]) => v)?.[0];
             if (activeSid) setMsgs(activeSid, p => appendToLastAssistant(p, `\n✍️ ${data.Summary}\n`));
@@ -197,13 +197,13 @@ export default function ChatPanel() {
         case 'SessionsChanged': refreshSessions(); break;
       }
     };
-    // @ts-ignore
+
     window.chrome?.webview?.addEventListener('message', onMessage);
-    // @ts-ignore
+
     return () => window.chrome?.webview?.removeEventListener('message', onMessage);
   }, []);
 
-  // Initial load: commands + sessions (open the most recent, or start fresh).
+
   useEffect(() => {
     (async () => {
       const c = host();
@@ -213,11 +213,11 @@ export default function ChatPanel() {
         const list: ChatSessionMeta[] = JSON.parse(await c.ListSessions());
         setSessions(list);
         renderSession(JSON.parse(list.length > 0 ? await c.LoadSession(list[0].id) : await c.NewSession()));
-      } catch { /* ignore */ }
+      } catch {  }
     })();
   }, []);
 
-  // Bridge: other components dispatch window CustomEvent('fo4:ask-ai', {detail: prompt}).
+
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail;
@@ -225,7 +225,7 @@ export default function ChatPanel() {
     };
     window.addEventListener('fo4:ask-ai', handler);
     return () => window.removeEventListener('fo4:ask-ai', handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
@@ -233,12 +233,12 @@ export default function ChatPanel() {
   const switchSession = async (id: string) => {
     if (id === currentId) return;
     setCurrentId(id);
-    // Only load from disk if we don't already have a live buffer -- otherwise we'd wipe an in-progress
-    // stream (the reply isn't persisted until it finishes).
+
+
     if (!buffers[id]) {
       const c = host();
       if (!c) return;
-      try { renderSession(JSON.parse(await c.LoadSession(id))); } catch { /* ignore */ }
+      try { renderSession(JSON.parse(await c.LoadSession(id))); } catch {  }
     }
   };
 
@@ -259,8 +259,8 @@ export default function ChatPanel() {
     const from = currentId;
     try {
       const dto = JSON.parse(await c.ForkSession(from));
-      await refreshSessions();   // populate sessions list BEFORE switching so the dropdown shows the fork
-      renderSession(dto);        // now switch -- currentId will match an entry in sessions
+      await refreshSessions();
+      renderSession(dto);
     } catch (e: any) {
       setMsgs(from, p => [...p, { role: 'system', text: '⚠️ Fork failed: ' + (e?.message || e?.toString() || '') }]);
     } finally { setForking(false); }
@@ -301,7 +301,7 @@ export default function ChatPanel() {
     const sid = currentId;
 
     if (busy) {
-      // Queue the message -- never cancel a running stream.
+
       const q = pendingQueues.current[sid] ?? [];
       pendingQueues.current[sid] = [...q, { text, imgs }];
       setQueueCounts(prev => ({ ...prev, [sid]: q.length + 1 }));
@@ -311,8 +311,8 @@ export default function ChatPanel() {
     await sendDirect(sid, text, imgs);
   };
 
-  // Send a prompt supplied by another component (e.g. "Ask AI: what breaks?"). Uses refs so the
-  // once-registered event listener always targets the current, non-busy session.
+
+
   const sendExternal = async (text: string) => {
     const sid = currentIdRef.current;
     if (!text.trim() || !sid || busyMapRef.current[sid]) return;
@@ -327,7 +327,7 @@ export default function ChatPanel() {
 
   const stop = () => host()?.CancelMessage(currentId);
 
-  // Slash-command menu (open while the line is a bare "/token").
+
   const showCmd = input.startsWith('/') && !input.includes(' ');
   const filtered = showCmd ? commands.filter(c => c.name.startsWith(input.toLowerCase())) : [];
   const acceptCmd = (c: SlashCommand) => setInput(c.name + ' ');

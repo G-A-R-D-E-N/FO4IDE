@@ -5,13 +5,13 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// A binary overlay memory-maps its plugin file and holds that handle until it is disposed. LooseMods
-// entries used to be overwritten and removed directly, so every reload of the same plugin dropped the
-// previous overlay's only reference while its mmap stayed open for the rest of the process -- on the
-// very file save_plugin later writes back to. ReplaceLooseMod/ReleaseLooseMod own that handoff now.
-//
-// These use a plain IDisposable stand-in rather than a real overlay on purpose: LooseMods is keyed to
-// object, the release logic is what is under test, and a real overlay would need a plugin on disk.
+
+
+
+
+
+
+
 public class LooseModReleaseTests
 {
     private sealed class FakeMod : IDisposable
@@ -99,7 +99,7 @@ public class LooseModReleaseTests
         var editable = new FakeMod();
 
         MutagenLoader.ReplaceLooseMod(name, readOnlyOverlay);
-        MutagenLoader.EditableMods[name] = editable;      // WriteService.Register order
+        MutagenLoader.EditableMods[name] = editable;
         MutagenLoader.ReplaceLooseMod(name, editable);
 
         readOnlyOverlay.Disposed.Should().BeTrue("this is the handle that blocked saving over the file");

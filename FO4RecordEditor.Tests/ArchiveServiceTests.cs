@@ -11,9 +11,9 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Hand-builds a minimal, real, valid BTDX v1 GNRL archive (the exact byte layout
-// Mutagen.Bethesda.Archives.Ba2.Ba2Reader parses) rather than mocking IArchiveReader, so these
-// tests exercise the real binary format ArchiveService will see in the wild.
+
+
+
 public class ArchiveServiceTests
 {
     private static string BuildTestBa2(params (string path, byte[] content)[] entries)
@@ -21,8 +21,8 @@ public class ArchiveServiceTests
         var ms = new MemoryStream();
         using (var bw = new BinaryWriter(ms, Encoding.ASCII, leaveOpen: true))
         {
-            const int headerSize = 24;   // magic(4)+version(4)+fourcc(4)+numFiles(4)+nameTableOffset(8)
-            const int entrySize = 36;    // nameHash(4)+ext(4)+dirHash(4)+flags(4)+offset(8)+size(4)+realSize(4)+align(4)
+            const int headerSize = 24;
+            const int entrySize = 36;
 
             uint dataStart = headerSize + (uint)(entrySize * entries.Length);
             var offsets = new uint[entries.Length];
@@ -31,22 +31,22 @@ public class ArchiveServiceTests
             uint nameTableOffset = cursor;
 
             bw.Write(Encoding.ASCII.GetBytes("BTDX"));
-            bw.Write((uint)1);                              // version
-            bw.Write(Encoding.ASCII.GetBytes("GNRL"));       // entry type
+            bw.Write((uint)1);
+            bw.Write(Encoding.ASCII.GetBytes("GNRL"));
             bw.Write((uint)entries.Length);
             bw.Write((ulong)nameTableOffset);
 
-            // BA2FileEntry, version==1 layout, one per entry
+
             for (int i = 0; i < entries.Length; i++)
             {
-                bw.Write((uint)0);                                 // nameHash (unused; Path comes from name table)
-                bw.Write(Encoding.ASCII.GetBytes("txt\0")[..4]);    // extension
-                bw.Write((uint)0);                                 // dirHash
-                bw.Write((uint)0);                                 // flags
-                bw.Write((ulong)offsets[i]);                        // offset
-                bw.Write((uint)0);                                  // size==0 -> uncompressed (Compressed = size != 0 for v<7)
-                bw.Write((uint)entries[i].content.Length);          // realSize
-                bw.Write((uint)0);                                  // align (version<=1 field)
+                bw.Write((uint)0);
+                bw.Write(Encoding.ASCII.GetBytes("txt\0")[..4]);
+                bw.Write((uint)0);
+                bw.Write((uint)0);
+                bw.Write((ulong)offsets[i]);
+                bw.Write((uint)0);
+                bw.Write((uint)entries[i].content.Length);
+                bw.Write((uint)0);
             }
 
             foreach (var (_, content) in entries) bw.Write(content);
@@ -239,7 +239,7 @@ public class ArchiveServiceTests
         finally { try { File.Delete(archive); } catch { } }
     }
 
-    // ---- filterMode: wildcard/regex (ported from AlexxEG/BSA_Browser's filter design) ----
+
 
     [Fact]
     public void ListArchiveJson_WildcardFilter_MatchesExtension()
@@ -288,8 +288,8 @@ public class ArchiveServiceTests
     [Fact]
     public void ListArchiveJson_SimpleFilterIsUnchanged_PlainSubstring()
     {
-        // 'simple' mode (the default, and what the AI-facing MCP tools use) must still be a plain
-        // substring match, NOT wildcard/regex -- '*' has no special meaning in this mode.
+
+
         var archive = BuildTestBa2((@"Meshes\gun*special.nif", Encoding.ASCII.GetBytes("a")));
         try
         {
@@ -467,7 +467,7 @@ public class ArchiveServiceTests
         }
     }
 
-    // ---- CompareArchivesJson (ported from AlexxEG/BSA_Browser's CompareForm.CompareAsync) ----
+
 
     [Fact]
     public void CompareArchivesJson_ClassifiesAddedRemovedChangedIdentical()
@@ -502,7 +502,7 @@ public class ArchiveServiceTests
     [Fact]
     public void CompareArchivesJson_SameSizeDifferentContent_IsChangedNotIdentical()
     {
-        // Same length is not enough to call two entries identical -- must be a real byte comparison.
+
         var archiveA = BuildTestBa2((@"A.txt", Encoding.ASCII.GetBytes("AAAA")));
         var archiveB = BuildTestBa2((@"A.txt", Encoding.ASCII.GetBytes("BBBB")));
         try

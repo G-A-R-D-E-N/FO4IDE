@@ -7,17 +7,17 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-// WebView2 host object. Use a clean AutoDual class with NO explicit COM interface and NO generic
-// delegate in the constructor: both confuse the generated IDispatch type info and cause
-// "Member not found" (0x80020003) / "Invalid number of parameters" (0x8002000E) from JS.
-// Every method takes/returns only COM-friendly types (string / void).
+
+
+
+
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class AppInterop
 {
     private readonly ShellViewModel _shell;
-    // Pushed progress to the React UI: (message, percent). percent is 0-100, or negative to hide the
-    // bar. MainWindow supplies this and forwards each report to the page as a web message.
+
+
     private readonly Action<string, double?>? _onProgress;
 
     public AppInterop(ShellViewModel shell, Action<string, double?>? onProgress = null)
@@ -26,15 +26,15 @@ public class AppInterop
         _onProgress = onProgress;
     }
 
-    // Marshal IProgress reports from the loader to the UI sink. Created on the UI thread (host-object
-    // calls run there), so Progress<T> posts callbacks back to the UI thread where web messages are valid.
+
+
     private IProgress<(string message, double? percent)>? MakeProgress() =>
         _onProgress == null
             ? null
             : new Progress<(string message, double? percent)>(p => _onProgress(p.message, p.percent));
 
-    /// <summary>Show a native folder picker for the MO2 instance folder (the one with 'mods' and
-    /// 'profiles'). Returns the chosen path, or "" if cancelled or not a valid MO2 instance.</summary>
+
+
     public string BrowseForMo2Folder()
     {
         var last = _shell.Settings.Current.Mo2InstancePath;
@@ -53,8 +53,8 @@ public class AppInterop
         return instance;
     }
 
-    // async Task (not void) so the JS caller can await the full load, then refresh the tree. The
-    // finally hides the progress bar whether the load succeeded, failed, or loaded zero plugins.
+
+
     public async System.Threading.Tasks.Task OpenMo2Profile(string instancePath)
     {
         DebugLog.Interop(nameof(OpenMo2Profile), instancePath);
@@ -71,8 +71,8 @@ public class AppInterop
         finally { _onProgress?.Invoke("", -1); }
     }
 
-    /// <summary>Run the full load-order conflict scan (cached + shared with the AI's scan_conflicts
-    /// tool), populate conflict state for tree tinting, and return a short summary.</summary>
+
+
     public async System.Threading.Tasks.Task<string> ScanConflicts()
     {
         DebugLog.Interop(nameof(ScanConflicts));
@@ -108,8 +108,8 @@ public class AppInterop
         finally { _onProgress?.Invoke("", -1); }
     }
 
-    /// <summary>Rebuild the plugin tree from the current load order + AI edits (fresh lazy nodes), so
-    /// changes the AI just made show on re-expand. Does NOT reload the environment.</summary>
+
+
     public string RefreshTree()
     {
         DebugLog.Interop(nameof(RefreshTree));
@@ -148,11 +148,11 @@ public class AppInterop
         var node = FindNode(path);
         if (node == null) { DebugLog.Debug("Interop", $"GetChildren: node not found for {path}"); return "[]"; }
 
-        // Lazily materialize: a freshly-listed plugin/group has a single "Loading..." dummy child
-        // carrying _NeedsGroups (plugin -> top-level groups) or _NeedsRecords ("plugin|SIG" -> records).
-        // The old WPF Tree_Expanded handler loaded these on expand; in the WebView2 shell this method
-        // is the expand. Load off the UI thread (large groups can be slow); the await resumes on the
-        // WPF SynchronizationContext, so mutating node.Children below is back on the UI thread.
+
+
+
+
+
         var dummy = node.GetChild("Loading...");
         if (dummy != null)
         {
@@ -198,8 +198,8 @@ public class AppInterop
         return JsonConvert.SerializeObject(data);
     }
 
-    // The React UI renders a record by fetching backend.GetRecordTree; this just resolves the node
-    // and returns its FormKey so the frontend knows what to load (no WPF tab to open anymore).
+
+
     public string OpenRecord(string path)
     {
         DebugLog.Interop(nameof(OpenRecord), path);

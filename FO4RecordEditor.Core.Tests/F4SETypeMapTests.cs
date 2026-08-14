@@ -4,27 +4,27 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The Papyrus to C++ type mapping, in both directions.
-/// </summary>
-/// <remarks>
-/// Every row asserted here was derived by aligning the 225 registrations in the F4SE 0.6.23 source
-/// against the <c>native</c> declarations in its shipped <c>.psc</c>, not from memory.
-/// <see cref="F4SECorpusTests"/> re-derives that alignment against a real tree when one is
-/// available; this file is what holds the result once it is checked in.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class F4SETypeMapTests
 {
     private static readonly F4SETypeMap Map = new(new[] { "WornItem", "Owner", "PluginInfo" });
 
     private static PapyrusTypeText P(string name, bool array = false) => new(name, array);
 
-    // ---- CppTypeRef parsing -------------------------------------------------------------------
+
 
     [Theory]
     [InlineData("bool", "bool")]
     [InlineData("TESForm*", "TESForm*")]
-    [InlineData("TESObjectMISC *", "TESObjectMISC*")]          // real spacing in the shipped source
+    [InlineData("TESObjectMISC *", "TESObjectMISC*")]
     [InlineData("  BSFixedString  ", "BSFixedString")]
     [InlineData("VMArray<TESForm*>", "VMArray<TESForm*>")]
     [InlineData("VMArray< BGSKeyword* >", "VMArray<BGSKeyword*>")]
@@ -39,14 +39,14 @@ public class F4SETypeMapTests
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("TESForm**")]                                  // pointer to pointer is not marshallable
+    [InlineData("TESForm**")]
     [InlineData("VMArray<")]
     public void A_type_the_marshaller_cannot_carry_is_refused(string text)
     {
         CppTypeRef.TryParse(text, out _).Should().BeFalse();
     }
 
-    // ---- Papyrus to C++ -----------------------------------------------------------------------
+
 
     [Theory]
     [InlineData("bool", "bool")]
@@ -69,7 +69,7 @@ public class F4SETypeMapTests
     [InlineData("Enchantment", "EnchantmentItem*")]
     [InlineData("LeveledItem", "TESLevItem*")]
     [InlineData("WaterType", "TESWaterForm*")]
-    [InlineData("ScriptObject", "VMObject")]                   // by value, not a form pointer
+    [InlineData("ScriptObject", "VMObject")]
     public void A_papyrus_type_maps_to_the_cpp_type_f4se_uses(string papyrus, string expected)
     {
         Map.TryToCpp(P(papyrus), unsigned: false, out var cpp, out var refusal)
@@ -127,7 +127,7 @@ public class F4SETypeMapTests
         refusal.Should().Contain("None");
     }
 
-    // ---- C++ to Papyrus -----------------------------------------------------------------------
+
 
     [Theory]
     [InlineData("bool", "bool")]
@@ -140,7 +140,7 @@ public class F4SETypeMapTests
     [InlineData("int", "int")]
     [InlineData("TESForm*", "Form")]
     [InlineData("TESObjectREFR*", "ObjectReference")]
-    [InlineData("VMRefOrInventoryObj", "ObjectReference")]     // the dual receiver form
+    [InlineData("VMRefOrInventoryObj", "ObjectReference")]
     [InlineData("VMObject", "ScriptObject")]
     [InlineData("BGSMod::Attachment::Mod*", "ObjectMod")]
     [InlineData("TESObjectMISC *", "MiscObject")]
@@ -165,8 +165,8 @@ public class F4SETypeMapTests
     [Fact]
     public void An_unnamed_form_pointer_is_refused_rather_than_guessed_from_its_spelling()
     {
-        // Inventing "TESObjectTREE*" means "Tree" would put a wrong type into a generated
-        // declaration, which is worse than refusing.
+
+
         CppTypeRef.TryParse("TESObjectTREE*", out var tree).Should().BeTrue();
         Map.TryToPapyrus(tree, out _, out var refusal).Should().BeFalse();
         refusal.Should().Contain("the form table does not name");
@@ -180,7 +180,7 @@ public class F4SETypeMapTests
         refusal.Should().Contain("jagged");
     }
 
-    // ---- round trip ---------------------------------------------------------------------------
+
 
     [Theory]
     [InlineData("bool")]
@@ -243,12 +243,12 @@ public class F4SETypeMapTests
         }
     }
 
-    // ---- emission helpers ---------------------------------------------------------------------
+
 
     [Fact]
     public void The_template_instantiation_matches_the_shipped_registration_shape()
     {
-        // Verbatim from f4se-master/f4se/PapyrusActor.cpp:135.
+
         F4SETypeMap.TemplateInstantiation(
             latent: false,
             arity: 2,

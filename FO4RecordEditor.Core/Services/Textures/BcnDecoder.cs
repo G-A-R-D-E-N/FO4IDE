@@ -2,36 +2,36 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Textures;
 
-/// <summary>
-/// Decodes BC1 through BC7 blocks to 8-bit RGBA, in process. This is what removes the Texconv.exe
-/// launch and the two temp files the Cell Viewer used to pay for every single texture it showed.
-///
-/// Ported from bcdec.h v0.97 (Sergii Kudlai, MIT / Unlicense), the same decoder Godot ships as
-/// modules/bcdec and the one OpenCommonwealth relies on through Image.Decompress(). The BC7
-/// partition tables and per-mode bit widths below are fixed spec data that cannot be derived, and
-/// were transcribed mechanically from that header rather than typed out. See THIRD_PARTY_NOTICES.md.
-///
-/// BC6H (HDR) is deliberately not ported: nothing in Fallout 4 ships it, and it decodes to float,
-/// not bytes. Callers fall back for it.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
 public static class BcnDecoder
 {
-    /// <summary>True when <see cref="DecodeBlockFormat"/> handles this DXGI format.</summary>
+
     public static bool CanDecode(byte dxgi) => dxgi switch
     {
-        70 or 71 or 72 => true,   // BC1
-        73 or 74 or 75 => true,   // BC2
-        76 or 77 or 78 => true,   // BC3
-        79 or 80 => true,         // BC4_UNORM (the SNORM spelling is not the same decode)
-        82 or 83 => true,         // BC5_UNORM
-        97 or 98 or 99 => true,   // BC7
+        70 or 71 or 72 => true,
+        73 or 74 or 75 => true,
+        76 or 77 or 78 => true,
+        79 or 80 => true,
+        82 or 83 => true,
+        97 or 98 or 99 => true,
         _ => false,
     };
 
-    /// <summary>
-    /// Decode one whole surface into tightly packed RGBA rows. Rows beyond the image are dropped, so
-    /// a 5x5 texture gets 25 pixels out of its 4 blocks.
-    /// </summary>
+
+
+
+
     public static void DecodeBlockFormat(ReadOnlySpan<byte> surface, byte dxgi, int width, int height, byte[] rgba)
     {
         var blockBytes = dxgi is 70 or 71 or 72 or 79 or 80 ? 8 : 16;
@@ -71,7 +71,7 @@ public static class BcnDecoder
         }
     }
 
-    // ---- BC1 through BC5 ----------------------------------------------------------------------
+
 
     private static void ColorBlock(ReadOnlySpan<byte> block, Span<byte> texels, bool onlyOpaque)
     {
@@ -87,17 +87,17 @@ public static class BcnDecoder
 
         if (c0 > c1 || onlyOpaque)
         {
-            // The coefficients here reproduce the float 1/3 and 2/3 interpolation exactly, which is
-            // what DirectXTex does; plain integer division by 3 does not always agree with it.
+
+
             Set(refs, 2, ((2 * r0 + r1) * 351 + 61) >> 7, ((2 * g0 + g1) * 2763 + 1039) >> 11, ((2 * b0 + b1) * 351 + 61) >> 7, 255);
             Set(refs, 3, ((r0 + 2 * r1) * 351 + 61) >> 7, ((g0 + 2 * g1) * 2763 + 1039) >> 11, ((b0 + 2 * b1) * 351 + 61) >> 7, 255);
         }
         else
         {
-            // Half-way colour for the punch-through-alpha mode. Rounded in 5/6-bit space, which
-            // agrees with DirectXTex on 2,319 of the 2,327 endpoint pairs seen across 61 real BC1
-            // textures; the 8 that differ are exact .5 ties where DirectXTex lands one lower.
-            // Averaging the expanded 8-bit endpoints instead fixes those 8 and breaks far more.
+
+
+
+
             Set(refs, 2, ((r0 + r1) * 1053 + 125) >> 8, ((g0 + g1) * 4145 + 1019) >> 11, ((b0 + b1) * 1053 + 125) >> 8, 255);
             Set(refs, 3, 0, 0, 0, 0);
         }
@@ -136,8 +136,8 @@ public static class BcnDecoder
 
     private static void Bc4(ReadOnlySpan<byte> block, Span<byte> texels)
     {
-        // A single-channel format expands to grey, which is what DirectXTex does and therefore what
-        // the viewport has always shown for a BC4 mask; leaving G and B at 0 tints it red.
+
+
         Span<byte> red = stackalloc byte[16];
         SmoothAlpha(block, red);
         for (int i = 0; i < 16; i++) Set(texels, i, red[i], red[i], red[i], 255);
@@ -152,7 +152,7 @@ public static class BcnDecoder
         for (int i = 0; i < 16; i++) Set(texels, i, red[i], green[i], 0, 255);
     }
 
-    /// <summary>One 8-byte BC4-style channel: two endpoints then sixteen 3-bit indices.</summary>
+
     private static void SmoothAlpha(ReadOnlySpan<byte> block, Span<byte> values)
     {
         Span<byte> palette = stackalloc byte[8];
@@ -175,11 +175,11 @@ public static class BcnDecoder
         for (int i = 0; i < 16; i++) values[i] = palette[(int)((indices >> (3 * i)) & 7)];
     }
 
-    // ---- BC7 ----------------------------------------------------------------------------------
+
 
     private static readonly int[] ColorBitsPerMode = { 4, 6, 5, 7, 5, 7, 7, 5 };
     private static readonly int[] AlphaBitsPerMode = { 0, 0, 0, 0, 6, 8, 7, 5 };
-    private const int ModesWithPBits = 0b11001011;   // modes 0, 1, 3, 6, 7
+    private const int ModesWithPBits = 0b11001011;
 
     private static readonly int[] Weight2 = { 0, 21, 43, 64 };
     private static readonly int[] Weight3 = { 0, 9, 18, 27, 37, 46, 55, 64 };
@@ -196,7 +196,7 @@ public static class BcnDecoder
         while (mode < 8 && bits.ReadBit() == 0) mode++;
         if (mode >= 8)
         {
-            // Reserved: the spec says a block with no mode bit set decodes to transparent black.
+
             texels.Clear();
             return;
         }
@@ -235,7 +235,7 @@ public static class BcnDecoder
 
             if (mode == 1)
             {
-                // Mode 1 shares one p-bit across each subset's pair of endpoints.
+
                 var p0 = bits.ReadBit();
                 var p1 = bits.ReadBit();
                 for (int c = 0; c < 3; c++)
@@ -259,8 +259,8 @@ public static class BcnDecoder
         var pBit = hasPBits ? 1 : 0;
         for (int e = 0; e < endpointCount; e++)
         {
-            // Shift each component so its MSB lands in bit 7, then replicate the MSBs downward into
-            // the bits the shift just vacated.
+
+
             var precision = colorBits + pBit;
             for (int c = 0; c < 3; c++)
             {
@@ -281,13 +281,13 @@ public static class BcnDecoder
         var weights = indexBits == 2 ? Weight2 : indexBits == 3 ? Weight3 : Weight4;
         var weights2 = indexBits2 == 2 ? Weight2 : Weight3;
 
-        // The two index arrays are not interleaved in the block, so colour indices have to be read
-        // out in full before any alpha index can be.
+
+
         Span<int> indices = stackalloc int[16];
         for (int i = 0; i < 16; i++)
         {
             var set = PartitionSet(subsets, partition, i);
-            // An anchor index is stored one bit short, because its high bit is implied.
+
             indices[i] = bits.Read((set & 0x80) != 0 ? indexBits - 1 : indexBits);
         }
 
@@ -336,8 +336,8 @@ public static class BcnDecoder
         }
     }
 
-    // For a single-subset block only texel 0 is an anchor; the tables carry the anchor flag in the
-    // high bit of each entry, which is why they are read as bytes rather than 0/1/2.
+
+
     private static byte PartitionSet(int subsets, int partition, int texel)
         => subsets == 1 ? (byte)(texel == 0 ? 0x80 : 0)
          : subsets == 2 ? Partitions2[partition * 16 + texel]
@@ -354,10 +354,10 @@ public static class BcnDecoder
         return table;
     }
 
-    /// <summary>
-    /// A BC7 block is read as a 128-bit little-endian bit stream, low word first. Kept as two ulongs
-    /// shifting into each other rather than a UInt128 so the shifting matches the reference exactly.
-    /// </summary>
+
+
+
+
     private ref struct BitStream
     {
         private ulong _low;
@@ -383,9 +383,9 @@ public static class BcnDecoder
         public int ReadBit() => Read(1);
     }
 
-    // The 64 two-subset and 64 three-subset BC7 partition patterns, one row of 16 texels each, in
-    // the spec's order, with bit 0x80 marking that texel as its subset's anchor. Fixed spec data,
-    // transcribed from bcdec.h.
+
+
+
     private const string Partitions2Hex =
         "80000101000001010000010100000181" + "80000001000000010000000100000081" +
         "80010101000101010001010100010181" + "80000001000001010000010100010181" +

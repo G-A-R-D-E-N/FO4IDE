@@ -27,8 +27,8 @@ public class PapyrusLexerTests
     [Fact]
     public void Keyword_table_matches_the_language_reference_count()
     {
-        // The Creation Kit wiki's Keyword Reference lists exactly 45. If this fails, either a
-        // keyword was invented or one was dropped -- both are grammar bugs, not test bugs.
+
+
         PapyrusKeywords.All.Should().HaveCount(45);
     }
 
@@ -64,7 +64,7 @@ public class PapyrusLexerTests
     [Fact]
     public void Continuation_still_joins_when_a_comment_follows_the_backslash()
     {
-        // "you can put a comment after the slash if you wish" -- Script File Structure.
+
         Kinds("x = 1 + \\ ; keep going\n 2").Should().Equal(
             PapyrusTokenKind.Identifier,
             PapyrusTokenKind.Assign,
@@ -77,7 +77,7 @@ public class PapyrusLexerTests
     [Fact]
     public void Backslash_inside_a_comment_does_not_continue_the_line()
     {
-        // The slash is inside the comment, so line 2 is its own statement.
+
         Kinds("; comment \\\nx").Should().Equal(
             PapyrusTokenKind.Newline,
             PapyrusTokenKind.Identifier,
@@ -128,7 +128,7 @@ public class PapyrusLexerTests
     [Fact]
     public void Unknown_escape_keeps_both_characters_so_windows_paths_survive()
     {
-        // Dropping the backslash would silently corrupt "Data\Scripts" in a string literal.
+
         Lex("\"Data\\Scripts\"").Tokens[0].Text.Should().Be("Data\\Scripts");
     }
 
@@ -138,7 +138,7 @@ public class PapyrusLexerTests
         var (tokens, diagnostics) = Lex("\"oops\nx");
         diagnostics.Should().ContainSingle()
             .Which.Code.Should().Be(PapyrusDiagnosticCodes.UnterminatedString);
-        // The rest of the file must still tokenise, or one stray quote would blank the outline.
+
         tokens.Select(t => t.Kind).Should().Contain(PapyrusTokenKind.Identifier);
     }
 
@@ -157,7 +157,7 @@ public class PapyrusLexerTests
     [Fact]
     public void Minus_is_an_operator_not_part_of_the_literal()
     {
-        // Otherwise "a-1" would lex as two operands and never parse as subtraction.
+
         Kinds("a-1").Should().Equal(
             PapyrusTokenKind.Identifier,
             PapyrusTokenKind.Minus,
@@ -201,7 +201,7 @@ public class PapyrusLexerTests
     [Fact]
     public void Carriage_returns_do_not_shift_line_numbers()
     {
-        // Every real .psc in the corpus is CRLF; getting this wrong offsets every diagnostic.
+
         var tokens = Lex("a\r\nb\r\nc").Tokens;
         tokens.First(t => t.Text == "c").Span.Line.Should().Be(3);
     }

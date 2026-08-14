@@ -28,23 +28,23 @@ export default function AudioPanel({ onClose }: { onClose: () => void }) {
   const [dragOver, setDragOver] = useState(false);
   const [lastOutDir, setLastOutDir] = useState('');
 
-  // to-xwm
+
   const [xwmSource, setXwmSource] = useState(() => LS('xwmSource', ''));
   const [xwmOutput, setXwmOutput] = useState(() => LS('xwmOutput', ''));
   const [bitrate, setBitrate] = useState(() => Number(LS('bitrate', '0')));
 
-  // from-xwm
+
   const [decSource, setDecSource] = useState(() => LS('decSource', ''));
   const [decOutput, setDecOutput] = useState(() => LS('decOutput', ''));
   const [decFormat, setDecFormat] = useState(() => LS('decFormat', 'wav'));
 
-  // fuz-make
+
   const [fuzAudioSource, setFuzAudioSource] = useState(() => LS('fuzAudioSource', ''));
   const [fuzLip, setFuzLip] = useState(() => LS('fuzLip', ''));
   const [fuzOutput, setFuzOutput] = useState(() => LS('fuzOutput', ''));
   const [fuzNoLip, setFuzNoLip] = useState(() => LSB('fuzNoLip', false));
 
-  // fuz-extract
+
   const [extSource, setExtSource] = useState(() => LS('extSource', ''));
   const [extXwmOut, setExtXwmOut] = useState(() => LS('extXwmOut', ''));
   const [extLipOut, setExtLipOut] = useState(() => LS('extLipOut', ''));
@@ -74,7 +74,7 @@ export default function AudioPanel({ onClose }: { onClose: () => void }) {
   const XWM_FILTER = 'xWMA (*.xwm)|*.xwm|All files|*.*';
   const FUZ_FILTER = 'Fuz voice file (*.fuz)|*.fuz|All files|*.*';
 
-  // drag & drop: stage the dropped file's bytes to a temp path (WebView2 hides the real OS path).
+
   const onDrop = useCallback(async (e: DragEvent, setter: (v: string) => void, key: string) => {
     e.preventDefault(); setDragOver(false);
     if (!audio) return;

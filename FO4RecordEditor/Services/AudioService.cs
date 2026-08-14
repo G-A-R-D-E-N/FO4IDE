@@ -6,39 +6,39 @@ using System.Threading.Tasks;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Converts audio to/from Fallout 4's xWMA (.xwm) format, and merges/splits the .fuz voice container
-/// (xwm + lip sync). Neither xWMA encoding/decoding nor .fuz packing is reimplemented here -- both are
-/// narrow, already-solved problems with an existing authoritative tool, so this shells out to them the
-/// same way PapyrusService shells to PapyrusCompiler.exe and TextureService shells to texconv:
-///
-///   ffmpeg        - decodes any input audio/video (mp3/flac/ogg/m4a/wma/...) to a plain PCM WAV, and
-///                   the reverse (a decoded xwm's WAV to whatever output format is asked for). xWMAEncode
-///                   only speaks PCM WAV, so anything else has to pass through here first.
-///   xWMAEncode.exe - Microsoft's own tool. It reads the input's actual format (not its extension) and
-///                   encodes PCM->xWMA or decodes xWMA->PCM accordingly. It also resamples internally,
-///                   so ffmpeg does not need to target any particular sample rate/channel count.
-///   BmlFuzEncode/Decode.exe - packs an xwm+lip pair into .fuz, or splits a .fuz back into both.
-///
-/// See ToolPaths.Ffmpeg/XwmaEncode/BmlFuzEncode/BmlFuzDecode for how each is located.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static class AudioService
 {
     private static bool IsExt(string path, string ext) =>
         string.Equals(Path.GetExtension(path), ext, StringComparison.OrdinalIgnoreCase);
 
-    // What CanBatchConvert walks a folder for. ffmpeg reads far more than this, but these are the
-    // formats a mod's Sound\ folder actually shows up in -- matches the GUI Audio panel's file filter.
+
+
     private static readonly HashSet<string> BatchExtensions = new(StringComparer.OrdinalIgnoreCase)
         { ".wav", ".mp3", ".flac", ".ogg", ".oga", ".m4a", ".wma", ".aif", ".aiff", ".mp4", ".avi" };
 
-    /// <summary>
-    /// Convert an audio (or video) source to Fallout 4's xWMA format -- a single file, OR a whole
-    /// folder (recursed, extension-filtered by BatchExtensions), converted in parallel with the
-    /// original folder structure preserved under 'output' (or in place, alongside each original, if
-    /// 'output' is blank). bitrateBps must be one of xWMAEncode's supported bitrates (20000/32000/
-    /// 48000/64000/96000/160000/192000) if given; null uses its own default (48000).
-    /// </summary>
+
+
+
+
+
+
+
     public static string ConvertToXwm(string source, string? output, int? bitrateBps)
     {
         if (string.IsNullOrWhiteSpace(source)) return ToolError.Fail("Provide 'source' (an audio/video file, or a folder of them).");
@@ -49,8 +49,8 @@ public static class AudioService
         return ConvertOneToXwm(source, output, bitrateBps);
     }
 
-    // Recursed, parallel (capped concurrency -- each conversion spawns 1-2 real child processes, so
-    // this isn't free-threading the way a pure-CPU Parallel.ForEach would be), original tree preserved.
+
+
     private static string ConvertFolderToXwm(string sourceDir, string? outputDir, int? bitrateBps)
     {
         var files = Directory.EnumerateFiles(sourceDir, "*.*", SearchOption.AllDirectories)
@@ -74,8 +74,8 @@ public static class AudioService
             if (result.StartsWith("RESULT: success", StringComparison.Ordinal)) Interlocked.Increment(ref ok);
             else
             {
-                // Strip ToolError's sentinel before embedding -- it only means anything at position 0
-                // of the whole tool result, not nested inside one failure line of a batch summary.
+
+
                 var clean = ToolError.IsMarked(result) ? result[1..] : result;
                 failures.Add($"{rel}: {clean.Split('\n')[0]}");
             }
@@ -88,11 +88,11 @@ public static class AudioService
         return msg;
     }
 
-    /// <summary>
-    /// Convert one audio (or video) source file to Fallout 4's xWMA format. Non-PCM-WAV sources
-    /// (anything ffmpeg-readable, or a WAV that's actually IEEE-float) are decoded to a temporary PCM
-    /// WAV via ffmpeg first (deleted afterward); a PCM WAV source is fed to xWMAEncode directly.
-    /// </summary>
+
+
+
+
+
     public static string ConvertOneToXwm(string source, string? output, int? bitrateBps)
     {
         if (string.IsNullOrWhiteSpace(source)) return ToolError.Fail("Provide 'source' (an audio or video file).");
@@ -137,10 +137,10 @@ public static class AudioService
         finally { if (tempWav != null) TryDelete(tempWav); }
     }
 
-    /// <summary>
-    /// Decode a .xwm back to PCM WAV, and optionally on to a further format (mp3/flac/ogg/...) via
-    /// ffmpeg if targetExt is given and is not "wav".
-    /// </summary>
+
+
+
+
     public static string ConvertFromXwm(string source, string? output, string? targetExt)
     {
         if (string.IsNullOrWhiteSpace(source)) return ToolError.Fail("Provide 'source' (a .xwm file).");
@@ -158,8 +158,8 @@ public static class AudioService
         try { Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(finalOut)) ?? "."); }
         catch (Exception ex) { return ToolError.Fail($"Cannot create output dir for '{finalOut}': {ex.Message}"); }
 
-        // xWMAEncode always produces WAV on decode; write straight to the final path when that's all
-        // that's wanted, otherwise to a temp WAV that ffmpeg then transcodes from.
+
+
         var wantsWav = targetExt == "wav";
         var wavOut = wantsWav ? finalOut : Path.Combine(Path.GetTempPath(),
             "FO4RE_Audio_" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".wav");
@@ -188,11 +188,11 @@ public static class AudioService
         finally { if (!wantsWav) TryDelete(wavOut); }
     }
 
-    /// <summary>
-    /// Pack an audio source (any format ConvertToXwm accepts, or an existing .xwm) and an optional
-    /// .lip file into a .fuz voice container. lipPath defaults to a same-named .lip next to the audio
-    /// source if it exists; noLip forces a lip-less .fuz even if one is found.
-    /// </summary>
+
+
+
+
+
     public static string MakeFuz(string audioSource, string? lipPath, string fuzOutput, bool noLip)
     {
         if (string.IsNullOrWhiteSpace(audioSource)) return ToolError.Fail("Provide 'audio_source'.");
@@ -239,8 +239,8 @@ public static class AudioService
         finally { if (tempXwm != null) TryDelete(tempXwm); }
     }
 
-    /// <summary>Split a .fuz into its xwm (and lip, unless absent) parts. alsoWav additionally decodes
-    /// the extracted xwm to a .wav alongside it.</summary>
+
+
     public static string ExtractFuz(string fuzPath, string? xwmOutput, string? lipOutput, bool alsoWav)
     {
         if (string.IsNullOrWhiteSpace(fuzPath)) return ToolError.Fail("Provide 'fuz_path'.");
@@ -275,11 +275,11 @@ public static class AudioService
         return msg.ToString();
     }
 
-    // ---- shared helpers ----------------------------------------------------------------------------
 
-    // A WAV whose fmt chunk's format tag is 1 (PCM) or 0xFFFE (extensible-but-PCM subformat). Anything
-    // else -- IEEE float (tag 3), or a non-WAV file entirely -- needs ffmpeg first. Reading only the
-    // fmt chunk header avoids loading the whole file for what's usually a multi-MB audio file.
+
+
+
+
     private static bool IsPcmWav(string path)
     {
         if (!IsExt(path, ".wav")) return false;
@@ -288,15 +288,15 @@ public static class AudioService
             using var fs = File.OpenRead(path);
             Span<byte> riff = stackalloc byte[12];
             if (fs.Read(riff) < 12) return false;
-            if (BitConverter.ToUInt32(riff.Slice(0, 4)) != 0x46464952u) return false;   // "RIFF"
-            if (BitConverter.ToUInt32(riff.Slice(8, 4)) != 0x45564157u) return false;   // "WAVE"
+            if (BitConverter.ToUInt32(riff.Slice(0, 4)) != 0x46464952u) return false;
+            if (BitConverter.ToUInt32(riff.Slice(8, 4)) != 0x45564157u) return false;
 
             Span<byte> chunkHeader = stackalloc byte[8];
             while (fs.Read(chunkHeader) == 8)
             {
                 var id = BitConverter.ToUInt32(chunkHeader.Slice(0, 4));
                 var size = BitConverter.ToUInt32(chunkHeader.Slice(4, 4));
-                if (id == 0x20746d66u)   // "fmt "
+                if (id == 0x20746d66u)
                 {
                     Span<byte> fmt = stackalloc byte[2];
                     if (fs.Read(fmt) < 2) return false;
@@ -306,11 +306,11 @@ public static class AudioService
                 fs.Seek(size + (size % 2), SeekOrigin.Current);
             }
         }
-        catch { /* fall through to "needs ffmpeg" */ }
+        catch {  }
         return false;
     }
 
-    // Decode any ffmpeg-readable source to a temp 16-bit PCM WAV. Caller deletes it.
+
     private static (string? wavPath, string? error) NormalizeToPcmWav(string source)
     {
         var ff = ToolPaths.Ffmpeg();

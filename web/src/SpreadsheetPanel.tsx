@@ -10,14 +10,14 @@ const setLS = (k: string, v: string) => localStorage.setItem('spreadsheet.' + k,
 interface GridRow { formKey: string; editorId: string; cells: string[]; }
 interface GridData { columns: string[]; rows: GridRow[]; total: number; offset: number; error?: string; }
 
-/**
- * xEdit's Weapon/Armor/Ammunition spreadsheets, generalized: an editable table over every record
- * of one type in a plugin, for balance work where the task is comparing one number across two
- * hundred records rather than inspecting one record deeply (#51). Backend-generic (GetRecordsGrid
- * works off the same reflection column model as list_records_summary, no per-type code); edits are
- * plain SetField calls per changed cell, applied on Save, same in-memory-until-save_plugin contract
- * as every other edit in this app.
- */
+
+
+
+
+
+
+
+
 export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
   const backend = getBackend();
   const unavailable = !backend;
@@ -27,7 +27,7 @@ export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
   const [plugin, setPlugin] = useState(() => LS('plugin', ''));
   const [type, setType] = useState(() => LS('type', ''));
   const [grid, setGrid] = useState<GridData | null>(null);
-  const [edits, setEdits] = useState<Map<string, string>>(new Map()); // "formKey|column" -> new value
+  const [edits, setEdits] = useState<Map<string, string>>(new Map());
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -38,34 +38,34 @@ export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     if (!backend) return;
-    // The plugin picker has to offer the LOADED LOAD ORDER, not just the editable plugins.
-    // GetEditablePlugins only returns plugins opened or created for editing, which is empty in an
-    // ordinary session, so the dropdown came up blank on a fully loaded modlist and the panel looked
-    // broken. Editable plugins are still merged in: an AI-created plugin may not be in the tree yet.
+
+
+
+
     const app = window.chrome?.webview?.hostObjects?.appInterop;
     void (async () => {
       const names = new Set<string>();
       try {
         const tree = JSON.parse(await app?.GetPlugins() ?? '[]') as { Key: string }[];
         for (const n of tree) if (n?.Key) names.add(n.Key);
-      } catch { /* fall through to editable-only */ }
+      } catch {  }
       try {
         for (const n of JSON.parse(await backend.GetEditablePlugins()) as string[]) if (n) names.add(n);
-      } catch { /* ignore */ }
+      } catch {  }
       setPlugins([...names]);
     })();
   }, [backend]);
 
-  // Types must be scoped to the CHOSEN plugin, with that plugin's own counts. The load-order-wide
-  // index offered 149 types whose counts described the whole modlist, so most picks loaded an empty
-  // grid for the selected plugin and the panel looked like it was ignoring the plugin entirely.
+
+
+
   useEffect(() => {
     if (!backend) return;
     if (!plugin.trim()) { setTypes([]); return; }
     let cancelled = false;
     void (async () => {
       try {
-        // ["Keyword (33)", ...] -> [{ Type, FriendlyName, Count }]
+
         const raw = JSON.parse(await backend.GetPluginRecordTypes(plugin.trim())) as string[];
         const parsed = raw.map(s => {
           const m = /^(.*?)\s*\((\d+)\)\s*$/.exec(s);
@@ -124,9 +124,9 @@ export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
           failures.push(`${formKey}.${col}: ${e instanceof Error ? e.message : String(e)}`);
         }
       }
-      // Persist. SetField only edits the in-memory plugin, so a button labelled "Save Changes" that
-      // stopped there left the user believing edits had reached disk when nothing had been written.
-      // Only save when something actually applied, and never claim a save that did not happen.
+
+
+
       let saveMsg = '';
       if (ok > 0) {
         try {

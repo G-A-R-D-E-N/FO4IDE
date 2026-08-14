@@ -5,12 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Agentic Anthropic client with tool use. Runs the read/act loop: send the user's
-/// question with the plugin tools, execute any tool calls the model makes against the
-/// loaded data, feed results back, and repeat until the model produces a final answer.
-/// Non-streaming per turn (reliable tool_use parsing); text is delivered via onText.
-/// </summary>
+
+
+
+
+
+
 public sealed class AnthropicAgent
 {
     private static readonly JsonSerializerOptions JsonOpts = new()
@@ -36,9 +36,9 @@ public sealed class AnthropicAgent
 
     public void Reset() => _history.Clear();
 
-    /// <summary>Replace the agent's working history with a rebuilt set of turns (used by /compact,
-    /// which keeps recent messages verbatim after a summary). A leading non-user turn is prefixed
-    /// with a synthetic user message so the Messages API's required user/assistant alternation holds.</summary>
+
+
+
     public void LoadHistory(IReadOnlyList<(bool IsUser, string Text)> turns)
     {
         _history.Clear();
@@ -53,8 +53,8 @@ public sealed class AnthropicAgent
         }
     }
 
-    /// <param name="onText">Invoked with each text chunk the model emits.</param>
-    /// <param name="onToolStatus">Invoked when the model calls a tool (for a UI status line).</param>
+
+
     public async Task<string> RunAsync(
         string userMessage, string? systemContext,
         Action<string> onText, Action<string>? onToolStatus = null, CancellationToken ct = default,
@@ -63,9 +63,9 @@ public sealed class AnthropicAgent
         _history.Add(new { role = "user", content = userMessage });
         var finalText = new StringBuilder();
 
-        // Prompt-cache the stable prefix (tools + system). Within one question the tool loop
-        // re-sends this prefix up to 8x, and across questions the tool block is identical -- cached
-        // tokens cost ~0.1x, which is the main lever for cutting API spend.
+
+
+
         var systemBlocks = string.IsNullOrWhiteSpace(systemContext) ? null : new object[]
         {
             new { type = "text", text = systemContext, cache_control = new { type = "ephemeral" } }
@@ -109,7 +109,7 @@ public sealed class AnthropicAgent
             var contentArr = rootEl.GetProperty("content");
             var stopReason = rootEl.TryGetProperty("stop_reason", out var sr) ? sr.GetString() : null;
 
-            // Record the assistant turn verbatim so tool_use ids round-trip correctly.
+
             _history.Add(new { role = "assistant", content = contentArr.Clone() });
 
             var toolResults = new List<object>();
@@ -141,13 +141,13 @@ public sealed class AnthropicAgent
             if (stopReason == "tool_use" && toolResults.Count > 0)
             {
                 _history.Add(new { role = "user", content = toolResults });
-                continue; // model wants to act on the tool results
+                continue;
             }
-            break; // final answer produced
+            break;
         }
 
-        // Report token usage so the user can see cost (and that caching is working): cached input
-        // tokens bill at ~0.1x, so a high "cached" share means most of the prefix was reused.
+
+
         if (onUsage != null && (totalIn + totalCacheRead + totalCacheWrite + totalOut) > 0)
         {
             long billedIn = totalIn + totalCacheWrite;
@@ -159,8 +159,8 @@ public sealed class AnthropicAgent
 
     private async Task<string> PostAsync(object payload, CancellationToken ct)
     {
-        // Same guard as AnthropicProvider: a blank key produced an upstream 401 reading
-        // "x-api-key header is required", which points at the wrong thing. Say what is actually wrong.
+
+
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
             return JsonSerializer.Serialize(new

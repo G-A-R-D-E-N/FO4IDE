@@ -16,9 +16,9 @@ public class PapyrusParserTests
         return script;
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Header
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     [Fact]
     public void Header_captures_name_parent_and_flags()
@@ -49,9 +49,9 @@ public class PapyrusParserTests
             .Should().Contain(d => d.Code == PapyrusDiagnosticCodes.ExpectedScriptName);
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Script members
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     [Fact]
     public void Imports_are_collected()
@@ -68,8 +68,8 @@ public class PapyrusParserTests
         v.Name.Should().Be("myValue");
         v.Type.Name.Should().Be("int");
         v.Initializer.Should().BeOfType<PapyrusLiteralExpression>();
-        // "Conditional" is a user flag from the CK's flags file, not a language keyword, and must
-        // still parse on a machine that has no Creation Kit installed.
+
+
         v.Flags.Should().Equal("conditional");
     }
 
@@ -174,9 +174,9 @@ endStruct
             .CustomEvents.Single().Name.Should().Be("MyCustomEvent");
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Functions and events
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     [Fact]
     public void Function_header_with_return_type_parameters_and_global_flag()
@@ -260,9 +260,9 @@ endEvent
         fn.Parameters[1].Type.Name.Should().Be("scripteventname");
     }
 
-    // -----------------------------------------------------------------------------------------
-    // States
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     [Fact]
     public void Auto_state_with_an_override()
@@ -282,13 +282,13 @@ EndState
         state.Functions.Should().ContainSingle();
         state.Events.Should().ContainSingle();
         state.Functions[0].StateName.Should().Be("MyState");
-        // A state override must not leak into the empty state's function list.
+
         script.Functions.Should().BeEmpty();
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Statements
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     private static List<PapyrusStatement> BodyOf(string statements) =>
         ParseClean("ScriptName S\nFunction F()\n" + statements + "\nEndFunction\n").Functions.Single().Body;
@@ -305,7 +305,7 @@ EndState
     [Fact]
     public void Local_may_carry_a_const_flag_even_though_the_published_grammar_omits_it()
     {
-        // Real shipping scripts do this and the Creation Kit compiler accepts them.
+
         var define = BodyOf("string filename = \"S7System\" const").Single()
             .Should().BeOfType<PapyrusDefineStatement>().Subject;
         define.Flags.Should().Equal("const");
@@ -320,8 +320,8 @@ EndState
     [Fact]
     public void Indexed_assignment_is_not_mistaken_for_an_array_definition()
     {
-        // "myArray[0] = 1" against "int[] myArray": the difference is whether the brackets are
-        // empty, and getting it wrong turns every array write into a bogus syntax error.
+
+
         var assign = BodyOf("myArray[0] = 1").Single()
             .Should().BeOfType<PapyrusAssignStatement>().Subject;
         assign.Target.Should().BeOfType<PapyrusIndexExpression>();
@@ -387,9 +387,9 @@ endIf").Single().Should().BeOfType<PapyrusIfStatement>().Subject;
         loop.Condition.Should().BeOfType<PapyrusBinaryExpression>();
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Expressions
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     private static PapyrusExpression ExprOf(string expression) =>
         BodyOf("x = " + expression).OfType<PapyrusAssignStatement>().Single().Value;
@@ -397,7 +397,7 @@ endIf").Single().Should().BeOfType<PapyrusIfStatement>().Subject;
     [Fact]
     public void Multiplication_binds_tighter_than_addition()
     {
-        // 2 + 4 * 10 is 42, not 60: the tree must be Add(2, Mul(4, 10)).
+
         var root = ExprOf("2 + 4 * 10").Should().BeOfType<PapyrusBinaryExpression>().Subject;
         root.Operator.Should().Be(PapyrusTokenKind.Plus);
         root.Right.Should().BeOfType<PapyrusBinaryExpression>()
@@ -452,7 +452,7 @@ endIf").Single().Should().BeOfType<PapyrusIfStatement>().Subject;
     [Fact]
     public void Dot_chain_with_call_and_index()
     {
-        // (MyVariable as MyObject).MyFunction()[0]
+
         var index = ExprOf("(MyVariable as MyObject).MyFunction()[0]")
             .Should().BeOfType<PapyrusIndexExpression>().Subject;
         var call = index.Target.Should().BeOfType<PapyrusCallExpression>().Subject;
@@ -505,9 +505,9 @@ endIf").Single().Should().BeOfType<PapyrusIfStatement>().Subject;
             .Which.Kind.Should().Be(PapyrusLiteralKind.Bool);
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Recovery
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     [Fact]
     public void A_broken_line_does_not_cost_the_declarations_after_it()

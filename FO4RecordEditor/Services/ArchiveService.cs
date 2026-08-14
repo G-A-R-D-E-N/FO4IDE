@@ -10,11 +10,11 @@ using FO4RecordEditor.Services.Archives;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Read-only BA2/BSA archive access via Mutagen's own <see cref="Archive"/> reader (already vendored,
-/// already used by TextureService's texture-index lookups) exposed as general-purpose MCP tools so
-/// the AI can inspect and pull files out of a mod's packed archive without Archive2.exe.
-/// </summary>
+
+
+
+
+
 public static class ArchiveService
 {
     private static IArchiveReader? TryOpen(string archivePath, out string error)
@@ -28,12 +28,12 @@ public static class ArchiveService
 
     private static readonly TimeSpan FilterRegexTimeout = TimeSpan.FromMilliseconds(100);
 
-    /// <summary>
-    /// Builds a path matcher for the Archive panel and RPC host. "simple"/"contains" is a plain
-    /// substring search; "wildcard"/"glob" converts '*'/'?' to regex; "regex" uses the caller's
-    /// expression. Every regex has a hard timeout so an untrusted or accidentally catastrophic
-    /// expression cannot pin the archive worker indefinitely.
-    /// </summary>
+
+
+
+
+
+
     internal static Func<string, bool> BuildMatcher(string? filter, string? mode, TimeSpan? regexTimeout = null)
     {
         var normalizedMode = string.IsNullOrWhiteSpace(mode) ? "simple" : mode.Trim().ToLowerInvariant();
@@ -97,9 +97,9 @@ public static class ArchiveService
         return header + "\n" + string.Join("\n", shown.Select(f => $"{f.Path}  ({f.Size:N0} bytes)"));
     }
 
-    /// <summary>JSON variant of <see cref="ListArchive"/> for the GUI Archive panel: structured
-    /// {path,size} rows plus counts, so the panel can render a real table/tree instead of parsing
-    /// text lines. filterMode: "simple"/"contains" (default) | "wildcard"/"glob" | "regex" -- see BuildMatcher.</summary>
+
+
+
     public static string ListArchiveJson(string archivePath, string? filter, int limit, string? filterMode = null)
     {
         var reader = TryOpen(archivePath, out var err);
@@ -124,9 +124,9 @@ public static class ArchiveService
         });
     }
 
-    /// <summary>Extract a caller-chosen SET of inner paths (the panel's multi-select) into a folder,
-    /// preserving the archive's internal structure -- like ExtractAll but for an explicit selection
-    /// instead of a substring filter.</summary>
+
+
+
     public static string ExtractSelected(string archivePath, IEnumerable<string> innerPaths, string outDir)
     {
         var reader = TryOpen(archivePath, out var err);
@@ -186,8 +186,8 @@ public static class ArchiveService
         if (all.Count == 0)
             return $"No entries" + (string.IsNullOrWhiteSpace(filter) ? "" : $" matching '{filter}'") + $" in '{Path.GetFileName(archivePath)}'.";
 
-        // No silent truncation: a caller who didn't mean to unpack thousands of files gets a chance
-        // to narrow with 'filter' first, instead of quietly writing a partial extraction to disk.
+
+
         if (all.Count > limit)
             return ToolError.Fail($"'{Path.GetFileName(archivePath)}' has {all.Count} matching entries, over the {limit} limit. " +
                 "Narrow with 'filter' (a path substring, e.g. 'Meshes\\mymod\\') or raise 'limit'.");
@@ -220,16 +220,16 @@ public static class ArchiveService
         return msg;
     }
 
-    /// <summary>
-    /// Compare two archives: which entries are only in A (removed), only in B (added), in both but
-    /// byte-different (changed), or in both and byte-identical. Algorithm ported from AlexxEG/
-    /// BSA_Browser's CompareForm.CompareAsync (GPL-3.0, reviewed directly) -- match by path, then by
-    /// size, then a real byte comparison (not just size/timestamp, which can't tell two
-    /// same-size-different-content files apart). Their version streams the comparison directly
-    /// against each archive's raw stream; this reads each candidate pair fully into memory via
-    /// IArchiveFile.GetBytes() instead, since Mutagen's reader already decompresses through that call
-    /// and BA2 entries are asset-sized (not multi-GB), so streaming isn't worth the extra complexity.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
     public static string CompareArchivesJson(string archivePathA, string archivePathB)
     {
         var readerA = TryOpen(archivePathA, out var errA);
@@ -275,21 +275,21 @@ public static class ArchiveService
         });
     }
 
-    /// <summary>
-    /// Pack one or more loose folders into a new BA2. Written in process by <see cref="Ba2Packer"/>;
-    /// the Creation Kit's Archive2.exe is no longer needed and is only used if explicitly asked for.
-    /// That matters because Archive2.exe is not redistributable, so it could never be bundled and a
-    /// user without the CK installed simply could not pack.
-    ///
-    /// 'format' keeps Archive2's vocabulary: "General" (anything non-DDS -- sounds/meshes/scripts/
-    /// ...) or "DDS" (texture-only archives, using BA2's per-mip chunk layout). Both are written in
-    /// process; a DDS archive reads each texture's own header for its height/width/mip count/DXGI
-    /// format and splits the payload by mip range the way vanilla does (see <see cref="Ba2Texture"/>).
-    ///
-    /// 'rootDir' is what each entry's in-archive path is computed relative to (e.g. root=".../Data",
-    /// source=".../Data/Sound/..." -> entry "Sound/..."); get it wrong and the game will never find
-    /// the packed files under its Data\ folder.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static string Pack(IReadOnlyList<string> sourcePaths, string outputBa2, string format, string rootDir, bool compress,
                               bool useArchive2 = false)
     {
@@ -324,26 +324,26 @@ public static class ArchiveService
         catch (Exception ex) { return ToolError.Fail($"Cannot create output dir for '{outputBa2}': {ex.Message}"); }
 
         var psi = new ProcessStartInfo { FileName = archive2 };
-        // Archive2 wants every source folder as ONE comma-separated argument, not repeated -i flags.
+
         psi.ArgumentList.Add(string.Join(",", sources));
         psi.ArgumentList.Add($"-f={format}");
         psi.ArgumentList.Add($"-c={outputBa2}");
         psi.ArgumentList.Add($"-r={rootDir}");
         if (!compress) psi.ArgumentList.Add("-compression=None");
 
-        // Large sound/texture packs (hundreds of files) can take a while; Papyrus batch compiles get
-        // 300s for a similar reason.
+
+
         var run = ProcessRunner.Run(psi, TimeSpan.FromMinutes(10));
         if (!run.Started) return ToolError.Fail("Failed to start Archive2.exe.");
         if (run.TimedOut) return ToolError.Fail("Archive2.exe timed out after 10 minutes (killed).");
         if (run.ExitCode != 0 || !File.Exists(outputBa2))
             return ToolError.Fail($"Archive2.exe failed (exit {run.ExitCode}):\n{run.Combined}");
 
-        // Verify what actually got written, rather than trust a clean exit code. This project's
-        // vendored Mutagen cannot correctly decompress BA2 header version >= 7 (Next-Gen's format):
-        // GetBytes() silently returns still-compressed bytes instead of throwing, so a stale or
-        // updated Archive2.exe would ship an archive that looks packed but reads back as garbage
-        // through every other tool here (archive_list/archive_extract/TextureService's own lookups).
+
+
+
+
+
         var headerVersion = ReadBa2HeaderVersion(outputBa2);
         if (headerVersion is int v && v >= 7)
             return ToolError.Fail(
@@ -357,10 +357,10 @@ public static class ArchiveService
         return $"RESULT: success ({count} file(s) -> {outputBa2})\n\n{run.Combined}".TrimEnd();
     }
 
-    /// <summary>
-    /// The in-process path. Sources are re-rooted at rootDir first so an entry's in-archive name
-    /// matches what Archive2 would have produced for the same arguments.
-    /// </summary>
+
+
+
+
     private static string PackInProcess(List<string> sources, string outputBa2, string rootDir, bool compress, Ba2Format format)
     {
         var full = Path.GetFullPath(rootDir);
@@ -383,9 +383,9 @@ public static class ArchiveService
                $"{result.CompressedCount} compressed, {result.FileCount - result.CompressedCount} stored.";
     }
 
-    // BA2 header: 4-byte "BTDX" magic, then a little-endian uint32 version. Null if the file is too
-    // short or doesn't start with the magic (Archive2 already validated it built something, so this
-    // is a format-version check, not a "did it even write a BA2" check).
+
+
+
     private static int? ReadBa2HeaderVersion(string ba2Path)
     {
         try

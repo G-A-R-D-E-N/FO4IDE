@@ -7,9 +7,9 @@ using Noggog;
 
 namespace FO4RecordEditor.Core.Tests;
 
-// Archive entry names are untrusted, Windows-shaped strings even when extraction runs on Linux.
-// These tests exercise the shared planner directly so separator and casing regressions run in the
-// portable Core suite instead of being hidden behind the WPF-only Windows test host.
+
+
+
 public sealed class ArchiveExtractionTests : IDisposable
 {
     private readonly string _temp = Path.Combine(

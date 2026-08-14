@@ -5,15 +5,15 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Carrying hand-written bodies across a regeneration.
-/// </summary>
-/// <remarks>
-/// The rule this file enforces is that the merge never deletes. Silently discarding hand-written
-/// C++ because a signature changed or a function was renamed would be the worst failure this
-/// subsystem could have, so a changed signature keeps its body with a banner and a vanished
-/// function is reported rather than dropped.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class F4SERegionMergeTests
 {
     private static string Generated(string name, string stub = "\t\tSTUB;") =>
@@ -127,7 +127,7 @@ public class F4SERegionMergeTests
     [Fact]
     public void An_end_marker_with_no_beginning_is_ignored_rather_than_paired_wrongly()
     {
-        // A badly hand-edited file must not cause a body to be attached to the wrong function.
+
         var damaged = "\t\t" + F4SERegionMerge.End("Alpha") + "\n\t\tloose();\n";
 
         F4SERegionMerge.Read(damaged).Should().BeEmpty();
@@ -146,7 +146,7 @@ public class F4SERegionMergeTests
     [Fact]
     public void The_emitter_preserves_a_body_when_handed_the_previous_file()
     {
-        // The whole point, exercised through the real emitter rather than the merge in isolation.
+
         var plugin = new PluginBinding
         {
             Name = "Preserve",

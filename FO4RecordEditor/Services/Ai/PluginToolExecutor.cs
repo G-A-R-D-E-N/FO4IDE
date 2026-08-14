@@ -2,11 +2,11 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Executes the AI's tool calls against the loaded plugin data (via MutagenLoader's
-/// cached per-mod index). The env is resolved lazily through a provider so it always
-/// reflects the current Load Order / opened ESPs.
-/// </summary>
+
+
+
+
+
 public sealed class PluginToolExecutor
 {
     private readonly Func<object?> _envProvider;
@@ -23,8 +23,8 @@ public sealed class PluginToolExecutor
 
     public sealed record ToolSpec(string Name, string Description, object Schema);
 
-    // Single source of truth for the tools; projected into Anthropic (input_schema) and
-    // MCP (inputSchema) formats so the API path and the Claude Code / MCP path stay in sync.
+
+
     private static readonly ToolSpec[] _specs =
     [
         new("list_plugins",
@@ -308,7 +308,7 @@ public sealed class PluginToolExecutor
                 required = Array.Empty<string>()
             }),
 
-        // ---- write tools (author plugins) ----
+
         new("open_plugin",
             "Open an existing plugin for editing so records can be added or modified. The 'plugin' arg " +
             "accepts a bare file name ('MyMod.esp') OR a full path ('D:\\\\...\\\\MyMod.esp'). Required before " +
@@ -1723,16 +1723,16 @@ public sealed class PluginToolExecutor
             }),
     ];
 
-    /// <summary>Anthropic Messages API tool format (input_schema).</summary>
+
     public static object[] ToolDefinitions() =>
         _specs.Select(t => (object)new { name = t.Name, description = t.Description, input_schema = t.Schema }).ToArray();
 
-    /// <summary>
-    /// Tool definitions with a prompt-cache breakpoint on the LAST tool. Tools render before the
-    /// system prompt and never change, so this caches the whole tool prefix across every request --
-    /// the cached tokens then cost ~0.1x. cache_control is null (dropped by WhenWritingNull) on the
-    /// others.
-    /// </summary>
+
+
+
+
+
+
     public static object[] ToolDefinitionsCached() =>
         _specs.Select((t, i) => (object)new
         {
@@ -1742,12 +1742,12 @@ public sealed class PluginToolExecutor
             cache_control = i == _specs.Length - 1 ? new { type = "ephemeral" } : null,
         }).ToArray();
 
-    /// <summary>MCP tool format (inputSchema) for the Claude Code MCP server.</summary>
+
     public static object[] McpToolDefinitions() =>
         _specs.Select(t => (object)new { name = t.Name, description = t.Description, inputSchema = t.Schema }).ToArray();
 
-    /// <summary>Gemini function-declaration format. Gemini's schema wants UPPERCASE OpenAPI types
-    /// (OBJECT/STRING/INTEGER/BOOLEAN/…), so we transform our lowercase JSON-schema types.</summary>
+
+
     public static object[] GeminiToolDefinitions() =>
         _specs.Select(t => (object)new
         {
@@ -1756,7 +1756,7 @@ public sealed class PluginToolExecutor
             parameters = ToGeminiSchema(t.Schema),
         }).ToArray();
 
-    // Built with System.Text.Json nodes so GeminiProvider (which serializes with System.Text.Json) emits it correctly.
+
     private static System.Text.Json.Nodes.JsonNode ToGeminiSchema(object schema)
     {
         var node = System.Text.Json.JsonSerializer.SerializeToNode(schema)!;
@@ -1778,30 +1778,30 @@ public sealed class PluginToolExecutor
         }
     }
 
-    // Hard ceiling on any single tool result. A full record dump or a big conflict matrix can be
-    // tens of KB; returning that to the model is slow and trips Claude Code's "output too large".
+
+
     private const int MaxResultChars = 8000;
 
-    /// <summary>Raised on the calling thread after every tool call, whether read or write.
-    /// The GUI subscribes to drive its live PIE-mode feed and auto-refresh the open record.</summary>
+
+
     public record McpToolEvent(string Tool, string Plugin, string Record, string Field, string Summary, bool IsWrite);
     public static event Action<McpToolEvent>? ToolCompleted;
 
-    /// <summary>
-    /// Runs a tool and reports whether it failed, per the <see cref="ToolError"/> contract, so a
-    /// transport can set JSON-RPC <c>isError</c> honestly. Framing a failed edit as success lets an
-    /// agent proceed to save_plugin and report a change that was never applied.
-    /// </summary>
+
+
+
+
+
     public ToolResult ExecuteWithStatus(string toolName, string inputJson)
     {
         try { return ToolError.Unwrap(ExecuteMarked(toolName, inputJson)); }
         catch (Exception ex) { return ToolResult.Fail("Tool error: " + ex.Message); }
     }
 
-    /// <summary>
-    /// Plain-string tool call for the GUI. Text and throwing behaviour are unchanged; the internal
-    /// error marker is stripped. Use <see cref="ExecuteWithStatus"/> to detect failure.
-    /// </summary>
+
+
+
+
     public string Execute(string toolName, string inputJson) =>
         ToolError.Unwrap(ExecuteMarked(toolName, inputJson)).Text;
 
@@ -1817,7 +1817,7 @@ public sealed class PluginToolExecutor
         catch (Exception ex)
         {
             DebugLog.Exception($"AI-Tool {toolName}", ex);
-            throw;   // the agent surfaces "Tool error: ..."; the full stack is now in the debug log
+            throw;
         }
         DebugLog.Write("DEBUG", "AI-Tool", $"done {toolName} -> {raw.Length} chars");
         try { ToolCompleted?.Invoke(ExtractEvent(toolName, inputJson)); } catch { }
@@ -1954,9 +1954,9 @@ public sealed class PluginToolExecutor
         string Str(string k) => root.TryGetProperty(k, out var v) ? v.GetString() ?? "" : "";
         int Int(string k, int def) => root.TryGetProperty(k, out var v) && v.TryGetInt32(out var i) ? i : def;
         bool Bool(string k) => root.TryGetProperty(k, out var v) && v.ValueKind == JsonValueKind.True;
-        // Distinguishes "absent" from "" -- an absent mapMarkerName must NOT attach marker data.
+
         string? StrOrNull(string k) => root.TryGetProperty(k, out var v) ? v.GetString() : null;
-        // Bool() can't express a default of true (absent reads as false).
+
         bool BoolOr(string k, bool def) => root.TryGetProperty(k, out var v)
             ? v.ValueKind == JsonValueKind.True
             : def;
@@ -2074,7 +2074,7 @@ public sealed class PluginToolExecutor
                     Str("mode"), Int("max_count", 50), Bool("by_model"), Str("patch_plugin"), Bool("apply"));
             }
 
-            // ---- write tools ----
+
             case "open_plugin":
                 return WriteService.OpenPlugin(Str("plugin"), env);
             case "create_plugin":
@@ -2326,8 +2326,8 @@ public sealed class PluginToolExecutor
         }
     }
 
-    // Resolve a FormKey ('001234:Plugin.esp') or an EditorID to a FormKey, using the load order's
-    // link cache (resolves both, globally) with a fallback to the per-mod index.
+
+
     private static Mutagen.Bethesda.Plugins.FormKey ResolveToFk(object? env, string id) =>
         MutagenLoader.ResolveId(env, id);
 
@@ -2359,9 +2359,9 @@ public sealed class PluginToolExecutor
 
         if (diffRows.Count > 0)
         {
-            // Budget-bound the table so the executor's 8 KB hard cap never blind-truncates it
-            // mid-row (which loses the footer and wastes the cut tokens). We stop emitting rows
-            // when approaching the budget and report an honest omission count instead.
+
+
+
             const int FW = 34, VW = 20, Budget = 6500;
             var head = "  " + "Field".PadRight(FW);
             foreach (var p in matrix.Plugins) head += " | " + Trunc(p, VW).PadRight(VW);
@@ -2381,7 +2381,7 @@ public sealed class PluginToolExecutor
                 var line = "  " + (sev + " " + row.Field).PadRight(FW);
                 for (int ci = 0; ci < matrix.Plugins.Count; ci++)
                     line += " | " + Trunc(ci < row.Values.Count ? row.Values[ci] : "", VW).PadRight(VW);
-                sb.AppendLine(line.TrimEnd());   // drop trailing column padding -- pure wasted tokens
+                sb.AppendLine(line.TrimEnd());
                 shown++;
             }
         }
@@ -2459,14 +2459,14 @@ public sealed class PluginToolExecutor
         var contexts = MutagenLoader.GetRecordContexts(env, fk);
         if (contexts.Count == 0) return $"No record found for {fk}.";
 
-        var winner = contexts[^1].plugin;   // load order, last = winner
+        var winner = contexts[^1].plugin;
         var dump = MutagenLoader.QueryRecordFields(env, winner, fk.ToString());
         return $"Winning plugin: {winner}  (of {contexts.Count} version(s) in the load order)\n{dump}";
     }
 
-    // Read back the Papyrus scripts (VMAD) attached to a record and their property values, so the
-    // AI can verify attach_script / set_script_property results. Reflection-based (works for every
-    // record family that exposes a VirtualMachineAdapter).
+
+
+
     private static string GetScripts(object? env, string id)
     {
         var fk = ResolveToFk(env, id);
@@ -2521,8 +2521,8 @@ public sealed class PluginToolExecutor
         return $"({t.Name})";
     }
 
-    // Field-level diff of two records (each resolved to its winning version), using the same field
-    // dump as get_record. Self-contained text diff -- no dependency on the GUI's RecordNode tree.
+
+
     private static string DiffRecords(object? env, string aId, string bId)
     {
         var fa = ResolveToFk(env, aId); if (fa.IsNull) return $"Could not resolve A '{aId}'.";
@@ -2550,7 +2550,7 @@ public sealed class PluginToolExecutor
             return "MO2 instance unknown -- load the modlist with 'Open MO2' first.";
         if (string.IsNullOrWhiteSpace(query)) return "Provide a query (a FormID, EditorID, or name).";
 
-        // Collect each mod's (and overwrite's) RobCo_Patcher root, then scan its .ini files.
+
         var roots = new List<string>();
         var modsDir = System.IO.Path.Combine(instancePath, "mods");
         if (System.IO.Directory.Exists(modsDir))
@@ -2565,8 +2565,8 @@ public sealed class PluginToolExecutor
         var hits = new List<string>();
         foreach (var root in roots)
         {
-            // RobCo Patcher reads disabled/renamed configs too (.ini.bak, .ini.DISABLED, .ini.hidden),
-            // so match "*.ini*" not just "*.ini" -- a renamed config still applies in-game.
+
+
             foreach (var ini in System.IO.Directory.EnumerateFiles(root, "*.ini*", System.IO.SearchOption.AllDirectories))
             {
                 string[] lines;

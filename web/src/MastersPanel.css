@@ -1,4 +1,4 @@
-/* Masters panel -- reuses PapyrusPanel.css for the modal shell/banner/log; adds the table + toolbar. */
+
 .masters-modal {
   width: 720px;
   max-width: 92vw;

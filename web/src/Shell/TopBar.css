@@ -15,7 +15,7 @@
 }
 [data-theme="light"] .top-tab-close:hover { background: rgba(0,0,0,0.08); color: var(--text-primary); }
 
-/* Brand */
+
 .topbar-brand {
   display: flex;
   align-items: center;
@@ -27,7 +27,7 @@
 }
 .brand-x { color: var(--accent-color); }
 
-/* Tabs */
+
 .topbar-tabs {
   display: flex;
   align-items: center;
@@ -69,7 +69,7 @@
 }
 .top-tab-close:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
 
-/* Command bar */
+
 .topbar-command {
   position: relative;
   flex: 1 1 auto;
@@ -163,7 +163,7 @@
   white-space: nowrap;
 }
 
-/* Tools */
+
 .topbar-tools {
   display: flex;
   align-items: center;

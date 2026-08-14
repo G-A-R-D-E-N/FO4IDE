@@ -5,9 +5,9 @@ import Minimap from './Minimap';
 import type { GraphAction, BpSelection } from './graphReducer';
 import BlueprintNode from './BlueprintNode';
 
-// The viewport. Pan and node drag cost zero React renders: the gesture writes transforms and path
-// data straight to the DOM and commits one dispatch on release. That is the reason this canvas is
-// hand rolled rather than delegated to a library store.
+
+
+
 
 interface Props {
   doc: BpDocument;
@@ -18,8 +18,8 @@ interface Props {
   dispatch: (action: GraphAction) => void;
   onRequestNode: (worldX: number, worldY: number, from?: { node: string; pin: string }) => void;
   apiRef?: React.MutableRefObject<CanvasApi | null>;
-  /// Right click anywhere on the canvas. The menu itself is the panel's, so the canvas stays
-  /// concerned only with the graph surface.
+
+
   onContextMenu?: (event: React.MouseEvent) => void;
 }
 
@@ -33,7 +33,7 @@ const MIN_SCALE = 0.15;
 const MAX_SCALE = 2.5;
 const CLICK_SLOP = 4;
 
-/** Where the canvas sits before anyone pans or zooms. */
+
 const INITIAL_VIEW: BpViewport = { x: 60, y: 60, k: 1 };
 
 export default function BlueprintCanvas({
@@ -48,8 +48,8 @@ export default function BlueprintCanvas({
   const nodeElements = useRef(new Map<string, HTMLDivElement>());
   const wireElements = useRef(new Map<string, SVGPathElement>());
 
-  // Both seeded from the same constant rather than the state reading the ref. Reading a ref during
-  // render is a react-hooks/refs error, and it said "these two start equal" only by side effect.
+
+
   const viewRef = useRef<BpViewport>({ ...INITIAL_VIEW });
   const [view, setView] = useState<BpViewport>({ ...INITIAL_VIEW });
   const [connect, setConnect] = useState<{ node: string; pin: string; compatible: Set<string> } | null>(null);
@@ -83,8 +83,8 @@ export default function BlueprintCanvas({
     };
   }, []);
 
-  // Wheel has to be a real listener with passive false. React's onWheel is passive in Chromium, so
-  // preventDefault there silently does nothing and the page scrolls under the panel.
+
+
   useEffect(() => {
     const element = canvasRef.current;
     if (!element) return undefined;
@@ -136,7 +136,7 @@ export default function BlueprintCanvas({
 
   const draggedOffsets = useRef<Map<string, { dx: number; dy: number }> | null>(null);
 
-  // ---- pan and marquee --------------------------------------------------------------------
+
 
   const onCanvasPointerDown = (event: React.PointerEvent) => {
     const target = event.target as HTMLElement;
@@ -206,8 +206,8 @@ export default function BlueprintCanvas({
     };
 
     const onCancel = () => {
-      // WebKitGTK cancels pointers in situations Chromium does not, so every capture path needs
-      // this or a lost gesture leaves the canvas mid-drag.
+
+
       if (marqueeRef.current) marqueeRef.current.style.display = 'none';
       viewRef.current = { ...origin };
       applyTransform();
@@ -219,7 +219,7 @@ export default function BlueprintCanvas({
     element.addEventListener('pointercancel', onCancel);
   };
 
-  // ---- node drag --------------------------------------------------------------------------
+
 
   const onNodePointerDown = (event: React.PointerEvent, nodeId: string) => {
     const target = event.target as HTMLElement;
@@ -289,15 +289,15 @@ export default function BlueprintCanvas({
     element.addEventListener('pointercancel', onCancel);
   };
 
-  // ---- wire drag --------------------------------------------------------------------------
+
 
   const onPinPointerDown = (event: React.PointerEvent, nodeId: string, pin: BpPinDef) => {
     event.stopPropagation();
     const element = event.currentTarget as HTMLElement;
     element.setPointerCapture(event.pointerId);
 
-    // The compatible set is published once, so every pin can paint itself without another render
-    // for the rest of the gesture.
+
+
     const compatible = new Set<string>();
     for (const other of doc.nodes) {
       const def = defs[other.def];
@@ -326,7 +326,7 @@ export default function BlueprintCanvas({
 
       if (!event2) return;
 
-      // Pointer capture redirects events, not hit testing, so the drop target is found this way.
+
       const dropped = document.elementFromPoint(event2.clientX, event2.clientY) as HTMLElement | null;
       const pinElement = dropped?.closest('[data-pin]') as HTMLElement | null;
 
@@ -354,9 +354,9 @@ export default function BlueprintCanvas({
     element.addEventListener('pointercancel', onCancel);
   };
 
-  // Measured into state rather than read off the ref at render time. The minimap needs the canvas
-  // size to draw the viewport rectangle to scale, and a ref read during render is both a
-  // react-hooks/refs error and wrong on a resize, since nothing would re-render to update it.
+
+
+
   const [stage, setStage] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -371,7 +371,7 @@ export default function BlueprintCanvas({
     return () => observer.disconnect();
   }, []);
 
-  /** Puts a point in graph coordinates at the middle of the visible canvas. */
+
   const centreOn = useCallback((worldX: number, worldY: number, minScale = 0) => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -382,7 +382,7 @@ export default function BlueprintCanvas({
     setView({ ...viewRef.current });
   }, [applyTransform]);
 
-  // ---- imperative api ---------------------------------------------------------------------
+
 
   useEffect(() => {
     if (!apiRef) return;
@@ -489,8 +489,8 @@ export default function BlueprintCanvas({
   );
 }
 
-// Applies a live drag offset without committing it, so wires follow the node during the gesture
-// while the document still holds the pre-drag position.
+
+
 const shift = (
   node: BpNode,
   offsets: Map<string, { dx: number; dy: number }> | null,

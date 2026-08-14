@@ -7,11 +7,11 @@ using FO4RecordEditor.Models;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// AI backend that drives the local Claude Code CLI (`claude -p`) instead of the
-/// Anthropic HTTP API, so the user can use their Claude Code sign-in with no API key.
-/// The conversation is flattened into a single print-mode prompt fed via stdin.
-/// </summary>
+
+
+
+
+
 public sealed class ClaudeCodeProvider : IAIProvider
 {
     private readonly string _exePath;
@@ -37,8 +37,8 @@ public sealed class ClaudeCodeProvider : IAIProvider
         var prompt = new StringBuilder();
         if (_mcpUrl != null)
         {
-            // Same guidance the API agent gets (efficiency first), so both paths behave identically.
-            // The tools are exposed to Claude Code as mcp__<server>__<name>.
+
+
             prompt.AppendLine($"Your plugin tools are exposed as mcp__{_mcpServerName}__<name> " +
                               $"(e.g. mcp__{_mcpServerName}__scan_conflicts).\n");
             prompt.AppendLine(AiGuidance.System);
@@ -54,8 +54,8 @@ public sealed class ClaudeCodeProvider : IAIProvider
             }
         }
 
-        // Route through cmd.exe so npm shims (claude.cmd / claude.ps1) resolve via PATHEXT --
-        // Process.Start cannot launch a .cmd/.ps1 directly on Windows.
+
+
         var psi = new ProcessStartInfo
         {
             FileName = "cmd.exe",
@@ -65,35 +65,35 @@ public sealed class ClaudeCodeProvider : IAIProvider
             UseShellExecute = false,
             CreateNoWindow = true,
             WorkingDirectory = Path.GetTempPath(),
-            // claude emits UTF-8; without this the OEM code page mangles characters
-            // like the em dash into "ΓÇö".
+
+
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8,
             StandardInputEncoding = Encoding.UTF8,
         };
         psi.ArgumentList.Add("/c");
-        psi.ArgumentList.Add(_exePath);                   // "claude" or a full path
-        psi.ArgumentList.Add("-p");                       // print (non-interactive) mode
-        // Stream JSON events instead of buffering the whole answer to the end. In text mode the
-        // CLI emits nothing until it finishes, so a long run looks frozen ("thinking… 600s"); with
-        // stream-json we surface each tool call and text chunk live (and keep the idle timer fed).
+        psi.ArgumentList.Add(_exePath);
+        psi.ArgumentList.Add("-p");
+
+
+
         psi.ArgumentList.Add("--output-format");
         psi.ArgumentList.Add("stream-json");
-        psi.ArgumentList.Add("--verbose");                // required with stream-json in -p mode
+        psi.ArgumentList.Add("--verbose");
         if (_model != null)
         {
             psi.ArgumentList.Add("--model");
             psi.ArgumentList.Add(_model);
         }
 
-        // Register the in-process plugin MCP server so Claude Code can read live plugin data.
+
         if (_mcpUrl != null)
         {
             var cfg = $"{{\"mcpServers\":{{\"{_mcpServerName}\":{{\"type\":\"http\",\"url\":\"{_mcpUrl}\"}}}}}}";
             psi.ArgumentList.Add("--mcp-config");
             psi.ArgumentList.Add(cfg);
             psi.ArgumentList.Add("--allowedTools");
-            // Auto-approve this server's tools + Read (so pasted/attached images can be viewed) in -p mode.
+
             psi.ArgumentList.Add($"mcp__{_mcpServerName} Read");
         }
 
@@ -116,25 +116,25 @@ public sealed class ClaudeCodeProvider : IAIProvider
             yield break;
         }
 
-        // Kill the CLI if the request is cancelled / times out, so it doesn't linger.
+
         using var killReg = ct.Register(() => { try { proc.Kill(entireProcessTree: true); } catch { } });
 
         using (proc)
         {
-            // Write the prompt to stdin on a BACKGROUND task so we read stdout concurrently. Writing the
-            // whole prompt first and only then reading deadlocks on a large prompt (a long chat): the CLI
-            // fills its stdout pipe -- which we aren't draining yet -- and stops reading stdin, while we're
-            // still blocked writing stdin. Both wait forever and the chat appears stuck on "thinking…".
+
+
+
+
             var writeTask = Task.Run(async () =>
             {
                 try { await proc.StandardInput.WriteAsync(prompt.ToString()); proc.StandardInput.Close(); }
-                catch { /* the CLI may exit before we finish writing; ignore */ }
+                catch {  }
             });
 
-            // Drain stderr from the START, not after the stdout loop. Same shape as the stdin
-            // deadlock above: stderr is redirected, so once the CLI fills that pipe it blocks on
-            // write and stops producing stdout -- the read loop below then never sees EOF and the
-            // chat hangs on "thinking…" forever.
+
+
+
+
             var errTask = proc.StandardError.ReadToEndAsync(ct);
 
             string? line;
@@ -143,31 +143,31 @@ public sealed class ClaudeCodeProvider : IAIProvider
                     yield return chunk;
 
             await proc.WaitForExitAsync(ct);
-            try { await writeTask; } catch { /* ignore */ }
+            try { await writeTask; } catch {  }
 
             if (proc.ExitCode != 0)
             {
                 var err = "";
-                try { err = await errTask; } catch { /* ignore */ }
+                try { err = await errTask; } catch {  }
                 if (!string.IsNullOrWhiteSpace(err))
                     yield return $"\n[Claude Code error] {err.Trim()}";
             }
         }
     }
 
-    /// <summary>
-    /// Translate one NDJSON line from `claude -p --output-format stream-json` into chunks to show
-    /// what Claude is doing: assistant text as-is, reasoning as a "💭" line, each tool call with its
-    /// arguments ("🔧 get_record(plugin=…, id=…)"), and tool results truncated ("↳ …"). Skips the
-    /// init/result envelope and surfaces errors. Unparseable lines pass through verbatim.
-    /// </summary>
+
+
+
+
+
+
     internal static IEnumerable<string> ParseStreamLine(string line)
     {
         if (string.IsNullOrWhiteSpace(line)) yield break;
 
         JsonDocument? doc = null;
         try { doc = JsonDocument.Parse(line); }
-        catch { /* not JSON -- pass it through below */ }
+        catch {  }
         if (doc == null) { yield return line + "\n"; yield break; }
 
         using (doc)
@@ -202,7 +202,7 @@ public sealed class ClaudeCodeProvider : IAIProvider
                         }
                     break;
 
-                case "user":   // tool results come back as a user turn
+                case "user":
                     if (TryContent(root, out var uContent))
                         foreach (var block in uContent.EnumerateArray())
                         {
@@ -231,7 +231,7 @@ public sealed class ClaudeCodeProvider : IAIProvider
                content.ValueKind == JsonValueKind.Array;
     }
 
-    // "mcp__fo4editor__get_record" -> "get_record"
+
     private static string ShortToolName(string? name)
     {
         if (string.IsNullOrEmpty(name)) return "tool";
@@ -239,7 +239,7 @@ public sealed class ClaudeCodeProvider : IAIProvider
         return i >= 0 ? name[(i + 2)..] : name;
     }
 
-    // {"plugin":"X.esp","id":"abc"} -> "plugin=X.esp, id=abc"
+
     private static string FormatArgs(JsonElement input)
     {
         if (input.ValueKind != JsonValueKind.Object) return "";

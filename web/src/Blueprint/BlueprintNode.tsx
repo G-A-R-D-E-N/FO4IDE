@@ -18,8 +18,8 @@ interface Props {
   dispatch: (action: GraphAction) => void;
 }
 
-// Memoised on the values that actually change its appearance, so a drag elsewhere on the canvas
-// costs nothing here.
+
+
 function BlueprintNode({
   node, def, selected, diagnostics, diagByPin, connect,
   registerElement, onPointerDown, onPinPointerDown, dispatch,
@@ -102,8 +102,8 @@ function Pin({ nodeId, node, pin, connect, diagnostics, onPinPointerDown, dispat
   const compatible = connect != null && connect.compatible.has(key);
   const severity = worstSeverity(diagnostics);
 
-  // An inline editor only makes sense on an unconnected value input, and only for the primitives a
-  // literal can spell.
+
+
   const editable = pin.kind === 'data' && pin.dir === 'in' && isEditable(pin.dataType);
   const current = node.pinValues?.[pin.id]?.value ?? '';
 

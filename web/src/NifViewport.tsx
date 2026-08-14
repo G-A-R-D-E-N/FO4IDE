@@ -7,26 +7,26 @@ import { makeEffectMaterial, applyVertexColors } from './util/effectMaterial';
 export interface NifTexRef { slot: number; path: string; }
 export interface NifShapeGeo {
   name: string;
-  verts: number[];    // flat x,y,z
-  tris: number[];     // flat a,b,c (indices)
-  normals: number[];  // flat x,y,z (may be empty)
-  uvs: number[];      // flat u,v (may be empty)
+  verts: number[];
+  tris: number[];
+  normals: number[];
+  uvs: number[];
   textures?: NifTexRef[];
   skinned?: boolean;
-  billboard?: boolean;     // shape has a NiBillboardNode ancestor (glow sprite / lens flare)
-  billboardMode?: number;  // nifly::BillboardMode; 1/8/9 = rotate-about-up, else face-camera
-  effectShader?: boolean;  // BSEffectShaderProperty (fog/mist/glow/decal FX) vs BSLightingShaderProperty
-  bgsmPath?: string;       // BSLightingShaderProperty.rootMaterialName -- a shape with no texture of
-                           // its own can still have a real diffuse via this linked .bgsm material.
-                           // Pass it to loadTexture same as a normal texture path; TextureService
-                           // resolves+parses it transparently (by the .bgsm extension) and returns the
-                           // material's DiffuseTexture, or "" if that material genuinely has none.
+  billboard?: boolean;
+  billboardMode?: number;
+  effectShader?: boolean;
+  bgsmPath?: string;
+
+
+
+
   effect?: NifEffectParams;
-  vertexColors?: number[]; // flat r,g,b,a per vertex (SLSF2_VERTEX_COLORS) -- mist edge-fade lives here
+  vertexColors?: number[];
 }
 
-/** BSEffectShaderProperty material params, straight off the shape -- see util/effectMaterial.ts for
- * how these become a real three.js material instead of an opaque lit gray disc. */
+
+
 export interface NifEffectParams {
   baseColor: [number, number, number, number];
   baseColorScale: number;
@@ -43,15 +43,15 @@ export interface NifEffectParams {
 }
 export interface NifGeo { fo4: boolean; shapes: NifShapeGeo[]; }
 
-// Structural shapes get a lit MeshStandardMaterial; effect-shaded (fog/mist/glow) shapes get an unlit
-// MeshBasicMaterial built by util/effectMaterial.ts -- module-scope so both the per-shape build effect
-// and the wireframe-toggle effect (matsRef) share one type.
+
+
+
 type ShapeMat = THREE.MeshStandardMaterial | THREE.MeshBasicMaterial;
 
-/**
- * Live three.js viewport for a NIF's geometry -- rotate/zoom/pan like NifSkope or Blender.
- * NIF is Z-up, so the camera's up is Z and the grid lies in the XY plane at the model's base.
- */
+
+
+
+
 export default function NifViewport(
   { data, wireframe, textured, loadTexture }: {
     data: NifGeo | null;
@@ -63,7 +63,7 @@ export default function NifViewport(
   const mountRef = useRef<HTMLDivElement>(null);
   const matsRef = useRef<ShapeMat[]>([]);
 
-  // (re)build the scene whenever the geometry (or textured toggle) changes
+
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount || !data || data.shapes.length === 0) return;
@@ -76,7 +76,7 @@ export default function NifViewport(
     scene.background = new THREE.Color(0x17181c);
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.01, 1_000_000);
-    camera.up.set(0, 0, 1); // NIF Z-up
+    camera.up.set(0, 0, 1);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
@@ -97,7 +97,7 @@ export default function NifViewport(
     const geos: THREE.BufferGeometry[] = [];
     const texes: THREE.Texture[] = [];
     const pairs: { mat: ShapeMat; shape: NifShapeGeo; hasUV: boolean }[] = [];
-    // Glow/lens-flare shapes under a NiBillboardNode -- re-oriented to face the camera each frame.
+
     const billboards: { mesh: THREE.Mesh; centroid: THREE.Vector3; mode?: number }[] = [];
 
     for (const shape of data.shapes) {
@@ -114,9 +114,9 @@ export default function NifViewport(
       g.computeBoundingBox();
       if (g.boundingBox) box.union(g.boundingBox);
 
-      // Effect-shaded shapes (fog/mist/glow/decal FX) get a real unlit/blended material built from
-      // the shape's actual NiAlphaProperty + BSEffectShaderProperty params -- not the same opaque lit
-      // material every structural shape gets (which is why FX rendered as hard "circular planes").
+
+
+
       const mat: ShapeMat = shape.effectShader
         ? makeEffectMaterial(shape.effect, true)
         : new THREE.MeshStandardMaterial({
@@ -127,7 +127,7 @@ export default function NifViewport(
       const mesh = new THREE.Mesh(g, mat);
       group.add(mesh);
       if (shape.billboard) {
-        mesh.matrixAutoUpdate = false; // matrix is driven per-frame by the billboard update
+        mesh.matrixAutoUpdate = false;
         mesh.frustumCulled = false;
         billboards.push({ mesh, centroid: vertsCentroid(shape.verts), mode: shape.billboardMode });
       }
@@ -138,7 +138,7 @@ export default function NifViewport(
     scene.add(group);
     matsRef.current = mats;
 
-    // Load DDS textures (converted to PNG data URLs by the C# side) onto each shape's material.
+
     if (textured && loadTexture) {
       const texLoader = new THREE.TextureLoader();
       const applyUrl = (url: string): Promise<THREE.Texture | null> =>
@@ -148,25 +148,25 @@ export default function NifViewport(
         });
       for (const { mat, shape, hasUV } of pairs) {
         if (!hasUV || !(shape.textures?.length || shape.bgsmPath)) continue;
-        // Fall back to the shape's linked .bgsm material when it has no texture of its own --
-        // TextureService resolves+parses it transparently given the same (relPath) call.
+
+
         const diffuse = shape.textures?.find(t => t.slot === 0)
           ?? (shape.bgsmPath ? { slot: 0, path: shape.bgsmPath } : undefined);
-        // Effect shaders don't use slot 1 as a lighting normal map (it's a distortion map, and the
-        // material is unlit anyway) -- MeshBasicMaterial has no normalMap slot either. Skip for FX.
+
+
         const normal = shape.effectShader ? undefined : shape.textures?.find(t => t.slot === 1);
         if (diffuse) {
           loadTexture(diffuse.path).then(applyUrl).then(tex => {
             if (cancelled || !tex) return;
             tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;
-            // Tiling UVs (terrain/rock/floor) need RepeatWrapping or the edge texel smears across the
-            // surface ("warped dirt"); default clamp only looks right for 0..1 UVs.
+
+
             tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
             tex.anisotropy = 4;
             mat.map = tex;
-            // Effect shapes: keep the tint (baseColor*baseColorScale is the real glow color the
-            // texture multiplies into, not a placeholder). Structural shapes: reset to white so the
-            // real texture shows unmodified instead of tinted by the flat-gray placeholder.
+
+
+
             if (!shape.effectShader) mat.color.setHex(0xffffff);
             mat.needsUpdate = true;
             texes.push(tex);
@@ -188,7 +188,7 @@ export default function NifViewport(
     const center = box.getCenter(new THREE.Vector3());
     const radius = Math.max(size.x, size.y, size.z, 1e-3);
 
-    // ground grid in XY plane at the model base + colored axes
+
     const grid = new THREE.GridHelper(radius * 4, 24, 0x3a5a80, 0x2a2a30);
     grid.rotation.x = Math.PI / 2;
     grid.position.set(center.x, center.y, box.min.z);
@@ -236,7 +236,7 @@ export default function NifViewport(
     };
   }, [data, textured, loadTexture]);
 
-  // wireframe toggle without rebuilding the scene
+
   useEffect(() => {
     for (const m of matsRef.current) m.wireframe = wireframe;
   }, [wireframe]);

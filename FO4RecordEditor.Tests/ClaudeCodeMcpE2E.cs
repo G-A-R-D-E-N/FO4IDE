@@ -7,9 +7,9 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// Real end-to-end: spins up the MCP server, runs the actual `claude` CLI against it, and
-// checks it invoked our tool. Requires the Claude Code CLI + sign-in; consumes quota.
-// Run explicitly:  dotnet test --filter ClaudeCodeMcpE2E
+
+
+
 public class ClaudeCodeMcpE2E
 {
     private readonly ITestOutputHelper _out;
@@ -18,7 +18,7 @@ public class ClaudeCodeMcpE2E
     [Fact(Skip = "Real Claude Code CLI call (needs sign-in, consumes quota). Remove Skip to run manually. Verified passing 2026-06-10 (14s, MCP transport OK).")]
     public async Task ClaudeCode_CallsMcpTool_AgainstLiveServer()
     {
-        var exec = new PluginToolExecutor(() => null);   // executor returns "No plugins loaded."
+        var exec = new PluginToolExecutor(() => null);
         using var server = new PluginMcpServer(exec);
         server.Start();
         server.IsRunning.Should().BeTrue();
@@ -53,8 +53,8 @@ public class ClaudeCodeMcpE2E
         _out.WriteLine("STDOUT:\n" + stdout);
         _out.WriteLine("STDERR:\n" + stderr);
 
-        // If Claude Code reached our MCP server and ran the tool, its output reflects the
-        // tool result ("No plugins loaded.").
+
+
         stdout.Should().Contain("No plugins loaded");
     }
 }

@@ -7,12 +7,12 @@ using FO4RecordEditor.Models;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Google Gemini backend with tool use (function calling). Runs the read/act loop against the plugin
-/// tools just like the Anthropic agent: send the conversation with the function declarations, execute
-/// any functionCall the model returns against the loaded plugins, feed the result back, repeat. Streams
-/// activity inline (text, "🔧 tool(args)", "↳ result") so the chat UI renders it the same as Claude Code.
-/// </summary>
+
+
+
+
+
+
 public sealed class GeminiProvider : IAIProvider
 {
     private static readonly JsonSerializerOptions JsonOpts = new()
@@ -44,7 +44,7 @@ public sealed class GeminiProvider : IAIProvider
             yield break;
         }
 
-        // System messages -> systemInstruction; the rest -> contents (user/model turns).
+
         var sys = string.Join("\n\n", messages.Where(m => m.Role == ChatRole.System).Select(m => m.Content));
         var contents = new List<object>();
         foreach (var m in messages.Where(m => m.Role != ChatRole.System))
@@ -77,7 +77,7 @@ public sealed class GeminiProvider : IAIProvider
                 yield break;
 
             var content = cands[0].GetProperty("content");
-            contents.Add(content.Clone());   // echo the model turn back verbatim next round
+            contents.Add(content.Clone());
 
             var funcResponses = new List<object>();
             if (content.TryGetProperty("parts", out var parts))
@@ -107,9 +107,9 @@ public sealed class GeminiProvider : IAIProvider
             if (funcResponses.Count > 0)
             {
                 contents.Add(new { role = "user", parts = funcResponses });
-                continue;   // act on the tool results
+                continue;
             }
-            break;          // final answer produced
+            break;
         }
     }
 

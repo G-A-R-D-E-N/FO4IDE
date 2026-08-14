@@ -7,15 +7,15 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The resolver: what each name refers to, and what each expression's type is.
-/// </summary>
-/// <remarks>
-/// Every test writes real .psc files to a temp root and indexes them, because resolution across the
-/// inheritance chain and across imports is most of the behaviour and neither exists in a single
-/// in-memory script. That also keeps the tests honest about the one thing the resolver has to get
-/// right on a real corpus: a source it cannot find is not a source that is wrong.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class PapyrusResolverTests : IDisposable
 {
     private readonly string _root;
@@ -47,7 +47,7 @@ public class PapyrusResolverTests : IDisposable
         return new PapyrusResolver(index).Resolve(script!);
     }
 
-    /// <summary>Every identifier written as <paramref name="name"/>, with what it bound to.</summary>
+
     private static List<PapyrusBinding> BindingsNamed(PapyrusResolution r, string name) =>
         r.Bindings
             .Where(kv => kv.Key is PapyrusIdentifierExpression id
@@ -62,7 +62,7 @@ public class PapyrusResolverTests : IDisposable
         return all[0];
     }
 
-    /// <summary>The type of the value assigned in the only assignment to <paramref name="target"/>.</summary>
+
     private static PapyrusType AssignedTypeIn(PapyrusResolution r, string target)
     {
         var assign = Walk(r.Script)
@@ -82,7 +82,7 @@ public class PapyrusResolverTests : IDisposable
         }
     }
 
-    // ---- local scope ----------------------------------------------------------------------------
+
 
     [Fact]
     public void A_local_binds_to_its_definition_with_its_declared_type()
@@ -116,7 +116,7 @@ EndFunction");
         Only(r, "label").Type.Should().Be(PapyrusType.String);
     }
 
-    // "Variables defined inside a block (like an if or while) are local to that block."
+
     [Fact]
     public void A_variable_defined_in_a_block_is_not_visible_after_it()
     {
@@ -136,8 +136,8 @@ EndFunction");
         r.Diagnostics[0].Message.Should().Contain("inner");
     }
 
-    // A local shadows nothing, but an initialiser referring to the same name must see the outer one
-    // rather than the variable being introduced.
+
+
     [Fact]
     public void An_initializer_is_resolved_before_the_variable_it_initializes_exists()
     {
@@ -154,7 +154,7 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-    // ---- the inheritance chain ------------------------------------------------------------------
+
 
     [Fact]
     public void A_member_inherited_from_a_parent_binds_to_the_parents_declaration()
@@ -199,7 +199,7 @@ EndFunction");
         health.Type.Should().Be(PapyrusType.Int);
     }
 
-    // "Self refers to the instance of the script that the function is running on."
+
     [Fact]
     public void Self_is_the_type_of_the_script_being_resolved()
     {
@@ -216,7 +216,7 @@ EndFunction");
         self.Type.Should().Be(PapyrusType.Object("A"));
     }
 
-    // "Parent is only used to call a parent script's version of a function."
+
     [Fact]
     public void Parent_is_the_type_of_the_parent_script()
     {
@@ -236,7 +236,7 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-    // "The Global flag indicates a function that ... has no Self variable."
+
     [Fact]
     public void A_global_function_cannot_see_script_members()
     {
@@ -253,7 +253,7 @@ EndFunction");
             .Which.Message.Should().Contain("Counter");
     }
 
-    // ---- member access --------------------------------------------------------------------------
+
 
     [Fact]
     public void A_member_on_an_object_typed_expression_resolves_on_that_scripts_chain()
@@ -297,7 +297,7 @@ EndFunction");
         r.Diagnostics[0].Message.Should().Contain("Nope").And.Contain("Target");
     }
 
-    // Game.GetPlayer(): a script name on the left is a static receiver, not an instance.
+
     [Fact]
     public void A_script_name_receiver_resolves_a_global_function()
     {
@@ -315,8 +315,8 @@ EndFunction");
 
         Only(r, "Game").Kind.Should().Be(PapyrusBindingKind.Script);
 
-        // The member node and the call wrapping it deliberately share one binding, so this is two
-        // entries pointing at the same function.
+
+
         r.Bindings.Values.Where(b => b.Name == "GetPlayer").Should().NotBeEmpty()
             .And.OnlyContain(b => b.Kind == PapyrusBindingKind.Function
                                   && b.Type.Equals(PapyrusType.Object("Actor")));
@@ -344,7 +344,7 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-    // An import only contributes globals. A non-global member of an imported script is not in scope.
+
     [Fact]
     public void An_import_does_not_bring_in_instance_members()
     {
@@ -364,7 +364,7 @@ EndFunction");
             .Which.Message.Should().Contain("NotGlobal");
     }
 
-    // ---- arrays ---------------------------------------------------------------------------------
+
 
     [Fact]
     public void An_array_element_has_the_element_type()
@@ -408,7 +408,7 @@ EndFunction");
             .Which.Type.Kind.Should().Be(expected);
     }
 
-    // ---- structs --------------------------------------------------------------------------------
+
 
     [Fact]
     public void A_struct_member_resolves_with_its_declared_type()
@@ -458,7 +458,7 @@ EndStruct");
         PapyrusType.StructOf("A", aPoint.Name).Should().NotBe(PapyrusType.StructOf("B", bPoint.Name));
     }
 
-    // ---- expression typing ----------------------------------------------------------------------
+
 
     [Theory]
     [InlineData("1 + 2", PapyrusTypeKind.Int)]
@@ -502,11 +502,11 @@ EndFunction");
         r.TypeOf(assigns[1].Value).Should().Be(PapyrusType.Bool);
     }
 
-    // ---- missing sources ------------------------------------------------------------------------
 
-    // The behaviour that decides whether this is usable on a real corpus. A script whose parent is
-    // not on the roots inherits members the resolver cannot see, so it must not claim they are
-    // undefined.
+
+
+
+
     [Fact]
     public void A_script_whose_parent_is_missing_reports_nothing_and_says_so()
     {
@@ -539,9 +539,9 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-    // SomeScript.SomeGlobal() is the one shape where an unknown bare name is probably a file rather
-    // than a typo. Found on a real script calling a real framework that was simply under a root the
-    // caller had not included.
+
+
+
     [Fact]
     public void A_call_qualified_by_a_script_that_is_not_on_the_roots_is_not_a_typo()
     {
@@ -557,7 +557,7 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-    // ...but the same name used as a plain value has nothing else it could be, so it still reports.
+
     [Fact]
     public void A_bare_unknown_name_used_as_a_value_is_still_reported()
     {

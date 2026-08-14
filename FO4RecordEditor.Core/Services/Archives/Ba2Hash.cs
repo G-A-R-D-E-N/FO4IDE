@@ -2,14 +2,14 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Archives;
 
-/// <summary>
-/// The FO4 BA2 name hash. Verified against real vanilla entries (Fallout4 - Meshes.ba2), not taken
-/// on faith from any source: the stem/parent CRCs and the extension word reproduce exactly.
-///
-/// The CRC is NOT standard CRC-32. It uses the same reflected 0xEDB88320 table, but the accumulator
-/// starts at 0 and there is no final complement, so feeding it through a stock Crc32 gives the wrong
-/// value for every entry.
-/// </summary>
+
+
+
+
+
+
+
+
 public static class Ba2Hash
 {
     private static readonly uint[] Table = BuildTable();
@@ -33,15 +33,15 @@ public static class Ba2Hash
         return crc;
     }
 
-    /// <summary>Lowercase, forward slashes to backslashes, no leading or trailing separator. This is
-    /// the form the hashes are computed over; the string table still stores the original case.</summary>
+
+
     public static string Normalize(string path)
     {
         var p = (path ?? "").Replace('/', '\\').ToLowerInvariant().Trim('\\');
         return p.Length == 0 || p.Length >= 260 ? "." : p;
     }
 
-    /// <summary>(nameHash, extensionWord, directoryHash) for a data-relative path.</summary>
+
     public static (uint Name, uint Extension, uint Directory) Compute(string path)
     {
         var p = Normalize(path);

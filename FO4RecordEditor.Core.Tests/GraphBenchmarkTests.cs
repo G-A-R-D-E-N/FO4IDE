@@ -10,24 +10,24 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Measures graph translation speed and reports it in a form that can be pasted into the docs.
-/// </summary>
-/// <remarks>
-/// Opt-in on <c>FO4RE_GRAPH_BENCH</c>, matching the other sweeps, so a normal run stays fast.
-/// <para>
-/// Three rules keep the numbers honest. Timings are median and p95 over repeated runs after a
-/// discarded warm-up, because a mean over a JIT-cold first pass is a made-up figure. Every raw
-/// number is written to the test output in a fixed greppable form, so the run itself is the
-/// evidence rather than a claim about it. And the machine context is printed alongside, because a
-/// throughput figure without it cannot be reproduced or compared.
-/// </para>
-/// <para>
-/// The assertions are regression floors set well under what was measured, not targets. A tight
-/// timing assertion on varying hardware is a flaky test, and a flaky test teaches people to ignore
-/// a red build.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class GraphBenchmarkTests
 {
     private const string BenchVariable = "FO4RE_GRAPH_BENCH";
@@ -80,7 +80,7 @@ public class GraphBenchmarkTests
         var compiler = GraphTestEnvironment.Compiler();
         int totalNodes = fixtures.Sum(f => f.Build().Nodes.Count);
 
-        // Warm up so the first measured pass is not paying for JIT and the palette build.
+
         foreach (var fixture in fixtures) compiler.Compile(fixture.Build(), new GraphCompileOptions { StopAfterSource = true });
 
         var emitSamples = new List<double>();
@@ -118,8 +118,8 @@ public class GraphBenchmarkTests
         _output.WriteLine(
             $"BENCH graph.to_pex per_fixture_ms={full.Median / fixtures.Count:F3}");
 
-        // Floors, not targets: roughly a quarter of what a development machine measures, so slower
-        // hardware still passes and a real regression still fails.
+
+
         emit.Median.Should().BeLessThan(4000, "generating source for 24 graphs should stay well under four seconds");
         full.Median.Should().BeLessThan(20000, "compiling 24 graphs to .pex should stay well under twenty seconds");
     }
@@ -146,8 +146,8 @@ public class GraphBenchmarkTests
             else refused.Add($"{fixture.Name}: {GraphTestEnvironment.Describe(result.Errors)}");
         }
 
-        // Two numbers, not one: a graph refused for a legitimate reason is not a failure and must
-        // not be hidden inside a single percentage.
+
+
         _output.WriteLine($"BENCH graph.success clean={clean} attempted={attempted} refused={refused.Count}");
         foreach (var line in refused) _output.WriteLine("  REFUSED " + line);
 

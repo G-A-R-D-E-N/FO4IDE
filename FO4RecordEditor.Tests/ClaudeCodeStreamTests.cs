@@ -19,9 +19,9 @@ public class ClaudeCodeStreamTests
         var chunks = ClaudeCodeProvider.ParseStreamLine(line).ToList();
         chunks.Should().ContainSingle();
         chunks[0].Should().Contain("🔧")
-            .And.Contain("get_record")                       // mcp__fo4editor__ prefix stripped
+            .And.Contain("get_record")
             .And.NotContain("mcp__fo4editor__")
-            .And.Contain("plugin=Combat AI Empowered.esp")   // arguments shown
+            .And.Contain("plugin=Combat AI Empowered.esp")
             .And.Contain("id=fSneakRunningMult");
     }
 

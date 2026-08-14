@@ -4,15 +4,15 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Invalid graphs, and the exact diagnostic each one has to produce.
-/// </summary>
-/// <remarks>
-/// Every assertion checks the code and the node id as structured fields rather than searching the
-/// message text. That is what makes "the gate turns red and names the node" a property of the
-/// compiler rather than of how a message happens to be worded, and it is what the canvas relies on
-/// to paint the offending pin.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class GraphNegativeTests
 {
     private static GraphDiagnostic Refused(GraphDocument document, string expectedCode)
@@ -52,7 +52,7 @@ public class GraphNegativeTests
     [Fact]
     public void A_narrowing_wire_demands_a_cast_rather_than_being_inserted_silently()
     {
-        // float into int loses information, so the author owns the decision by placing a Cast node.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -167,8 +167,8 @@ public class GraphNegativeTests
     [Fact]
     public void A_node_whose_definition_is_not_on_the_palette_is_refused_rather_than_guessed()
     {
-        // Mirrors the back end's refusal of an unresolved callee: arity is not derivable once
-        // optional parameters exist, so guessing would emit a call with the wrong argument count.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -185,7 +185,7 @@ public class GraphNegativeTests
     [Fact]
     public void A_wire_to_a_pin_that_no_longer_exists_is_refused_naming_the_node()
     {
-        // The case the "pins are never stored" decision exists to produce.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -203,7 +203,7 @@ public class GraphNegativeTests
     [Fact]
     public void A_control_flow_loop_back_to_a_node_that_is_not_a_loop_is_refused()
     {
-        // Papyrus has no goto, so this shape simply cannot be written as a script.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -334,8 +334,8 @@ public class GraphNegativeTests
     [Fact]
     public void Every_refusal_names_a_node_or_says_why_it_cannot()
     {
-        // A diagnostic with no node is unusable by the canvas, so the only ones allowed to omit it
-        // are the document-level ones that genuinely have no single node to blame.
+
+
         var documentLevel = new[]
         {
             GraphDiagnosticCodes.InvalidScriptHeader,

@@ -10,20 +10,20 @@ using Mutagen.Bethesda.Environments;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Loads an ESP/ESM/ESL directly via Mutagen -- no Spriggit step needed.
-/// Uses a generic reflection walker so it's not tied to specific Mutagen API shapes.
-/// </summary>
+
+
+
+
 public static partial class MutagenLoader
 {
-    // Properties to skip at any depth (noisy / internal / circular)
+
     private static readonly HashSet<string> _skipProps = new(StringComparer.OrdinalIgnoreCase)
     {
         "Registration", "IsCompressed", "IsDeleted", "FormVersion",
         "VersionControl", "StaticRegistration", "ProtocolDefinition",
         "CustomData", "BinaryWriteTranslator", "RecordType", "ContainedFormLinks",
-        // Framework metadata noise -- not useful for editing, already covered by the
-        // FormKey/EditorID/Type header rows.
+
+
         "Fallout4MajorRecordFlags", "MajorRecordFlags", "MajorRecordFlagsRaw",
         "Version2", "MajorFlags", "IsNull", "FormVersion2",
     };
@@ -35,46 +35,46 @@ public static partial class MutagenLoader
         typeof(long), typeof(ulong), typeof(float), typeof(double),
     };
 
-    // Concurrent: the UI thread and the AI agent thread read/write these at the same time (a tool
-    // call edits while the tree reads). Plain Dictionaries threw "concurrent update corrupted state".
+
+
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> LooseMods = new(StringComparer.OrdinalIgnoreCase);
 
-    // Tracks file paths for loose-opened ESPs so OpenPlugin can reload them as mutable.
+
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> LooseModPaths = new(StringComparer.OrdinalIgnoreCase);
 
-    // Where each plugin in the current load order was actually read from, recorded by whichever
-    // loader built the environment. MO2's Mo2GameEnvironment carries the same map as PluginPaths,
-    // but GetModIndex has no env to ask, and the vanilla GameEnvironmentState path has no such map at
-    // all -- so both register here. Used to key the persisted per-signature counts (#87) to a real
-    // file, since a plugin NAME is not enough to tell whether the bytes behind it have changed.
+
+
+
+
+
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> PluginSourcePaths = new(StringComparer.OrdinalIgnoreCase);
 
-    // Plugins the AI has opened for editing (mutable). These take priority over the env /
-    // loose read-only copies for ALL reads, so edits are immediately visible in the tree and
-    // to get_record (hot loading). WriteService registers entries here.
+
+
+
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> EditableMods = new(StringComparer.OrdinalIgnoreCase);
 
-    // Link cache for the currently loaded environment. Set when an env is built (env load /
-    // MO2 profile). Used to resolve FormLinks to human-readable names (EditorID + FULL name)
-    // in the field walker, so the UI shows `c_Gears "Gear" [...]` instead of a bare FormID.
+
+
+
     public static Mutagen.Bethesda.Plugins.Cache.ILinkCache? LinkCache;
 
-    // Per-plugin ESL ("small master") flag for the loaded load order, keyed by file name. Populated
-    // when the env is built. Used to compute the correct master-mapped FormID (regular high-byte vs
-    // 0xFE light-master encoding) when fixing custom-ActorValue condition parameters on save.
+
+
+
     public static readonly System.Collections.Generic.Dictionary<string, bool> MasterIsEsl =
         new(System.StringComparer.OrdinalIgnoreCase);
 
-    // Cache of the per-type "Name" property (FULL) used to label resolved FormLinks.
+
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, PropertyInfo?> _nameProp = new();
 
-    /// <summary>
-    /// Render a FormLink as xEdit-style `EditorID "FullName" [FormID:File]`, resolving the
-    /// target through the load order's link cache. Falls back to the raw FormKey when the
-    /// target can't be resolved (no env loaded, or a dangling/unmastered reference).
-    /// </summary>
-    /// <summary>A FormKey string rendered the way the grid renders links -- "EditorID [key]" -- so a
-    /// condition parameter can show a name instead of a raw id. Returns the input when unresolvable.</summary>
+
+
+
+
+
+
+
     public static string DescribeFormKey(object? envObj, string formKeyStr)
     {
         if (!Mutagen.Bethesda.Plugins.FormKey.TryFactory(formKeyStr, out var fk)) return formKeyStr;
@@ -124,9 +124,9 @@ public static partial class MutagenLoader
         catch { return fkStr; }
     }
 
-    // Every concrete Fallout 4 record class (Registration.Name -> the getter interface), reflected
-    // once from the Mutagen assembly. Used to resolve which record types a FormLink may point at,
-    // including broad interfaces (IItemGetter -> Weapon/Armor/Ingestible/...).
+
+
+
     private static readonly Lazy<List<(string Name, Type Type)>> _fo4Records = new(() =>
     {
         var list = new List<(string, Type)>();
@@ -138,7 +138,7 @@ public static partial class MutagenLoader
         foreach (var t in types)
         {
             if (t is null || !t.IsClass || t.IsAbstract) continue;
-            if (!major.IsAssignableFrom(t)) continue;       // a concrete record class (e.g. Weapon)
+            if (!major.IsAssignableFrom(t)) continue;
             if (seen.Add(t.Name)) list.Add((t.Name, t));
         }
         return list;
@@ -146,9 +146,9 @@ public static partial class MutagenLoader
 
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, string> _refTypesCache = new();
 
-    // Resolve a FormLink property type to (displayLabel, csvOfTargetRecordClasses). The csv is every
-    // concrete record class assignable to the link's target interface, so the picker filter is
-    // correct for both single-type links (Keyword) and broad ones (an "item" link).
+
+
+
     private static (string? Display, string? Csv) FormLinkInfo(Type t)
     {
         foreach (var cand in new[] { t }.Concat(t.GetInterfaces()))
@@ -159,7 +159,7 @@ public static partial class MutagenLoader
             var arg = args[0];
             if (!typeof(Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter).IsAssignableFrom(arg)) continue;
 
-            var n = arg.Name;                                   // "IKeywordGetter"
+            var n = arg.Name;
             if (n.StartsWith("I", StringComparison.Ordinal)) n = n[1..];
             if (n.EndsWith("Getter", StringComparison.Ordinal)) n = n[..^6];
 
@@ -173,12 +173,12 @@ public static partial class MutagenLoader
         return (null, null);
     }
 
-    // Signature name ("Weapon") -> the GETTER INTERFACE (typeof(IWeaponGetter)), reflected once.
-    // This is what type-scoped enumeration must be given. Passing the concrete record CLASS instead
-    // (Weapon, Cell, PlacedObject) does not throw -- it silently returns wrong results, because a
-    // binary overlay's records are WeaponBinaryOverlay etc., which implement IWeaponGetter but are
-    // not Weapon. Measured against Fallout4.esm: concrete Weapon -> 0 records (should be 252),
-    // concrete PlacedObject -> 0 (should be 1,244,528), concrete Cell -> 5 (should be 40,165).
+
+
+
+
+
+
     private static readonly Lazy<Dictionary<string, Type>> _getterIfaceBySig = new(() =>
     {
         var map = new Dictionary<string, Type>(StringComparer.Ordinal);
@@ -191,45 +191,45 @@ public static partial class MutagenLoader
             if (t is null || !t.IsInterface || !major.IsAssignableFrom(t)) continue;
             var n = t.Name;
             if (!n.StartsWith("I", StringComparison.Ordinal) || !n.EndsWith("Getter", StringComparison.Ordinal)) continue;
-            map[n[1..^6]] = t;                                   // "IWeaponGetter" -> "Weapon"
+            map[n[1..^6]] = t;
         }
         return map;
     });
 
-    // ---- per-mod record index (lazy: only what a caller actually asks for is materialized) ----
-    // The dominant cost of an index is not its dictionaries, it is materializing record objects:
-    // measured on Fallout4.esm, a FormKey->record map costs 1816 MB and a signature->records map
-    // 1712 MB, because both force all 1,549,276 records into memory. 80.3% of that is PlacedObject
-    // (1,244,528 records, ~1477 MB) which a `list_records type=Weapon` never looks at. Type-scoped
-    // enumeration of just the signature asked for costs 0.4 MB / 22 ms for WEAP against
-    // 1836 MB / 4324 ms for the old eager index. So nothing here is built until it is demanded.
+
+
+
+
+
+
+
     internal sealed class ModIndex
     {
-        // The only eager part: signature -> record count, from a walk that RETAINS NOTHING.
-        // Measured 2.70 MB retained / 3.2 s on Fallout4.esm. Answers "which record types exist and
-        // how many" (the plugin tree, list_record_types, pagination headers) without holding records.
+
+
+
         public Dictionary<string, int> Counts = new(StringComparer.Ordinal);
 
-        // Lazily materialized per signature. Only signatures actually requested are ever built.
+
         public readonly System.Collections.Concurrent.ConcurrentDictionary<string, List<Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter>> BySig =
             new(StringComparer.Ordinal);
 
-        // Lazily materialized, and ONLY by a lookup that does not know the record's type. Every
-        // caller that does know it goes through BySig instead and never pays for this. Null until
-        // first untyped use; see RecordsByFormKey.
+
+
+
         public Dictionary<FormKey, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter>? ByFormKey;
 
-        // Records this index currently holds alive, for the record-weighted LRU bound below.
+
         public long RetainedRecords;
-        // The exact mod instance this index was built from. Cached entries are keyed by file name,
-        // but a plugin's backing instance is REPLACED on reload_plugin / open / env refresh (the
-        // editable in-memory copy supersedes the env/loose copy). If we served the cache by name
-        // alone, a stale index built from a pre-edit (or empty deployed) instance would be returned
-        // forever -- the silent cause of list_records/get_record showing 0 records while
-        // check_plugin (which enumerates directly) correctly saw them. Rebuilding when Source no
-        // longer matches the resolved mod makes the cache self-healing across every replace path.
+
+
+
+
+
+
+
         public object? Source;
-        // Monotonic tick of the last serve/build, for LRU eviction. Set via StoreModIndex / on hit.
+
         public long LastAccess;
     }
 
@@ -237,25 +237,25 @@ public static partial class MutagenLoader
     private static long _modIndexAccessTick;
     private static readonly object _modIndexEvictLock = new();
 
-    // Cap on how many per-mod indexes stay resident. Each index pins a reference to every record in
-    // its mod, so without a bound a broad sweep (search_all / scan_conflicts / list_records across a
-    // 650+-plugin load order) caches every plugin's full index and never releases it -- the measured
-    // multi-GB long-session memory growth. LRU by last access keeps the active working set
-    // warm while bounding the total; actively-edited plugins are never evicted (see EvictModIndexLru).
-    // internal so tests can lower it. A generous default: the realistic burst of plugins a user juggles
-    // is well under this, so normal editing never evicts, but a full-load-order sweep is capped.
+
+
+
+
+
+
+
     public static int MaxCachedModIndexes = 64;
 
-    // Second, and now the load-bearing bound: a cap on RETAINED RECORDS, not on entries. An entry
-    // count is the wrong unit here because per-plugin cost varies about 47,000x -- measured over a
-    // real 656-plugin load order the median plugin holds 33 records (~40 KB) and 569 of 655 hold
-    // under 1 MB, while Fallout4.esm holds 1,549,276 (~1836 MB). A 64-entry cache is therefore
-    // anywhere between ~2.5 MB and several GB, which is not a memory bound at all. At the measured
-    // ~1,245 bytes per retained record this budget is roughly 600 MB of records.
+
+
+
+
+
+
     public static long MaxCachedIndexRecords = 500_000;
 
-    // Resolve a mod by file name. Editable (mutable) copies win so the AI's in-progress
-    // edits are what everything reads (hot loading), then the env load order, then loose ESPs.
+
+
     private static object? ResolveMod(string modName, object? envObj)
     {
         if (EditableMods.TryGetValue(modName, out var editable)) return editable;
@@ -273,7 +273,7 @@ public static partial class MutagenLoader
         return LooseMods.TryGetValue(modName, out var loose) ? loose : null;
     }
 
-    // Every loaded mod (editable copies win over env/loose), de-duplicated by name.
+
     private static IEnumerable<(string name, object mod)> AllLoadedMods(object? envObj)
     {
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -294,12 +294,12 @@ public static partial class MutagenLoader
             if (seen.Add(kv.Key)) yield return (kv.Key, kv.Value);
     }
 
-    // Enumerate a mod exactly once, bucketing records by signature and FormKey. Cached per mod.
+
     private static ModIndex GetModIndex(object mod, string modName, Action<string>? progress = null)
     {
-        // Serve the cache only when it was built from the SAME mod instance we're resolving now.
-        // A name-only hit would hand back a stale index after the backing instance was replaced
-        // (reload_plugin, open_plugin, env refresh, or an editable copy superseding the env copy).
+
+
+
         if (_modIndexCache.TryGetValue(modName, out var cached) && ReferenceEquals(cached.Source, mod))
         {
             cached.LastAccess = System.Threading.Interlocked.Increment(ref _modIndexAccessTick);
@@ -309,9 +309,9 @@ public static partial class MutagenLoader
         var idx = new ModIndex { Source = mod };
         if (mod is Mutagen.Bethesda.Fallout4.IFallout4ModGetter f4mod)
         {
-            // The counts-walk retains no records, but it still reads the whole plugin, and on a real
-            // load order that is 7.0 s paid on every process start. Serve them from disk when the
-            // plugin file is byte-for-byte the one they were taken from (#87).
+
+
+
             var cacheKey = CountsCacheKeyFor(modName);
             if (cacheKey != null && RecordCountCache.TryGet(cacheKey, out var persisted))
             {
@@ -319,8 +319,8 @@ public static partial class MutagenLoader
                 return StoreModIndex(modName, idx);
             }
 
-            // Count only -- deliberately retains no record. This is the walk that used to build the
-            // full index; keeping nothing from it is the whole point (2.70 MB vs 1836 MB retained).
+
+
             int count = 0;
             foreach (var rec in f4mod.EnumerateMajorRecords())
             {
@@ -334,9 +334,9 @@ public static partial class MutagenLoader
         return StoreModIndex(modName, idx);
     }
 
-    // The vanilla GameEnvironmentState path has no per-plugin path map, so the plugin is looked for
-    // in the data folder it was loaded from. Registered only if it is actually there: a name with no
-    // file behind it would key a counts entry that can never be validated.
+
+
+
     private static void RegisterPluginSourcePath(string modName, string dataFolder)
     {
         try
@@ -347,16 +347,16 @@ public static partial class MutagenLoader
         catch { }
     }
 
-    /// <summary>
-    /// The on-disk file whose size and write time key this plugin's persisted counts, or null if the
-    /// counts must not be persisted at all.
-    /// </summary>
-    /// <remarks>
-    /// Null for a plugin in <see cref="EditableMods"/>: that is a mutable in-memory copy whose record
-    /// set diverges from the file the moment anything is added or deleted, so its counts cannot be
-    /// validated against the file and must never be written under its key. Also null when we simply
-    /// do not know where the plugin came from, which costs a walk rather than risking a wrong answer.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
     public static string? CountsCacheKeyFor(string modName)
     {
         if (EditableMods.ContainsKey(modName)) return null;
@@ -364,26 +364,26 @@ public static partial class MutagenLoader
         return PluginSourcePaths.TryGetValue(modName, out var path) ? path : null;
     }
 
-    /// <summary>
-    /// The records of one signature in a mod, materialized on first request and cached thereafter.
-    /// </summary>
-    /// <remarks>
-    /// Uses type-scoped enumeration, which is what makes this cheap: for WEAP on Fallout4.esm it
-    /// touches 252 records (0.4 MB / 22 ms) instead of all 1,549,276 (1836 MB / 4324 ms).
-    /// <para>
-    /// The <c>Registration.Name</c> filter is required, not defensive. For polymorphic on-disk record
-    /// families the enumeration returns the WHOLE family, not the requested subtype: verified against
-    /// Fallout4.esm, 17 of 147 signatures over-return this way -- every GameSetting* variant yields
-    /// all 2,039 GMSTs, every Global* yields all 1,346 GLOBs, the ObjectModification family yields all
-    /// 2,409 OMODs, and the placed types share 1,377. It is always a SUPERSET and never a subset,
-    /// which is exactly why filtering on the exact registration name is correct. With the filter, all
-    /// 147 signatures of Fallout4.esm and all 116 of DLCCoast.esm match the old eager index exactly.
-    /// </para>
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static List<Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter> RecordsOfSig(ModIndex idx, string sig)
     {
         if (idx.BySig.TryGetValue(sig, out var cached)) return cached;
-        if (!idx.Counts.ContainsKey(sig)) return [];            // signature not present in this mod
+        if (!idx.Counts.ContainsKey(sig)) return [];
 
         var list = new List<Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter>();
         if (idx.Source is Mutagen.Bethesda.Fallout4.IFallout4ModGetter f4mod
@@ -398,20 +398,20 @@ public static partial class MutagenLoader
         if (ReferenceEquals(stored, list))
         {
             System.Threading.Interlocked.Add(ref idx.RetainedRecords, list.Count);
-            EvictModIndexLru();                                  // newly retained records may bust the budget
+            EvictModIndexLru();
         }
         return stored;
     }
 
-    /// <summary>
-    /// FormKey -> record for a whole mod, built on first use. Only for lookups that do NOT know the
-    /// record's type; every typed caller uses <see cref="RecordsOfSig"/> and never triggers this.
-    /// </summary>
-    /// <remarks>
-    /// This is the one genuinely expensive structure left (1816 MB on Fallout4.esm), which is why it
-    /// is built lazily rather than eagerly: in practice it is reached for actively-edited and loosely
-    /// opened plugins, whose median size in a real 656-plugin load order is 33 records.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
     private static Dictionary<FormKey, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter> RecordsByFormKey(ModIndex idx)
     {
         if (idx.ByFormKey is { } built) return built;
@@ -427,26 +427,26 @@ public static partial class MutagenLoader
         return map;
     }
 
-    /// <summary>
-    /// Every record of a mod, paired with its signature, RETAINING NOTHING.
-    /// </summary>
-    /// <remarks>
-    /// For whole-plugin searches, which read <c>EditorID</c>/<c>FormKey</c> as they go and keep only
-    /// the handful of hits. Caching those records would be the worst case for no benefit -- a single
-    /// blank-query sweep would pin every record of every plugin it touched. A retain-nothing walk of
-    /// Fallout4.esm holds 2.70 MB against the 1836 MB the cached form costs.
-    /// <para>
-    /// Cached per-signature lists are reused when they already exist, so a search after a
-    /// <c>list_records</c> on the same plugin does not re-read what is already in memory.
-    /// </para>
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static IEnumerable<(string sig, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)> StreamRecords(ModIndex idx)
     {
         if (idx.Source is not Mutagen.Bethesda.Fallout4.IFallout4ModGetter f4mod) yield break;
 
-        // Snapshot which signatures are already materialized BEFORE yielding anything. Re-testing
-        // idx.BySig during the walk would let a signature materialized mid-enumeration suppress
-        // records in the second loop that the first loop never yielded, silently dropping them.
+
+
+
         var alreadyServed = new HashSet<string>(idx.BySig.Keys, StringComparer.Ordinal);
 
         foreach (var sig in alreadyServed)
@@ -457,16 +457,16 @@ public static partial class MutagenLoader
         foreach (var rec in f4mod.EnumerateMajorRecords())
         {
             var sig = rec.Registration.Name;
-            if (alreadyServed.Contains(sig)) continue;      // already yielded above
+            if (alreadyServed.Contains(sig)) continue;
             yield return (sig, rec);
         }
     }
 
-    /// <summary>
-    /// Look a FormKey up in a mod, preferring the type-scoped path when the caller knows the
-    /// signature (the record tree always does -- it stamps a "Type" leaf on every record node).
-    /// Falls back to the full FormKey map only when the type is genuinely unknown.
-    /// </summary>
+
+
+
+
+
     private static Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter? LookupByFormKey(
         ModIndex idx, FormKey formKey, string? sigHint)
     {
@@ -474,27 +474,27 @@ public static partial class MutagenLoader
         {
             foreach (var rec in RecordsOfSig(idx, sigHint))
                 if (rec.FormKey == formKey) return rec;
-            return null;      // the hint was authoritative: the record is not of that type here
+            return null;
         }
         return RecordsByFormKey(idx).TryGetValue(formKey, out var r) ? r : null;
     }
 
-    // Insert (or replace) a mod's index, stamp its access tick, and evict LRU overflow past the cap.
+
     private static ModIndex StoreModIndex(string modName, ModIndex idx)
     {
         idx.LastAccess = System.Threading.Interlocked.Increment(ref _modIndexAccessTick);
         _modIndexCache[modName] = idx;
-        EvictModIndexLru();   // self-checks BOTH the entry cap and the retained-record budget
+        EvictModIndexLru();
         return idx;
     }
 
-    // Evict least-recently-used indexes down to MaxCachedModIndexes. NEVER evicts an index for a
-    // plugin currently in EditableMods: that is the actively-edited working set, and get_winning_record
-    // / ResolveEditorIdToFormKey filter on "is this mod already indexed" (to avoid re-enumerating the
-    // whole load order), so dropping an in-edit plugin's index there could make a live override or an
-    // EditorID silently stop resolving. Removing a cache entry never invalidates a reference a caller
-    // already holds -- GetModIndex returns the object and callers use it locally -- so eviction mid-use,
-    // even during a parallel sweep, is safe; the worst case is a later rebuild.
+
+
+
+
+
+
+
     private static void EvictModIndexLru()
     {
         lock (_modIndexEvictLock)
@@ -509,10 +509,10 @@ public static partial class MutagenLoader
                 long oldest = long.MaxValue;
                 foreach (var kv in _modIndexCache)
                 {
-                    if (EditableMods.ContainsKey(kv.Key)) continue;   // protect the active working set
+                    if (EditableMods.ContainsKey(kv.Key)) continue;
                     if (kv.Value.LastAccess < oldest) { oldest = kv.Value.LastAccess; victim = kv.Key; }
                 }
-                if (victim == null) break;   // everything left is protected -- stop rather than spin
+                if (victim == null) break;
                 _modIndexCache.TryRemove(victim, out _);
             }
         }
@@ -520,28 +520,28 @@ public static partial class MutagenLoader
 
     public static void InvalidateModIndex(string modName) => _modIndexCache.TryRemove(modName, out _);
 
-    /// <summary>
-    /// Drop a loose mod and release its plugin file if that mod was memory-mapped.
-    /// </summary>
-    /// <remarks>
-    /// A binary overlay (see <see cref="LoadEsp"/>) mmaps its file and holds the handle until it is
-    /// disposed; a mutable mod (<c>CreateFromBinary</c>) reads into memory and is not
-    /// <see cref="IDisposable"/> at all, which is what makes the type test below a safe
-    /// discriminator between the two. Two things are never released here: the instance currently
-    /// open for editing, and the mod index, which is dropped FIRST because it keeps the mod as its
-    /// <c>Source</c> and would otherwise read from a disposed overlay.
-    /// <para>
-    /// <c>LooseModPaths</c> is deliberately left alone -- it is the "where did this plugin come
-    /// from" lookup that <c>FindPluginPath</c>/<c>EnsureOpen</c> depend on, and it is about the
-    /// file, not about any particular loaded instance of it.
-    /// </para>
-    /// <para>
-    /// Scope: this covers mods THIS class and WriteService put in <see cref="LooseMods"/>. Overlays
-    /// the game environment owns (Mo2ProfileLoader's load-order listings) are a separate lifetime
-    /// and are not touched here -- they are reachable from <see cref="LinkCache"/> and can only be
-    /// released by tearing the environment down.
-    /// </para>
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void ReleaseLooseMod(string modName)
     {
         InvalidateModIndex(modName);
@@ -550,11 +550,11 @@ public static partial class MutagenLoader
         (mod as IDisposable)?.Dispose();
     }
 
-    /// <summary>
-    /// Install a loose mod, releasing whatever instance it displaces. Overwriting the dictionary
-    /// entry directly is what leaked a file handle per reload: the previous overlay became
-    /// unreachable while its mmap stayed open for the rest of the process.
-    /// </summary>
+
+
+
+
+
     public static void ReplaceLooseMod(string modName, object mod)
     {
         if (LooseMods.TryGetValue(modName, out var prev) && !ReferenceEquals(prev, mod))
@@ -563,13 +563,13 @@ public static partial class MutagenLoader
         InvalidateModIndex(modName);
     }
 
-    // ---- test seams for the LRU cache (InternalsVisibleTo FO4RecordEditor.Tests) ----
+
     public static int ModIndexCacheCount => _modIndexCache.Count;
     public static bool ModIndexCacheContains(string modName) => _modIndexCache.ContainsKey(modName);
     public static void ClearModIndexCacheForTest() => _modIndexCache.Clear();
-    // Seed a synthetic index through the real store/evict path so LRU behavior can be tested without
-    // enumerating a real mod; `source` stands in for the backing mod instance and `retainedRecords`
-    // for how many records it would be holding (what the record budget actually evicts on).
+
+
+
     public static void SeedModIndexForTest(string modName, object source, long retainedRecords = 0)
         => StoreModIndex(modName, new ModIndex { Source = source, RetainedRecords = retainedRecords });
 
@@ -585,9 +585,9 @@ public static partial class MutagenLoader
         var modPath = ModPath.FromPath(espPath);
         var mod = Fallout4Mod.CreateFromBinaryOverlay(modPath, Fallout4Release.Fallout4);
 
-        // Store the loose mod so it can be queried by GetGroups and PopulateNode. Reloading the same
-        // file goes through ReplaceLooseMod so the previous overlay's mmap is released rather than
-        // left open for the rest of the session; it also drops the stale index for this file.
+
+
+
         ReplaceLooseMod(fileName, mod);
         LooseModPaths[fileName] = espPath;
 
@@ -599,8 +599,8 @@ public static partial class MutagenLoader
         return root;
     }
 
-    // Build a lazy Explorer tree node (root + "_NeedsGroups" dummy) for a plugin that is
-    // already registered in LooseMods (e.g. one the AI created/opened for editing).
+
+
     public static RecordNode MakeLazyNode(string pluginName, string? filePath = null)
     {
         var root = new RecordNode { Key = pluginName, FilePath = filePath };
@@ -610,8 +610,8 @@ public static partial class MutagenLoader
         return root;
     }
 
-    // Build the game environment and list its plugins WITHOUT creating tree nodes, so the
-    // caller can let the user choose which plugins to load.
+
+
     public static (object env, List<string> plugins) BuildEnvironment(
         IProgress<(string message, double? percent)>? progress = null,
         string? dataFolderOverride = null)
@@ -631,8 +631,8 @@ public static partial class MutagenLoader
         }
         catch (System.Exception ex)
         {
-            // On Linux the Build() call throws when it cannot locate a load order file; turn that
-            // into an actionable "use Open MO2" message rather than leaking Mutagen's internals.
+
+
             throw TranslateEnvironmentError(ex);
         }
         LinkCache = env.LinkCache;
@@ -648,8 +648,8 @@ public static partial class MutagenLoader
                 RegisterPluginSourcePath(l.ModKey.FileName.String, env.DataFolderPath.Path);
             }
 
-        // Same reasoning as Mo2ProfileLoader.Load: texture/mesh lookups should search where this
-        // session's plugins actually loaded from, not a possibly-unset/stale settings.json value.
+
+
         try { TextureService.SetSessionRoots(new[] { env.DataFolderPath.Path }); } catch { }
         try { AssetResolver.SetSessionDataRoots(new[] { env.DataFolderPath.Path }); } catch { }
 
@@ -660,9 +660,9 @@ public static partial class MutagenLoader
     public static (RecordNode root, object env) LoadEnvironment(IProgress<(string message, double? percent)>? progress = null)
     {
         progress?.Report(("Initializing Game Environment...", 0));
-        _modIndexCache.Clear();   // a fresh environment invalidates all cached per-mod indexes
+        _modIndexCache.Clear();
         var env = GameEnvironment.Typical.Builder<IFallout4Mod, IFallout4ModGetter>(GameRelease.Fallout4).Build();
-        
+
         var root = new RecordNode { Key = "Load Order" };
         var listed = env.LoadOrder.ListedOrder.ToList();
         PluginSourcePaths.Clear();
@@ -679,7 +679,7 @@ public static partial class MutagenLoader
             progress?.Report(($"Loading {mod.ModKey.FileName} ({i + 1}/{listed.Count})...", percent));
 
             var modNode = new RecordNode { Key = mod.ModKey.FileName.String, Parent = root };
-            // Add a dummy node to allow expansion
+
             var dummy = new RecordNode { Key = "Loading...", Parent = modNode };
             AddLeafInit(dummy, "_NeedsGroups", mod.ModKey.FileName.String);
             modNode.Children.Add(dummy);
@@ -700,8 +700,8 @@ public static partial class MutagenLoader
         var idx = GetModIndex(mod, modName, progress);
 
         var result = new List<RecordNode>();
-        // Counts, not BySig: the tree only needs the signature names, so no records are materialized
-        // here. Each group's records are built when that group is actually expanded (GetRecords).
+
+
         foreach (var sig in idx.Counts.Keys.OrderBy(g => g))
         {
             var grpNode = new RecordNode { Key = sig, Parent = pluginNode };
@@ -737,7 +737,7 @@ public static partial class MutagenLoader
             {
                 Key = !string.IsNullOrEmpty(editorId) ? editorId : rec.FormKey.ToString(),
                 Parent = groupNode,
-                IsRecordNode = true,   // a leaf in the tree; fields show in the center grid
+                IsRecordNode = true,
             };
             AddLeafInit(recNode, "FormKey", rec.FormKey.ToString());
             AddLeafInit(recNode, "EditorID", editorId);
@@ -751,32 +751,32 @@ public static partial class MutagenLoader
 
     public static void PopulateNode(RecordNode node, object? envObj, string modName = "")
     {
-        // Remove the lazy-load flag so we don't try to populate again.
+
         var flag = node.GetChild("_HasData");
         if (flag != null) node.Children.Remove(flag);
 
         var fkStr = node.GetValue("FormKey");
         if (fkStr == null || !FormKey.TryFactory(fkStr, out var formKey)) return;
 
-        // Use the plugin the record is listed under; fall back to the FormKey's master.
+
         if (string.IsNullOrEmpty(modName)) modName = formKey.ModKey.FileName.String;
 
         var mod = ResolveMod(modName, envObj);
         if (mod == null) return;
 
-        // Lookup against the index built when the group was expanded -- no link-cache build, no full
-        // re-enumeration, so this is safe to call synchronously. The node carries its own "Type"
-        // leaf (stamped in GetRecords), so this stays on the type-scoped path and never materializes
-        // the whole plugin just to open one record.
+
+
+
+
         var idx = GetModIndex(mod, modName);
         var rec = LookupByFormKey(idx, formKey, node.GetValue("Type"));
         if (rec != null) WalkObject(rec, node, 0, 4, modName);
     }
 
-    // Populate a record node with EVERY plugin's version of the record (xEdit-style),
-    // so each field leaf accumulates a value per plugin (Values[pluginName]). Returns the
-    // plugins that touch the record in load order (last = current winner). Falls back to the
-    // single listed plugin when no environment / only one version exists.
+
+
+
+
     public static List<string> PopulateNodeAllVersions(RecordNode node, object? envObj)
     {
         var flag = node.GetChild("_HasData");
@@ -789,7 +789,7 @@ public static partial class MutagenLoader
 
         if (versions.Count == 0)
         {
-            // No load order (e.g. a loosely opened ESP): keep the legacy single-plugin walk.
+
             var modName = node.Parent?.Parent?.Key ?? fk.ModKey.FileName.String;
             var mod = ResolveMod(modName, envObj);
             var rec = mod == null ? null : LookupByFormKey(GetModIndex(mod, modName), fk, node.GetValue("Type"));
@@ -802,16 +802,16 @@ public static partial class MutagenLoader
         return versions.Select(v => v.plugin).ToList();
     }
 
-    // Build a record's field subtree on a DETACHED node (safe to run on a background
-    // thread because nothing is bound to it yet). The caller attaches the returned
-    // children to the real, tree-bound record node on the UI thread. This keeps large
-    // records (NPC_, etc.) from freezing the UI during the reflection walk.
-    /// <param name="sig">
-    /// The record's signature when the caller knows it (the record tree always does). Supplying it
-    /// keeps this on the type-scoped lookup path; omitting it falls back to building the whole
-    /// plugin's FormKey map, which on a master like Fallout4.esm is the difference between a few
-    /// hundred KB and ~1.8 GB.
-    /// </param>
+
+
+
+
+
+
+
+
+
+
     public static List<RecordNode> BuildPopulatedFields(string formKeyStr, object? envObj, string modName, string? sig = null)
     {
         var temp = new RecordNode { Key = "temp" };
@@ -829,11 +829,11 @@ public static partial class MutagenLoader
         return temp.Children.ToList();
     }
 
-    // ============================================================================
-    //  Conflict field matrix -- xEdit-style per-plugin/per-field view of one record.
-    // ============================================================================
 
-    /// <summary>The override version of a record carried by a specific plugin (or null).</summary>
+
+
+
+
     public static Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter? GetRecordVersion(
         object? envObj, string plugin, FormKey fk)
     {
@@ -842,14 +842,14 @@ public static partial class MutagenLoader
         return null;
     }
 
-    /// <summary>Plugins (in load order) that carry a version of the given FormKey.</summary>
+
     public static List<string> GetConflictingPlugins(object? envObj, FormKey fk) =>
         GetRecordContexts(envObj, fk).Select(c => c.plugin).ToList();
 
     public sealed record RefByDto(string Plugin, string FormKey, string EditorID, string Type);
 
-    /// <summary>Records across the load order whose contained FormLinks point at the given FormKey
-    /// (xEdit's "Referenced By"). Capped to keep an on-demand scan responsive.</summary>
+
+
     public static List<RefByDto> GetReferencedBy(object? envObj, string formKeyStr, int cap = 500)
     {
         var result = new List<RefByDto>();
@@ -859,16 +859,16 @@ public static partial class MutagenLoader
         foreach (var (name, mod) in AllLoadedMods(envObj))
         {
             if (mod is not Mutagen.Bethesda.Fallout4.IFallout4ModGetter f4) continue;
-            // One malformed plugin must not take out the whole sweep. Real modlists contain plugins
-            // that Mutagen refuses to enumerate (a duplicate FormKey inside one group, for instance),
-            // and this loop crosses every plugin in the load order, so an unguarded throw meant a
-            // single bad mod made "referenced by" unusable for the entire modlist. Skip it, note it,
-            // and keep going: a partial answer that names what it skipped beats no answer.
+
+
+
+
+
             try
             {
                 foreach (var rec in f4.EnumerateMajorRecords())
                 {
-                    if (rec.FormKey == target) continue;   // a record referencing itself isn't interesting
+                    if (rec.FormKey == target) continue;
                     bool refs = false;
                     foreach (var link in rec.EnumerateFormLinks())
                         if (link.FormKey == target) { refs = true; break; }
@@ -993,8 +993,8 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-    /// <summary>Lightweight per-record problems for the winning version: deleted flag and any
-    /// FormLink that doesn't resolve anywhere in the load order (a dangling, crash-risk reference).</summary>
+
+
     public static List<ProblemDto> GetRecordProblems(object? envObj, string formKeyStr)
     {
         var result = new List<ProblemDto>();
@@ -1003,7 +1003,7 @@ public static partial class MutagenLoader
         var ctx = GetRecordContexts(envObj, fk);
         if (ctx.Count == 0) return result;
         var winnerPlugin = ctx[^1].plugin;
-        var rec = ctx[^1].rec;   // the winning version is what the game uses
+        var rec = ctx[^1].rec;
 
         if (ResolveMod(winnerPlugin, envObj) is IFallout4ModGetter winnerMod)
         {
@@ -1028,14 +1028,14 @@ public static partial class MutagenLoader
         if (rec.IsDeleted)
             result.Add(new ProblemDto("Error", "Record is flagged DELETED -- prefer a disable/override; deletions can crash the game."));
 
-        // Only a link into a plugin that is NOT in the load order is provably dangling.
-        //
-        // This used to report every link the cache could not resolve, which put 19 errors on a
-        // vanilla Knife: PickUpSound, PreviewTransform, Model.MaterialSwap, ObjectEffect and the
-        // like, all pointing at records that plainly exist in Fallout4.esm. Those record types are
-        // not resolvable through TryResolveIdentifier<IMajorRecordGetter> here, so a failed resolve
-        // means "we could not check", not "the target is missing". Reporting it as a crash risk
-        // trained the drawer to be ignored, which is worse than saying nothing.
+
+
+
+
+
+
+
+
         var loaded = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (name, _) in AllLoadedMods(envObj)) loaded.Add(name);
 
@@ -1051,17 +1051,17 @@ public static partial class MutagenLoader
         return result;
     }
 
-    // 4-letter signature -> Mutagen record class name, for filtering EnumerateOverrides by type.
+
     private static readonly Dictionary<string, string> _sigToClass = new(StringComparer.OrdinalIgnoreCase)
     {
         ["COBJ"] = "ConstructibleObject", ["WEAP"] = "Weapon", ["ARMO"] = "Armor", ["ALCH"] = "Ingestible",
         ["MISC"] = "MiscItem", ["FLST"] = "FormList", ["LVLI"] = "LeveledItem", ["AMMO"] = "Ammunition",
     };
 
-    /// <summary>
-    /// Every record a plugin carries as an OVERRIDE (the FormKey belongs to another mod), optionally
-    /// filtered to one signature (e.g. "COBJ"). Used to batch-revert a plugin's edits.
-    /// </summary>
+
+
+
+
     public static List<(FormKey fk, string editorId, string sig)> EnumerateOverrides(
         object? envObj, string plugin, string? sig = null)
     {
@@ -1073,7 +1073,7 @@ public static partial class MutagenLoader
 
         foreach (var rec in mod.EnumerateMajorRecords())
         {
-            if (rec.FormKey.ModKey == mod.ModKey) continue;   // its own new record, not an override
+            if (rec.FormKey.ModKey == mod.ModKey) continue;
             var rsig = rec.Registration.Name;
             if (wantClass != null && !string.Equals(rsig, wantClass, StringComparison.OrdinalIgnoreCase)) continue;
             result.Add((rec.FormKey, rec.EditorID ?? "", rsig));
@@ -1081,8 +1081,8 @@ public static partial class MutagenLoader
         return result;
     }
 
-    /// <summary>True if a COBJ getter's Components reference the given component FormKey (used to
-    /// target exactly the records carrying a specific bad ingredient like hubflower).</summary>
+
+
     public static bool CobjUsesComponent(Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec, FormKey component)
     {
         if (rec is not Mutagen.Bethesda.Fallout4.IConstructibleObjectGetter cobj || cobj.Components == null) return false;
@@ -1091,24 +1091,24 @@ public static partial class MutagenLoader
         return false;
     }
 
-    /// <summary>
-    /// Every version of a record across the load order, in load order (last = winner). Uses the
-    /// environment's link cache (already built, efficient, handles cells/worldspace children) so we
-    /// never have to fully index the masters just to find one record's overrides.
-    /// </summary>
+
+
+
+
+
     public static List<(string plugin, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)>
         GetRecordContexts(object? envObj, FormKey fk)
     {
         var ordered = new List<(string plugin, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)>();
-        // The on-disk load order comes from the env's link cache; with no env (CLI / unit tests /
-        // a session that only authored patches) we skip it and rely solely on the EditableMods scan
-        // below, so in-editor patches are still resolvable.
+
+
+
         if (envObj != null)
         {
             try
             {
                 var lc = (Mutagen.Bethesda.Plugins.Cache.ILinkCache)((dynamic)envObj).LinkCache;
-                // ResolveAllSimpleContexts returns winning-first; reverse to load order.
+
                 var contexts = lc.ResolveAllSimpleContexts<IMajorRecordGetter>(fk).ToList();
                 contexts.Reverse();
                 foreach (var ctx in contexts)
@@ -1116,20 +1116,20 @@ public static partial class MutagenLoader
             }
             catch (Exception ex)
             {
-                // NEVER swallow this silently. An empty result here is indistinguishable from "no
-                // plugin holds this record", so a transient link-cache failure (one seen while the
-                // cache is still warming right after an environment load) surfaced to the user as
-                // "that record does not exist" -- a wrong answer with no trace anywhere. The caller
-                // still gets the empty list, but now the reason is in the log.
+
+
+
+
+
                 DebugLog.Exception($"GetRecordContexts({fk})", ex);
             }
         }
 
-        // Hot-load AI/in-editor patches: any EditableMods plugin that carries this FormKey is a LIVE
-        // override applied on top of the on-disk load order. If that plugin is already in the env, swap
-        // in the edited record (position preserved); otherwise it's a new patch that wins (loads last).
-        // This is why an AI patch shows up in the conflict view / get_conflicts immediately, without
-        // the user reloading the modlist.
+
+
+
+
+
         foreach (var kv in EditableMods)
         {
             try
@@ -1145,10 +1145,10 @@ public static partial class MutagenLoader
         return ordered;
     }
 
-    /// <summary>
-    /// Build the field-level conflict matrix for one record: walk every plugin's version into a
-    /// shared node tree (each leaf accumulates a value per plugin) then flatten to rows.
-    /// </summary>
+
+
+
+
     public static ConflictMatrix? BuildConflictMatrix(object? envObj, string formKeyStr)
     {
         if (envObj == null || !FormKey.TryFactory(formKeyStr, out var fk)) return null;
@@ -1164,14 +1164,14 @@ public static partial class MutagenLoader
         var rows = new List<ConflictFieldRow>();
         FlattenConflictRows(root, "", 0, plugins, rows);
 
-        // Header identity fields first, in xEdit-ish order; Description sits right after FormKey.
+
         var identityKeys = new[] { "EditorID", "TitleString", "FormKey", "Description", "Type", "_HasData" };
         var orderedRows = rows.OrderBy(r => {
             int idx = Array.IndexOf(identityKeys, r.Field);
             return idx == -1 ? 999 : idx;
         }).ToList();
 
-        // Record-level ConflictAll rollup: only one version -> "onlyone"; otherwise worst severity.
+
         string level;
         if (plugins.Count <= 1) level = "onlyone";
         else if (orderedRows.Any(r => r.Severity == "critical")) level = "critical";
@@ -1192,9 +1192,9 @@ public static partial class MutagenLoader
         };
     }
 
-    /// <summary>Human-friendly display label for a conflict row. Array-entry keys like "[0]"
-    /// are shown as "Item [0]" (singular of parent collection name + index) so users see
-    /// "Item [0]", "Condition [0]", "Component [0]" instead of raw "[0]".</summary>
+
+
+
     private static string MakeDisplayLabel(string key, string parentKey)
     {
         if (key.Length > 1 && key[0] == '[' && parentKey != "root")
@@ -1202,8 +1202,8 @@ public static partial class MutagenLoader
         return Rendering.FriendlyNames.Label(key);
     }
 
-    /// <summary>The first path segment, which is the subrecord a row hangs off. "" for a top-level
-    /// field, since those are their own group.</summary>
+
+
     private static string GroupOf(string path)
     {
         int dot = path.IndexOf('.');
@@ -1212,12 +1212,12 @@ public static partial class MutagenLoader
         return cut <= 0 ? "" : path[..cut];
     }
 
-    /// <summary>
-    /// Value / Flag / FormID, for the Conflicts view's sub-tabs and donut.
-    /// EditKind is authoritative where it is specific (Bool is a flag, Ref is a FormID); the value
-    /// shape only breaks ties, because a plain "Text" field holding "[STAT:0001F1A2]" is a form
-    /// link the walker did not type.
-    /// </summary>
+
+
+
+
+
+
     private static string ClassifyKind(string editKind, string key, IReadOnlyList<string> values)
     {
         if (editKind == "Bool") return "Flag";
@@ -1236,16 +1236,16 @@ public static partial class MutagenLoader
             string sep = child.Key.StartsWith("[") ? "" : (path.Length == 0 ? "" : ".");
             string p = path + sep + child.Key;
             bool hasKids = child.Children.Count > 0;
-            // Emit a row for any field with a value OR any container (so arrays like Components and
-            // Conditions get a labeled, collapsible PARENT row instead of orphaned [0]/[1] entries).
+
+
             if (child.Values.Count > 0 || hasKids)
             {
                 var vals = plugins.Select(pl => child.Values.TryGetValue(pl, out var v) ? v : "").ToList();
                 var present = vals.Where(v => v.Length > 0).ToList();
                 bool anyMissing = present.Count < plugins.Count;
-                // Differ check uses the SAME semantic canonicalization as ClassifyRow/Severity, so a
-                // float-formatting difference ("1.0" vs "1.000000") is not flagged as a change here while
-                // Severity calls it "none". Keeping the two in sync avoids a contradictory row.
+
+
+
                 bool differs = present.Select(CanonValue).Distinct().Count() > 1 || (present.Count > 0 && anyMissing);
                 var editKindString = child.EditKind.ToString();
                 var (statuses, severity) = ClassifyRow(vals, editKindString);
@@ -1261,30 +1261,30 @@ public static partial class MutagenLoader
                     RefType = child.RefType, RefTypes = child.RefTypes,
                 });
             }
-            // Recurse into ALL children, including summary entries (conditions/components/effects), so
-            // their sub-fields are present in the grid. The UI collapses a summary's children by
-            // default and expands them on click -- xEdit's "double-click the array element" behaviour.
+
+
+
             FlattenConflictRows(child, p, depth + 1, plugins, rows);
         }
     }
 
-    // Canonicalize a value for semantic equality: numbers compare by value (so "1.0" == "1.000000"),
-    // everything else compares ordinally. This is our lightweight stand-in for xEdit's DisplaySortKey.
+
+
     public static string CanonValue(string v)
     {
         if (double.TryParse(v, System.Globalization.NumberStyles.Float | System.Globalization.NumberStyles.AllowThousands,
                 System.Globalization.CultureInfo.InvariantCulture, out var d))
-            return d.ToString("R", System.Globalization.CultureInfo.InvariantCulture); // canonical numeric form
+            return d.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         return v;
     }
 
-    // Compute per-plugin conflict status (parallel to vals) and a row-level severity using semantic
-    // equality. masterIdx = first present column, winnerIdx = last present column (load-order winner).
+
+
     public static (string[] statuses, string severity) ClassifyRow(IReadOnlyList<string> vals, string editKind)
     {
         int n = vals.Count;
         var statuses = new string[n];
-        // present columns (non-empty)
+
         var present = new List<int>();
         for (int i = 0; i < n; i++) if (!string.IsNullOrEmpty(vals[i])) present.Add(i);
 
@@ -1295,7 +1295,7 @@ public static partial class MutagenLoader
         string Canon(int i) => CanonValue(vals[i]);
         bool Eq(int a, int b) => string.Equals(Canon(a), Canon(b), StringComparison.Ordinal);
 
-        // distinct semantic values among present
+
         var distinct = new HashSet<string>(StringComparer.Ordinal);
         foreach (var i in present) distinct.Add(Canon(i));
         bool anyMissing = present.Count < n;
@@ -1311,13 +1311,13 @@ public static partial class MutagenLoader
             statuses[i] = Eq(i, winnerIdx) ? "override" : "lose";
         }
 
-        // Severity
+
         string severity;
         if (!differs) severity = "none";
         else
         {
-            // critical: a FormLink (Ref) whose WINNING value is a null/broken target while another plugin
-            // supplied a real one (a reference that resolves to nothing -> in-game break).
+
+
             bool refBrokenWinner = string.Equals(editKind, "Ref", StringComparison.OrdinalIgnoreCase)
                 && LooksNullRef(vals[winnerIdx]) && present.Any(i => !LooksNullRef(vals[i]));
             if (refBrokenWinner) severity = "critical";
@@ -1331,11 +1331,11 @@ public static partial class MutagenLoader
         string.IsNullOrEmpty(v) || v.Equals("Null", StringComparison.OrdinalIgnoreCase)
         || v.Equals("None", StringComparison.OrdinalIgnoreCase) || v.StartsWith("000000:", StringComparison.OrdinalIgnoreCase);
 
-    // ============================================================================
-    //  Public query API for the AI tool executor (read all loaded plugin data).
-    //  Each call is scoped to one plugin and served from the cached per-mod index,
-    //  so the AI can drill into a full load order without ever indexing everything.
-    // ============================================================================
+
+
+
+
+
 
     public static IReadOnlyList<string> QueryLoadedPlugins(object? envObj)
     {
@@ -1355,7 +1355,7 @@ public static partial class MutagenLoader
     {
         var mod = ResolveMod(plugin, envObj);
         if (mod == null) return [];
-        // Include per-type counts so the caller can gauge group size before listing.
+
         return GetModIndex(mod, plugin).Counts
             .OrderBy(kv => kv.Key)
             .Select(kv => $"{kv.Key} ({kv.Value})")
@@ -1372,7 +1372,7 @@ public static partial class MutagenLoader
         return recs.Skip(Math.Max(0, offset)).Take(limit).Select(r => (r.FormKey.ToString(), r.EditorID ?? "")).ToList();
     }
 
-    /// <summary>Total record count for a signature in a plugin (for pagination headers).</summary>
+
     public static int CountRecordsOfType(object? envObj, string plugin, string sig)
     {
         var mod = ResolveMod(plugin, envObj);
@@ -1381,11 +1381,11 @@ public static partial class MutagenLoader
         return idx.Counts.TryGetValue(sig, out var n) ? n : 0;
     }
 
-    /// <summary>
-    /// Return a compact tabular summary for up to <paramref name="limit"/> records of a given
-    /// type -- one line per record, key fields shown inline. Far cheaper than N QueryRecordFields
-    /// calls when the agent needs to survey a whole group at once.
-    /// </summary>
+
+
+
+
+
     public static string QueryRecordSummaries(object? envObj, string plugin, string sig, int limit, int offset = 0)
     {
         var mod = ResolveMod(plugin, envObj);
@@ -1398,19 +1398,19 @@ public static partial class MutagenLoader
         var take = recs.Skip(Math.Max(0, offset)).Take(limit).ToList();
         if (take.Count == 0) return $"No records of type '{sig}' in {plugin} at offset {offset}.";
 
-        // Discover output columns from the first record (all same-type records share identical
-        // property lists in Mutagen). Keep only scalar/enum/FormLink/collection properties.
+
+
         var rec0 = take[0];
         var colProps = DiscoverGridColumns(rec0, 8);
 
-        // Budget-bound the output so the AI executor's ~8 KB hard cap never blind-truncates the
-        // table mid-row (which would leave a misleading "N of M shown" header above a cut body).
-        // We emit rows until the budget, then report the ACTUAL count emitted.
+
+
+
         const int EW = 36, VW = 26, Budget = 6800;
         var sb = new System.Text.StringBuilder();
         sb.AppendLine($"{sig} in {plugin}: {recs.Count} total record(s).");
 
-        // Header row
+
         var head = "  " + "EditorID [FormKey]".PadRight(EW);
         foreach (var p in colProps) head += " | " + SumTrunc(p.Name, VW).PadRight(VW);
         sb.AppendLine(head.TrimEnd());
@@ -1440,7 +1440,7 @@ public static partial class MutagenLoader
                 catch { cell = "?"; }
                 line += " | " + SumTrunc(cell, VW).PadRight(VW);
             }
-            sb.AppendLine(line.TrimEnd());   // drop trailing column padding -- pure wasted tokens
+            sb.AppendLine(line.TrimEnd());
             emitted++;
         }
 
@@ -1451,15 +1451,15 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-    // Shared by QueryRecordSummaries (AI-facing text table) and GetRecordsGridJson (GUI spreadsheet
-    // panel, #51): which properties of a record type are worth showing as a column. Same
-    // scalar/enum/FormLink/collection filter either way -- only the caller's requested column count differs.
+
+
+
     private static List<PropertyInfo> DiscoverGridColumns(object rec0, int max)
     {
-        // Two passes, scalars first. A collection can only ever render as a summary ("[4 items]"),
-        // so when collections were taken in plain reflection order they crowded the real values --
-        // damage, value, weight -- out of the column budget and the grid came out mostly useless.
-        // Collections are still offered, but only with the budget the scalars did not need.
+
+
+
+
         var scalars = new List<PropertyInfo>();
         var collections = new List<PropertyInfo>();
         foreach (var prop in rec0.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -1489,10 +1489,10 @@ public static partial class MutagenLoader
         int n = 0; foreach (var _ in ie) n++; return n;
     }
 
-    /// <summary>
-    /// Expose raw record list for batch write operations. Returns all records of the given
-    /// signature from the named plugin, or an empty list when the plugin/type isn't found.
-    /// </summary>
+
+
+
+
     public static IReadOnlyList<Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter> GetRecordsForBatch(
         object? envObj, string plugin, string sig)
     {
@@ -1526,40 +1526,40 @@ public static partial class MutagenLoader
 
     public sealed record SearchHit(string FormKey, string EditorID, string Type, string Plugin, string Name = "");
 
-    /// <summary>Search every loaded plugin for records whose EditorID, FormID, or display Name
-    /// contains the query (substring, case-insensitive). Optional signature filter ("KYWD",
-    /// "WEAP", …). Winning version per FormKey wins (de-duplicated), capped for responsiveness.</summary>
+
+
+
     public static List<SearchHit> SearchAllRecords(object? envObj, string query, string? typeFilter = null, int limit = 200)
     {
         if (envObj == null) return new List<SearchHit>();
         query ??= "";
-        // Keyed by FormKey and OVERWRITTEN on every match, not skipped-if-seen: AllLoadedMods walks
-        // env.LoadOrder.ListedOrder in ASCENDING load-order priority (earliest-loaded first, same
-        // order as plugins.txt top-to-bottom), so for an overridden record the LAST plugin the walk
-        // reaches for that FormKey is the actual highest-priority/winning one. The previous
-        // skip-if-seen version tagged every override with whichever plugin defined the record
-        // FIRST (often the base game), the opposite of "winning". Capped by AFTER the full walk,
-        // not mid-loop, so a later plugin's override is never missed just because an earlier
-        // lower-priority copy already filled the limit.
+
+
+
+
+
+
+
+
         var hits = new Dictionary<FormKey, SearchHit>();
-        // typeFilter is a comma-separated set of record class names (from a FormLink's valid targets).
+
         var filterSet = string.IsNullOrWhiteSpace(typeFilter)
             ? null
             : new HashSet<string>(
                 typeFilter.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
                 StringComparer.OrdinalIgnoreCase);
 
-        // Defensive backstop distinct from the caller's requested `limit`: a blank query against a
-        // large modlist would otherwise accumulate every record of every matching type before the
-        // final Take(limit) below. A real search query keeps this well under the cap in practice.
+
+
+
         const int AccumulationCap = 5000;
 
         foreach (var (name, mod) in AllLoadedMods(envObj))
         {
-            // Per-plugin guard: search crosses every plugin, and a real modlist can contain one that
-            // Mutagen refuses to enumerate (e.g. a duplicate FormKey inside a single group). Without
-            // this, that one plugin made search fail for the entire load order rather than costing
-            // its own results. Skipping is logged, never silent.
+
+
+
+
             try
             {
                 var idx = GetModIndex(mod, name);
@@ -1569,8 +1569,8 @@ public static partial class MutagenLoader
                     {
                         var eid = r.EditorID ?? "";
                         string dispName = "";
-                        // A localized name can still fail to resolve on its own; that is worth losing
-                        // the name over, never the hit.
+
+
                         try { dispName = r is Mutagen.Bethesda.Plugins.Aspects.INamedGetter nm ? (nm.Name ?? "") : ""; }
                         catch { }
                         if (query.Length > 0 &&
@@ -1591,29 +1591,29 @@ public static partial class MutagenLoader
         return hits.Values.Take(limit).ToList();
     }
 
-    /// <summary>Cell-only equivalent of SearchAllRecords, for the Cell Viewer's type-ahead picker.
-    /// Deliberately does NOT go through GetModIndex/_modIndexCache: that path builds a full
-    /// per-signature index of EVERY record type in a plugin (and caches it for the rest of the
-    /// process's lifetime), which is fine for tools the user already invokes per-plugin, but a type-
-    /// ahead search fires on every keystroke across the WHOLE load order -- on a real 650+-plugin
-    /// modlist that eagerly, permanently indexes every record of every type in every plugin the first
-    /// time the box is used, which is real, measured GB-scale memory growth for a feature that only
-    /// ever needed CELL records. Mutagen's EnumerateMajorRecords&lt;T&gt;() walks the same nested
-    /// interior-Cell-group / exterior-Worldspace-SubCells structure but touches only cells, and
-    /// nothing here is cached across calls.</summary>
-    /// <summary>Public wrapper over the internal mod lookup, for services outside this file
-    /// (PrecombineService, #72) that need the target plugin's own ModKey.</summary>
+
+
+
+
+
+
+
+
+
+
+
+
     public static object? ResolveModPublic(string plugin, object? envObj) => ResolveMod(plugin, envObj);
 
     public static List<SearchHit> SearchCellRecords(object? envObj, string query, int limit = 25)
     {
         if (envObj == null) return new List<SearchHit>();
         query ??= "";
-        // Keyed by FormKey and OVERWRITTEN on every match -- see SearchAllRecords for why this has
-        // to be overwrite-on-match rather than skip-if-seen (AllLoadedMods walks ascending
-        // load-order priority, so the LAST plugin reached for a given cell FormKey is the actual
-        // winning override, not the first). Capped after the full walk so a later plugin's override
-        // of an already-matched cell is never missed just because an earlier copy filled the limit.
+
+
+
+
+
         var hits = new Dictionary<FormKey, SearchHit>();
 
         foreach (var (name, mod) in AllLoadedMods(envObj))
@@ -1633,12 +1633,12 @@ public static partial class MutagenLoader
         return hits.Values.Take(limit).ToList();
     }
 
-    /// <summary>Worldspace-only search, backing the Cell Viewer's exterior-cell picker (#67): an
-    /// exterior cell is reached by worldspace + grid coordinate, so the panel needs to offer the
-    /// worldspaces themselves before it can ask for an X/Y. Same no-index reasoning as
-    /// SearchCellRecords -- this must not drag the whole load order through GetModIndex. A load order
-    /// holds only a few dozen WRLD records, so the default limit is generous enough to be a plain
-    /// browsable list rather than a search that must be typed into.</summary>
+
+
+
+
+
+
     public static List<SearchHit> SearchWorldspaceRecords(object? envObj, string query, int limit = 100)
     {
         if (envObj == null) return new List<SearchHit>();
@@ -1664,8 +1664,8 @@ public static partial class MutagenLoader
 
     public static string QueryRecordFields(object? envObj, string plugin, string formKeyOrEditorId)
     {
-        // Build a bounded candidate list: the named plugin first, then loose-opened ESPs and
-        // any plugin whose index is already built (avoids re-indexing a whole load order).
+
+
         var candidates = new List<(string name, object mod)>();
         var named = ResolveMod(plugin, envObj);
         if (named != null) candidates.Add((plugin, named));
@@ -1709,8 +1709,8 @@ public static partial class MutagenLoader
                $"Try search_records first, or use the exact plugin name from list_plugins.)";
     }
 
-    // xEdit-style error check over a loaded plugin: deleted records + references to masters
-    // the plugin doesn't declare (a genuine "missing master" / broken-ref class).
+
+
     public static string CheckPlugin(object? envObj, string plugin)
     {
         var mod = ResolveMod(plugin, envObj);
@@ -1720,7 +1720,7 @@ public static partial class MutagenLoader
         var declared = new HashSet<ModKey> { f4.ModKey };
         foreach (var m in f4.MasterReferences) declared.Add(m.Master);
 
-        // Use the live link cache for type-collision detection if available.
+
         var liveCache = envObj != null ? LinkCache : null;
 
         int count = 0, deleted = 0, broken = 0, typeCollisions = 0;
@@ -1741,12 +1741,12 @@ public static partial class MutagenLoader
                 if (samples.Count < 50) samples.Add($"REF TO UNDECLARED MASTER  {CheckLabel(rec)} -> {link.FormKey}");
             }
 
-            // Check for type collision against the BASE record in the originating master plugin.
-            // Using TryResolve (winning) is wrong here: if this plugin already overrides the FormKey,
-            // TryResolve returns this plugin's own COBJ -- same type, no mismatch detected.
-            // Instead, resolve from the specific master plugin (rec.FormKey.ModKey) to get the ground
-            // truth type before any override. A COBJ override on a FormID whose master is ARMO is a
-            // game-breaking record corruption (FallenWorldCrafting_Compat root cause).
+
+
+
+
+
+
             if (envObj != null && !f4.ModKey.Equals(rec.FormKey.ModKey))
             {
                 var masterPlugin = rec.FormKey.ModKey.FileName;
@@ -1794,9 +1794,9 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-    /// <summary>Remove a ConstructibleObject override from an editable (open) plugin by FormKey.
-    /// Returns true when the record was found and removed. No-op if the plugin isn't editable
-    /// or the record isn't in it.</summary>
+
+
+
     public static bool RemoveFromEditableMod(string plugin, Mutagen.Bethesda.Plugins.FormKey fk)
     {
         if (!EditableMods.TryGetValue(plugin, out var modObj)) return false;
@@ -1807,18 +1807,18 @@ public static partial class MutagenLoader
     private static string CheckLabel(Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter r) =>
         $"{(string.IsNullOrEmpty(r.EditorID) ? r.FormKey.ToString() : r.EditorID)} [{r.FormKey}] ({r.Registration.Name})";
 
-    // Vanilla core masters whose ACHR/REFR/cell-placed records aren't indexed by Mutagen's
-    // top-level group cache. FormLinks pointing into these are always valid at runtime.
-    // Single source of truth -- also gates the write layer, see ProtectedPlugins.
+
+
+
     private static readonly IReadOnlySet<string> VanillaMasters = ProtectedPlugins.VanillaMasters;
 
     private static bool IsVanillaRef(Mutagen.Bethesda.Plugins.FormKey fk) =>
         VanillaMasters.Contains(fk.ModKey.FileName.String);
 
-    // Deep error scan using the load-order link cache: references that resolve to NOTHING
-    // anywhere in the load order are dangling and will crash the game.
-    // Vanilla-master refs are skipped -- Mutagen can't index cell-placed ACHR/REFR records,
-    // so those refs would all appear dangling even when valid.
+
+
+
+
     public static string ScanErrorsDeep(object? envObj, string plugin)
     {
         if (envObj == null) return "Deep error scan needs the loaded game environment. Use 'Load Env' first.";
@@ -1852,7 +1852,7 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-    // Scan a single plugin for broken FormLinks to non-vanilla masters. Returns grouped results.
+
     public static string ScanBrokenRefs(object? envObj, string plugin)
     {
         if (envObj == null) return "scan_broken_refs needs the loaded game environment. Use 'Load Env' first.";
@@ -1870,10 +1870,10 @@ public static partial class MutagenLoader
         return brokenRefs.TrimEnd() + "\n\n" + duplicates;
     }
 
-    // Build the set of plugin filenames present in the loaded environment (env + editable mods).
-    // Used by the broken-ref scan to distinguish "target plugin not in load order" (skip -- might
-    // be CC content or external content not managed by MO2) from "plugin loaded but record missing"
-    // (real broken ref worth reporting).
+
+
+
+
     private static HashSet<string> BuildLoadedPluginSet(object? envObj)
     {
         var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1888,15 +1888,15 @@ public static partial class MutagenLoader
         return set;
     }
 
-    // Returns null when the plugin is clean (no broken refs), so callers can skip it.
-    // A "broken reference" is a FormLink that points to a FormID inside a LOADED plugin where
-    // that record does not exist -- the target was deleted or never added. At runtime the engine
-    // dereferences a null pointer when it tries to load that record, causing a crash.
-    // Refs to vanilla masters (Fallout4.esm / DLC*.esm) are excluded: Mutagen can't index
-    // cell-placed ACHR/REFR records so those would all appear broken even when valid.
-    // Refs to plugins NOT in the load order are also excluded: those are typically CC content
-    // or other external content not visible to the MO2-managed environment; they can't be
-    // verified and would all appear broken (false positives).
+
+
+
+
+
+
+
+
+
     private static string? ScanBrokenRefsInMod(
         Mutagen.Bethesda.Plugins.Cache.ILinkCache cache, string pluginName,
         Mutagen.Bethesda.Fallout4.IFallout4ModGetter mod,
@@ -1913,9 +1913,9 @@ public static partial class MutagenLoader
             {
                 var fk = link.FormKey;
                 if (fk.IsNull || IsVanillaRef(fk)) continue;
-                // Skip refs to plugins not present in the load order: they can't be resolved
-                // through Mutagen regardless of whether they're actually installed (CC content,
-                // external loaders, etc.), so they would all appear broken.
+
+
+
                 if (!loadedPlugins.Contains(fk.ModKey.FileName.String)) continue;
                 if (!cache.TryResolveIdentifier<IMajorRecordGetter>(fk, out _))
                 {
@@ -1941,8 +1941,8 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-    // Scan every non-vanilla plugin in the load order for dangling FormLinks.
-    // Only plugins with actual broken refs appear in the output.
+
+
     public static string ScanAllPluginsForBrokenRefs(object? envObj)
     {
         if (envObj == null) return "scan_all_plugins needs the loaded game environment. Use 'Load Env' first.";
@@ -1958,7 +1958,7 @@ public static partial class MutagenLoader
             if (modObj is not Mutagen.Bethesda.Fallout4.IFallout4ModGetter mod) continue;
             totalPlugins++;
             var pluginResult = ScanBrokenRefsInMod(cache, name, mod, loadedPlugins);
-            if (pluginResult == null) continue; // clean -- skip entirely
+            if (pluginResult == null) continue;
             dirtyPlugins++;
             var m = System.Text.RegularExpressions.Regex.Match(pluginResult, @"(\d+) broken ref");
             if (m.Success && int.TryParse(m.Groups[1].Value, out var n)) totalBroken += n;
@@ -1972,13 +1972,13 @@ public static partial class MutagenLoader
                results.ToString();
     }
 
-    // Conflict scan: records in this plugin that other loaded plugins also define/override.
+
     public static string ScanConflicts(object? envObj, string plugin)
     {
         if (envObj == null) return "Conflict scan needs the loaded game environment. Use 'Load Env' first.";
         dynamic env = envObj;
 
-        // One pass over the load order: FormKey -> plugins that touch it.
+
         var owners = new Dictionary<FormKey, List<string>>();
         foreach (var l in (IEnumerable)env.LoadOrder.ListedOrder)
         {
@@ -2016,8 +2016,8 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-    // Resolve an EditorID to a FormKey across loaded plugins (bounded to loose + already
-    // indexed, so a full load order isn't re-enumerated). Used for setting FormLink fields.
+
+
     public static FormKey ResolveEditorIdToFormKey(object? envObj, string editorId)
     {
         foreach (var (name, mod) in AllLoadedMods(envObj))
@@ -2031,12 +2031,12 @@ public static partial class MutagenLoader
         return FormKey.Null;
     }
 
-    /// <summary>
-    /// The one accepted-id-format resolver every "id" tool parameter in this app should use: a
-    /// FormKey string ('001234:Fallout4.esm'), a resolvable link-cache identifier, or an EditorID --
-    /// in that order. Promoted from PluginToolExecutor.ResolveToFk (which now just forwards here) so
-    /// CellService and anything else needing "id" -> FormKey doesn't duplicate the chain.
-    /// </summary>
+
+
+
+
+
+
     public static FormKey ResolveId(object? envObj, string id)
     {
         if (string.IsNullOrWhiteSpace(id)) return FormKey.Null;
@@ -2051,25 +2051,25 @@ public static partial class MutagenLoader
         foreach (var c in node.Children)
         {
             var indent = new string(' ', depth * 2);
-            // Summary nodes (conditions/components) print their one readable line and stop, so the
-            // dump shows "GetGlobalValue(...) == 0" not a dozen ParameterOne*/RunOnType sub-rows.
+
+
             if (c.IsLeaf || c.IsSummary) sb.AppendLine($"{indent}{c.Key}: {c.Value}");
             else { sb.AppendLine($"{indent}{c.Key}:"); FlattenToText(c, depth + 1, sb); }
         }
     }
 
-    // ---- reflection walker ----------------------------------------------
+
 
     [ThreadStatic]
-    private static HashSet<object>? _visiting;  // cycle guard
+    private static HashSet<object>? _visiting;
 
     private static HashSet<object> Visiting => _visiting ??= new HashSet<object>();
 
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, PropertyInfo[]> _propCache = new();
 
-    // Hard cap on nodes produced per record walk. Large records (NPC_ with packages,
-    // factions, items, AI data, leveled entries) can otherwise expand into tens of
-    // thousands of nodes and freeze the populate. Reset at each top-level (depth 0) walk.
+
+
+
     [ThreadStatic] private static int _walkNodeCount;
     private const int MaxWalkNodes = 5000;
 
@@ -2082,28 +2082,28 @@ public static partial class MutagenLoader
 
         var type = obj.GetType();
 
-        // Primitives / enums -> just set parent value and return
+
         if (_leafTypes.Contains(type) || type.IsEnum)
         {
             if (parent.IsLeaf) parent.Values[pluginName] = obj.ToString()!;
             return;
         }
 
-        // A FormLink is a LEAF wherever it appears -- including as a list item (e.g. COBJ
-        // Categories). Without this, walking the item recurses into its CLR internals
-        // (FormKey, then .Type -> System.Type -> Assembly -> the whole framework graph),
-        // which produced hundreds of bogus "Type.Assembly.Defined..." rows.
-        // IMPORTANT: a record (IMajorRecordGetter) also implements IFormLinkIdentifier, so it must
-        // be EXCLUDED here -- otherwise the record being walked is treated as a leaf and yields no
-        // fields at all. Only a real form-link *reference* (not a record) is a leaf.
+
+
+
+
+
+
+
         if (obj is not Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter
             && obj is Mutagen.Bethesda.Plugins.IFormLinkIdentifier topLink)
         {
             if (parent.IsLeaf)
             {
                 parent.Values[pluginName] = FormatFormLink(topLink);
-                // A FormLink list item (Categories, Keywords, FormList entries) is editable via the
-                // record picker, same as a FormLink property -- so these are pickable too.
+
+
                 if (parent.EditKind != Models.FieldEditKind.Ref)
                 {
                     parent.EditKind = Models.FieldEditKind.Ref;
@@ -2113,22 +2113,22 @@ public static partial class MutagenLoader
             return;
         }
 
-        // TranslatedString (GMST values, FULL names, etc.) -> show its text, not its internals.
+
         if (obj is Mutagen.Bethesda.Strings.ITranslatedStringGetter ts)
         {
             if (parent.IsLeaf) parent.Values[pluginName] = ts.String ?? ts.ToString() ?? "";
             return;
         }
 
-        // Identity structs are single values, not sub-trees -- otherwise a record's FormKey
-        // explodes into FormKey.ID / FormKey.ModKey.FileName.String / ... noise rows.
+
+
         if (obj is FormKey || obj is ModKey)
         {
             if (parent.IsLeaf) parent.Values[pluginName] = obj.ToString() ?? "";
             return;
         }
 
-        // Never descend into CLR/reflection metadata. Record any such value as a single string.
+
         if (obj is Type || obj is System.Reflection.MemberInfo || obj is System.Reflection.Assembly
             || obj is System.Reflection.Module || obj is System.Reflection.ParameterInfo
             || (type.Namespace ?? "").StartsWith("System.Reflection", StringComparison.Ordinal))
@@ -2137,11 +2137,11 @@ public static partial class MutagenLoader
             return;
         }
 
-        // Cycle guard
+
         if (!Visiting.Add(obj)) return;
         try
         {
-            var props = _propCache.GetOrAdd(type, t => 
+            var props = _propCache.GetOrAdd(type, t =>
                 t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                  .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
                  .Where(p => !_skipProps.Contains(p.Name))
@@ -2155,7 +2155,7 @@ public static partial class MutagenLoader
 
                 var valType = val.GetType();
 
-                // Skip another RecordNode ancestor type (Mutagen link etc.)
+
                 if (val is Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter) continue;
 
                 if (_walkNodeCount >= MaxWalkNodes) break;
@@ -2171,7 +2171,7 @@ public static partial class MutagenLoader
                 if (_leafTypes.Contains(valType) || valType.IsEnum)
                 {
                     child.Values[pluginName] = val.ToString()!;
-                    // Editor hint: bool -> checkbox, enum -> dropdown of its names (xEdit-style).
+
                     if (valType == typeof(bool)) child.EditKind = Models.FieldEditKind.Bool;
                     else if (valType.IsEnum && child.EnumOptions == null)
                     {
@@ -2186,19 +2186,19 @@ public static partial class MutagenLoader
                 else if (val is Mutagen.Bethesda.Plugins.IFormLinkIdentifier fli)
                 {
                     child.Values[pluginName] = FormatFormLink(fli);
-                    child.EditKind = Models.FieldEditKind.Ref;   // edits via the record picker
+                    child.EditKind = Models.FieldEditKind.Ref;
                     if (child.RefType == null)
                         (child.RefType, child.RefTypes) = FormLinkInfo(prop.PropertyType);
                 }
-                // A TranslatedString (Description, FULL name, ...) is IEnumerable over its localized
-                // strings, so without this it would explode into [0].Key/[0].Value rows. Show its text.
+
+
                 else if (val is Mutagen.Bethesda.Strings.ITranslatedStringGetter tstr)
                 {
                     child.Values[pluginName] = tstr.String ?? tstr.ToString() ?? "";
                 }
                 else if (val is IEnumerable enumerable and not string)
                 {
-                    // Whole-collection collapse first (e.g. a byte blob like Model.Data -> "N bytes").
+
                     if (Services.Rendering.ElementRenderer.TryRenderByteBlob(enumerable, out var blob))
                     {
                         child.Values[pluginName] = blob;
@@ -2208,11 +2208,11 @@ public static partial class MutagenLoader
                         var items = new List<object>();
                         foreach (var it in enumerable) if (it != null) items.Add(it);
 
-                        // A list of pure FormLinks (Keywords, Categories, FormList Items, ...) is an
-                        // unordered SET: the game ignores order. Sort by FormKey so a reordered-but-
-                        // identical list doesn't light up as a fake conflict (this is what xEdit's
-                        // "(sorted)" subrecords do). Ordered data (Conditions/Components, whose items
-                        // are structs, not FormLinks) is left in place.
+
+
+
+
+
                         if (items.Count > 1 && items.All(x =>
                                 x is Mutagen.Bethesda.Plugins.IFormLinkIdentifier
                                 && x is not Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter))
@@ -2234,8 +2234,8 @@ public static partial class MutagenLoader
                             }
                             if (Services.Rendering.ElementRenderer.TryRenderLine(item, out var friendly))
                             {
-                                // One readable line for display; keep the child fields so they stay
-                                // editable in the Record tree (e.g. a component's Count).
+
+
                                 entry.Values[pluginName] = friendly;
                                 entry.IsSummary = true;
                             }
@@ -2248,8 +2248,8 @@ public static partial class MutagenLoader
                         }
                     }
                 }
-                // A renderable property value (e.g. an Activator's MarkerColor) collapses to one line
-                // (#CC4C33) instead of expanding into R/G/B/A/IsKnownColor/... reflection rows.
+
+
                 else if (Services.Rendering.ElementRenderer.TryRenderLine(val, out var friendlyVal))
                 {
                     child.Values[pluginName] = friendlyVal;
@@ -2279,7 +2279,7 @@ public static partial class MutagenLoader
             _ => cond.CompareOperator.ToString(),
         };
 
-        // Right-hand side: a constant (ConditionFloat) or a global var (ConditionGlobal).
+
         string rhs = cond switch
         {
             Mutagen.Bethesda.Fallout4.IConditionGlobalGetter g => FormatFormLink(g.ComparisonValue),
@@ -2323,7 +2323,7 @@ public static partial class MutagenLoader
         string[] summaryProps = { "Level", "Count", "Reference", "Magnitude", "Duration", "BaseEffect", "EditorID", "FormKey", "Value", "FunctionType", "Property", "Step", "Keyword" };
 
         var props = _propCache.GetOrAdd(type, t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead).ToArray());
-        
+
         foreach (var pName in summaryProps)
         {
             var p = props.FirstOrDefault(x => x.Name == pName);
@@ -2353,11 +2353,11 @@ public static partial class MutagenLoader
 
         if (parts.Count > 0)
             return string.Join(" ", parts);
-            
+
         return "";
     }
 
-    // ---- helpers --------------------------------------------------------
+
 
     private static void AddLeafInit(RecordNode parent, string key, string value, string pluginName = "")
     {

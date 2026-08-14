@@ -5,9 +5,9 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// The write layer used to open and overwrite any resolvable plugin, so set_field("Fallout4.esm", ...)
-// followed by save_plugin("Fallout4.esm") would overwrite the user's game master -- a file that can
-// only be restored by a Steam re-validate or reinstall.
+
+
+
 public class ProtectedPluginsTests
 {
     [Theory]
@@ -47,7 +47,7 @@ public class ProtectedPluginsTests
         ProtectedPlugins.ValidateSavePath(Path.Combine(Path.GetTempPath(), "Fallout4.esm"))
             .Should().NotBeNull().And.Contain("write-protected");
 
-    // The check runs on the normalized path, so '..' cannot smuggle a protected name past it.
+
     [Fact]
     public void ValidateSavePath_NormalizesBeforeCheckingTheName() =>
         ProtectedPlugins.ValidateSavePath(@"C:\mods\subdir\..\Fallout4.esm")
@@ -73,7 +73,7 @@ public class ProtectedPluginsTests
         result.Text.Should().Contain("write-protected");
     }
 
-    // A real plugin must not be writable to an arbitrary destination filename.
+
     [Fact]
     public void SavePlugin_RefusesAVanillaMasterDestinationPath()
     {

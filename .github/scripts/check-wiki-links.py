@@ -53,7 +53,7 @@ for f in sorted(pages):
                     continue
                 if target.startswith(("http://", "https://", "#", "//", "mailto:", "<", ">", "data:")):
                     continue
-                # Strip inline titles, pipe args and trailing anchors.
+
                 target = target.split(" ")[0]
                 target = re.split(r"[|#]", target)[0]
                 dec = urllib.parse.unquote(target).replace("\\", "/")

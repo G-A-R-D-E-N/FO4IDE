@@ -6,10 +6,10 @@ using Microsoft.CodeAnalysis.Scripting;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Context object injected into every C# script run.
-/// Scripts reference it as "Ctx" (or just call helper methods directly).
-/// </summary>
+
+
+
+
 public class ScriptContext
 {
     private readonly StringBuilder _log = new();
@@ -17,31 +17,31 @@ public class ScriptContext
 
     public ScriptContext(ObservableCollection<RecordNode> roots) => RootNodes = roots;
 
-    // All file-level nodes
+
     public IEnumerable<RecordNode> AllFiles =>
         RootNodes.SelectMany(r => r.SelfAndDescendants()).Where(n => n.FilePath != null && n.IsLeaf == false);
 
-    // Every node in the entire tree
+
     public IEnumerable<RecordNode> All =>
         RootNodes.SelectMany(r => r.SelfAndDescendants());
 
-    // Records where Key matches the given signature (e.g. "COBJ", "PERK", "AVIF")
+
     public IEnumerable<RecordNode> RecordsOfType(string sig) =>
         All.Where(n => string.Equals(n.Key, sig, StringComparison.OrdinalIgnoreCase));
 
-    // All nodes whose key matches
+
     public IEnumerable<RecordNode> WithKey(string key) =>
         All.Where(n => string.Equals(n.Key, key, StringComparison.OrdinalIgnoreCase));
 
-    // All leaf nodes whose value matches
+
     public IEnumerable<RecordNode> WithValue(string value, StringComparison cmp = StringComparison.OrdinalIgnoreCase) =>
         All.Where(n => n.IsLeaf && string.Equals(n.Value, value, cmp));
 
-    // All leaf nodes whose value contains the text
+
     public IEnumerable<RecordNode> Containing(string text, StringComparison cmp = StringComparison.OrdinalIgnoreCase) =>
         All.Where(n => n.IsLeaf && n.Value.Contains(text, cmp));
 
-    // Recursive search from a root for a descendant matching a path
+
     public RecordNode? Navigate(RecordNode root, string path) => root.Navigate(path);
 
     public void Log(string msg)
@@ -75,7 +75,7 @@ public class ScriptEngine
         try
         {
             var globals = new ScriptGlobals { Ctx = ctx };
-            // Inject convenience aliases at top of every script
+
             var wrapper = $"""
                 var All     = Ctx.All;
                 var Log     = (Action<string>)Ctx.Log;

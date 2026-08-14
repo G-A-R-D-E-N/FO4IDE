@@ -1,16 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
-    Plain net8.0, deliberately NOT net9.0-windows: this has to be referenceable from BOTH
-    FO4RecordEditor.csproj (net9.0-windows, WPF) and the Godot project (net8.0, Godot.NET.Sdk).
-    A windows-suffixed TFM can be referenced FROM a plain net8.0 project but not the other way
-    around, so the shared library has to be the lowest common denominator.
 
-    Extracted from FO4RecordEditor/Services/ (2026-07-20) so the Godot prototype can reuse the
-    Mutagen-based record-editing logic (WriteService, CellService, NifService, MutagenLoader)
-    instead of rewriting it. Interop/*.cs files (WebView2 ComVisible host-object bridges) stay in
-    FO4RecordEditor: they're UI glue specific to the WPF+WebView2 shell, not portable logic.
-  -->
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -21,11 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Vendored in-repo (../Mutagen/), so this repo builds standalone. See THIRD_PARTY_NOTICES.md. -->
+
     <ProjectReference Include="..\Mutagen\Mutagen.Bethesda.Fallout4\Mutagen.Bethesda.Fallout4.csproj" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <!-- Only used for the System.Drawing.Color struct (Mutagen's own color field type) in
-         Rendering/ElementRenderer.cs, not Bitmap/Graphics, so no real cross-platform risk. -->
+
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
   </ItemGroup>
 

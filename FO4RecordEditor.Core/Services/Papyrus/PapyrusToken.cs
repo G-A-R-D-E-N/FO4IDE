@@ -3,27 +3,27 @@ using System.Collections.Generic;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-/// <summary>
-/// Every token the Papyrus lexer produces.
-/// </summary>
-/// <remarks>
-/// Keywords get one kind each rather than a single <c>Keyword</c> kind plus a string compare: the
-/// parser branches on them constantly, and the language has exactly 45, which is small enough that
-/// an enum is the cheaper and more legible choice.
-/// <para>
-/// The 45 come from the Creation Kit wiki's Keyword Reference, mirrored in <c>tools/ckwiki</c>. Words
-/// that look like keywords but are not on that list -- <c>Hidden</c>, <c>Conditional</c>,
-/// <c>Mandatory</c>, <c>Collapsed</c>, <c>Default</c> -- are *user flags*, defined by the
-/// <c>Institute_Papyrus_Flags.flg</c> file that ships with the Creation Kit rather than by the
-/// language. They lex as identifiers, and the flag-list parser accepts identifiers, which is what
-/// lets this front end read scripts without that file present.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public enum PapyrusTokenKind
 {
     EndOfFile,
 
-    /// <summary>A line break that terminates a statement. Suppressed after a <c>\</c> continuation.</summary>
+
     Newline,
 
     Identifier,
@@ -31,10 +31,10 @@ public enum PapyrusTokenKind
     FloatLiteral,
     StringLiteral,
 
-    /// <summary>A <c>{ ... }</c> documentation comment. Kept because it is attached to declarations.</summary>
+
     DocComment,
 
-    // Keywords, alphabetically as the wiki lists them.
+
     As,
     Auto,
     AutoReadOnly,
@@ -81,7 +81,7 @@ public enum PapyrusTokenKind
     Var,
     While,
 
-    // Punctuation and operators.
+
     LParen,
     RParen,
     LBracket,
@@ -111,14 +111,14 @@ public enum PapyrusTokenKind
     Percent,
 }
 
-/// <summary>One lexed token: its kind, its source span, and its text.</summary>
-/// <remarks>
-/// <see cref="Text"/> is the raw source slice for most kinds, but for a string literal it is the
-/// *decoded* value (escapes resolved, quotes stripped) and for a doc comment it is the inner text
-/// with the braces stripped. Those two are the only kinds whose useful value differs from their
-/// spelling, and every consumer wants the value, so decoding once in the lexer beats re-decoding at
-/// each use site. The span still covers the original spelling, so editor positions stay correct.
-/// </remarks>
+
+
+
+
+
+
+
+
 public readonly struct PapyrusToken
 {
     public PapyrusToken(PapyrusTokenKind kind, string text, PapyrusSpan span)
@@ -137,7 +137,7 @@ public readonly struct PapyrusToken
     public override string ToString() => $"{Kind} '{Text}' {Span}";
 }
 
-/// <summary>Keyword table. Papyrus keywords are case-insensitive.</summary>
+
 public static class PapyrusKeywords
 {
     private static readonly Dictionary<string, PapyrusTokenKind> Map =
@@ -190,7 +190,7 @@ public static class PapyrusKeywords
             ["while"] = PapyrusTokenKind.While,
         };
 
-    /// <summary>The 45 language keywords, for tests and for editor syntax highlighting.</summary>
+
     public static IReadOnlyCollection<string> All => Map.Keys;
 
     public static bool TryGet(string word, out PapyrusTokenKind kind) => Map.TryGetValue(word, out kind);

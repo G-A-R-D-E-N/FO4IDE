@@ -17,41 +17,41 @@ public class WriteServiceTests
         var plugin = $"WriteTest_{Guid.NewGuid():N}.esp";
         var exec = new PluginToolExecutor(() => null);
 
-        // create_plugin
+
         exec.Execute("create_plugin", $"{{\"name\":\"{plugin}\"}}")
             .Should().Contain("Created new plugin");
 
-        // it shows up in list_plugins (mutable mod mirrored into the read tools)
+
         exec.Execute("list_plugins", "{}").Should().Contain(plugin);
 
-        // create_record BOOK
+
         var createResult = exec.Execute("create_record",
             $"{{\"plugin\":\"{plugin}\",\"type\":\"BOOK\",\"editorId\":\"Test_Holotape\"}}");
         createResult.Should().Contain("Created BOOK").And.Contain("Test_Holotape");
 
-        // set_field Name
+
         exec.Execute("set_field",
             $"{{\"plugin\":\"{plugin}\",\"record\":\"Test_Holotape\",\"field\":\"Name\",\"value\":\"My Test Tape\"}}")
             .Should().Contain("Set Name");
 
-        // read it back through get_record (proves the read tools see the new record + field)
+
         var dump = exec.Execute("get_record", $"{{\"plugin\":\"{plugin}\",\"id\":\"Test_Holotape\"}}");
         dump.Should().Contain("Test_Holotape").And.Contain("My Test Tape");
 
-        // save_plugin writes a real ESP
+
         var outPath = Path.Combine(Path.GetTempPath(), plugin);
         var saveResult = exec.Execute("save_plugin",
             $"{{\"plugin\":\"{plugin}\",\"path\":\"{outPath.Replace("\\", "\\\\")}\"}}");
         saveResult.Should().Contain("Saved");
         File.Exists(outPath).Should().BeTrue();
 
-        try { File.Delete(outPath); } catch { /* overlay may still map it briefly */ }
+        try { File.Delete(outPath); } catch {  }
     }
 
     [Fact]
     public void CreateRecord_InEsl_AssignsFormIdWithinLightRange()
     {
-        var plugin = $"EslTest_{Guid.NewGuid():N}.esl";   // light plugin
+        var plugin = $"EslTest_{Guid.NewGuid():N}.esl";
         var exec = new PluginToolExecutor(() => null);
         exec.Execute("create_plugin", $"{{\"name\":\"{plugin}\"}}");
 
@@ -59,7 +59,7 @@ public class WriteServiceTests
             $"{{\"plugin\":\"{plugin}\",\"type\":\"BOOK\",\"editorId\":\"EslHolotape\"}}");
         result.Should().Contain("Created BOOK");
 
-        // FormKey in the message must be within the ESL object range 0x000800-0x000FFF.
+
         var dump = exec.Execute("get_record", $"{{\"plugin\":\"{plugin}\",\"id\":\"EslHolotape\"}}");
         var formKey = dump.Split('\n').First(l => l.TrimStart().StartsWith("FormKey:")).Split(':', 2)[1].Trim();
         var idHex = formKey.Split(':')[0];
@@ -83,7 +83,7 @@ public class WriteServiceTests
             $"{{\"plugin\":\"{plugin}\",\"record\":\"List_Gun\",\"field\":\"Keywords\",\"value\":\"{kwKey}\"}}");
         result.Should().Contain("Added").And.Contain("Keywords");
 
-        // Verify the actual data: save and reload, check the weapon's Keywords via Mutagen.
+
         var outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), plugin);
         exec.Execute("save_plugin",
             $"{{\"plugin\":\"{plugin}\",\"path\":\"{outPath.Replace("\\", "\\\\")}\"}}");
@@ -117,7 +117,7 @@ public class WriteServiceTests
             $"{{\"plugin\":\"{plugin}\",\"record\":\"VmadTape\",\"script\":\"MyHolotapeProgram\",\"name\":\"Terminal\",\"value\":\"{termKey}\",\"type\":\"object\"}}")
             .Should().Contain("Set script property");
 
-        // Save + reload, verify the script + object property persisted via Mutagen.
+
         var outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), plugin);
         exec.Execute("save_plugin", $"{{\"plugin\":\"{plugin}\",\"path\":\"{outPath.Replace("\\", "\\\\")}\"}}");
 
@@ -128,7 +128,7 @@ public class WriteServiceTests
         var script = tape.VirtualMachineAdapter!.Scripts.First(s => s.Name == "MyHolotapeProgram");
         var objProp = script.Properties.OfType<Mutagen.Bethesda.Fallout4.IScriptObjectPropertyGetter>()
             .First(p => p.Name == "Terminal");
-        objProp.Object.FormKey.ID.Should().Be(0x801u);   // the terminal (second record)
+        objProp.Object.FormKey.ID.Should().Be(0x801u);
 
         try { System.IO.File.Delete(outPath); } catch { }
     }
@@ -140,7 +140,7 @@ public class WriteServiceTests
         WriteService.CreatePlugin(plugin);
         WriteService.CreateRecord(plugin, "MISC", "Clean_Widget", null);
 
-        // Mark the record deleted, then clean.
+
         var mod = WriteService.GetMutable(plugin)!;
         var rec = (Mutagen.Bethesda.Fallout4.IFallout4MajorRecord)mod.EnumerateMajorRecords()
             .First(r => r.EditorID == "Clean_Widget");
@@ -162,7 +162,7 @@ public class WriteServiceTests
         var mod = WriteService.GetMutable(plugin)!;
         var rel = Mutagen.Bethesda.Fallout4.Fallout4Release.Fallout4;
 
-        // Two records with HIGH (non-ESL) FormIDs, the weapon referencing the keyword.
+
         var kw = new Mutagen.Bethesda.Fallout4.Keyword(new Mutagen.Bethesda.Plugins.FormKey(mod.ModKey, 0x5000), rel) { EditorID = "Hi_Kw" };
         mod.Keywords.Add(kw);
         var gun = new Mutagen.Bethesda.Fallout4.Weapon(new Mutagen.Bethesda.Plugins.FormKey(mod.ModKey, 0x5001), rel) { EditorID = "Hi_Gun" };
@@ -173,7 +173,7 @@ public class WriteServiceTests
         exec.Execute("compact_to_esl", $"{{\"plugin\":\"{plugin}\"}}")
             .Should().Contain("remapped 2");
 
-        // Save + reload, verify IDs are in range AND the reference was repointed.
+
         var outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), plugin);
         exec.Execute("save_plugin", $"{{\"plugin\":\"{plugin}\",\"path\":\"{outPath.Replace("\\", "\\\\")}\"}}");
 
@@ -183,7 +183,7 @@ public class WriteServiceTests
         var rgun = reload.Weapons.First(w => w.EditorID == "Hi_Gun");
         rkw.FormKey.ID.Should().BeInRange(0x800u, 0xFFFu);
         rgun.FormKey.ID.Should().BeInRange(0x800u, 0xFFFu);
-        // the weapon's keyword link must now point at the keyword's NEW id
+
         rgun.Keywords!.Select(k => k.FormKey).Should().Contain(rkw.FormKey);
 
         try { System.IO.File.Delete(outPath); } catch { }
@@ -200,7 +200,7 @@ public class WriteServiceTests
         mod.MasterReferences.Add(new Mutagen.Bethesda.Plugins.Records.MasterReference { Master = "UsedMaster.esm" });
         mod.MasterReferences.Add(new Mutagen.Bethesda.Plugins.Records.MasterReference { Master = "UnusedMaster.esm" });
 
-        // A record that links into UsedMaster.esm but never into UnusedMaster.esm.
+
         var gun = new Mutagen.Bethesda.Fallout4.Weapon(new Mutagen.Bethesda.Plugins.FormKey(mod.ModKey, 0x800), rel) { EditorID = "Lm_Gun" };
         gun.Keywords = new()
         {
@@ -268,15 +268,15 @@ public class WriteServiceTests
 
         var exec = new PluginToolExecutor(() => null);
 
-        // Missing a master.
+
         exec.Execute("reorder_masters", $"{{\"plugin\":\"{plugin}\",\"order\":[\"A.esm\"]}}")
             .Should().Contain("EXACTLY");
 
-        // Extra name not in the current set.
+
         exec.Execute("reorder_masters", $"{{\"plugin\":\"{plugin}\",\"order\":[\"A.esm\",\"C.esm\"]}}")
             .Should().Contain("Not a declared master");
 
-        // Duplicate.
+
         exec.Execute("reorder_masters", $"{{\"plugin\":\"{plugin}\",\"order\":[\"A.esm\",\"A.esm\"]}}")
             .Should().Contain("more than once");
     }
@@ -292,7 +292,7 @@ public class WriteServiceTests
         var exec = new PluginToolExecutor(() => null);
         exec.Execute("create_plugin", $"{{\"name\":\"{fullPath.Replace("\\", "\\\\")}\"}}");
         var mod = WriteService.GetMutable(plugin)!;
-        // Deliberately out of alphabetical order, so a silent re-sort would be caught.
+
         mod.MasterReferences.Add(new Mutagen.Bethesda.Plugins.Records.MasterReference { Master = "Zeta.esm" });
         mod.MasterReferences.Add(new Mutagen.Bethesda.Plugins.Records.MasterReference { Master = "Alpha.esm" });
 
@@ -374,22 +374,22 @@ public class WriteServiceTests
         var exec = new PluginToolExecutor(() => null);
         exec.Execute("create_plugin", $"{{\"name\":\"{plugin}\"}}");
 
-        // A misc item to be the crafted output...
+
         exec.Execute("create_record", $"{{\"plugin\":\"{plugin}\",\"type\":\"MISC\",\"editorId\":\"Link_Widget\"}}");
-        // ...and a constructible object whose CreatedObject FormLink points at it.
+
         exec.Execute("create_record", $"{{\"plugin\":\"{plugin}\",\"type\":\"COBJ\",\"editorId\":\"Link_Recipe\"}}");
 
-        // Find the widget's FormKey from its dump.
+
         var widgetDump = exec.Execute("get_record", $"{{\"plugin\":\"{plugin}\",\"id\":\"Link_Widget\"}}");
         var formKey = widgetDump.Split('\n')
             .First(l => l.TrimStart().StartsWith("FormKey:")).Split(':', 2)[1].Trim();
 
-        // Set the FormLink field by FormKey.
+
         var setResult = exec.Execute("set_field",
             $"{{\"plugin\":\"{plugin}\",\"record\":\"Link_Recipe\",\"field\":\"CreatedObject\",\"value\":\"{formKey}\"}}");
         setResult.Should().Contain("Set CreatedObject");
 
-        // Confirm the link now resolves to the widget's FormKey in the recipe dump.
+
         var recipeDump = exec.Execute("get_record", $"{{\"plugin\":\"{plugin}\",\"id\":\"Link_Recipe\"}}");
         recipeDump.Should().Contain(formKey);
     }
@@ -402,7 +402,7 @@ public class WriteServiceTests
         var mod = WriteService.GetMutable(plugin)!;
         var rel = Mutagen.Bethesda.Fallout4.Fallout4Release.Fallout4;
 
-        // A keyword at 0x000801 and a weapon that links it.
+
         var kw = new Mutagen.Bethesda.Fallout4.Keyword(
             new Mutagen.Bethesda.Plugins.FormKey(mod.ModKey, 0x801), rel) { EditorID = "Renum_Kw" };
         mod.Keywords.Add(kw);
@@ -412,13 +412,13 @@ public class WriteServiceTests
             new Mutagen.Bethesda.Plugins.FormLink<Mutagen.Bethesda.Fallout4.IKeywordGetter>(kw.FormKey) };
         mod.Weapons.Add(gun);
 
-        // Renumber the keyword 0x801 -> 0x0F0F.
+
         WriteService.RenumberFormId(plugin, "Renum_Kw", "000F0F", null)
             .Should().Contain("Renumbered").And.Contain("000F0F");
 
-        // Save + reload, assert the new id AND that the weapon's link followed.
+
         var outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), plugin);
-        WriteService.SavePlugin(plugin, outPath, null);   // env: null -- none in tests
+        WriteService.SavePlugin(plugin, outPath, null);
         using var reload = Mutagen.Bethesda.Fallout4.Fallout4Mod.CreateFromBinaryOverlay(
             Mutagen.Bethesda.Plugins.ModPath.FromPath(outPath), rel);
         var rkw = reload.Keywords.First(k => k.EditorID == "Renum_Kw");
@@ -448,9 +448,9 @@ public class WriteServiceTests
     [Fact]
     public void SetPlacedReferenceTransform_MovesReferenceIntoOverrideInPatchPlugin()
     {
-        // The reference lives in a "source" plugin (like a real cell would in a vanilla/mod master);
-        // the move is saved into a SEPARATE patch plugin, the same shape as the real Cell Viewer
-        // gizmo scenario (moves never write directly into the plugin that defines the reference).
+
+
+
         var srcPlugin = $"GizmoSrc_{Guid.NewGuid():N}.esp";
         var patchPlugin = $"GizmoPatch_{Guid.NewGuid():N}.esp";
         var exec = new PluginToolExecutor(() => null);
@@ -476,7 +476,7 @@ public class WriteServiceTests
                 null, fk.ToString(), patchPlugin, 111f, 222f, 333f, 0.1f, 0.2f, 0.3f);
             result.Should().Contain("Moved").And.Contain(patchPlugin);
 
-            // The SOURCE plugin's own copy must be untouched -- the move only exists as an override.
+
             var srcRefr = src.EnumerateMajorRecords().OfType<IPlacedObjectGetter>().First(r => r.FormKey == fk);
             srcRefr.Position.X.Should().Be(100f);
 
@@ -489,7 +489,7 @@ public class WriteServiceTests
             ovr.Rotation.Y.Should().BeApproximately(0.2f, 0.0001f);
             ovr.Rotation.Z.Should().BeApproximately(0.3f, 0.0001f);
 
-            // Save + reload the patch, prove it round-trips through a real ESP, not just in memory.
+
             var outPath = Path.Combine(Path.GetTempPath(), patchPlugin);
             WriteService.SavePlugin(patchPlugin, outPath, null);
             using var reload = Mutagen.Bethesda.Fallout4.Fallout4Mod.CreateFromBinaryOverlay(
@@ -531,6 +531,6 @@ public class WriteServiceTests
             .Should().Contain("Renumbered").And.Contain("000ABC");
 
         exec.Execute("get_record", $"{{\"plugin\":\"{plugin}\",\"id\":\"Renum_Widget\"}}")
-            .Should().Contain("ABC:");   // FormKey line now shows the new object id
+            .Should().Contain("ABC:");
     }
 }

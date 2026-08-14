@@ -6,23 +6,23 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// The second batch of xEdit-parity operations: declaring a master, renumbering a whole plugin, and
-/// the circular-leveled-list check that belongs beside scan_broken_refs.
-/// </summary>
+
+
+
+
 public static partial class WriteService
 {
-    // ── Add Masters ─────────────────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Declare a master on a plugin (xEdit "Add Masters..."). Until a file is a declared master, a
-    /// reference into it has nowhere valid to point, so this is a prerequisite for authoring the
-    /// reference, not a cleanup step.
-    ///
-    /// Note that save_plugin RE-DERIVES the master list from the links the plugin actually contains,
-    /// so a master added here and then never referenced will not survive the save. That is the
-    /// intended behaviour: use this to unblock authoring, then write the reference.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
     public static string AddMasters(string plugin, string[] masters, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg);
@@ -40,9 +40,9 @@ public static partial class WriteService
         var already = new List<string>();
         var unknown = new List<string>();
 
-        // Only accept a file the load order actually knows about: a master naming a plugin that is
-        // not present makes every FormID resolved through it dangle, which is exactly the crash the
-        // Dependencies tab flags.
+
+
+
         var loaded = new HashSet<string>(LoadOrderMods(env).Select(m => m.name), StringComparer.OrdinalIgnoreCase);
 
         foreach (var raw in masters)
@@ -72,16 +72,16 @@ public static partial class WriteService
                "save_plugin re-derives the master list from actual references, so write the reference before saving.";
     }
 
-    // ── Renumber FormIDs across a whole plugin ──────────────────────────────────────────────────
 
-    /// <summary>
-    /// xEdit's "Renumber FormIDs from...": give every one of the plugin's own records a new object
-    /// id, running upward from a base, and repoint every reference. This is how you resolve a
-    /// FormID collision with another mod, or move a plugin's records out of a range someone else
-    /// claims. renumber_formid does one record, which is not a real option for hundreds.
-    ///
-    /// Defaults to a dry run.
-    /// </summary>
+
+
+
+
+
+
+
+
+
     public static string RenumberPluginFormIds(string plugin, string startHex, bool apply, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg);
@@ -132,23 +132,23 @@ public static partial class WriteService
                "in-plugin reference. References from other plugins into this one now dangle. save_plugin to persist.";
     }
 
-    // ── Create SEQ file ─────────────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// xEdit's "Create SEQ File". A plugin with start-game-enabled quests needs a matching
-    /// <c>Data/Seq/&lt;plugin&gt;.seq</c> or those quests silently never start on an existing save,
-    /// so this is a required build step for quest mods rather than an optimisation.
-    ///
-    /// The file is a bare array of little-endian 4-byte FormIDs, no header. Which quests belong in
-    /// it follows xEdit: the start-game-enabled flag is set here AND the version this record
-    /// overrides does not already have it, so a plugin does not re-declare quests its master
-    /// already starts.
-    ///
-    /// FormIDs are written with the plugin's OWN file-local index (its master count), which is how
-    /// the on-disk record already encodes them and matches the Creation Kit's own output. The
-    /// engine resolves them against the plugin the file is named for, which is why a SEQ file does
-    /// not need regenerating when load order changes.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static string CreateSeqFile(object? env, string plugin, string? outputDir)
     {
         var (name, _) = NormalizePlugin(plugin);
@@ -165,8 +165,8 @@ public static partial class WriteService
         {
             if (q.Data is not { } data || !data.Flags.HasFlag(Quest.Flag.StartGameEnabled)) continue;
 
-            // Skip a quest whose previous version already starts at game start: re-declaring it is
-            // what makes a patch's SEQ file fight its master's.
+
+
             var contexts = MutagenLoader.GetRecordContexts(env, q.FormKey);
             int mine = contexts.FindIndex(c => string.Equals(c.plugin, name, StringComparison.OrdinalIgnoreCase));
             if (mine > 0 && contexts[mine - 1].rec is IQuestGetter prev &&
@@ -198,19 +198,19 @@ public static partial class WriteService
                "\nDeploy it as Data/Seq/" + Path.ChangeExtension(name, ".seq") + " alongside the plugin.";
     }
 
-    // ── Check for circular leveled lists ────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// xEdit's "Check for Circular Leveled Lists". A leveled list that contains itself, directly or
-    /// through another list, hangs or crashes the engine when it tries to resolve it. Walks the
-    /// WINNING version of every LVLI/LVLN across the load order, since that is what the game sees.
-    /// Read-only.
-    /// </summary>
+
+
+
+
+
+
+
     public static string CheckCircularLeveledLists(object? env, string plugin, int limit = 200)
     {
         var (filterName, _) = string.IsNullOrWhiteSpace(plugin) ? ("", (string?)null) : NormalizePlugin(plugin);
 
-        // Winning version per FormKey: later plugins overwrite earlier ones.
+
         var edges = new Dictionary<FormKey, List<FormKey>>();
         var owner = new Dictionary<FormKey, (string plugin, string edid, string type)>();
 
@@ -236,7 +236,7 @@ public static partial class WriteService
 
         if (edges.Count == 0) return "No leveled lists found in the load order.";
 
-        // Iterative colour-marked DFS: 1 = on the current path, 2 = fully explored and clean.
+
         var state = new Dictionary<FormKey, int>();
         var cycles = new List<string>();
         var reported = new HashSet<string>();
@@ -262,7 +262,7 @@ public static partial class WriteService
                 }
                 stack.Push((node, ci + 1));
                 var child = kids[ci];
-                if (!edges.ContainsKey(child)) continue;          // not a list, so not a cycle candidate
+                if (!edges.ContainsKey(child)) continue;
                 var cs = state.GetValueOrDefault(child);
                 if (cs == 1)
                 {
@@ -295,7 +295,7 @@ public static partial class WriteService
                "hangs or crashes the engine when it resolves:\n  " + string.Join("\n  ", cycles.Take(limit));
     }
 
-    /// <summary>JSON form of <see cref="CheckCircularLeveledLists"/>, for the UI.</summary>
+
     public static string CheckCircularLeveledListsJson(object? env, string plugin, int limit = 200) =>
         JsonSerializer.Serialize(new { report = CheckCircularLeveledLists(env, plugin, limit) });
 }

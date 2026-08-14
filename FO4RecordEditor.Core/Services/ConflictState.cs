@@ -3,10 +3,10 @@ using Mutagen.Bethesda.Plugins;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Holds the winning plugin per conflicting FormKey from the last conflict scan, so the
-/// Explorer tree can colour records by conflict status (winner = orange, loser = red).
-/// </summary>
+
+
+
+
 public static class ConflictState
 {
     private static Dictionary<FormKey, string> _winners = new();
@@ -23,7 +23,7 @@ public static class ConflictState
         {
             if (FormKey.TryFactory(c.FormKey, out var fk)) d[fk] = c.Winner;
 
-            // Per-plugin: red if it loses any conflict, else orange if it wins one.
+
             foreach (var p in c.Plugins)
             {
                 var st = string.Equals(p, c.Winner, StringComparison.OrdinalIgnoreCase)

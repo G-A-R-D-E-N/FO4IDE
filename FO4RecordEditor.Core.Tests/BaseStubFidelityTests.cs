@@ -8,27 +8,27 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Checks the reduced base script tree against the real Fallout 4 sources.
-/// </summary>
-/// <remarks>
-/// The stub tree under <c>Fixtures/BaseStubs</c> is a second source of truth, which is the price of
-/// a gate that runs on a bare checkout. This is the mitigation: every member the stubs declare has
-/// to exist in the real tree with the same shape, so a stub that quietly drifts is caught here
-/// rather than by a fixture that compiles against a signature the game does not have.
-/// <para>
-/// Opt-in on <c>FO4RE_PSC_ROOTS</c>, the same variable the other sweeps use. Unset, it no-ops so a
-/// bare checkout stays green, and the residual risk is that nobody runs it. That risk is stated in
-/// <c>Fixtures/BaseStubs/README.md</c> rather than left to be discovered.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class BaseStubFidelityTests
 {
     private readonly ITestOutputHelper _output;
 
     public BaseStubFidelityTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>A member as compared across the two trees: shape only, never body or documentation.</summary>
+
     private readonly record struct MemberShape(
         string Kind, string Name, string ReturnType, string Parameters, bool IsGlobal);
 
@@ -56,7 +56,7 @@ public class BaseStubFidelityTests
         return shapes;
     }
 
-    /// <summary>Every stub, paired with the real script of the same name.</summary>
+
     private static IEnumerable<(string Name, PapyrusScript Stub, PapyrusScript Real)> Pairs(
         IReadOnlyList<string> realRoots)
     {
@@ -103,8 +103,8 @@ public class BaseStubFidelityTests
                     continue;
                 }
 
-                // Bodies and flags are deliberately not compared: the stubs declare members native
-                // precisely so no body has to be reproduced, and that is not a fidelity question.
+
+
                 if (stubShape.ReturnType != realShape.ReturnType)
                     mismatched.Add($"{name}: {stubShape.Name} returns {stubShape.ReturnType} vs real {realShape.ReturnType}");
                 else if (stubShape.Parameters != realShape.Parameters)
@@ -134,10 +134,10 @@ public class BaseStubFidelityTests
             return;
         }
 
-        // ScriptObject declares parameters typed CustomEventName and ScriptEventName, which are
-        // lexer keywords rather than scripts, so nothing on any root declares them and the resolver
-        // records the doubt. This pins that as a property of the real base script rather than a
-        // defect in the reduced stand-in, which is why BaseStubTests exempts it.
+
+
+
+
         var realIndex = PapyrusCompiler.IndexFor(roots);
         var real = realIndex.Resolve("ScriptObject");
         real.Should().NotBeNull("the real roots should contain ScriptObject.psc");

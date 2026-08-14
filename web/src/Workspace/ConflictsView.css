@@ -5,7 +5,7 @@
   min-height: 0;
 }
 
-/* ---- toolbar ---- */
+
 
 .cv-toolbar {
   display: flex;
@@ -75,8 +75,8 @@
 
 .cv-layout-btn.active { background: var(--bg-hover); color: var(--accent-color); }
 
-/* ---- summary strip ---- */
-/* The tone class colours the whole stat; the number inherits it via currentColor. */
+
+
 
 .cv-stats {
   display: flex;
@@ -112,7 +112,7 @@
 .cv-stat-flag { color: var(--status-warning); }
 .cv-stat-formid { color: var(--chip-3); }
 
-/* ---- groups and cards ---- */
+
 
 .cv-groups {
   flex: 1 1 auto;
@@ -162,8 +162,8 @@
   overflow: hidden;
 }
 
-/* A third plugin disagreeing with the winner is the case a two-column card could hide, so it
-   gets an explicit border and a warning icon rather than looking settled. */
+
+
 .cv-card.contested { border-color: var(--status-warning); }
 
 .cv-card-head {

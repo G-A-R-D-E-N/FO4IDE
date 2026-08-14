@@ -5,18 +5,18 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>
-/// Allocates local names that cannot collide with anything already visible.
-/// </summary>
-/// <remarks>
-/// Every keyword is reserved, and that matters more than it looks: <c>Length</c> is a keyword, so a
-/// local called <c>length</c> would not even lex. Members inherited from the base chain are reserved
-/// too, because a local shadowing an inherited property would compile and then mean something the
-/// author did not write.
-/// <para>
-/// Comparison is case insensitive throughout, like the language.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class GraphNameTable
 {
     private readonly HashSet<string> _taken = new(StringComparer.OrdinalIgnoreCase);
@@ -35,7 +35,7 @@ public sealed class GraphNameTable
         }
     }
 
-    /// <summary>Marks a name as unavailable.</summary>
+
     public void Reserve(string? name)
     {
         if (!string.IsNullOrWhiteSpace(name)) _taken.Add(name);
@@ -43,13 +43,13 @@ public sealed class GraphNameTable
 
     public bool IsReserved(string? name) => !string.IsNullOrEmpty(name) && _taken.Contains(name);
 
-    /// <summary>
-    /// A free name close to what was asked for.
-    /// </summary>
-    /// <remarks>
-    /// Suffixes ascending numbers on collision, so a graph with three <c>GetPlayer</c> calls gets
-    /// <c>player</c>, <c>player2</c>, <c>player3</c> rather than opaque temporaries.
-    /// </remarks>
+
+
+
+
+
+
+
     public string Allocate(string? hint)
     {
         var stem = Clean(hint);

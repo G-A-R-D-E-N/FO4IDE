@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace FO4RecordEditor.Services;
 
-// WebView2 host object for the NIF panel: author / inspect / verify / repair Fallout 4 NIFs by
-// driving niftool.exe (via NifService). Same COM rules as PapyrusInterop: AutoDual, ComVisible,
-// only string/bool params and string/Task<string> returns. File pickers run on the UI thread;
-// the niftool calls run on a background task so the process call never blocks the UI.
+
+
+
+
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class NifInterop
@@ -24,7 +24,7 @@ public class NifInterop
         return HostServices.PickFolder(title);
     }
 
-    /// <summary>Pick a save path for the output .nif.</summary>
+
     public string BrowseForSave(string title, string filter)
     {
         return HostServices.PickSavePath(title,
@@ -67,7 +67,7 @@ public class NifInterop
             catch (Exception ex) { DebugLog.Exception("Nif.Fix", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>Dump a NIF's curated editable property tree (Nodes / Shapes / Extra) as JSON.</summary>
+
     public Task<string> Tree(string nifPath) =>
         Task.Run(() =>
         {
@@ -75,7 +75,7 @@ public class NifInterop
             catch (Exception ex) { DebugLog.Exception("Nif.Tree", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>Apply a JSON array of field edits from Edit mode and save. outNif blank = save in place.</summary>
+
     public Task<string> ApplyEdits(string nifPath, string editsJson, string outNif) =>
         Task.Run(() =>
         {
@@ -83,8 +83,8 @@ public class NifInterop
             catch (Exception ex) { DebugLog.Exception("Nif.ApplyEdits", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>Resolve a NIF texture slot's DDS and return it as a PNG data URL (via texconv), or "".
-    /// textureRoot is an optional user-picked Data/Textures folder tried first.</summary>
+
+
     public Task<string> GetTexture(string nifPath, string relTexPath, string textureRoot) =>
         Task.Run(() =>
         {
@@ -92,7 +92,7 @@ public class NifInterop
             catch (Exception ex) { DebugLog.Exception("Nif.GetTexture", ex); return ""; }
         });
 
-    /// <summary>Open a folder (or the folder containing a file) in Windows Explorer. Returns "" on success.</summary>
+
     public string OpenFolder(string path)
     {
         try
@@ -107,8 +107,8 @@ public class NifInterop
         catch (Exception ex) { return "Error: " + ex.Message; }
     }
 
-    /// <summary>Stage a dropped file's bytes to a temp path and return it (drag-and-drop helper,
-    /// since WebView2 hides dropped files' real OS paths). "ERR:" prefix on failure.</summary>
+
+
     public string StageDroppedFile(string name, string base64)
     {
         try

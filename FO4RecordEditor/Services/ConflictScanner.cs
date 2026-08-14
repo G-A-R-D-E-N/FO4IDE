@@ -4,24 +4,24 @@ using Mutagen.Bethesda.Plugins;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Scans the entire loaded load order for record conflicts (FormKeys touched by 2+ plugins).
-/// Memory-efficient: tracks the plugin list + winning record info per FormKey, not the records.
-/// </summary>
+
+
+
+
 public static class ConflictScanner
 {
-    // Single source of truth -- also gates the write layer, see ProtectedPlugins.
+
     private static readonly IReadOnlySet<string> VanillaMasters = ProtectedPlugins.VanillaMasters;
 
-    // The full load-order scan is expensive, so cache it and reuse for the UI, the tree tinting, and
-    // the AI's scan_conflicts tool. Invalidated on env (re)load and whenever a plugin is edited.
+
+
     private static List<ConflictEntry>? _cache;
     private static readonly object _cacheLock = new();
     public static bool HasCache => _cache != null;
     public static void InvalidateCache() { lock (_cacheLock) _cache = null; }
 
-    /// <summary>Cached scan: scans once, then returns the same list until invalidated. Serialized so
-    /// the UI's Scan Conflicts button and the AI's scan_conflicts tool can't both scan at once.</summary>
+
+
     public static List<ConflictEntry> ScanCached(object env, Action<string>? progress = null)
     {
         lock (_cacheLock)
@@ -42,9 +42,9 @@ public static class ConflictScanner
                 order.Add(((string)ld.ModKey.FileName.String, m));
         }
 
-        // Hot-load AI/in-editor patches: an EditableMods plugin replaces its on-disk version in place
-        // (so its edits count) or, if new, is appended as the last (winning) plugin. This makes a
-        // freshly-authored patch show up in the conflict scan without reloading the modlist.
+
+
+
         foreach (var kv in FO4RecordEditor.Services.MutagenLoader.EditableMods)
         {
             if (kv.Value is not Mutagen.Bethesda.Fallout4.IFallout4ModGetter em) continue;
@@ -53,7 +53,7 @@ public static class ConflictScanner
             else order.Add((kv.Key, em));
         }
 
-        // Pass 1 (cheap): which FormKeys are touched by 2+ distinct plugins?
+
         var firstPlugin = new Dictionary<FormKey, string>();
         var multi = new HashSet<FormKey>();
         foreach (var (name, mod) in order)
@@ -66,7 +66,7 @@ public static class ConflictScanner
             }
         }
 
-        // Pass 2: collect only the override records for those FormKeys (bounded to candidates).
+
         var recs = new Dictionary<FormKey, List<(string plugin, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)>>();
         foreach (var (name, mod) in order)
         {
@@ -84,8 +84,8 @@ public static class ConflictScanner
         foreach (var kv in recs)
         {
             var entries = kv.Value;
-            // Only the versions that DIFFER in content are real conflicts; identical
-            // overrides (the benign Cell/NavMesh noise) are dropped, exactly like xEdit.
+
+
             var first = entries[0].rec;
             bool differs = entries.Any(en => !RecordsEqual(en.rec, first));
             if (!differs) continue;

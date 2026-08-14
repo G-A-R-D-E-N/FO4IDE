@@ -5,24 +5,24 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Cells and placed references (REFR).
-///
-/// These cannot go through create_record/AddNewBySig. That switch adds top-level records to a
-/// group on the mod (mod.Weapons.Add(x) and friends), but a placed object is not top-level: it
-/// lives inside a Cell's Persistent or Temporary list, and Cells themselves live in a
-/// Block -> SubBlock -> Cell tree under mod.Cells. Both need their own construction path.
-///
-/// The block/sub-block plumbing mirrors Mutagen's own ModContextExt cell-copy logic, which is the
-/// reference for how a cell must be parented in this mod type.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
 public static partial class WriteService
 {
-    /// <summary>
-    /// Create an interior CELL. Interior cells are self-contained (no worldspace, no vanilla cell
-    /// override), which makes them the safe place to park references a plugin owns outright -- e.g.
-    /// map markers that a script relocates at runtime.
-    /// </summary>
+
+
+
+
+
     public static string CreateCell(string plugin, string editorId, string? name, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg);
@@ -50,11 +50,11 @@ public static partial class WriteService
                $"Add references to it with create_placed_object, then save_plugin.";
     }
 
-    /// <summary>
-    /// Create a placed reference (REFR) inside a cell this plugin owns.
-    /// Set mapMarkerName to attach map-marker data, which is what turns a reference over the vanilla
-    /// MapMarker base (000010:Fallout4.esm) into an actual map marker rather than an invisible static.
-    /// </summary>
+
+
+
+
+
     public static string CreatePlacedObject(
         string plugin, string cellId, string baseId, string? editorId,
         float x, float y, float z, float rotZ,
@@ -66,15 +66,15 @@ public static partial class WriteService
         if (mod == null) return openMsg;
 
         ICell? cell = FindCellInMod(mod, cellId);
-        // #64: the cell isn't already a copy this plugin owns -- try to create that override on the
-        // fly. copy_as_override (ResolveConflict/AddOverrideReturning) cannot do this itself: it walks
-        // the mod's own TOP-LEVEL group properties via reflection, and Cell is nested inside
-        // CellBlock/CellSubBlock (interior) or a Worldspace's block tree (exterior), not a top-level
-        // group -- the same limitation WriteService.CellEdit.cs already documented for placed
-        // references. ILinkCache.TryResolveContext + IModContext.GetOrAddAsOverride resolves and
-        // creates the FULL parent chain regardless of interior/exterior, so this is the one fallback
-        // that actually covers both -- previously this doc comment told callers to "copy_as_override
-        // an existing cell in first," which never worked for ANY cell, not just exterior ones.
+
+
+
+
+
+
+
+
+
         if (cell == null)
         {
             var cellFk = MutagenLoader.ResolveId(env, cellId);
@@ -127,8 +127,8 @@ public static partial class WriteService
         if (initiallyDisabled) flags |= (int)PlacedObject.DefaultMajorFlag.InitiallyDisabled;
         refr.MajorRecordFlagsRaw = flags;
 
-        // The Persistent major flag and the Persistent list must agree: the flag alone does not move
-        // the reference between a cell's two lists, and the game reads the list it is actually in.
+
+
         if (persistent) cell.Persistent.Add(refr);
         else cell.Temporary.Add(refr);
 
@@ -159,11 +159,11 @@ public static partial class WriteService
         return null;
     }
 
-    /// <summary>
-    /// Parent a new interior cell into the Block/SubBlock tree, creating either level on demand.
-    /// Bethesda's interior convention keys the groups off the cell's own FormID:
-    /// block = id % 10, sub-block = (id / 10) % 10.
-    /// </summary>
+
+
+
+
+
     private static void AttachCellToBlocks(IFallout4Mod mod, Cell cell)
     {
         var id = cell.FormKey.ID;

@@ -5,14 +5,14 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Commit 8aa6b43 made SavePlugin order MAST by the real load order -- writing a dependent ESM
-// before its dependency makes Fallout 4 hang on load with no crash log. Four internal callers
-// (SaveRecordEditsToPatch, RevertOverridesFrom, BatchPatchRecords, SaveScriptPatch) kept calling
-// the 2-arg overload, so batch_patch_records and run_script still emitted unordered masters.
+
+
+
+
 public class MasterOrderTests
 {
-    // Builds a plugin whose records reference two different masters, so the MAST table has an
-    // order that can be wrong. Returns the saved path.
+
+
     private static (PluginToolExecutor exec, string plugin, string path) BuildMultiMasterPlugin()
     {
         var plugin = $"MasterOrder_{Guid.NewGuid():N}.esp";
@@ -24,7 +24,7 @@ public class MasterOrderTests
             $"{{\"plugin\":\"{plugin}\",\"type\":\"WEAP\",\"editorId\":\"MO_TestWeapon\"}}")
             .Should().Contain("Created WEAP");
 
-        // Two FormLinks into two different masters -> two MAST entries.
+
         exec.Execute("add_list_item",
             $"{{\"plugin\":\"{plugin}\",\"record\":\"MO_TestWeapon\",\"field\":\"Keywords\"," +
             "\"value\":\"0965E0:Fallout4.esm\"}");
@@ -53,7 +53,7 @@ public class MasterOrderTests
         finally { try { File.Delete(path); } catch { } }
     }
 
-    // Without an env the ordering silently degraded and the save still reported plain success.
+
     [Fact]
     public void SaveWithoutEnv_WarnsThatMasterOrderWasNotSet()
     {
@@ -69,7 +69,7 @@ public class MasterOrderTests
         finally { try { File.Delete(path); } catch { } }
     }
 
-    // A single-master plugin has nothing to mis-order, so it must not carry the scary warning.
+
     [Fact]
     public void SingleMasterPlugin_IsNotWarnedAbout()
     {

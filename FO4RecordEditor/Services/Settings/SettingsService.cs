@@ -12,7 +12,7 @@ public sealed class SettingsService
 
     public AppSettings Current { get; private set; } = new();
 
-    // Retired Anthropic models (404 on the API / rejected by the CLI) -> current replacements.
+
     private static readonly Dictionary<string, string> _retiredModels = new(StringComparer.OrdinalIgnoreCase)
     {
         ["claude-3-7-sonnet-20250219"] = "claude-sonnet-4-6",
@@ -25,7 +25,7 @@ public sealed class SettingsService
         ["claude-2.0"]                 = "claude-sonnet-4-6",
     };
 
-    /// <summary>Map a retired model id to a current replacement; returns the input unchanged otherwise.</summary>
+
     internal static string MigrateModel(string? model) =>
         model != null && _retiredModels.TryGetValue(model, out var replacement) ? replacement : (model ?? "");
 
@@ -39,7 +39,7 @@ public sealed class SettingsService
         }
         catch { Current = new AppSettings(); }
 
-        // Migrate settings saved before a model was retired so the AI keeps working.
+
         Current.Model = MigrateModel(Current.Model);
     }
 

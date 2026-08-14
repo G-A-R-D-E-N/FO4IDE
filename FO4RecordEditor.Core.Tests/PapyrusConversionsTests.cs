@@ -3,21 +3,21 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The cast rules, checked against the Creation Kit's Cast Reference clause by clause.
-/// </summary>
-/// <remarks>
-/// These are transcribed rather than reasoned about, because the table is not symmetric and not
-/// guessable: int auto-casts to float but float does not auto-cast to int, anything at all auto-casts
-/// to bool and to string, and var accepts everything except arrays. Each test below names the clause
-/// it encodes so a future change has to argue with the documentation rather than with the code.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class PapyrusConversionsTests
 {
-    // Actor extends ObjectReference extends Form, for the object tests.
+
     private static bool Inherits(string child, string ancestor)
     {
-        // Most derived first, so a child sits at a lower index than anything it descends from.
+
         var chain = new[] { "actor", "objectreference", "form" };
         int c = System.Array.IndexOf(chain, child.ToLowerInvariant());
         int a = System.Array.IndexOf(chain, ancestor.ToLowerInvariant());
@@ -28,7 +28,7 @@ public class PapyrusConversionsTests
     private static readonly PapyrusType ObjectRef = PapyrusType.Object("ObjectReference");
     private static readonly PapyrusType Form = PapyrusType.Object("Form");
 
-    // "Cast to Boolean -- Compiler auto-cast from: Anything."
+
     [Theory]
     [InlineData(PapyrusTypeKind.Int)]
     [InlineData(PapyrusTypeKind.Float)]
@@ -46,7 +46,7 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.ArrayOf(PapyrusType.Int), PapyrusType.Bool).Should().BeTrue();
     }
 
-    // "Cast to String -- Compiler auto-cast from: Anything."
+
     [Fact]
     public void Anything_implicitly_becomes_a_string()
     {
@@ -55,7 +55,7 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.ArrayOf(PapyrusType.Int), PapyrusType.String).Should().BeTrue();
     }
 
-    // "Cast to Float -- Compiler auto-cast from: Int."
+
     [Fact]
     public void Int_implicitly_becomes_a_float_but_nothing_else_does()
     {
@@ -63,7 +63,7 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.String, PapyrusType.Float).Should().BeFalse();
     }
 
-    // "Cast to Int -- Compiler auto-cast from: Nothing." Floats, strings and vars cast explicitly.
+
     [Fact]
     public void Nothing_implicitly_becomes_an_int_but_float_and_string_cast_explicitly()
     {
@@ -73,7 +73,7 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsExplicit(PapyrusType.String, PapyrusType.Int).Should().BeTrue();
     }
 
-    // "Cast to Object -- Compiler auto-cast from: Child object."
+
     [Fact]
     public void An_object_implicitly_becomes_its_parent_but_not_its_child()
     {
@@ -82,8 +82,8 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(Form, Actor, Inherits).Should().BeFalse("not every Form is an Actor");
     }
 
-    // "If you are casting from the parent object to the child one, the cast may fail ... in which
-    // case the result will be None." Legal to write, may be None at runtime.
+
+
     [Fact]
     public void A_downcast_is_explicit_only()
     {
@@ -98,7 +98,7 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsExplicit(Actor, keyword, Inherits).Should().BeFalse();
     }
 
-    // "Cast to Var -- Compiler auto-cast from: Everything but arrays."
+
     [Fact]
     public void Everything_but_an_array_implicitly_becomes_a_var()
     {
@@ -107,8 +107,8 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.ArrayOf(PapyrusType.Int), PapyrusType.Var).Should().BeFalse();
     }
 
-    // "Cast to Array -- Compiler auto-cast from: Nothing. Arrays can cast to other arrays, but only
-    // explicitly, and only if their elements could be cast."
+
+
     [Fact]
     public void Arrays_cast_to_arrays_only_explicitly_and_only_when_the_elements_do()
     {
@@ -122,7 +122,7 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsExplicit(actors, forms, Inherits).Should().BeTrue();
     }
 
-    // "Cast to Struct -- Compiler auto-cast from: Nothing. Nothing can be cast to a struct."
+
     [Fact]
     public void Nothing_casts_to_a_struct()
     {
@@ -132,7 +132,7 @@ public class PapyrusConversionsTests
         point.Equals(PapyrusType.StructOf("A", "Point")).Should().BeTrue("a struct still equals itself");
     }
 
-    // None initialises any reference type, which is what makes `Actor a = None` legal.
+
     [Fact]
     public void None_is_assignable_to_every_reference_type()
     {
@@ -141,7 +141,7 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.None, PapyrusType.StructOf("A", "Point")).Should().BeTrue();
     }
 
-    // Error means "something upstream already failed". It must never make a second complaint.
+
     [Fact]
     public void The_error_type_converts_both_ways_so_one_failure_does_not_cascade()
     {

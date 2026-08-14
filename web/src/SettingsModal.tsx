@@ -27,7 +27,7 @@ interface Settings {
 
 const host = () => window.chrome?.webview?.hostObjects?.settings;
 
-// Known Claude models. Sonnet 4.6 is the recommended default -- best balance for agentic plugin work.
+
 const MODELS = [
   { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6 -- Recommended (best balance)' },
   { id: 'claude-opus-4-8', label: 'Claude Opus 4.8 -- Most capable' },
@@ -229,10 +229,10 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
                 </div>
               </label>
 
-              {/* This is the path --mo2 actually uses, and the one Open MO2 remembers. It round-tripped
-                  through the host all along but had no field, so the single most load-bearing path in
-                  the app was invisible and uneditable. On Linux it is also the only working way to load
-                  a modlist, since Load Env cannot auto-detect one. */}
+              {
+
+
+}
               <label className="settings-field">
                 <span>MO2 Instance <em>(the folder holding mods/ and profiles/; what Open MO2 remembers)</em></span>
                 <div className="settings-input-row">

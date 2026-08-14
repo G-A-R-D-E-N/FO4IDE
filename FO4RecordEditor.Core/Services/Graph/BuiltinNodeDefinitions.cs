@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>
-/// The node types that do not come from a script: control flow, operators, literals, array members.
-/// </summary>
-/// <remarks>
-/// Small and fixed, unlike the generated palette. The array member list has to stay in step with
-/// what <c>PapyrusResolver</c> accepts after a dot on an array, and a test asserts that by resolving
-/// each one rather than by reading a list, since the resolver's own table is private.
-/// </remarks>
+
+
+
+
+
+
+
+
 public static class BuiltinNodeDefinitions
 {
     public const string Branch = "branch";
@@ -38,14 +38,14 @@ public static class BuiltinNodeDefinitions
     public const string OperatorPrefix = "op.";
     public const string ArrayPrefix = "array.";
 
-    /// <summary>
-    /// The members Papyrus allows after a dot on an array.
-    /// </summary>
-    /// <remarks>
-    /// Names, arity and result type taken from what the resolver binds. <c>Length</c> is the only
-    /// one that is pure: every other member either mutates the array or is a search whose cost the
-    /// author should see sequenced.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private static readonly (string Name, string Result, int Args, bool Pure)[] ArrayMembers =
     {
         ("Length", "int", 0, true),
@@ -94,13 +94,13 @@ public static class BuiltinNodeDefinitions
 
     private static IReadOnlyList<NodeDefinition>? _all;
 
-    /// <summary>Every built-in definition.</summary>
+
     public static IReadOnlyList<NodeDefinition> All => _all ??= Build();
 
     public static NodeDefinition? Find(string? id) =>
         id == null ? null : All.FirstOrDefault(d => string.Equals(d.Id, id, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>The operator token a binary or unary definition emits.</summary>
+
     public static string? OperatorToken(string definitionId)
     {
         if (!definitionId.StartsWith(OperatorPrefix, StringComparison.OrdinalIgnoreCase)) return null;
@@ -113,7 +113,7 @@ public static class BuiltinNodeDefinitions
         return null;
     }
 
-    /// <summary>The array member name a definition calls, or null.</summary>
+
     public static string? ArrayMemberName(string definitionId)
     {
         if (!definitionId.StartsWith(ArrayPrefix, StringComparison.OrdinalIgnoreCase)) return null;
@@ -123,7 +123,7 @@ public static class BuiltinNodeDefinitions
         return null;
     }
 
-    /// <summary>The array member names the palette offers, for the parity test.</summary>
+
     public static IReadOnlyList<string> ArrayMemberNames =>
         ArrayMembers.Select(m => m.Name).ToList();
 
@@ -179,7 +179,7 @@ public static class BuiltinNodeDefinitions
             new()
             {
                 Id = ForEach, Kind = GraphNodeKind.ForEach, Title = "For Each", Category = "Flow",
-                // Sugar. Papyrus has no foreach, so this lowers to a While over an index.
+
                 Summary = "Walks an array. Lowered to a While loop over an index.",
                 Pins = new[]
                 {
@@ -257,8 +257,8 @@ public static class BuiltinNodeDefinitions
             {
                 Id = Cast, Kind = GraphNodeKind.Cast, Title = "Cast", Category = "Values",
                 IsPure = true, LocalNameHint = "cast",
-                // Required rather than implicit: a downcast can yield None at run time, and the
-                // author owns that decision.
+
+
                 Summary = "Converts a value to another type with 'as'.",
                 Pins = new[]
                 {
@@ -362,8 +362,8 @@ public static class BuiltinNodeDefinitions
             {
                 DataIn(PinIds.Left, "A", PinTypeExpr.Generic()),
                 DataIn(PinIds.Right, "B", PinTypeExpr.Generic()),
-                // An arithmetic result is whatever its operands are, so it is solved rather than
-                // declared var: var would refuse to flow into a float parameter.
+
+
                 DataOut(
                     PinIds.Return, "Result",
                     op.Result.Length > 0 ? PinTypeExpr.Concrete(op.Result) : PinTypeExpr.Generic()),
@@ -395,8 +395,8 @@ public static class BuiltinNodeDefinitions
             if (!member.Pure) pins.Add(ExecIn());
             pins.Add(DataIn(PinIds.Array, "Array", PinTypeExpr.ArrayOfGeneric()));
 
-            // Argument shapes follow what the resolver accepts: a searched-for value plus a start
-            // index, a member name for the struct searches, and an element for the mutators.
+
+
             switch (member.Name)
             {
                 case "Find":

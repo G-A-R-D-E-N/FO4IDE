@@ -6,14 +6,14 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Regression coverage for TextureService.AddDataRoots. A NIF resolved from TextureService's own
-// BA2-extraction temp cache (used for every mesh the Cell Viewer pulls out of an archive) has no
-// ancestor "Data" folder -- climbing from it used to walk all the way to a drive root (the 24-level
-// guard), which then made EnsureRootScanned recursively enumerate the ENTIRE drive for .ba2 files and
-// hit inaccessible OS junction points (C:\Config.Msi, C:\Users\Default User, ...) that threw
-// mid-enumeration and silently failed whatever texture triggered it -- the direct cause of meshes
-// rendering flat gray in a live cell. Confirmed from a real debug log showing exactly those
-// UnauthorizedAccessExceptions, one per ancestor level climbed.
+
+
+
+
+
+
+
+
 public class TextureServiceRootsTests
 {
     [Fact]
@@ -39,7 +39,7 @@ public class TextureServiceRootsTests
         roots.Should().Contain(Path.Combine("C:\\Games", "Fallout4", "Data", "Meshes", "Clutter"));
         roots.Should().Contain(Path.Combine("C:\\Games", "Fallout4", "Data", "Meshes"));
         roots.Should().Contain(Path.Combine("C:\\Games", "Fallout4", "Data"));
-        // Must STOP at "Data" -- must not keep climbing into Fallout4/Games/C:\ (the drive-root-scan hazard).
+
         roots.Should().NotContain(Path.Combine("C:\\Games", "Fallout4"));
         roots.Should().NotContain("C:\\Games");
     }

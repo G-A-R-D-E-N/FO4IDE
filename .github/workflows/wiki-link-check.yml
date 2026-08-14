@@ -1,9 +1,9 @@
 name: wiki-link-check
 
-# Workflows belong in the main repository, not the special .wiki.git
-# repository. The gollum event runs this workflow after a wiki page is
-# created or updated; source changes, scheduled checks, and manual runs
-# cover edits to the map and on-demand verification.
+
+
+
+
 on:
   gollum:
   schedule:

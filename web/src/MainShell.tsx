@@ -55,8 +55,8 @@ const ExplorerTree = ({ path, node, backend, onOpenRecord }: { path: string, nod
     if (!expanded) {
       if (node.HasChildren && children.length === 0) {
         setLoading(true);
-        // finally, not the happy path: setLoading(false) used to be reachable only on success, so a
-        // failed expand left the node showing its "..." spinner forever with no way to retry.
+
+
         try {
           const json = await backend.GetChildren(path);
           setChildren(JSON.parse(json));
@@ -86,8 +86,8 @@ const ExplorerTree = ({ path, node, backend, onOpenRecord }: { path: string, nod
         </div>
         <span
           className="tree-label"
-          style={node.ConflictStatus === 1 ? { color: '#c79a5e' }       // conflict winner -> amber
-            : node.ConflictStatus === 2 ? { color: '#b07a7a' }          // conflict loser -> red
+          style={node.ConflictStatus === 1 ? { color: '#c79a5e' }
+            : node.ConflictStatus === 2 ? { color: '#b07a7a' }
             : undefined}
         >{node.Key}</span>
         {loading && <span className="tree-loading">...</span>}
@@ -108,8 +108,8 @@ const ExplorerTree = ({ path, node, backend, onOpenRecord }: { path: string, nod
 
 export default function MainShell() {
   const [activeTab, setActiveTab] = useState('explorer');
-  // Everything the left pane does lives under Explorer: the plugin tree, search, errors and the
-  // conflict list. Separate activity-bar entries for these rendered the same pane or nearly so.
+
+
   const [treeMode, setTreeMode] = useState<'files' | 'conflicts'>(
     () => (localStorage.getItem('treeMode') as 'files' | 'conflicts') || 'files');
   useEffect(() => { localStorage.setItem('treeMode', treeMode); }, [treeMode]);
@@ -126,7 +126,7 @@ export default function MainShell() {
 
   const { pickPlugin: askForTarget, confirm: askConfirm } = useDialogs();
 
-  // Top-bar workspace tab (Home vs Record Viewer) + right-rail / chat visibility.
+
   const [shellTab, setShellTab] = useState<ShellTab>('home');
   const [railVisible, setRailVisible] = useState(true);
   const [chatVisible, setChatVisible] = useState(true);
@@ -153,8 +153,8 @@ export default function MainShell() {
     document.body.style.userSelect = 'none';
   }, [chatWidth]);
 
-  // Sidebar width, persisted like the chat width. Task 1.4 asked for resizable splitters; the
-  // chat already had one, so this is the same mechanism on the other side.
+
+
   const [sidebarWidth, setSidebarWidth] = useState(() => Number(localStorage.getItem('sidebarWidth') || 280));
 
   const onSidebarResizeStart = useCallback((e: React.MouseEvent) => {
@@ -178,27 +178,27 @@ export default function MainShell() {
     document.body.style.userSelect = 'none';
   }, [sidebarWidth]);
 
-  // Theme: dark by default; persisted in localStorage.
+
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }, [isDark]);
 
-  // Record-level tab (Record View / Conflicts / References / History / Dependencies).
+
   const [recordTab, setRecordTab] = useState<RecordTab>('grid');
   const [plugins, setPlugins] = useState<RecordNode[]>([]);
   const [backend, setBackend] = useState<any>(null);
   const [errorStr, setErrorStr] = useState<string>("");
   const [status, setStatus] = useState<string>("");
-  const [progress, setProgress] = useState<number | null>(null);   // 0-100, or null = hidden
-  // True for the whole duration of an environment load. Drives the blocking overlay: the UI must
-  // not accept clicks while the load order is being (re)built, because anything resolved against a
-  // half-built environment fails in ways that read as "this record does not exist".
+  const [progress, setProgress] = useState<number | null>(null);
+
+
+
   const [envLoading, setEnvLoading] = useState(false);
 
-  // Favourites, mirrored from the shared store. The star lives in the detail rail, so this listens
-  // for its change event: a same-document localStorage write raises no storage event.
+
+
   const [favourites, setFavourites] = useState(readFavourites);
   const [favouritesOpen, setFavouritesOpen] = useState(
     () => localStorage.getItem('favouritesOpen') !== 'false');
@@ -209,23 +209,23 @@ export default function MainShell() {
     return () => window.removeEventListener(FAVOURITES_CHANGED, sync);
   }, []);
 
-  // Open records, one per tab. The active one is what the centre viewport and the rail show;
-  // keeping them in an array rather than a single slot is what lets a jump to a referenced record
-  // leave the record you came from open behind you.
+
+
+
   interface OpenRec { title: string; plugin: string; matrix: ConflictMatrix }
   const [openRecords, setOpenRecords] = useState<OpenRec[]>([]);
   const [activeKey, setActiveKey] = useState<string>('');
   const [recordLoading, setRecordLoading] = useState(false);
 
-  // Every lookup below reads through `?.` on purpose. These run during render and inside state
-  // updaters, where an exception is not recoverable: React unmounts the whole tree and the window
-  // goes blank with no message. Optional access costs nothing and keeps one bad entry from being
-  // fatal, in addition to the guard at the point a record is opened.
+
+
+
+
   const openRecord = openRecords.find(r => r.matrix?.FormKey === activeKey) ?? null;
 
-  /** Add or focus a record tab. Re-opening an already-open record refreshes it in place. */
+
   const putRecord = useCallback((rec: OpenRec) => {
-    if (!rec.matrix?.FormKey) return;   // nothing sensible to key a tab on
+    if (!rec.matrix?.FormKey) return;
     setOpenRecords(prev => {
       const at = prev.findIndex(r => r.matrix?.FormKey === rec.matrix.FormKey);
       if (at === -1) return [...prev, rec];
@@ -241,35 +241,35 @@ export default function MainShell() {
       const at = prev.findIndex(r => r.matrix?.FormKey === formKey);
       if (at === -1) return prev;
       const next = prev.filter(r => r.matrix?.FormKey !== formKey);
-      // Focus the neighbour rather than dumping the user on the welcome screen.
+
       setActiveKey(cur => (cur !== formKey ? cur : (next[at] ?? next[at - 1])?.matrix?.FormKey ?? ''));
       return next;
     });
   }, []);
 
-  // MCP live feed -- updated by tool-call events pushed from C# via PostWebMessageAsJson.
+
   const [mcpFeed, setMcpFeed] = useState<McpLiveMsg[]>([]);
   const [mcpActive, setMcpActive] = useState(false);
   const mcpActiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Field path of the last AI write -- passed to RecordView so it can flash that row.
+
   const [aiHighlightField, setAiHighlightField] = useState('');
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Stable refs so the message-handler closure (which runs only once on mount) can always
-  // read the latest openRecord and call the latest reloadMatrix without stale captures.
+
+
   const openRecordRef = useRef(openRecord);
   openRecordRef.current = openRecord;
 
-  // Explorer search: filters the plugin list by name and searches records across the load order.
+
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState<SearchHit[] | null>(null);
 
-  // Load-order totals for the status bar. The type index is what the Visible count is computed
-  // from; it is not a tree of its own any more.
+
+
   const [recordTypes, setRecordTypes] = useState<RecordTypeEntry[]>([]);
   const [loadOrderSummary, setLoadOrderSummary] = useState<LoadOrderSummary | null>(null);
 
-  /** Refresh the load-order totals the status bar reads. */
+
   const refreshNavigator = useCallback(async () => {
     const b = window.chrome?.webview?.hostObjects?.backend;
     if (!b) return;
@@ -300,8 +300,8 @@ export default function MainShell() {
     };
     window.addEventListener('unhandledrejection', handleRejection);
 
-    // C# pushes loader progress via PostWebMessageAsJson: {Type:"SetStatus",Text} / {Type:"SetProgress",Value}.
-    // Value is 0-100, or negative to hide the bar. e.data is the parsed object (string fallback just in case).
+
+
     const onMessage = (e: any) => {
       const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
       if (!data || !data.Type) return;
@@ -318,10 +318,10 @@ export default function MainShell() {
           if (cur && cur.matrix.FormKey === ev.Record) {
             reloadMatrixRef.current();
           } else {
-            // Navigate to the record being edited -- auto-switches to record tab.
+
             openByFormKeyRef.current(ev.Record, ev.Plugin);
           }
-          // Flash the exact field the AI just wrote.
+
           if (ev.Field) {
             if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
             setAiHighlightField(ev.Field);
@@ -331,21 +331,21 @@ export default function MainShell() {
           reloadMatrixRef.current();
         }
       }
-      // AI streaming events are handled inside ChatPanel's own listener.
+
     };
-    // @ts-ignore
+
     window.chrome?.webview?.addEventListener('message', onMessage);
 
     const init = async () => {
       try {
-        // @ts-ignore
+
         if (window.chrome?.webview?.hostObjects?.appInterop) {
-          // @ts-ignore
+
           const b = window.chrome.webview.hostObjects.appInterop;
-          // WebView2 host objects are CALLABLE proxies (typeof === 'function'), so the plain
-          // setBackend(b) form makes React treat b as a state-updater and invoke it as a function.
-          // That calls the COM object itself with no method name -> "Invalid number of parameters"
-          // (0x8002000E). The functional-updater form stores the proxy without calling it.
+
+
+
+
           setBackend(() => b);
           await refreshPlugins();
         }
@@ -358,19 +358,19 @@ export default function MainShell() {
 
     return () => {
       window.removeEventListener('unhandledrejection', handleRejection);
-      // @ts-ignore
+
       window.chrome?.webview?.removeEventListener('message', onMessage);
     };
   }, []);
 
-  // Read the host object fresh each call (no stale closure) and refresh the plugin tree once.
+
   const refreshPlugins = async () => {
     const b = window.chrome?.webview?.hostObjects?.appInterop;
     if (!b) return;
     const json = await b.GetPlugins();
     setPlugins(JSON.parse(json));
     setErrorStr("");
-    // The navigator reads the load order independently of the plugin tree, so it has to be told.
+
     await refreshNavigator();
   };
 
@@ -379,7 +379,7 @@ export default function MainShell() {
     if (!b) return;
     setEnvLoading(true);
     try {
-      await b.LoadEnvironment();   // awaits the full load; progress arrives via web messages
+      await b.LoadEnvironment();
       await refreshPlugins();
     } catch (err: any) {
       setErrorStr(err?.message || JSON.stringify(err));
@@ -393,10 +393,10 @@ export default function MainShell() {
     const b = window.chrome?.webview?.hostObjects?.appInterop;
     if (!b) return;
     try {
-      const path = await b.BrowseForMo2Folder();   // native folder picker
-      if (!path) return;                            // cancelled or not a valid MO2 instance
-      setEnvLoading(true);                          // only after the picker: a cancel must not lock the UI
-      await b.OpenMo2Profile(path);                 // awaits the full load
+      const path = await b.BrowseForMo2Folder();
+      if (!path) return;
+      setEnvLoading(true);
+      await b.OpenMo2Profile(path);
       await refreshPlugins();
     } catch (err: any) {
       setErrorStr(err?.message || JSON.stringify(err));
@@ -406,8 +406,8 @@ export default function MainShell() {
     }
   };
 
-  // Re-read the tree (and the open record) from the current state -- picks up the AI's latest edits
-  // without the heavy Open MO2 reload.
+
+
   const handleRefresh = async () => {
     const b = window.chrome?.webview?.hostObjects?.appInterop;
     if (!b) return;
@@ -415,7 +415,7 @@ export default function MainShell() {
       const json = await b.RefreshTree();
       setPlugins(JSON.parse(json));
       await refreshNavigator();
-      if (openRecord) await reloadMatrix();   // refresh the open record's values too
+      if (openRecord) await reloadMatrix();
       setStatus('Refreshed.');
     } catch (err: any) {
       setErrorStr(err?.message || JSON.stringify(err));
@@ -426,9 +426,9 @@ export default function MainShell() {
     const b = window.chrome?.webview?.hostObjects?.appInterop;
     if (!b) return;
     try {
-      const summary = await b.ScanConflicts();   // progress arrives via web messages
+      const summary = await b.ScanConflicts();
       setStatus(summary);
-      await refreshPlugins();                     // re-tint records as they reload
+      await refreshPlugins();
     } catch (err: any) {
       setErrorStr(err?.message || JSON.stringify(err));
     } finally {
@@ -456,28 +456,28 @@ export default function MainShell() {
     }
   };
 
-  // Open a record in the center viewport: resolve its FormKey, then fetch its populated field tree.
+
   const openRecordInView = async (path: string, node: RecordNode) => {
     const app = window.chrome?.webview?.hostObjects?.appInterop;
     const back = window.chrome?.webview?.hostObjects?.backend;
     if (!app || !back) { setErrorStr("Record bridge unavailable."); return; }
     setRecordLoading(true);
     try {
-      const formKey = await app.OpenRecord(path);   // node's FormKey ("" if unresolved)
+      const formKey = await app.OpenRecord(path);
       if (!formKey) { setErrorStr(`Couldn't resolve a FormKey for ${node.Key}.`); return; }
       const plugin = path.split(/[\\/]/)[0];
-      // xEdit-style conflict matrix: every plugin that touches this record becomes a column.
-      // BuildConflictMatrix returns null (serialized as the string "null") when the environment is
-      // gone, the FormKey will not parse, or no loaded plugin holds that record. That is a failure to
-      // report, not a record to open: putting a null matrix into state used to throw while rendering
-      // and take the whole UI down with it, which in the native window looks like a blank app.
+
+
+
+
+
       const raw = await back.GetConflictMatrix(formKey);
       const matrix: ConflictMatrix | null = raw ? JSON.parse(raw) : null;
       if (!matrix) {
-        // Do not assert why. BuildConflictMatrix returns null for several distinct reasons (no
-        // environment, unparseable FormKey, no version found), and claiming "that record does not
-        // exist" was wrong for a record that plainly did -- it had simply been asked for while the
-        // environment was being swapped. Say what happened and what usually clears it.
+
+
+
+
         setErrorStr(`Couldn't build a view of ${node.Key} (${formKey}). The environment may still be `
           + `loading or was just reloaded -- try again, or reload it with Open MO2.`);
         return;
@@ -490,7 +490,7 @@ export default function MainShell() {
     }
   };
 
-  // Debounced record search across the load order (EditorID / FormID). Plugin-name filtering is local.
+
   useEffect(() => {
     const q = search.trim();
     if (q.length < 2) { setSearchResults(null); return; }
@@ -503,7 +503,7 @@ export default function MainShell() {
     return () => clearTimeout(t);
   }, [search]);
 
-  // Conflicts panel
+
   const [conflicts, setConflicts] = useState<ConflictEntry[] | null>(null);
   const [conflictSel, setConflictSel] = useState<Record<string, boolean>>({});
   const [conflictBusy, setConflictBusy] = useState(false);
@@ -516,10 +516,10 @@ export default function MainShell() {
     catch (e: any) { setErrorStr(e?.message || String(e)); setConflicts([]); }
   };
 
-  // Load the conflict list the first time the Conflicts tab is opened.
+
   useEffect(() => {
     if (activeTab === 'explorer' && treeMode === 'conflicts' && conflicts === null) loadConflicts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [activeTab, treeMode]);
 
   const batchCopyAsOverride = async () => {
@@ -568,7 +568,7 @@ export default function MainShell() {
     } finally { setConflictBusy(false); }
   };
 
-  // Open a record directly by FormKey (from a search hit).
+
   const openHit = async (hit: SearchHit) => {
     const back = window.chrome?.webview?.hostObjects?.backend;
     if (!back) return;
@@ -585,7 +585,7 @@ export default function MainShell() {
     }
   };
 
-  // Open any record by FormKey (used by Referenced-By jump navigation and the Conflicts panel).
+
   const openByFormKey = async (formKey: string, pluginName: string) => {
     const b = window.chrome?.webview?.hostObjects?.backend;
     if (!b) return;
@@ -602,14 +602,14 @@ export default function MainShell() {
     }
   };
 
-  // Re-fetch the open record's conflict matrix after an edit (a new patch column may appear).
+
   const reloadMatrix = async () => {
     const b = window.chrome?.webview?.hostObjects?.backend;
     if (!b || !openRecord) return;
     try {
       const json = await b.GetConflictMatrix(openRecord.matrix.FormKey);
       const matrix: ConflictMatrix | null = json ? JSON.parse(json) : null;
-      // Record gone (e.g. deleted from its only plugin) -> close that tab.
+
       if (!matrix || !matrix.Plugins || matrix.Plugins.length === 0) closeRecordTab(openRecord.matrix.FormKey);
       else setOpenRecords(prev => prev.map(r => (r.matrix.FormKey === matrix.FormKey ? { ...r, matrix } : r)));
     } catch (err: any) {
@@ -617,19 +617,19 @@ export default function MainShell() {
     }
   };
 
-  // Keep reloadMatrix and openByFormKey refs current so the onMessage handler (mounted once)
-  // always calls the latest version with a fresh closure over current state.
+
+
   const reloadMatrixRef = useRef(reloadMatrix);
   reloadMatrixRef.current = reloadMatrix;
   const openByFormKeyRef = useRef(openByFormKey);
   openByFormKeyRef.current = openByFormKey;
 
-  // Opening any record switches to the Record Viewer and resets the inner tab.
+
   useEffect(() => {
     if (openRecord) { setShellTab('record'); setRecordTab('grid'); }
   }, [openRecord?.matrix?.FormKey]);
 
-  // Command-bar search for the top bar: reuse the existing SearchRecords bridge.
+
   const commandSearch = useCallback(async (q: string): Promise<SearchHit[]> => {
     const back = window.chrome?.webview?.hostObjects?.backend;
     if (!back) return [];
@@ -637,7 +637,7 @@ export default function MainShell() {
     catch { return []; }
   }, []);
 
-  /** The top bar's close button acts on the active tab; Home is only reached when none remain. */
+
   const closeRecord = () => {
     if (!openRecord) { setShellTab('home'); return; }
     const remaining = openRecords.length - 1;
@@ -649,12 +649,12 @@ export default function MainShell() {
     <div
       className={`shell-container animate-fade-in ${railVisible ? 'rail-on' : 'rail-off'} ${chatVisible ? 'chat-on' : 'chat-off'}`}
     >
-      {/* Environment loading: block the UI until it finishes.
-          Records resolve against an environment that is still being built, so clicking during a load
-          produced failures that looked like missing records ("couldn't build a view", "couldn't
-          resolve a FormKey"). Rather than teach every call site to cope, refuse the input for the
-          few seconds it takes. This covers the whole window, including the activity bar and the
-          Explorer, because a click anywhere can start work against a half-built environment. */}
+      {
+
+
+
+
+}
       {envLoading && (
         <div className="env-loading-overlay" role="alertdialog" aria-busy="true" aria-live="polite">
           <div className="env-loading-box">
@@ -689,7 +689,7 @@ export default function MainShell() {
         onOpenHit={openHit}
       />
 
-      {/* LEFT pane: slim activity rail + navigator sidebar */}
+      {}
       <div className="shell-left">
       <div className="activity-bar">
         <div className="activity-top">
@@ -723,7 +723,7 @@ export default function MainShell() {
         </div>
       </div>
 
-      {/* Sidebar */}
+      {}
       <div className="sidebar" style={{ width: sidebarWidth }}>
         <div className="sidebar-header">
           <h2>EXPLORER</h2>
@@ -777,10 +777,10 @@ export default function MainShell() {
           </div>
         )}
 
-        {/* Favourites: the read side the star never had. Starring a record wrote to localStorage and
-            nothing displayed it, so a favourite could not be found again. Sits above the plugin tree
-            because its whole purpose is getting back to a record without hunting for it. Hidden when
-            empty rather than showing a permanently empty header. */}
+        {
+
+
+}
         {activeTab === 'explorer' && treeMode === 'files' && favourites.length > 0 && (
           <div className="sidebar-favourites">
             <button
@@ -823,14 +823,14 @@ export default function MainShell() {
             </div>
           ) : (
             <>
-              {/* Plugins (filtered by name when searching) */}
+              {}
               {plugins
                 .filter(p => !search.trim() || p.Key.toLowerCase().includes(search.trim().toLowerCase()))
                 .map((p, i) => (
                   <ExplorerTree key={`${p.Key}:${i}`} path={p.Key} node={p} backend={backend} onOpenRecord={openRecordInView} />
                 ))}
 
-              {/* Record search results */}
+              {}
               {search.trim().length >= 2 && (
                 <div className="sidebar-results">
                   <div className="sidebar-results-head">
@@ -889,9 +889,9 @@ export default function MainShell() {
         )}
       </div>
       <div className="sidebar-resizer" onMouseDown={onSidebarResizeStart} />
-      </div>{/* /shell-left */}
+      </div>{}
 
-      {/* CENTER pane: Home placeholder or the record workspace */}
+      {}
       <div className="main-area">
         {shellTab === 'home' ? (
           <div className="home-view">
@@ -981,7 +981,7 @@ export default function MainShell() {
         )}
       </div>
 
-      {/* RIGHT pane: detail rail (Phase 5 fills this in) */}
+      {}
       {railVisible && (
         <DetailRail
           matrix={openRecord?.matrix ?? null}
@@ -995,13 +995,13 @@ export default function MainShell() {
         />
       )}
 
-      {/* AI Panel - Claude (always mounted so the live session survives a toggle; hidden via CSS) */}
+      {}
       <div className="shell-chat" style={{ display: chatVisible ? undefined : 'none', width: chatVisible ? chatWidth : undefined }}>
         <div className="chat-resizer" onMouseDown={onChatResizeStart} />
         <ChatPanel />
       </div>
 
-      {/* Status bar (bottom): loader status + load-order parity */}
+      {}
       <StatusBar
         status={status}
         progress={progress}
@@ -1035,11 +1035,11 @@ export default function MainShell() {
         </div>
       )}
 
-      {/* Help had no handler at all. Rather than delete the button, it opens the few things a
+      {
 
-          user actually needs to know that are not visible in the UI: where the log is, why Load Env
 
-          refuses on Linux, and that edits are in memory until saved. */}
+
+}
 
 
       {showHelp && (

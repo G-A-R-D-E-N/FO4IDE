@@ -2,27 +2,27 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Archives;
 
-/// <summary>
-/// Build a BA2 from loose folders, in process. This is what removes the Creation Kit's
-/// Archive2.exe from the packing path: that binary is not redistributable, so it could never be
-/// bundled, and a user without the CK installed simply could not pack.
-///
-/// Both container forms: General (GNRL) for anything, and DirectX (DX10) for a texture archive,
-/// where each entry carries a per-file texture header and the payload is split by mip range. See
-/// <see cref="Ba2Texture"/> for where those numbers come from.
-/// </summary>
+
+
+
+
+
+
+
+
+
 public static class Ba2Packer
 {
     public sealed record Result(int FileCount, long TotalBytes, long ArchiveBytes, int CompressedCount);
 
-    /// <summary>
-    /// Pack every file under <paramref name="sourceDirs"/> into <paramref name="outputPath"/>. Each
-    /// entry's in-archive name is its path relative to its own source folder, so a source folder
-    /// should be the Data-equivalent root ("...\MyMod"), the same contract Archive2 has.
-    ///
-    /// A DirectX archive holds textures only, so a non-DDS file under the source folder is an error
-    /// rather than something to quietly skip: the file would simply be missing from the build.
-    /// </summary>
+
+
+
+
+
+
+
+
     public static Result Pack(IEnumerable<string> sourceDirs, string outputPath, uint version = 1, bool compress = true,
                               Ba2Format format = Ba2Format.General)
     {

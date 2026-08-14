@@ -6,15 +6,15 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// TextureService read stdout to EOF before touching stderr, and SettingsInterop never drained
-// stderr at all. Either deadlocks once the child fills the undrained pipe buffer, and because the
-// timeout sat after the reads it was unreachable -- the call hung forever instead of failing.
+
+
+
 public class ProcessRunnerTests
 {
     private readonly ITestOutputHelper _out;
     public ProcessRunnerTests(ITestOutputHelper o) => _out = o;
 
-    // ~400 KB down stderr, far past any pipe buffer, plus a marker on stdout.
+
     private static ProcessStartInfo ChattyOnStderr() => PowerShell(
         "$e=[Console]::Error; 1..2000 | ForEach-Object { $e.WriteLine('x' * 200) }; " +
         "[Console]::Out.WriteLine('STDOUT-MARKER')");
@@ -97,7 +97,7 @@ public class ProcessRunnerTests
             new ProcessStartInfo { FileName = "definitely_not_a_real_program_xyz.exe" },
             TimeSpan.FromSeconds(5));
 
-        // Win32Exception is the documented failure for a missing image; callers catch it.
+
         act.Should().Throw<System.ComponentModel.Win32Exception>();
     }
 }

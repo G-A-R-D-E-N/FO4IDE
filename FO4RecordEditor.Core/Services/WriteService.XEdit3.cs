@@ -4,37 +4,37 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// xEdit parity, round 3: deep copy and reference retargeting.
-/// </summary>
+
+
+
 public static partial class WriteService
 {
-    // ── Deep copy as override ───────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// A record plus every record it (transitively) references from the SAME source plugin, copied
-    /// into a patch as overrides, so the copy is self-contained.
-    ///
-    /// This is deliberately NOT xEdit's "Deep copy as override into...". That command copies a
-    /// record's CHILD GROUP -- xEdit's term for the placed references that live inside a CELL, or
-    /// the cell blocks that live inside a WRLD (<c>IwbMainRecord.ChildGroup</c>, gated by
-    /// <c>SelectionIncludesAnyDeepCopyRecords</c>, which only lights up for exactly those container
-    /// types). It does not follow FormLinks at all. Mutagen has no equivalent of a "child group" for
-    /// FO4's CELL/WRLD, and their placed-reference tree is already the tool's known problem area
-    /// (<c>Fallout4ListGroup&lt;CellBlock&gt;</c> not implementing <c>IGroup</c> is why
-    /// compact_to_esl refuses cell-nested records). Reproducing xEdit's actual behavior for CELL/WRLD
-    /// is out of scope here; this refuses those two signatures rather than silently doing something
-    /// else and calling it the same feature.
-    ///
-    /// What IS implemented, and is the commonly wanted case in practice: copying a custom item (a
-    /// weapon, say) along with the custom keywords/effects/ammo it references, so the result does
-    /// not dangle when the source mod is absent. Only links OWNED BY THE SOURCE PLUGIN are followed
-    /// -- a link into Fallout4.esm or another already-loaded master is left alone, because that
-    /// record already exists everywhere and copying it would be pointless and possibly harmful (its
-    /// EditorID may not be unique in the target load position).
-    ///
-    /// Defaults to a dry run listing what would be copied.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static string DeepCopyAsOverride(object? env, string sourcePlugin, string id, string patchPlugin,
         bool apply, bool overwrite = false, int cap = 200)
     {
@@ -66,7 +66,7 @@ public static partial class WriteService
 
         var owner = ModKey.FromNameAndExtension(sourceName);
 
-        // BFS over FormLinks, following only links owned by the same plugin as the root.
+
         var visited = new HashSet<FormKey> { rootFk };
         var queue = new Queue<IMajorRecordGetter>();
         queue.Enqueue(root);
@@ -81,7 +81,7 @@ public static partial class WriteService
                 if (lfk.IsNull || lfk.ModKey != owner || !visited.Add(lfk)) continue;
 
                 var target = MutagenLoader.GetRecordVersion(env, sourceName, lfk);
-                if (target == null) continue;   // the selected source plugin does not override this dependency
+                if (target == null) continue;
 
                 toCopy.Add(target);
                 queue.Enqueue(target);
@@ -105,9 +105,9 @@ public static partial class WriteService
                    string.Join(", ", byType) + "." + overwriteNote + " Re-run with apply=true.";
         }
 
-        // Preflight every destination before copying the first dependency. Without this, the loop
-        // could copy several children and only then discover that the root already existed, leaving
-        // a partial deep copy after the caller cancelled or treated EXISTS as a failure.
+
+
+
         if (existing.Count > 0 && !overwrite)
         {
             var sample = string.Join(", ", existing.Take(5).Select(e => $"{e.editorId} ({e.formKey})"));
@@ -120,9 +120,9 @@ public static partial class WriteService
 
         int ok = 0;
         var failures = new List<string>();
-        // Copy children before the root is redundant to order strictly, but copying the root LAST
-        // means every dependency it needs already exists in the patch when it lands, so an
-        // AddOverride that happens to also validate outgoing links sees a complete picture.
+
+
+
         foreach (var rec in toCopy.AsEnumerable().Reverse())
         {
             var msg = ResolveConflict(env, rec.FormKey.ToString(), sourceName, patchPlugin, overwrite);
@@ -137,22 +137,22 @@ public static partial class WriteService
         return result;
     }
 
-    // ── Change Referencing Records ──────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// xEdit's "Change Referencing Records": point everything that references
-    /// <paramref name="fromId"/> at <paramref name="toId"/> instead, across the load order. xEdit's
-    /// own implementation (<c>CompareExchangeFormID</c>) rewrites links directly on records that are
-    /// already editable; ours copies each referencing record's winning version into the patch as an
-    /// override first (the same step copy_as_override does), then calls <c>RemapLinks</c> on that
-    /// override -- the same single-record remap <c>IMajorRecord</c> already exposes, used
-    /// elsewhere for a whole plugin's worth of renumbering.
-    ///
-    /// This is how you retire a duplicate record without leaving dangling links behind: point
-    /// everything at the record you're keeping, delete the duplicate, done.
-    ///
-    /// Defaults to a dry run listing which records would change.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static string ChangeReferencingRecords(object? env, string fromId, string toId, string patchPlugin, bool apply, int cap = 300)
     {
         if (!ResolveFk(env, fromId, out var fromFk))
@@ -186,10 +186,10 @@ public static partial class WriteService
         var patch = GetMutable(patchName);
         if (patch == null) return ToolError.Fail($"Could not open or create patch plugin '{patchName}'.");
 
-        // A record already mutable in the target can be edited directly, but only when that target
-        // actually wins over every referencing version represented by the operation. Preflight the
-        // complete set before mutating the first link so an earlier patch cannot report success for
-        // a record whose later winning version still points at the retired FormKey.
+
+
+
+
         var targetIndex = LoadOrderIndexOf(env, patchName);
         if (targetIndex >= 0)
         {
@@ -218,9 +218,9 @@ public static partial class WriteService
         {
             if (!FormKey.TryFactory(r.FormKey, out var rfk)) { failures.Add($"{r.FormKey}: not a FormKey"); continue; }
 
-            // xEdit edits a record that is already mutable in the target. Do the same instead of
-            // routing it through ResolveConflict, whose overwrite prompt is correct for copy actions
-            // but would cause this operation to skip an existing target override entirely.
+
+
+
             var ovr = FindMutableRecord(patch, rfk.ToString());
             if (ovr == null)
             {

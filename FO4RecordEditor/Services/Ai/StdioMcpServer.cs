@@ -4,17 +4,17 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Headless stdio JSON-RPC MCP server (newline-delimited, one JSON message per line) exposing
-/// the same plugin tools as <see cref="PluginMcpServer"/>. Spawned by the Claude Code CLI via
-/// the app's <c>--mcp</c> switch so an agent can drive plugin edits without a GUI. The HTTP
-/// variant stays for the in-app live-data path; this one is process-per-session over stdio.
-/// </summary>
+
+
+
+
+
+
 public static class StdioMcpServer
 {
     private const string ProtocolVersion = "2024-11-05";
 
-    /// <summary>Blocks reading JSON-RPC lines from stdin and writing replies to stdout until EOF.</summary>
+
     public static void Run(PluginToolExecutor executor)
     {
         using var reader = new StreamReader(Console.OpenStandardInput(), new UTF8Encoding(false));
@@ -29,10 +29,10 @@ public static class StdioMcpServer
         }
     }
 
-    /// <summary>
-    /// Dispatch a single JSON-RPC request line. Returns the serialized response, or null for a
-    /// notification (no id) / unparseable line. Public so it can be unit-tested directly.
-    /// </summary>
+
+
+
+
     public static string? HandleLine(string line, PluginToolExecutor executor)
     {
         JsonElement root;
@@ -41,7 +41,7 @@ public static class StdioMcpServer
 
         var method = root.TryGetProperty("method", out var mEl) ? mEl.GetString() : null;
 
-        // Notifications carry no id and get no response.
+
         if (!root.TryGetProperty("id", out var idEl)) return null;
         var id = idEl.Clone();
 

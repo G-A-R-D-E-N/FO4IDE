@@ -23,13 +23,13 @@ public sealed class ShellViewModel
 
     public object? GameEnvironment { get; set; }
 
-    // Agentic tool-use client: lets the AI read all loaded plugin data on demand.
-    // Null unless the Anthropic provider is selected with an API key.
+
+
     public PluginToolExecutor ToolExecutor { get; }
     public AnthropicAgent? Agent { get; private set; }
 
-    // In-process MCP server exposing the plugin tools to the Claude Code CLI, so it gets
-    // the same live-plugin tool-use as the Anthropic agent.
+
+
     public PluginMcpServer McpServer { get; }
 
     public ShellViewModel()
@@ -43,12 +43,12 @@ public sealed class ShellViewModel
         Chat = new ChatService(CreateProvider());
         BuildAgent();
 
-        // When the AI creates/opens/edits a plugin, show or refresh it in the Explorer tree.
+
         WriteService.PluginChanged += OnWritePluginChanged;
         WriteService.OutputFolderOverride = Settings.Current.OutputFolder;
         UpdateOverwriteFolder(Settings.Current.Mo2InstancePath);
         Log.Log(LogCategory.App, LogLevel.Info,
-            $"FO4RecordEditor started. Plugin MCP server: {(McpServer.IsRunning ? McpServer.Url : "unavailable")}");
+            $"FO4IDE started. Plugin MCP server: {(McpServer.IsRunning ? McpServer.Url : "unavailable")}");
     }
 
     public void RebuildProvider()
@@ -65,23 +65,23 @@ public sealed class ShellViewModel
             return new ClaudeCodeProvider(s.ClaudeCodePath,
                 McpServer.IsRunning ? McpServer.Url : null, McpServer.ServerName, s.Model);
         if (s.AiProvider == "gemini")
-            return new GeminiProvider(s.GeminiApiKey, s.GeminiModel, ToolExecutor);   // agentic via plugin tools
+            return new GeminiProvider(s.GeminiApiKey, s.GeminiModel, ToolExecutor);
         return AiProviderFactory.Create(s);
     }
 
-    // Add or refresh an AI-authored plugin in the Explorer tree. Eagerly loads the record
-    // groups (off the UI thread) and swaps them in, so the node shows real content instead
-    // of getting stuck on a lazy "Loading..." placeholder that only resolves on manual expand.
+
+
+
     private void OnWritePluginChanged(string name)
     {
-        ConflictScanner.InvalidateCache();   // an edit can change who wins -> stale conflict cache
+        ConflictScanner.InvalidateCache();
         var env = GameEnvironment;
 
         _ = Task.Run(() =>
         {
             try
             {
-                // Find or create the tree node on the UI thread.
+
                 RecordNode node = null!;
                 HostServices.InvokeOnUiThread(() =>
                 {
@@ -89,14 +89,14 @@ public sealed class ShellViewModel
                     if (node == null) { node = new RecordNode { Key = name }; Plugins.Add(node); }
                 });
 
-                // Load the groups (reads the live editable mod) off the UI thread.
+
                 var groups = MutagenLoader.GetGroups(name, env, node, null);
 
                 HostServices.InvokeOnUiThread(() =>
                 {
                     node.Children.Clear();
                     foreach (var g in groups) { g.Parent = node; node.Children.Add(g); }
-                    node.IsExpanded = true;   // reveal the refreshed content
+                    node.IsExpanded = true;
                 });
             }
             catch (Exception ex)
@@ -124,7 +124,7 @@ public sealed class ShellViewModel
             Log.Log(LogCategory.App, LogLevel.Info, $"Loading {System.IO.Path.GetFileName(path)}...");
             var node = await Task.Run(() => MutagenLoader.LoadEsp(path, progress));
             Plugins.Add(node);
-            
+
             int recCount = 0;
             if (node.Values.TryGetValue("_RecordCount", out var rcStr) && int.TryParse(rcStr, out var parsed))
                 recCount = parsed;
@@ -138,12 +138,12 @@ public sealed class ShellViewModel
         }
     }
 
-    // Build the environment and return its plugin list; the caller picks which to load.
-    // Replace the Explorer tree with a lazy node per plugin. The React frontend reads this via
-    // AppInterop.GetPlugins(); without this the env loads but the tree stays empty.
-    // Runs on the UI thread (callers await Task.Run, resuming on the WPF SynchronizationContext).
-    // Point new-patch saves at the MO2 instance's overwrite folder (from ModOrganizer.ini) so MO2
-    // auto-loads them -- correct for both portable and global instances.
+
+
+
+
+
+
     private static void UpdateOverwriteFolder(string? instancePath)
     {
         WriteService.Mo2OverwriteFolder =
@@ -151,21 +151,21 @@ public sealed class ShellViewModel
             : Mo2ProfileLoader.ResolveOverwriteFolder(instancePath);
     }
 
-    // The plugin list from the last env load, so Refresh can rebuild the tree without reloading.
+
     private IReadOnlyList<string> _lastPlugins = System.Array.Empty<string>();
 
     private void PopulatePluginTree(IReadOnlyList<string> plugins)
     {
         _lastPlugins = plugins;
-        ConflictScanner.InvalidateCache();   // a fresh env invalidates the cached conflict scan
+        ConflictScanner.InvalidateCache();
         Plugins.Clear();
         foreach (var name in plugins)
             Plugins.Add(MutagenLoader.MakeLazyNode(name));
     }
 
-    /// <summary>Rebuild the Explorer tree as fresh lazy nodes from the current load order PLUS any
-    /// AI-created/edited plugins, so re-expanding shows the latest edits -- without reloading the env
-    /// (which would be slow and discard in-memory edits). Runs on the UI thread.</summary>
+
+
+
     public void RefreshPluginTree()
     {
         var names = _lastPlugins.ToList();
@@ -195,8 +195,8 @@ public sealed class ShellViewModel
         catch (Exception ex)
         {
             Log.Log(LogCategory.App, LogLevel.Error, $"Environment load failed: {ex.Message}");
-            // Surface it. The frontend's Load Env handler shows a thrown message in the Explorer
-            // error banner; swallowing here left the UI stuck at "Initializing Game Environment...".
+
+
             throw;
         }
         finally
@@ -205,8 +205,8 @@ public sealed class ShellViewModel
         }
     }
 
-    // Load a Mod Organizer 2 modlist by reading its profile from disk (the editor can't run
-    // inside MO2's usvfs). Returns the ordered plugin list; the caller picks which to load.
+
+
     public async Task<List<string>> LoadMo2ProfileAsync(
         string instancePath, IProgress<(string message, double? percent)>? progress = null)
     {
@@ -223,7 +223,7 @@ public sealed class ShellViewModel
             PopulatePluginTree(plugins);
             Settings.Current.Mo2InstancePath = instancePath;
             Settings.Save();
-            UpdateOverwriteFolder(instancePath);   // new patches save into <instance>\overwrite
+            UpdateOverwriteFolder(instancePath);
             Log.Log(LogCategory.App, LogLevel.Info, $"MO2 environment ready: {plugins.Count} plugins.");
             return plugins;
         }
@@ -257,12 +257,12 @@ public sealed class ShellViewModel
         }
     }
 
-    /// <summary>
-    /// Save from the WPF tree selection. Reachable from Ctrl+S and the "save" command, but
-    /// <see cref="SelectedNode"/> is never assigned by the live UI, so in practice this reports
-    /// that nothing is selected. The real save surfaces are the React record editor's own Save
-    /// action (over the <c>backend</c> WebView2 host object) and the MCP <c>save_plugin</c> tool.
-    /// </summary>
+
+
+
+
+
+
     public string SaveSelectedPlugin()
     {
         if (SelectedNode == null)
@@ -285,10 +285,10 @@ public sealed class ShellViewModel
 
         Log.Log(LogCategory.App, LogLevel.Info, $"Saving {root.Key}...");
 
-        // Nothing is saved from this tree, of any kind. set_field/set_components/etc. (called by the
-        // React editor and the MCP tools) write straight onto the loaded Mutagen record, in memory;
-        // there is no separate "dirty edits on a display tree" staging step left to flush here.
-        // Use save_plugin to write to disk.
+
+
+
+
         var refuse = $"Saving from the tree is not supported. Use the editor's Save action, " +
                      "or call the save_plugin tool.";
         Log.Log(LogCategory.App, LogLevel.Warning, refuse);

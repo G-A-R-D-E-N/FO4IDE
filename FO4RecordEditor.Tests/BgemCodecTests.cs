@@ -5,16 +5,16 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Same approach BgsmCodecTests takes: BuildV2Reference hand-encodes a version-2 BGEM byte-for-byte,
-// independently of BgemCodec's own writer (so this is not the codec tested against itself),
-// following the exact field order in native/materials/src/{base.rs,bgem.rs} (Bryant-21/
-// py-creation-lib, GPL-3.0, permission granted).
-//
-// The codec was ALSO verified byte-identical against every real material in Fallout4 - Materials.ba2
-// -- all 283 .bgem and all 6,623 .bgsm files round-tripped with zero differences and zero parse
-// failures. Those files are not embedded here (third-party game assets, not something to ship in a
-// public repo); RealMaterialsRoundTripByteForByte below re-runs that sweep whenever a real Data
-// folder is reachable.
+
+
+
+
+
+
+
+
+
+
 public class BgemCodecTests
 {
     private readonly Xunit.Abstractions.ITestOutputHelper _out;
@@ -33,44 +33,44 @@ public class BgemCodecTests
         var ms = new MemoryStream();
         using var bw = new BinaryWriter(ms);
 
-        // -- shared header, version 2 (base.rs) --
-        bw.Write((uint)0x4D454742);           // 'BGEM'
-        bw.Write((uint)2);                     // version
-        bw.Write((uint)3);                     // tile flags: tileU=true, tileV=true
-        bw.Write(0f); bw.Write(0f); bw.Write(1f); bw.Write(1f);   // uOffset,vOffset,uScale,vScale
-        bw.Write(1f);                          // alpha
-        bw.Write((byte)0); bw.Write((uint)6); bw.Write((uint)7);  // alphaBlendMode 0/1/2
-        bw.Write((byte)0); bw.Write((byte)0);  // alphaTestRef, alphaTest
-        bw.Write((byte)0); bw.Write((byte)1);  // zBufferWrite, zBufferTest
-        bw.Write((byte)0); bw.Write((byte)0);  // ssr, wetSsr
-        bw.Write((byte)0); bw.Write((byte)1); bw.Write((byte)0); bw.Write((byte)0); // decal,twoSided,decalNoFade,nonOccluder
-        bw.Write((byte)0); bw.Write((byte)0); bw.Write(0f);       // refraction,refractionFalloff,refractionPower
-        bw.Write((byte)0); bw.Write(1f);       // version<10: envMapping, envMappingMaskScale
-        bw.Write((byte)0);                     // grayscaleToPaletteColor
-        // version<6: no maskWrites
 
-        // -- body, version 2 (bgem.rs): none of the >=10/11/15/16/20/21 blocks apply --
-        WriteMatStr(bw, @"Textures\Effects\Glow_d.dds");   // BaseTexture
-        WriteMatStr(bw, "");                                // GrayscaleTexture
-        WriteMatStr(bw, "");                                // EnvmapTexture
-        WriteMatStr(bw, @"Textures\Effects\Glow_n.dds");   // NormalTexture
-        WriteMatStr(bw, "");                                // EnvmapMaskTexture
+        bw.Write((uint)0x4D454742);
+        bw.Write((uint)2);
+        bw.Write((uint)3);
+        bw.Write(0f); bw.Write(0f); bw.Write(1f); bw.Write(1f);
+        bw.Write(1f);
+        bw.Write((byte)0); bw.Write((uint)6); bw.Write((uint)7);
+        bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((byte)0); bw.Write((byte)1);
+        bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((byte)0); bw.Write((byte)1); bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((byte)0); bw.Write((byte)0); bw.Write(0f);
+        bw.Write((byte)0); bw.Write(1f);
+        bw.Write((byte)0);
 
-        bw.Write((byte)0);                     // BloodEnabled
-        bw.Write((byte)1);                     // EffectLightingEnabled
-        bw.Write((byte)1);                     // FalloffEnabled
-        bw.Write((byte)0);                     // FalloffColorEnabled
-        bw.Write((byte)0);                     // GrayscaleToPaletteAlpha
-        bw.Write((byte)1);                     // SoftEnabled
-        bw.Write(1f); bw.Write(0.5f); bw.Write(0.25f);            // BaseColor
-        bw.Write(2f);                          // BaseColorScale
-        bw.Write(10f);                         // FalloffStartAngle
-        bw.Write(80f);                         // FalloffStopAngle
-        bw.Write(0f);                          // FalloffStartOpacity
-        bw.Write(1f);                          // FalloffStopOpacity
-        bw.Write(0.75f);                       // LightingInfluence
-        bw.Write((byte)3);                     // EnvmapMinLOD
-        bw.Write(15f);                         // SoftDepth
+
+
+        WriteMatStr(bw, @"Textures\Effects\Glow_d.dds");
+        WriteMatStr(bw, "");
+        WriteMatStr(bw, "");
+        WriteMatStr(bw, @"Textures\Effects\Glow_n.dds");
+        WriteMatStr(bw, "");
+
+        bw.Write((byte)0);
+        bw.Write((byte)1);
+        bw.Write((byte)1);
+        bw.Write((byte)0);
+        bw.Write((byte)0);
+        bw.Write((byte)1);
+        bw.Write(1f); bw.Write(0.5f); bw.Write(0.25f);
+        bw.Write(2f);
+        bw.Write(10f);
+        bw.Write(80f);
+        bw.Write(0f);
+        bw.Write(1f);
+        bw.Write(0.75f);
+        bw.Write((byte)3);
+        bw.Write(15f);
 
         bw.Flush();
         return ms.ToArray();
@@ -100,8 +100,8 @@ public class BgemCodecTests
         d.EnvmapMinLOD.Should().Be((byte)3);
         d.SoftDepth.Should().Be(15f);
 
-        // Blocks this version does not carry must stay unset rather than defaulting to a value that
-        // would then be written back out and change the file's length.
+
+
         d.SpecularTexture.Should().BeNull();
         d.GlassEnabled.Should().BeNull();
         d.EnvironmentMapping.Should().BeNull();
@@ -117,8 +117,8 @@ public class BgemCodecTests
         BgemCodec.Write(BgemCodec.Parse(original)).Should().Equal(original);
     }
 
-    // A zero-length texture slot misaligns FO4's own parser and every field after it, which shows up
-    // in game as a pink material rather than as an error. An empty slot must be len=1/0x00.
+
+
     [Fact]
     public void EmptyTextureSlotIsNullTerminatedNotZeroLength()
     {
@@ -126,8 +126,8 @@ public class BgemCodecTests
         d.GrayscaleTexture = "";
         var bytes = BgemCodec.Write(d);
 
-        // GrayscaleTexture is the second string after the header; find it by re-parsing rather than
-        // by offset, then assert on the encoding of the round-tripped value.
+
+
         BgemCodec.Parse(bytes).GrayscaleTexture.Should().Be("\0");
     }
 
@@ -143,8 +143,8 @@ public class BgemCodecTests
         act.Should().Throw<InvalidDataException>().WithMessage("*BGSM or BGEM*");
     }
 
-    // Header.Signature is settable (bgsm_set_field can reach it) and is 0 on a constructed object.
-    // Writing it verbatim would produce a file whose magic disagrees with its body.
+
+
     [Fact]
     public void WriteForcesTheSignatureTheConcreteTypeDemands()
     {
@@ -156,9 +156,9 @@ public class BgemCodecTests
         BitConverter.ToUInt32(bytes, 0).Should().Be(BgemCodec.Signature);
     }
 
-    // Re-runs the full sweep whenever a real Data folder is reachable. Follows the same fixture
-    // convention as Ba2NextGenDecompressionTests: skip with a logged reason, or hard-fail when
-    // FO4RE_REQUIRE_FIXTURES is set, so a skip is never quietly recorded as a pass.
+
+
+
     [Fact]
     public void RealMaterialsRoundTripByteForByte()
     {

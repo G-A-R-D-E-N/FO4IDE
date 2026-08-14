@@ -4,20 +4,20 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The prose surface the MCP tools expose.
-/// </summary>
-/// <remarks>
-/// These return text a reader acts on rather than a payload to decode, so the assertions are about
-/// what the text says. The one that matters most is that a failure names the node: a caller on the
-/// other side of a tool boundary cannot inspect the graph, so a message that only says "it did not
-/// compile" is unusable.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class GraphToolServiceTests
 {
     private static string Roots => TestRoots.BaseStubs;
 
-    /// <summary>Writes a graph to a temp file and runs work against its path.</summary>
+
     private static T WithGraph<T>(GraphDocument document, System.Func<string, T> work)
     {
         var directory = Directory.CreateTempSubdirectory("fo4re-tool-");
@@ -54,7 +54,7 @@ public class GraphToolServiceTests
         return graph.Document;
     }
 
-    // ---- validate ----------------------------------------------------------------------------
+
 
     [Fact]
     public void Validating_a_good_graph_reports_ok_with_its_size()
@@ -99,7 +99,7 @@ public class GraphToolServiceTests
         }
     }
 
-    // ---- compile -----------------------------------------------------------------------------
+
 
     [Fact]
     public void Compiling_source_only_returns_the_generated_script()
@@ -135,8 +135,8 @@ public class GraphToolServiceTests
     [Fact]
     public void A_failed_compile_shows_the_generated_source_it_could_not_use()
     {
-        // The author never wrote this text, so withholding it on failure leaves them nothing to
-        // work from.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
         var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -150,7 +150,7 @@ public class GraphToolServiceTests
         text.Should().Contain("node n");
     }
 
-    // ---- palette -----------------------------------------------------------------------------
+
 
     [Fact]
     public void Searching_the_palette_returns_definition_ids_and_a_true_total()

@@ -3,15 +3,15 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Archives;
 
-/// <summary>
-/// Checks the texture-archive rules in <see cref="DdsCodec"/> and <see cref="Ba2Texture"/> against a
-/// whole Data folder: for every entry of every DX10 archive, does the mip arithmetic reconcile the
-/// stored chunk sizes, and does the split rule predict the stored chunk mip ranges.
-///
-/// It lives here rather than in the test project because the test project targets net9.0-windows and
-/// so cannot run on a Linux checkout, while this library is plain net8.0. The xunit test and the
-/// standalone harness both call this, so they are checking the same thing and cannot drift.
-/// </summary>
+
+
+
+
+
+
+
+
+
 public static class Ba2TextureCorpus
 {
     public sealed record Report(
@@ -101,15 +101,15 @@ public static class Ba2TextureCorpus
                (Problems.Count == 0 ? "" : "\n  " + string.Join("\n  ", Problems.Take(10)));
     }
 
-    /// <summary>
-    /// End-to-end: turn each entry of a real texture archive back into a .dds, pack that .dds with
-    /// the writer, and check the entry that comes out is the entry that went in -- same texture
-    /// header, same chunk mip ranges, same payload bytes. This proves the writer, not just the
-    /// planner: a correct split rule with a wrong slice offset would still pass <see cref="Run"/>.
-    ///
-    /// Cube maps and arrays are counted separately rather than compared, because the writer stores
-    /// those as one chunk on purpose (see <see cref="Ba2Texture.PlanChunks"/>).
-    /// </summary>
+
+
+
+
+
+
+
+
+
     public static RoundTripReport RoundTrip(string archivePath, int limit = int.MaxValue)
     {
         var archive = Ba2Codec.Read(archivePath);
@@ -166,11 +166,11 @@ public static class Ba2TextureCorpus
         return new RoundTripReport(entries, rebuilt, multiSurface, problems);
     }
 
-    /// <summary>
-    /// Parse every loose .dds under a folder and confirm the header's own arithmetic accounts for the
-    /// file: header size plus every mip of every surface should be exactly the file length. Real mod
-    /// textures come from many different exporters, which is the point of running it over them.
-    /// </summary>
+
+
+
+
+
     public static (int Parsed, int Exact, List<string> Problems) CheckLooseTextures(string folder, int limit = int.MaxValue)
     {
         int parsed = 0, exact = 0;

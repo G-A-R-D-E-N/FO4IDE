@@ -10,9 +10,9 @@ namespace FO4RecordEditor.Services;
 public class ChatHistoryService
 {
     private readonly string _dir;
-    // Older builds stored chats next to the exe, so each build (Debug/Release/publish) had its own
-    // history that "vanished" when you ran a different one. We now use a stable per-user folder and
-    // still read the legacy location so existing chats keep showing up.
+
+
+
     private readonly string _legacyDir;
 
     public ChatHistoryService()
@@ -26,9 +26,9 @@ public class ChatHistoryService
 
     public List<ChatSession> LoadAll()
     {
-        // Merge the stable folder with every legacy per-exe folder, de-duplicating by Id. Stable
-        // folder is read LAST so it wins on conflicts. Legacy dirs (Debug/Release/publish each had
-        // their own) are discovered so chats saved by any old build still appear.
+
+
+
         var byId = new Dictionary<Guid, ChatSession>();
         var dirs = LegacyChatDirs().Append(_dir);
         foreach (var dir in dirs)
@@ -45,8 +45,8 @@ public class ChatHistoryService
         return byId.Values.OrderByDescending(x => x.CreatedAt).ToList();
     }
 
-    // Old per-exe Chats folders: the one next to the running exe, plus any sibling build-output
-    // folders (bin\Debug\..\Chats, bin\Release\..\Chats) so chats saved by a different build show up.
+
+
     private IEnumerable<string> LegacyChatDirs()
     {
         yield return _legacyDir;
@@ -73,8 +73,8 @@ public class ChatHistoryService
 
     public void Delete(Guid id)
     {
-        // Delete from the stable dir AND every legacy per-exe dir so the session doesn't
-        // reappear on the next LoadAll() (which merges all dirs).
+
+
         foreach (var dir in LegacyChatDirs().Append(_dir))
         {
             try

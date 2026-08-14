@@ -21,7 +21,7 @@ public partial class SettingsDialog : Window
         OllamaUrlBox.Text = s.OllamaUrl;
         OllamaModelBox.Text = s.OllamaModel;
         OutputFolderBox.Text = string.IsNullOrWhiteSpace(s.OutputFolder)
-            ? FO4RecordEditor.Services.WriteService.DefaultOutputDir   // show the effective default
+            ? FO4RecordEditor.Services.WriteService.DefaultOutputDir
             : s.OutputFolder;
         DataFolderBox.Text = s.DataFolder;
 
@@ -45,7 +45,7 @@ public partial class SettingsDialog : Window
 
     private void UpdatePanels()
     {
-        if (AnthropicPanel == null) return;   // during init before all elements exist
+        if (AnthropicPanel == null) return;
         var p = CurrentProvider;
         ModelPanel.Visibility      = p == "ollama"     ? Visibility.Collapsed : Visibility.Visible;
         AnthropicPanel.Visibility  = p == "anthropic"  ? Visibility.Visible : Visibility.Collapsed;

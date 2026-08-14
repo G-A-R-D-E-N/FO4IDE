@@ -4,12 +4,12 @@ using System.Text;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Scans Fallout 4 plugin record headers without materializing record bodies. The vendored Mutagen
-/// overlay intentionally keeps the last record when a file contains duplicate FormIDs, matching the
-/// engine and keeping the rest of the load order usable. This scanner preserves that tolerant load
-/// while making the malformed file visible to validation and the Problems drawer.
-/// </summary>
+
+
+
+
+
+
 internal static class DuplicateFormIdScanner
 {
     internal sealed record Duplicate(uint RawFormId, int Count, IReadOnlyList<string> RecordTypes);
@@ -64,8 +64,8 @@ internal static class DuplicateFormIdScanner
         }
     }
 
-    /// <summary>Warm the raw-integrity cache away from the UI thread. Explicit validation commands
-    /// still call <see cref="Scan"/> synchronously so they can return a complete answer.</summary>
+
+
     internal static void QueueScan(string path)
     {
         string fullPath;
@@ -81,8 +81,8 @@ internal static class DuplicateFormIdScanner
             try { Scan(fullPath); }
             finally
             {
-                // Invalidation can remove the old marker and a later request can add a marker for a
-                // newer generation while this task is still running. Only remove our own generation.
+
+
                 if (PendingScans.TryGetValue(fullPath, out var pendingGeneration) &&
                     pendingGeneration == generation)
                     PendingScans.TryRemove(fullPath, out _);
@@ -116,8 +116,8 @@ internal static class DuplicateFormIdScanner
                 cached.Generation == generation)
                 return cached.Result;
 
-            // Keep one compact first-occurrence entry per unique FormID. Lists are allocated only
-            // for IDs that actually collide instead of once for every record in a large plugin.
+
+
             var firstTypes = new Dictionary<uint, string>();
             var duplicates = new Dictionary<uint, DuplicateAccumulator>();
             using (var stream = openOverride?.Invoke(fullPath) ?? new FileStream(
@@ -153,8 +153,8 @@ internal static class DuplicateFormIdScanner
         catch (Exception ex)
         {
             var result = new Result([], $"{ex.GetType().Name}: {ex.Message}");
-            // Cache stable malformed-file results too, so reopening the Problems drawer does not
-            // repeatedly walk the same corrupt bytes and the error remains visible to the UI.
+
+
             try
             {
                 if (ex is InvalidDataException && fullPath != null)
@@ -199,8 +199,8 @@ internal static class DuplicateFormIdScanner
         Cache[fullPath] = entry;
         if (CurrentGeneration(fullPath) == entry.Generation) return true;
 
-        // Invalidation raced between the first generation check and the assignment. Remove only
-        // this exact stale entry so a newer scan cannot be deleted by the older task.
+
+
         ((ICollection<KeyValuePair<string, CacheEntry>>)Cache)
             .Remove(new KeyValuePair<string, CacheEntry>(fullPath, entry));
         return false;

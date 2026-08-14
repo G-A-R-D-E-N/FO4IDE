@@ -1,21 +1,21 @@
 namespace FO4RecordEditor.Services.Materials;
 
-/// <summary>
-/// What .bgsm and .bgem have in common: the shared header. Lets MaterialService inspect and edit
-/// either format through one code path, since every helper it has (reflection over properties,
-/// value parsing, field resolution) already works on a plain object.
-/// </summary>
+
+
+
+
+
 public interface IMaterialData
 {
     MaterialHeader Header { get; set; }
 }
 
-/// <summary>
-/// Fields common to every FO4 material file (.bgsm/.bgem) header. Field names, types, and the
-/// version-conditional read/write branches match native/materials/src/base.rs::BaseHeader in
-/// Bryant-21/py-creation-lib (GPL-3.0, permission granted) byte-for-byte -- ported, not guessed,
-/// because a wrong field order here silently corrupts a real mod's material on write.
-/// </summary>
+
+
+
+
+
+
 public sealed class MaterialHeader
 {
     public uint Signature { get; set; }
@@ -43,18 +43,18 @@ public sealed class MaterialHeader
     public bool Refraction { get; set; }
     public bool RefractionFalloff { get; set; }
     public float RefractionPower { get; set; }
-    public bool? EnvMapping { get; set; }             // version < 10
-    public float? EnvMappingMaskScale { get; set; }    // version < 10
-    public bool? DepthBias { get; set; }               // version >= 10
+    public bool? EnvMapping { get; set; }
+    public float? EnvMappingMaskScale { get; set; }
+    public bool? DepthBias { get; set; }
     public bool GrayscaleToPaletteColor { get; set; }
-    public byte? MaskWrites { get; set; }              // version >= 6
+    public byte? MaskWrites { get; set; }
 }
 
-/// <summary>
-/// FO4 .bgsm ("BGSM") material fields. Names/types/version-conditional layout ported byte-for-byte
-/// from native/materials/src/bgsm.rs::BgsmData (Bryant-21/py-creation-lib, GPL-3.0) -- see
-/// BgsmCodec for the exact read/write order this depends on.
-/// </summary>
+
+
+
+
+
 public sealed class BgsmData : IMaterialData
 {
     public MaterialHeader Header { get; set; } = new();

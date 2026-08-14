@@ -4,20 +4,20 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Two declarations of one name in one scope.
-/// </summary>
-/// <remarks>
-/// The compiler used to accept every one of these silently, and the code generator wrote both into
-/// the object: a state whose function list holds two entries called <c>OnLoad</c> is not a valid
-/// <c>.pex</c>, and which one runs is not something the source says. Merging two scripts by hand is
-/// the ordinary way to produce one.
-/// <para>
-/// The accepted cases matter as much as the refused ones. Papyrus scopes callables per state, so the
-/// same event name in two states is the whole point of a state machine, and a local override sitting
-/// beside a handler for another object's event of the same name is two different functions.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class PapyrusDuplicateDeclarationTests
 {
     private static PapyrusCompileResult Compile(string text)
@@ -69,7 +69,7 @@ public class PapyrusDuplicateDeclarationTests
     [Fact]
     public void Two_functions_of_the_same_name_are_refused_even_with_different_parameters()
     {
-        // Papyrus has no overloading, so a different signature does not make it a second function.
+
         Refused("""
             Scriptname Fixture extends ObjectReference
             Function Go()
@@ -82,7 +82,7 @@ public class PapyrusDuplicateDeclarationTests
     [Fact]
     public void A_function_and_an_event_of_the_same_name_collide()
     {
-        // Both land in the same state's function list in the emitted object.
+
         Refused("""
             Scriptname Fixture extends ObjectReference
             Function OnLoad()
@@ -183,8 +183,8 @@ public class PapyrusDuplicateDeclarationTests
     [Fact]
     public void A_local_override_beside_a_remote_handler_of_the_same_event_is_accepted()
     {
-        // These are two different functions: the remote handler compiles to ::remote_Type_Name.
-        // Keying uniqueness on the bare name refused this, which the graph suite caught.
+
+
         Accepted("""
             Scriptname Fixture extends ObjectReference
             Event OnLoad()
@@ -199,7 +199,7 @@ public class PapyrusDuplicateDeclarationTests
     [Fact]
     public void Two_remote_handlers_for_the_same_event_are_refused()
     {
-        // The qualified key still has to catch a real duplicate.
+
         Refused("""
             Scriptname Fixture extends ObjectReference
             Event ObjectReference.OnLoad(ObjectReference akSender)
@@ -228,7 +228,7 @@ public class PapyrusDuplicateDeclarationTests
     [Fact]
     public void The_diagnostic_points_at_the_later_declaration()
     {
-        // Sending the reader to the first one would send them to code that is very likely correct.
+
         var diagnostic = Refused("""
             Scriptname Fixture extends ObjectReference
             Function Go()

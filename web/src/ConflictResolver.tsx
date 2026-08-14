@@ -39,9 +39,9 @@ export default function ConflictResolver() {
   const [editablePlugins, setEditablePlugins] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
 
-  // Copy Report had no handler at all. It now emits the same comparison the table shows, as plain
-  // text: header, every plugin column, and one line per differing field. Enough to paste into a bug
-  // report or a patch note without re-typing it.
+
+
+
   const copyReport = async () => {
     if (!matrix) return;
     const lines: string[] = [
@@ -67,16 +67,16 @@ export default function ConflictResolver() {
 
   const [status, setStatus] = useState('');
 
-  // Fetch initial data from C# via WebView2
+
   useEffect(() => {
     const init = async () => {
-      // @ts-ignore
+
       if (window.chrome?.webview?.hostObjects?.backend) {
-        // @ts-ignore
+
         const backend = window.chrome.webview.hostObjects.backend;
         const json = await backend.GetConflicts();
         setConflicts(JSON.parse(json));
-        
+
         const plugins: string[] = JSON.parse(await backend.GetEditablePlugins());
         setEditablePlugins([...plugins, 'ConflictPatch.esp']);
       }
@@ -84,13 +84,13 @@ export default function ConflictResolver() {
     init();
   }, []);
 
-  // Fetch matrix when selection changes
+
   useEffect(() => {
     const loadMatrix = async () => {
       if (!selectedConflict) return;
-      // @ts-ignore
+
       if (window.chrome?.webview?.hostObjects?.backend) {
-        // @ts-ignore
+
         const backend = window.chrome.webview.hostObjects.backend;
         const json = await backend.GetConflictMatrix(selectedConflict.FormKey);
         const data = JSON.parse(json);
@@ -116,8 +116,8 @@ export default function ConflictResolver() {
     setStatus(msg);
   };
 
-  const filteredConflicts = conflicts.filter(c => 
-    c.EditorID.toLowerCase().includes(search.toLowerCase()) || 
+  const filteredConflicts = conflicts.filter(c =>
+    c.EditorID.toLowerCase().includes(search.toLowerCase()) ||
     c.FormKey.toLowerCase().includes(search.toLowerCase()) ||
     c.PluginsText.toLowerCase().includes(search.toLowerCase())
   );
@@ -129,13 +129,13 @@ export default function ConflictResolver() {
     if (!differs) return 'var(--conflict-green)';
     if (me.length === 0) return 'var(--conflict-empty)';
     if (present.length === 1) return 'var(--conflict-yellow)';
-    
-    // Find winner (last column with a value)
+
+
     let winner = -1;
     for (let i = vals.length - 1; i >= 0; i--) {
       if (vals[i].length > 0) { winner = i; break; }
     }
-    
+
     if (idx === winner) return 'var(--conflict-orange)';
     if (idx === 0) return 'var(--conflict-purple)';
     return 'var(--conflict-red)';
@@ -143,15 +143,15 @@ export default function ConflictResolver() {
 
   return (
     <div className="cr-container animate-fade-in">
-      {/* Sidebar List */}
+      {}
       <div className="cr-sidebar">
         <div className="cr-sidebar-header">
           <h2><ShieldAlert size={18} /> Conflicts</h2>
           <div className="cr-search-box">
             <Search size={14} className="cr-search-icon" />
-            <input 
-              type="text" 
-              placeholder="Search ID, FormKey, plugins..." 
+            <input
+              type="text"
+              placeholder="Search ID, FormKey, plugins..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
@@ -159,8 +159,8 @@ export default function ConflictResolver() {
         </div>
         <div className="cr-list">
           {filteredConflicts.map(c => (
-            <div 
-              key={c.FormKey} 
+            <div
+              key={c.FormKey}
               className={`cr-list-item ${selectedConflict?.FormKey === c.FormKey ? 'selected' : ''}`}
               onClick={() => setSelectedConflict(c)}
             >
@@ -174,7 +174,7 @@ export default function ConflictResolver() {
         </div>
       </div>
 
-      {/* Main Detail Area */}
+      {}
       <div className="cr-main">
         {matrix ? (
           <>
@@ -204,7 +204,7 @@ export default function ConflictResolver() {
                     {matrix.Plugins.map((p, i) => (
                       <th key={p}>
                         {p}
-                        {i === matrix.Plugins.length - 1 && matrix.Plugins.length > 1 && 
+                        {i === matrix.Plugins.length - 1 && matrix.Plugins.length > 1 &&
                           <span className="cr-winner-badge">◀ WINNER</span>}
                       </th>
                     ))}
@@ -251,9 +251,9 @@ export default function ConflictResolver() {
               <div className="cr-actions-row">
                 <span className="cr-status">{status}</span>
                 <div className="cr-actions-right">
-                  {/* "Ask AI" was removed rather than wired: this is the standalone conflict window,
-                      which hosts no chat panel and no agent, so there was nothing for it to ask.
-                      A button that cannot work is worse than no button. */}
+                  {
+
+}
                   <button className="button" onClick={copyReport} title="Copy this conflict as text">
                     <Copy size={14} /> {copied ? 'Copied' : 'Copy Report'}
                   </button>

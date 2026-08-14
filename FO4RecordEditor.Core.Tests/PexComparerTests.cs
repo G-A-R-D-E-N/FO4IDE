@@ -3,17 +3,17 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The shared <c>.pex</c> comparison contract: what it treats as a difference, and what it
-/// deliberately does not.
-/// </summary>
-/// <remarks>
-/// <see cref="PapyrusDifferentialTests"/> measures the code generator against the Creation Kit with
-/// this, and the graph roundtrip oracles measure generated source against hand-written source with
-/// it. Both readings only mean something if the ruler itself is pinned, which is what this file
-/// does. The normalisation cases matter most: each one is a difference the comparer is being asked
-/// to ignore, and an over-eager normaliser would quietly turn a real regression into a pass.
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
 public class PexComparerTests
 {
     private static PexValue Id(string name) => new() { Type = PexValueType.Identifier, Str = name };
@@ -24,7 +24,7 @@ public class PexComparerTests
     private static PexInstruction Op(string mnemonic, params PexValue[] args) =>
         new() { Mnemonic = mnemonic, FixedArgCount = args.Length, Args = new(args) };
 
-    /// <summary>One object with one empty-state function holding the given instructions.</summary>
+
     private static PexFile File(string name, params PexInstruction[] instructions)
     {
         var fn = new PexFunction { Name = name, ReturnType = "None" };
@@ -36,7 +36,7 @@ public class PexComparerTests
         return pex;
     }
 
-    // ---- agreement ---------------------------------------------------------------------------
+
 
     [Fact]
     public void Two_identical_objects_report_no_difference()
@@ -47,7 +47,7 @@ public class PexComparerTests
         PexComparer.FirstDifference(a, b).Should().BeNull();
     }
 
-    // ---- what is normalised away -------------------------------------------------------------
+
 
     [Fact]
     public void Temporary_numbering_is_not_a_difference()
@@ -81,8 +81,8 @@ public class PexComparerTests
     [Fact]
     public void Float_formatting_below_the_compared_precision_is_not_a_difference()
     {
-        // Guard against this quietly becoming a tautology: the two constants have to be genuinely
-        // distinct as float32, or the test proves nothing about the normaliser.
+
+
         const float coarse = 1.5f, fine = 1.5000001f;
         fine.Should().NotBe(coarse);
 
@@ -117,7 +117,7 @@ public class PexComparerTests
             + "functions are matched by name rather than position");
     }
 
-    // ---- what is a difference ----------------------------------------------------------------
+
 
     [Fact]
     public void A_different_mnemonic_is_a_difference()
@@ -160,8 +160,8 @@ public class PexComparerTests
     [Fact]
     public void A_longer_instruction_sequence_is_a_difference()
     {
-        // The shared prefix has to agree, otherwise the comparer reports that difference first and
-        // never reaches the length check.
+
+
         var a = File("Run", Op("assign", Id("x"), Int(1)));
         var b = File("Run", Op("assign", Id("x"), Int(1)), Op("return", Id("::NoneVar")));
 
@@ -233,7 +233,7 @@ public class PexComparerTests
         PexComparer.FirstDifference(a, b).Should().Contain("missing state 'Busy'");
     }
 
-    // ---- reporting ---------------------------------------------------------------------------
+
 
     [Fact]
     public void The_reported_difference_names_both_sides_with_the_given_labels()

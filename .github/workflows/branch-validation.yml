@@ -18,8 +18,8 @@ concurrency:
 jobs:
   portable-core-and-web:
     name: Portable core, server, and web
-    # Self-hosted only -- the org does not use GitHub-hosted runners. Any Linux X64 self-hosted
-    # runner (e.g. debian-wine-msvc) picks this up.
+
+
     runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 40
     steps:
@@ -28,14 +28,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Enforce source policy
+        run: python3 tools/check-source-policy.py
+
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          # 10.0 only: Core.Tests targets net10.0 (it references the net8.0 Core library), so its
-          # testhost runs on the 10.0 runtime the runner already has cached -- no net8 runtime
-          # install needed. setup-dotnet CANNOT install a missing net8 runtime on this runner
-          # anyway: its system dotnet lives in /usr/share/dotnet, which the runner service cannot
-          # write to (permission denied).
+
+
+
+
+
           dotnet-version: 10.0.x
 
       - name: Set up Node.js
@@ -69,12 +72,12 @@ jobs:
       - name: Build cross-platform server
         run: dotnet build FO4RecordEditor.Server/FO4RecordEditor.Server.csproj --configuration Release
 
-      # Compile gate for the Windows test project. The WPF SDK targets remove System.IO from
-      # implicit usings, so test files relying on it fail to compile even though the code reads
-      # fine; the full suite only builds+runs on the Windows job, so gate compilation here on the
-      # cheap job to catch uncompilable merged test files in minutes instead of on the Windows
-      # runner. EnableWindowsTargeting lets net9.0-windows compile on ubuntu; it only compiles,
-      # it does not run (the suite references WPF and needs the Windows testhost).
+
+
+
+
+
+
       - name: Restore Windows test project (compile gate)
         run: dotnet restore FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj -p:EnableWindowsTargeting=true
 
@@ -83,11 +86,11 @@ jobs:
 
   windows-compile:
     name: Windows compile (self-hosted)
-    # Runs on the org's self-hosted debian-wine-msvc runner (Linux/X64, wine+msvc labels) so
-    # Windows-targeted builds cost no cloud minutes; EnableWindowsTargeting compiles the
-    # net9.0-windows projects on Linux. Compile-only: executing the WPF suite under Wine is NOT
-    # CI-reliable (vstest hangs, native stack overflows in process-spawning tests, order-dependent
-    # CPU spins in Mutagen static state), so the suite itself RUNS on a real Windows runner.
+
+
+
+
+
     runs-on: [self-hosted, Linux, X64, wine, msvc]
     timeout-minutes: 40
     steps:
@@ -124,19 +127,19 @@ jobs:
 
   windows-tests:
     name: Windows integration tests
-    # Skipped until a Windows self-hosted runner is registered with the standard labels
-    # (self-hosted, Windows, X64) AND the RUN_WINDOWS_TESTS variable is set to 'true' (org or
-    # repo Settings -> Variables). Without the gate, an absent Windows runner would queue every
-    # push for the full timeout and red-fail. NOTE: only vars is safe in a job-level if -- a
-    # matrix-based gate here failed workflow validation entirely (matrix is not available in
-    # job-level if; the allowed contexts are github, inputs, needs, vars).
-    #
-    # Branch-protection warning: do NOT add this job to required status checks while the gate can
-    # be off. A job skipped by a job-level if: still creates a check, and a required check with a
-    # skipped conclusion blocks every PR at "Expected -- Waiting for status to be reported"
-    # forever. Require portable-core-and-web and windows-compile instead (they always run and
-    # report a real conclusion). Revisit only once the runner is registered and the gate is on
-    # for a while with a stable record.
+
+
+
+
+
+
+
+
+
+
+
+
+
     if: vars.RUN_WINDOWS_TESTS == 'true'
     runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 50
@@ -149,9 +152,9 @@ jobs:
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          # 9.0.x is required to RUN the suite: FO4RecordEditor.Tests targets net9.0-windows, whose
-          # testhost needs Microsoft.WindowsDesktop.App 9 (only ships with the Windows SDK) and does
-          # not roll forward across majors. 10.0.x is the build SDK for the rest of the repo.
+
+
+
           dotnet-version: |
             10.0.x
             9.0.x
@@ -179,10 +182,10 @@ jobs:
 
       - name: Run Windows integration test suite
         env:
-          # FO4RE_TEST_DATA -> the runner's Fallout 4 Data folder, if it has the game. Set the repo
-          # variable of the same name to that path to make the archive/codec fixture tests actually
-          # execute instead of skipping (e.g. D:\SteamLibrary\steamapps\common\Fallout 4\Data).
-          # Unset/empty = TestDataRoots auto-detects its known layouts on the machine, else the
-          # fixture tests skip cleanly. A wrong path degrades to the same skip, never a failure.
+
+
+
+
+
           FO4RE_TEST_DATA: ${{ vars.FO4RE_TEST_DATA }}
         run: dotnet test FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj --configuration Release --no-build --logger "console;verbosity=normal"

@@ -10,19 +10,19 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Characterization tests for ConflictScanner.Scan, pinning the "only real conflicts, like xEdit"
-// behavior. The whole filter rests on ConflictScanner.RecordsEqual (IMajorRecordGetter.Equals)
-// giving deep VALUE equality. If Mutagen ever returns reference equality here, the first test
-// (identical overrides) flips to reporting a phantom conflict -- this test would catch that.
+
+
+
+
 public class ConflictScannerTests
 {
-    // Two plugins (A then B) both define the SAME FormKey weapon, with caller-supplied content.
+
     private static object BuildEnv(out FormKey fk, string editorIdA, string[] keywordsA,
                                                    string editorIdB, string[] keywordsB)
     {
-        // ConflictScanner deliberately overlays process-global editable mods onto the supplied
-        // environment. This fixture owns exactly A and B, so isolate it from plugins authored by
-        // earlier tests instead of relying on test-class execution order.
+
+
+
         MutagenLoader.EditableMods.Clear();
         ConflictScanner.InvalidateCache();
 
@@ -34,7 +34,7 @@ public class ConflictScannerTests
         a.Weapons.Add(wa);
 
         var b = new Fallout4Mod(ModKey.FromNameAndExtension("B.esp"), Fallout4Release.Fallout4);
-        var wb = new Weapon(fk, Fallout4Release.Fallout4) { EditorID = editorIdB, Keywords = new() };  // override of A
+        var wb = new Weapon(fk, Fallout4Release.Fallout4) { EditorID = editorIdB, Keywords = new() };
         foreach (var k in keywordsB) wb.Keywords!.Add(new FormLink<IKeywordGetter>(FormKey.Factory(k)));
         b.Weapons.Add(wb);
 

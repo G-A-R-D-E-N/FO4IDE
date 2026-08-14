@@ -7,17 +7,17 @@ using Xunit;
 
 namespace FO4RecordEditor.Core.Tests;
 
-// #87: the per-signature counts-walk retains nothing after #85, but it still reads every plugin and
-// costs 7.0 s across a real 663-plugin load order on every process start. RecordCountCache persists
-// the counts (~147 numbers per plugin, ~100 KB for the whole order) keyed by the plugin's path, size
-// and last-write time.
-//
-// The invalidation half is the part most likely to go wrong -- a stale hit means the record tree and
-// every pagination header report counts for a plugin that no longer has them -- so most of these
-// tests are about a hit NOT being served.
-//
-// Each test points FO4RE_COUNT_CACHE at its own temp file, so nothing here touches the user's real
-// cache beside settings.json. They share MutagenLoader's static maps, hence the collection.
+
+
+
+
+
+
+
+
+
+
+
 [Collection("MutagenLoaderCache")]
 public class RecordCountCacheTests : IDisposable
 {
@@ -77,16 +77,16 @@ public class RecordCountCacheTests : IDisposable
     {
         var path = MakePlugin("Persisted.esp");
         RecordCountCache.Put(path, Counts(("Weapon", 7)));
-        RecordCountCache.Flush();          // the debounced timer would otherwise not have fired yet
+        RecordCountCache.Flush();
 
-        // Drop everything in memory: the same state a fresh process starts in, with only the file.
+
         RecordCountCache.ResetInMemoryForTest();
 
         RecordCountCache.TryGet(path, out var got).Should().BeTrue("the whole point is surviving a restart");
         got["Weapon"].Should().Be(7);
     }
 
-    // The plugin was rewritten to a different length: the counts behind it can no longer be assumed.
+
     [Fact]
     public void A_plugin_whose_size_changed_is_a_miss()
     {
@@ -98,8 +98,8 @@ public class RecordCountCacheTests : IDisposable
         RecordCountCache.TryGet(path, out _).Should().BeFalse();
     }
 
-    // The same length written again -- the case a size-only check would get wrong, and the exact shape
-    // of an in-place save that swaps one record for another.
+
+
     [Fact]
     public void A_plugin_rewritten_to_the_same_size_is_still_a_miss()
     {
@@ -108,7 +108,7 @@ public class RecordCountCacheTests : IDisposable
 
         var stamp = File.GetLastWriteTimeUtc(path);
         File.WriteAllText(path, "bbbb");
-        File.SetLastWriteTimeUtc(path, stamp.AddSeconds(1));   // filesystem timestamp granularity
+        File.SetLastWriteTimeUtc(path, stamp.AddSeconds(1));
 
         new FileInfo(path).Length.Should().Be(4, "this test is only meaningful if the size is unchanged");
         RecordCountCache.TryGet(path, out _).Should().BeFalse();
@@ -131,7 +131,7 @@ public class RecordCountCacheTests : IDisposable
         RecordCountCache.TryGet(MakePlugin("Unknown.esp"), out _).Should().BeFalse();
     }
 
-    // Storing counts for a file that is not there would key an entry nothing can ever validate.
+
     [Fact]
     public void Storing_counts_for_a_missing_file_stores_nothing()
     {
@@ -179,11 +179,11 @@ public class RecordCountCacheTests : IDisposable
         finally { RecordCountCache.Enabled = true; }
     }
 
-    // ---- which plugins are eligible at all ----
 
-    // An editable copy is mutable in memory: add or delete a record and its counts stop matching the
-    // file on disk, while the file's size and write time do not move. There is nothing to validate
-    // against, so it must never be cached under that plugin's key.
+
+
+
+
     [Fact]
     public void An_actively_edited_plugin_is_never_cached()
     {
@@ -202,8 +202,8 @@ public class RecordCountCacheTests : IDisposable
         MutagenLoader.CountsCacheKeyFor("Loose.esp").Should().Be(loose);
     }
 
-    // Two MO2 profiles can resolve the same plugin name to different mod folders, so the load order's
-    // own record of where it read each plugin is what keys the entry -- not the name.
+
+
     [Fact]
     public void A_load_order_plugin_is_keyed_by_where_the_loader_read_it()
     {

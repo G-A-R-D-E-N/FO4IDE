@@ -8,15 +8,15 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The F4SE emitters: what they produce, and the checks that stand in for a C++ build.
-/// </summary>
-/// <remarks>
-/// Nothing here compiles C++, and no assertion pretends to. What is proven is that the two renderers
-/// agree with each other and with the reader, that the emitted Papyrus is real Papyrus the built-in
-/// compiler accepts, and that the emitted C++ has the structural properties a compiler would need.
-/// The boundary is stated in <c>docs/internal/GRAPH_F4SE.md</c> rather than left to be inferred.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class F4SEEmitterTests
 {
     private static PapyrusTypeText T(string written) =>
@@ -27,7 +27,7 @@ public class F4SEEmitterTests
     private static NativeParameter Param(string name, string type, string? def = null, bool unsigned = false) =>
         new(name, T(type), def, unsigned);
 
-    /// <summary>A plugin covering instance, global, latent, NoWait, struct and array bindings.</summary>
+
     private static PluginBinding Sample(F4SETarget target = F4SETarget.Og_1_10_163) => new()
     {
         Name = "SamplePlugin",
@@ -123,7 +123,7 @@ public class F4SEEmitterTests
         return file!.Text;
     }
 
-    // ---- what is emitted ----------------------------------------------------------------------
+
 
     [Fact]
     public void Every_expected_file_is_emitted()
@@ -149,7 +149,7 @@ public class F4SEEmitterTests
     [Fact]
     public void The_emitter_writes_nothing_to_disk()
     {
-        // The whole design rests on this: text out, no I/O, so the caller owns placement.
+
         var before = Environment.CurrentDirectory;
         EmitSample();
         Environment.CurrentDirectory.Should().Be(before);
@@ -216,7 +216,7 @@ public class F4SEEmitterTests
         source.Should().Contain("return BSFixedString();");
     }
 
-    // ---- the Papyrus half ---------------------------------------------------------------------
+
 
     [Fact]
     public void The_emitted_script_declares_the_natives_with_their_defaults()
@@ -244,8 +244,8 @@ public class F4SEEmitterTests
     [Fact]
     public void A_struct_owned_by_another_script_is_written_owner_qualified()
     {
-        // The shipped ObjectReference.ApplyMaterialSwap returns MatSwap:RemapData[]. Emitting the
-        // bare name from a different script would produce a declaration that does not resolve.
+
+
         var plugin = Sample() with
         {
             Modules = Sample().Modules.Select(m => m.Name != "Util" ? m : m with
@@ -267,7 +267,7 @@ public class F4SEEmitterTests
         TextOf(result, "Data/Scripts/Source/User/SampleUtil.psc")
             .Should().Contain("SampleActor:SampleWornItem Function FirstWorn() native global");
 
-        // The owning script still writes it bare, as MatSwap.psc writes its own RemapData.
+
         TextOf(result, "Data/Scripts/Source/User/SampleActor.psc")
             .Should().Contain("SampleWornItem Function GetSampleWornItem");
     }
@@ -275,8 +275,8 @@ public class F4SEEmitterTests
     [Fact]
     public void The_emitted_scripts_compile_to_pex_with_the_built_in_compiler()
     {
-        // The strongest single check in the F4SE half: it proves the declarations are well formed
-        // Papyrus that the type system accepts, using a compiler measured against the Creation Kit.
+
+
         var result = EmitSample();
         var directory = System.IO.Directory.CreateTempSubdirectory("fo4re-f4se-emit-");
         try
@@ -305,7 +305,7 @@ public class F4SEEmitterTests
         }
     }
 
-    // ---- the plugin shell ---------------------------------------------------------------------
+
 
     [Fact]
     public void The_original_target_exports_the_query_entry_point_and_checks_the_runtime()
@@ -320,8 +320,8 @@ public class F4SEEmitterTests
     [Fact]
     public void The_next_generation_target_exports_the_version_data_instead()
     {
-        // A plugin that only exports Query will not load on this target, so the two are not
-        // interchangeable and the emitter has to pick.
+
+
         var main = TextOf(EmitSample(F4SETarget.Ng_0_7_8), "src/main.cpp");
 
         main.Should().Contain("__declspec(dllexport) F4SEPluginVersionData F4SEPlugin_Version");
@@ -372,12 +372,12 @@ public class F4SEEmitterTests
         cmake.Should().Contain("find_package(f4se REQUIRED CONFIG)");
     }
 
-    // ---- the round trip -----------------------------------------------------------------------
+
 
     [Fact]
     public void Emitted_cpp_read_back_agrees_with_the_emitted_papyrus()
     {
-        // Two renderers over one record, compared by a third independent implementation.
+
         var plugin = Sample();
         var result = new F4SEEmitter().Emit(plugin);
         var crossCheck = F4SEEmitter.RoundTrip(plugin, result);
@@ -404,7 +404,7 @@ public class F4SEEmitterTests
         recovered.Should().ContainSingle(n => n.NoWait).Which.FunctionName.Should().Be("GetTargets");
     }
 
-    // ---- shape checks, honestly labelled ------------------------------------------------------
+
 
     [Fact]
     public void Emitted_cpp_has_balanced_braces()
@@ -467,7 +467,7 @@ public class F4SEEmitterTests
         }
     }
 
-    // ---- refusal ------------------------------------------------------------------------------
+
 
     [Fact]
     public void A_duplicate_registration_is_refused_rather_than_emitted()

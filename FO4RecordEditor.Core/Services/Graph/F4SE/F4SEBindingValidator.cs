@@ -4,19 +4,19 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-/// <summary>
-/// Refuses a plugin the emitters could only render as broken C++ or broken Papyrus.
-/// </summary>
-/// <remarks>
-/// The emitters are deliberately dumb renderers, so every rule that could produce a file the
-/// toolchain would reject lives here instead. Nothing is repaired: a duplicate registration or an
-/// unmappable type is reported and the emit refused, on the same reasoning the Papyrus back end
-/// uses when it declines to guess an arity.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public static class F4SEBindingValidator
 {
-    /// <summary>The highest arity the <c>NativeFunctionN</c> template family provides.</summary>
-    /// <remarks>Verified against the template definitions, which stop at ten parameters.</remarks>
+
+
     public const int MaximumArity = 10;
 
     public static IReadOnlyList<GraphDiagnostic> Validate(PluginBinding plugin)
@@ -90,8 +90,8 @@ public static class F4SEBindingValidator
                 if (!string.Equals(declared.OwnerScript, module.ScriptName, StringComparison.OrdinalIgnoreCase)
                     && !scriptNames.Contains(declared.OwnerScript))
                 {
-                    // The owner is baked into the VM type name, so an owner no emitted script
-                    // declares produces a struct the VM will never resolve.
+
+
                     problems.Add(GraphDiagnostic.Error(
                         GraphDiagnosticCodes.StructOwnerMismatch,
                         $"Struct '{declared.Name}' names owner '{declared.OwnerScript}', "
@@ -113,8 +113,8 @@ public static class F4SEBindingValidator
             .GroupBy(s => s.Name, StringComparer.Ordinal)
             .Where(g => g.Count() > 1))
         {
-            // DECLARE_STRUCT typedefs the bare name, so two structs sharing one name collide in C++
-            // even when their owners differ.
+
+
             problems.Add(GraphDiagnostic.Error(
                 GraphDiagnosticCodes.DuplicateDeclaration,
                 $"Struct name '{duplicate.Key}' is declared {duplicate.Count()} times; "
@@ -177,8 +177,8 @@ public static class F4SEBindingValidator
                     + $"'{parameter.Type}', which cannot cross the boundary: {refusal}"));
             }
 
-            // A trailing run of optionals is fine; one in the middle is not, because a caller cannot
-            // supply the later positional arguments without it.
+
+
             int firstOptional = -1;
             for (int i = 0; i < native.Parameters.Count; i++)
             {
@@ -203,7 +203,7 @@ public static class F4SEBindingValidator
         && (char.IsLetter(text[0]) || text[0] == '_')
         && text.All(c => char.IsLetterOrDigit(c) || c == '_');
 
-    /// <summary>A Papyrus script name, which may carry namespace segments separated by colons.</summary>
+
     private static bool IsScriptName(string? text) =>
         !string.IsNullOrEmpty(text)
         && text.Split(':').All(IsIdentifier);

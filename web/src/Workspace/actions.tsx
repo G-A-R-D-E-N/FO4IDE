@@ -1,6 +1,6 @@
 import { Copy, Eraser, Hash, Minimize2, Trash2 } from 'lucide-react';
 
-/** One entry in the workspace header's Actions menu. */
+
 export interface WorkspaceAction {
   id: string;
   label: string;
@@ -9,8 +9,8 @@ export interface WorkspaceAction {
   run: () => void;
 }
 
-/** The record-level operations the Actions menu offers, wired by the caller.
- *  Kept out of WorkspaceHeader.tsx so that file exports only its component. */
+
+
 export function buildActions(handlers: {
   copyAsOverride: () => void;
   changeFormId: () => void;

@@ -4,8 +4,8 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Unit tests for the headless stdio MCP dispatch (the --mcp transport). The executor is built
-// with () => null (no env) exactly like ClaudeCodeMcpE2E, so tool calls return "No plugins loaded."
+
+
 public class StdioMcpServerTests
 {
     private static PluginToolExecutor NoEnvExecutor() => new(() => null);
@@ -37,9 +37,9 @@ public class StdioMcpServerTests
     [Fact]
     public void ToolsCall_InvokesExecutor_AndWrapsResultAsTextContent()
     {
-        // Asserts the MCP envelope (the stdio dispatch's job). The specific tool text is not
-        // asserted: list_plugins reads MutagenLoader's process-wide loose-mod state, which other
-        // tests in the suite mutate, so the text is not deterministic across the run.
+
+
+
         var resp = StdioMcpServer.HandleLine(
             "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\"," +
             "\"params\":{\"name\":\"list_plugins\",\"arguments\":{}}}", NoEnvExecutor());
@@ -75,8 +75,8 @@ public class StdioMcpServerTests
         StdioMcpServer.HandleLine("not json", NoEnvExecutor()).Should().BeNull();
     }
 
-    // Regression: every outcome used to be framed isError:false, so an agent could not tell a
-    // failed edit from an applied one and would go on to save_plugin and report success.
+
+
     [Fact]
     public void ToolsCall_UnknownTool_IsReportedAsError()
     {
@@ -87,13 +87,13 @@ public class StdioMcpServerTests
         resp.Should().NotBeNull();
         resp!.Should().Contain("\"isError\":true");
         resp.Should().Contain("Unknown tool");
-        resp.Should().NotContain("\\u0091");   // sentinel must be stripped before the agent sees it
+        resp.Should().NotContain("\\u0091");
     }
 
     [Fact]
     public void ToolsCall_FailedWrite_IsReportedAsError()
     {
-        // set_field against a plugin that is not open -> "Plugin '...' is not open for editing."
+
         var resp = StdioMcpServer.HandleLine(
             "{\"jsonrpc\":\"2.0\",\"id\":6,\"method\":\"tools/call\",\"params\":{\"name\":\"set_field\"," +
             "\"arguments\":{\"plugin\":\"NotOpen.esp\",\"record\":\"000800:NotOpen.esp\"," +

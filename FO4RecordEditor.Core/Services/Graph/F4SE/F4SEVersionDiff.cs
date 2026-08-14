@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-/// <summary>A binding whose signature is not the same in both versions.</summary>
+
 public sealed record SignatureChange(string Class, string Function, string Older, string Newer)
 {
     public override string ToString() => $"{Class}.{Function}: {Older} -> {Newer}";
 }
 
-/// <summary>What changed between two F4SE versions' native surfaces.</summary>
+
 public sealed record F4SEVersionDelta
 {
     public IReadOnlyList<NativeBinding> Added { get; init; } = Array.Empty<NativeBinding>();
@@ -20,14 +20,14 @@ public sealed record F4SEVersionDelta
     public bool Identical => Added.Count == 0 && Removed.Count == 0 && Changed.Count == 0;
 }
 
-/// <summary>
-/// Compares the native surfaces of two F4SE versions.
-/// </summary>
-/// <remarks>
-/// A graph targeting the 1.10.163 runtime that calls a native only a later F4SE registers would
-/// compile and then fail at run time with nothing to explain it. Knowing the delta lets that be a
-/// validation refusal naming the node instead.
-/// </remarks>
+
+
+
+
+
+
+
+
 public static class F4SEVersionDiff
 {
     public static F4SEVersionDelta Compare(
@@ -63,20 +63,20 @@ public static class F4SEVersionDiff
         var map = new Dictionary<(string, string), NativeBinding>();
         foreach (var binding in bindings)
         {
-            // A duplicate key means one version registers the same class and name twice, which the
-            // binding validator refuses; here the first wins so the diff still reports something.
+
+
             map.TryAdd((binding.PapyrusClass.ToLowerInvariant(), binding.FunctionName.ToLowerInvariant()), binding);
         }
         return map;
     }
 
-    /// <summary>
-    /// The part of a binding a caller depends on.
-    /// </summary>
-    /// <remarks>
-    /// Latency and <c>NoWait</c> are excluded. Both change how the VM schedules a call, not how a
-    /// script writes one, so a change in either is not a signature change for a graph author.
-    /// </remarks>
+
+
+
+
+
+
+
     private static string Signature(NativeBinding binding) =>
         $"{binding.ReturnType} {(binding.IsGlobal ? "global " : "")}"
         + $"({string.Join(", ", binding.Parameters.Select(p => p.Type.ToString()))})";

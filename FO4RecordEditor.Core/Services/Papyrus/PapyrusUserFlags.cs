@@ -5,48 +5,48 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-/// <summary>
-/// The user-flag table a <c>.pex</c> carries: flag name to bit index.
-/// </summary>
-/// <remarks>
-/// User flags -- <c>Hidden</c>, <c>Conditional</c>, <c>Mandatory</c>, <c>CollapsedOnRef</c>,
-/// <c>CollapsedOnBase</c>, <c>Default</c> -- are not language keywords. They are declared by
-/// <c>Institute_Papyrus_Flags.flg</c>, which ships with the Creation Kit and is not in the game
-/// archives. The parser accepts any identifier in a flag position precisely so it can read scripts
-/// on a machine with no CK, but a back end has to turn those names into bits.
-/// <para>
-/// <b>This is what takes the CK off the critical path for compiling.</b> The file is 60 lines of
-/// declarations, so it is parsed when it is available and otherwise supplied from
-/// <see cref="Fallout4Default"/> -- which is not a guess: it is the table every one of the 1,496
-/// real <c>.pex</c> on the development machine carries, and it agrees bit for bit with the shipped
-/// <c>.flg</c>. Emission order differs between real files (the CK writes its hash order), so this
-/// emits ascending bit order, which is deterministic.
-/// </para>
-/// <para>
-/// A composite declaration (<c>Flag Collapsed CollapsedOnRef &amp; CollapsedOnBase</c>) has no bit
-/// of its own -- the file says so in its own header comment: "This flag will NOT appear in the
-/// object, only the ones it is made up of" -- so it expands to a mask instead.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class PapyrusUserFlagTable
 {
     private readonly Dictionary<string, uint> _masks = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<PexUserFlag> _flags = new();
 
-    /// <summary>The flags to write into a <c>.pex</c>, ascending by bit.</summary>
+
     public IReadOnlyList<PexUserFlag> Flags => _flags;
 
-    /// <summary>The bit mask a written flag name contributes, or 0 for a name this table does not know.</summary>
+
     public uint MaskFor(string flagName) =>
         _masks.TryGetValue(flagName, out var mask) ? mask : 0u;
 
     public bool Knows(string flagName) => _masks.ContainsKey(flagName);
 
-    /// <summary>The combined mask of every user flag in <paramref name="written"/>.</summary>
-    /// <remarks>
-    /// Language keywords land in the same list as user flags on an AST declaration, so they are
-    /// simply names this table does not know and contribute nothing.
-    /// </remarks>
+
+
+
+
+
     public uint MaskFor(IEnumerable<string> written)
     {
         uint mask = 0;
@@ -64,10 +64,10 @@ public sealed class PapyrusUserFlagTable
 
     private void Sort() => _flags.Sort((a, b) => a.Index.CompareTo(b.Index));
 
-    /// <summary>
-    /// The Fallout 4 table, as carried by every real <c>.pex</c> measured and as declared by the
-    /// shipped <c>Institute_Papyrus_Flags.flg</c>.
-    /// </summary>
+
+
+
+
     public static PapyrusUserFlagTable Fallout4Default()
     {
         var table = new PapyrusUserFlagTable();
@@ -82,14 +82,14 @@ public sealed class PapyrusUserFlagTable
         return table;
     }
 
-    /// <summary>Parses an <c>Institute_Papyrus_Flags.flg</c>, falling back to nothing on a bad file.</summary>
-    /// <remarks>
-    /// The grammar is three forms, given in the file's own header: <c>Flag name index</c>, the same
-    /// with a brace-delimited list of the declaration kinds it may appear on, and
-    /// <c>Flag name child (&amp; child)+</c> for a composite. Only the name-to-bit mapping matters
-    /// to a writer, so the allowed-kinds list is skipped rather than enforced -- validating it would
-    /// reject nothing a real script does and would fire on flags a future game adds.
-    /// </remarks>
+
+
+
+
+
+
+
+
     public static PapyrusUserFlagTable Parse(string text)
     {
         var table = new PapyrusUserFlagTable();
@@ -100,7 +100,7 @@ public sealed class PapyrusUserFlagTable
             var line = raw.Trim();
             if (line.Length == 0) continue;
 
-            // "{" opens the allowed-kinds list, which is not part of the mapping.
+
             int brace = line.IndexOf('{');
             if (brace >= 0) line = line[..brace].Trim();
             if (line.Length == 0) continue;
@@ -129,7 +129,7 @@ public sealed class PapyrusUserFlagTable
         return table;
     }
 
-    /// <summary>Parses the file at <paramref name="path"/>, or returns the built-in table.</summary>
+
     public static PapyrusUserFlagTable FromFileOrDefault(string? path)
     {
         if (string.IsNullOrWhiteSpace(path)) return Fallout4Default();
@@ -149,7 +149,7 @@ public sealed class PapyrusUserFlagTable
         }
     }
 
-    /// <summary>The first <c>Institute_Papyrus_Flags.flg</c> under any of <paramref name="roots"/>.</summary>
+
     public static string? FindFlagFile(IEnumerable<string> roots)
     {
         foreach (var root in roots)

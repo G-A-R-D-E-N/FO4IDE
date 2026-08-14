@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// WebView2 host object backing the React Settings panel. Reads/writes the same AppSettings the old
-/// WPF SettingsDialog edited, then persists and rebuilds the AI provider so changes take effect live.
-/// </summary>
+
+
+
+
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class SettingsInterop
@@ -19,8 +19,8 @@ public class SettingsInterop
 
     public SettingsInterop(ShellViewModel shell) => _shell = shell;
 
-    /// <summary>The editable settings as JSON. OutputFolder is resolved to its effective default
-    /// when blank (matching the old dialog), so the field always shows where saves will land.</summary>
+
+
     public string GetSettings()
     {
         var s = _shell.Settings.Current;
@@ -51,7 +51,7 @@ public class SettingsInterop
         });
     }
 
-    /// <summary>Apply, persist, and rebuild the AI provider. Returns a human-readable result.</summary>
+
     public string SaveSettings(string json)
     {
         DebugLog.Interop(nameof(SaveSettings));
@@ -83,9 +83,9 @@ public class SettingsInterop
 
             _shell.Settings.Save();
             _shell.RebuildProvider();
-            // ToolPaths caches AppSettings in a static field it never invalidated on its own -- without
-            // this, editing these three here would silently require an app restart to take effect,
-            // unlike every other field on this panel.
+
+
+
             ToolPaths.Invalidate();
             return "Settings saved.";
         }
@@ -96,15 +96,15 @@ public class SettingsInterop
         }
     }
 
-    /// <summary>Native folder picker for the path fields. Returns the chosen path, or "" if cancelled.</summary>
+
     public string BrowseFolder(string title, string current)
     {
         var seed = !string.IsNullOrWhiteSpace(current) && System.IO.Directory.Exists(current) ? current : "";
         return HostServices.PickFolder(string.IsNullOrWhiteSpace(title) ? "Choose a folder" : title, seed);
     }
 
-    /// <summary>Native file picker for the .exe path fields (texconv, PapyrusCompiler). Returns the
-    /// chosen path, or "" if cancelled.</summary>
+
+
     public string BrowseFile(string title, string filter, string current)
     {
         var seed = !string.IsNullOrWhiteSpace(current) && System.IO.File.Exists(current)
@@ -112,7 +112,7 @@ public class SettingsInterop
         return HostServices.PickFile(title, filter, seed);
     }
 
-    /// <summary>Run `&lt;path&gt; --version` to verify the Claude Code CLI is reachable.</summary>
+
     public async Task<string> TestClaude(string path)
     {
         path = string.IsNullOrWhiteSpace(path) ? "claude" : path;
@@ -123,9 +123,9 @@ public class SettingsInterop
             psi.ArgumentList.Add(path);
             psi.ArgumentList.Add("--version");
 
-            // Was: read stdout to EOF, then WaitForExitAsync, with stderr redirected but never
-            // drained and no timeout at all. A child that wrote enough to stderr to fill that pipe
-            // blocked forever, and this is on the settings dialog's button -- it froze the UI.
+
+
+
             var run = await ProcessRunner.RunAsync(psi, TimeSpan.FromSeconds(30));
 
             if (!run.Started) return "✗ Could not start the Claude Code CLI.";

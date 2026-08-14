@@ -11,30 +11,30 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// Regression tests for the Next-Gen BA2 entry-layout work in
-// Mutagen/Mutagen.Bethesda.Core/Archives/Ba2/Ba2Reader.cs (BA2FileEntry).
-//
-// Three distinct things broke here at different times, so all three are pinned:
-//
-//  1. v8 GNRL, compressed. The 4-byte field Mutagen discarded as "unknown" is the real packed
-//     (compressed) size; `_size` is the true uncompressed length, and `_realSize` reads back as the
-//     sentinel 0xBAADF00D for every entry regardless of compression state -- which is why the old
-//     sentinel-based Compressed check never worked and GetBytes() handed back raw zlib bytes.
-//  2. v8 GNRL, STORED (packedSize == 0). The FIRST attempt at fix 1 used `Compressed = _size != 0`
-//     for all v8 entries, which broke genuinely-uncompressed entries: Fallout4_en.STRINGS threw
-//     SharpZipBaseException "Header checksum illegal", and that silently zeroed out cell search.
-//  3. v7. Both the GNRL entry layout (classic v1 36-byte entries, WITH the trailing align field --
-//     the old `<= 7` read a phantom uint32 and skipped align, drifting 4 bytes per entry) and the
-//     v7 DX10 texture layout.
-//
-// Fixture resolution goes through TestDataRoots, not a hardcoded drive letter -- see the note there
-// about skips being recorded as passes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class Ba2NextGenDecompressionTests
 {
     private readonly ITestOutputHelper _out;
     public Ba2NextGenDecompressionTests(ITestOutputHelper o) => _out = o;
 
-    /// <summary>Resolve a fixture archive, or signal that the test cannot run.</summary>
+
     private bool TryFixture(string fileName, out string path)
     {
         var found = TestDataRoots.Archive(fileName);
@@ -80,8 +80,8 @@ public class Ba2NextGenDecompressionTests
     {
         if (!TryFixture("Fallout4 - Interface.ba2", out var archive)) return;
 
-        // packedSize == 0 means "stored". Treating this entry as compressed is what threw
-        // "Header checksum illegal" and took cell search down with it.
+
+
         var act = () => ReadEntry(archive, f => f.Path.EndsWith("Fallout4_en.STRINGS", StringComparison.OrdinalIgnoreCase));
         var bytes = act.Should().NotThrow("a stored entry must be read raw, not inflated").Subject;
         bytes.Length.Should().BeGreaterThan(0);
@@ -97,8 +97,8 @@ public class Ba2NextGenDecompressionTests
         _out.WriteLine($"{files.Count} entries");
 
         files.Should().NotBeEmpty();
-        // A 4-byte stride error accumulates into garbage paths, so "every entry is a .fuz" is the
-        // cheap proof that the entry table was walked correctly all the way to the end.
+
+
         files.Should().OnlyContain(f => f.Path.EndsWith(".fuz", StringComparison.OrdinalIgnoreCase),
             "this archive is all voice .fuz files -- any other extension means the entry stride drifted");
         files.First().GetBytes().Length.Should().BeGreaterThan(0);

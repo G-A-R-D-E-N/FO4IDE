@@ -13,9 +13,9 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-// Fallout 4 does not use Starfield's split full/light file-local FormID namespaces. xEdit's
-// wbComplexFileFileID branch is disabled for FO4, so every declared master occupies its MAST
-// ordinal in plugin bytes, including ESL-flagged masters. These tests protect that distinction.
+
+
+
 public class Fallout4FileFormIdTests
 {
     [Fact]
@@ -85,8 +85,8 @@ public class Fallout4FileFormIdTests
             WriteService.SavePlugin(patchName, output, env).Should().Contain("Saved");
             WriteService.ReadMasterNames(output).Should().Equal("Fallout4.esm", fullName, lightName);
 
-            // The final header is Fallout4.esm = 0, full dependency = 1, light dependency = 2.
-            // FO4 uses that single MAST namespace, so the light AV is 02xxxxxx, never FExxxxxx.
+
+
             ReadSingleCtdaParameterOne(output).Should().Be(0x02000812u);
         }
         finally
@@ -169,8 +169,8 @@ public class Fallout4FileFormIdTests
             var bytes = File.ReadAllBytes(Path.Combine(outputDir, Path.ChangeExtension(pluginName, ".seq")));
             bytes.Should().HaveCount(4);
 
-            // xEdit exports FixedFormID. With wbComplexFileFileID disabled for FO4, GetFileFileID
-            // falls back to CreateFull(GetMasterCount): three saved masters means file ID 03.
+
+
             BinaryPrimitives.ReadUInt32LittleEndian(bytes).Should().Be(0x03000801u);
         }
         finally

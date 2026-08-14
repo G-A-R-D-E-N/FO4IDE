@@ -6,12 +6,12 @@ namespace FO4RecordEditor.Tests;
 
 public class PluginToolExecutorTests
 {
-    // With no env and no loose mods loaded, the executor must respond gracefully
-    // (not throw) so the agent loop can feed a sensible result back to the model.
+
+
     [Fact]
     public void ListPlugins_NoneLoaded_ReturnsFriendlyMessage()
     {
-        // Reset process-global registries so other tests' created plugins don't leak in.
+
         FO4RecordEditor.Services.MutagenLoader.LooseMods.Clear();
         FO4RecordEditor.Services.MutagenLoader.EditableMods.Clear();
         var exec = new PluginToolExecutor(() => null);
@@ -28,15 +28,15 @@ public class PluginToolExecutorTests
     [Fact]
     public void Execute_ParsesArgs_WithoutThrowing()
     {
-        // Reset process-global registries so other tests' created plugins don't leak in.
+
         FO4RecordEditor.Services.MutagenLoader.LooseMods.Clear();
         FO4RecordEditor.Services.MutagenLoader.EditableMods.Clear();
         var exec = new PluginToolExecutor(() => null);
-        // plugin not loaded -> friendly message, but arg parsing must not throw
+
         exec.Execute("list_record_types", "{\"plugin\":\"Missing.esp\"}")
             .Should().Contain("not loaded");
-        // With nothing loaded, get_record now returns a diagnostic listing what IS loaded
-        // (instead of a terse "plugin not loaded") so the AI can self-correct.
+
+
         exec.Execute("get_record", "{\"plugin\":\"Missing.esp\",\"id\":\"001234:Missing.esp\"}")
             .Should().Contain("not found").And.Contain("Loaded plugins: none");
     }
@@ -44,9 +44,9 @@ public class PluginToolExecutorTests
     [Fact]
     public void ToolDefinitions_ExposesReadAndWriteTools()
     {
-        // The exposed tool surface, maintained explicitly. Adding or renaming a tool must fail here
-        // so the docs (README, docs/MCP_SETUP.md, AiGuidance) get updated in the same change --
-        // a bare count assertion let the surface drift from 31 to 57 unnoticed.
+
+
+
         var expected = new[]
         {
             "list_plugins", "list_record_types", "list_records", "list_records_summary",

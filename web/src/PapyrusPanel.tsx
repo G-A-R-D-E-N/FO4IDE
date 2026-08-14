@@ -12,11 +12,11 @@ import './PapyrusPanel.css';
 
 type Mode = 'decompile' | 'compile' | 'lookup' | 'analyze';
 type LookupKind = 'function' | 'script';
-// Which compiler runs. 'auto' prefers an installed Creation Kit, so an existing setup is unchanged,
-// and falls back to the built-in compiler, which needs no CK at all.
+
+
 type Engine = 'auto' | 'builtin' | 'creationkit';
-// Must match .papyrus-editor's line-height in PapyrusPanel.css. A textarea cannot scroll a
-// selection into view on its own, so jumping to a line means computing a scrollTop from it.
+
+
 const EDITOR_LINE_HEIGHT = 19;
 
 const LS = (k: string, d: string) => localStorage.getItem('papyrus.' + k) ?? d;
@@ -33,11 +33,11 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
   const [dragOver, setDragOver] = useState(false);
   const [lastOutDir, setLastOutDir] = useState('');
 
-  // decompile options -- default Write ON (smarter default: people expect files on disk)
+
   const [assembly, setAssembly] = useState(() => LSB('assembly', false));
   const [write, setWrite] = useState(() => LSB('write', true));
 
-  // compile options
+
   const [imports, setImports] = useState(() => LS('imports', ''));
   const [flags, setFlags] = useState(() => LS('flags', ''));
   const [all, setAll] = useState(() => LSB('all', true));
@@ -46,13 +46,13 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
   const [compilerPath, setCompilerPath] = useState(() => LS('compilerPath', ''));
   const [engine, setEngine] = useState<Engine>(() => (LS('engine', 'auto') as Engine));
 
-  // wiki lookup options
+
   const [lookupKind, setLookupKind] = useState<LookupKind>(() => (LS('lookupKind', 'function') as LookupKind));
   const [lookupScript, setLookupScript] = useState(() => LS('lookupScript', ''));
   const [lookupFunction, setLookupFunction] = useState(() => LS('lookupFunction', ''));
 
-  // analyze mode: an editable buffer, parsed on a debounce so errors and the outline track what is
-  // on screen rather than what was last saved.
+
+
   const [buffer, setBuffer] = useState('');
   const [bufferPath, setBufferPath] = useState('');
   const [dirty, setDirty] = useState(false);
@@ -65,7 +65,7 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
   const papyrus = getPapyrus();
   const unavailable = !papyrus;
 
-  // persist on change
+
   useEffect(() => setLS('mode', mode), [mode]);
   useEffect(() => setLS('source', source), [source]);
   useEffect(() => setLS('output', output), [output]);
@@ -105,9 +105,9 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     appendLog('• opened ' + baseName(path));
   }, [papyrus]);
 
-  // drag & drop: read the dropped file's bytes and stage them to a temp path the backend can use
-  // (WebView2 doesn't expose dropped files' real OS paths to JS). Folders can't be read this way --
-  // use the Folder button for those.
+
+
+
   const onDrop = useCallback(async (e: DragEvent) => {
     e.preventDefault(); setDragOver(false);
     if (!papyrus) return;
@@ -121,8 +121,8 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
       const path = await papyrus.StageDroppedFile(f.name, b64);
       if (path.startsWith('ERR:')) { appendLog('✗ drop failed -- ' + path); return; }
       setSource(path);
-      // auto-switch mode to match the dropped file type -- except in analyze mode, where dropping a
-      // .psc means "open this", not "leave the editor and go compile it".
+
+
       if (mode === 'analyze' && /\.psc$/i.test(f.name)) { await loadIntoEditor(path); return; }
       if (/\.pex$/i.test(f.name)) setMode('decompile');
       else if (/\.psc$/i.test(f.name)) setMode('compile');
@@ -132,17 +132,17 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     }
   }, [papyrus, mode, loadIntoEditor]);
 
-  // ---- analyze mode ----------------------------------------------------------------------------
 
-  // Re-parse the buffer after it settles. 300ms is long enough that a fast typist does not queue a
-  // parse per keystroke and short enough to feel live; a whole 18k-file corpus parses in ~1.5s, so
-  // one script is nowhere near the budget.
+
+
+
+
   useEffect(() => {
     if (mode !== 'analyze' || !papyrus) return;
     let cancelled = false;
     const timer = setTimeout(async () => {
-      // Emptying the buffer clears the analysis, but inside the timer rather than in the effect
-      // body: a synchronous setState there cascades a render on every keystroke.
+
+
       if (!buffer.trim()) { setAnalysis(null); return; }
       setAnalyzing(true);
       try {
@@ -165,20 +165,20 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     appendLog('✓ saved ' + baseName(bufferPath));
   };
 
-  /** Select a range in the editor and scroll it into view. */
+
   const revealRange = (start: number, length: number) => {
     const el = editorRef.current;
     if (!el) return;
     el.focus();
     el.setSelectionRange(start, start + Math.max(length, 0));
-    // A textarea has no scrollIntoView for a selection, so approximate from the line index. Three
-    // lines of lead keeps the target off the very top edge.
+
+
     const line = buffer.slice(0, start).split('\n').length;
     el.scrollTop = Math.max(0, (line - 4) * EDITOR_LINE_HEIGHT);
     if (gutterRef.current) gutterRef.current.scrollTop = el.scrollTop;
   };
 
-  /** Resolve whatever is under the caret: this is both hover text and go-to-definition. */
+
   const resolveAtCaret = async () => {
     const el = editorRef.current;
     if (!papyrus || !el) return;
@@ -194,8 +194,8 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     if (!symbolInfo?.resolved) return;
     if (symbolInfo.sameFile) { revealRange(symbolInfo.start ?? 0, symbolInfo.length ?? 0); return; }
     if (!symbolInfo.file) return;
-    // Another file: open it, then select the declaration in the newly loaded buffer. Read it here
-    // rather than through loadIntoEditor so the offset is applied to the text we actually got.
+
+
     if (!papyrus) return;
     const text = await papyrus.ReadScript(symbolInfo.file);
     if (text.startsWith('ERR:')) { appendLog('✗ open -- ' + text.slice(4)); return; }
@@ -203,7 +203,7 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     appendLog('• followed ' + symbolInfo.name + ' -> ' + baseName(symbolInfo.file));
     const start = symbolInfo.start ?? 0;
     const length = symbolInfo.length ?? 0;
-    // The buffer state has not flushed yet, so drive the DOM node directly.
+
     setTimeout(() => {
       const el = editorRef.current;
       if (!el) return;
@@ -216,10 +216,10 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
 
   const onEditorKeyDown = (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); void saveEditor(); return; }
-    // F12 and ctrl-click are the two bindings people already have in their fingers for this.
+
     if (e.key === 'F12') { e.preventDefault(); void resolveAtCaret().then(goToDefinition); return; }
     if (e.key === 'Tab') {
-      // Without this, Tab leaves the editor -- unusable for writing indented Papyrus.
+
       e.preventDefault();
       const el = e.currentTarget;
       const { selectionStart: s, selectionEnd: t } = el;
@@ -258,7 +258,7 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
 
   const run = async () => {
     if (mode === 'lookup') { await runLookup(); return; }
-    // Analyze has no "run": parsing is automatic on a debounce, so the primary button saves.
+
     if (mode === 'analyze') { await saveEditor(); return; }
     if (!papyrus || !source.trim()) return;
     setBusy(true); setResult('Working…');
@@ -269,11 +269,11 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
         : await papyrus.Compile(source, output, imports, flags, all, optimize, release, compilerPath, engine);
       const text = out || '(no output)';
       setResult(text);
-      // remember an output dir for the "Open folder" button
+
       const savedMatch = text.match(/(?:SAVED ->|OUTPUT:|output -> )\s*(.+)/);
       if (savedMatch) setLastOutDir(savedMatch[1].trim());
       else if (output.trim()) setLastOutDir(output.trim());
-      // log summary
+
       const isErr = bannerKind(text) === 'error';
       if (mode === 'decompile') {
         const kind = assembly ? 'disassembled' : 'decompiled';
@@ -509,9 +509,9 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
                       </button>
                     </>
                   ) : (
-                    // Not an error. Phase 1 has no type checker, so a member reached through an
-                    // expression whose type is not written down genuinely cannot be resolved, and
-                    // saying so is better than jumping somewhere plausible and wrong.
+
+
+
                     <span className="papyrus-symbol-sig">
                       No declaration found for that position. Names are resolved without a type checker,
                       so a member reached through an expression (GetOwner().Foo) cannot be followed.
@@ -570,11 +570,11 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ---- wiki lookup banner ----
-// PapyrusWikiService marks failures with an invisible sentinel char (U+0091, ToolError.Fail),
-// stripped for the AI tool-call path but left as-is here, same as every other GUI panel's error
-// text. The wording checks are a backstop for the plain "Error: ..." string PapyrusInterop returns
-// on a caught exception, which never goes through ToolError.Fail.
+
+
+
+
+
 function isLookupError(text: string): boolean {
   if (!text) return false;
   if (text.charCodeAt(0) === 0x91) return true;
@@ -584,7 +584,7 @@ function makeLookupBanner(text: string): { kind: 'ok' | 'error'; text: string } 
   return isLookupError(text) ? { kind: 'error', text: 'Lookup failed -- see output' } : { kind: 'ok', text: 'Done' };
 }
 
-// ---- result banner ----
+
 function bannerKind(text: string): 'ok' | 'warn' | 'error' {
   if (/\b0 failed\b/.test(text) || /Compilation succeeded/.test(text) || /^SAVED ->/m.test(text)) {
     if (/\b([1-9]\d*) failed\b/.test(text)) return 'warn';
@@ -607,7 +607,7 @@ function makeBanner(text: string, mode: Mode): { kind: 'ok' | 'warn' | 'error'; 
   return { kind: k, text: k === 'error' ? (mode === 'compile' ? 'Compile failed -- see output' : 'Failed -- see output') : 'Done' };
 }
 
-// ---- lightweight syntax highlighting (no deps) ----
+
 const PSC_KEYWORDS = new Set(['scriptname', 'extends', 'import', 'function', 'endfunction', 'event', 'endevent',
   'if', 'else', 'elseif', 'endif', 'while', 'endwhile', 'return', 'property', 'endproperty', 'auto', 'autoreadonly',
   'const', 'native', 'global', 'self', 'parent', 'none', 'true', 'false', 'as', 'is', 'new', 'state', 'endstate',
@@ -616,16 +616,16 @@ const PSC_TYPES = new Set(['int', 'float', 'bool', 'string', 'var', 'actor', 'fo
   'scriptobject', 'message', 'keyword', 'perk', 'weapon', 'armor', 'potion', 'spell', 'globalvariable', 'activemagiceffect']);
 
 function renderHighlighted(text: string, mode: Mode, assembly: boolean) {
-  if (text.length > 200000) return text; // too big to tokenize cheaply
+  if (text.length > 200000) return text;
   const lines = text.replace(/\r/g, '').split('\n');
   const sourceMode = mode === 'decompile' && !assembly;
   return lines.map((line, i) => {
     if (!sourceMode) {
-      // compile / assembly output: color whole lines by status
+
       let cls = '';
       if (/error|cannot|unknown|FAILED|No output|is not a function|DEPENDENCY HELP/i.test(line)) cls = 'tk-err';
       else if (/succeeded|^RESULT:.*0 failed|^SAVED ->|^OUTPUT:/i.test(line)) cls = 'tk-ok';
-      else if (/RESULT:|Nexus:|https?:\/\//i.test(line)) cls = 'tk-key';
+      else if (new RegExp('RESULT:|Nexus:|https?:\\/\\/', 'i').test(line)) cls = 'tk-key';
       return <div key={i} className={cls}>{line || ' '}</div>;
     }
     return <div key={i}>{tokenizePsc(line)}</div>;
@@ -634,7 +634,7 @@ function renderHighlighted(text: string, mode: Mode, assembly: boolean) {
 
 function tokenizePsc(line: string) {
   const out: ReactNode[] = [];
-  // line comment (Papyrus: ';' to end). Naive but fine for decompiled output (no ';' in our strings).
+
   let code = line, comment = '';
   const semi = line.indexOf(';');
   if (semi >= 0) { code = line.slice(0, semi); comment = line.slice(semi); }

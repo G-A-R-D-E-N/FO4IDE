@@ -9,36 +9,36 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Runs the registration scanner over a real F4SE source tree and reports what it recovered.
-/// </summary>
-/// <remarks>
-/// This is the measurement that says the type vocabulary is complete. A recovery rate short of
-/// everything present means either the scanner missed a text shape or
-/// <see cref="F4SETypeMap"/> has a gap, and both are things to know before emitting C++ rather than
-/// after.
-/// <para>
-/// Opt-in on <c>FO4RE_F4SE_SRC</c>, pointed at any directory containing one or more F4SE source
-/// trees. Unset, it no-ops so a bare checkout stays green.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class F4SECorpusTests
 {
     private readonly ITestOutputHelper _output;
 
     public F4SECorpusTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>
-    /// An independent count of registrations present, used as the denominator.
-    /// </summary>
-    /// <remarks>
-    /// Counting <c>RegisterFunction(</c> rather than <c>new NativeFunctionN</c> matters: the
-    /// scanner keys off the latter, so using it here would make the ratio compare the scanner
-    /// against itself and report 100 percent no matter what it missed.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private static readonly Regex RegistrationCall = new(@"\bRegisterFunction\s*\(", RegexOptions.Compiled);
 
-    /// <summary>Every directory under the root that holds F4SE Papyrus modules.</summary>
+
     private static IReadOnlyList<string> ModuleDirectories()
     {
         var found = new List<string>();

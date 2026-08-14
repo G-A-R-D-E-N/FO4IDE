@@ -7,11 +7,11 @@ import './ArchivePanel.css';
 const LS = (k: string, d: string) => localStorage.getItem('archive.' + k) ?? d;
 const setLS = (k: string, v: string) => localStorage.setItem('archive.' + k, v);
 
-/** Browse and pull files out of a FO4 BA2/BSA archive by hand -- the GUI counterpart of the
- * archive_list/archive_extract/archive_extract_all MCP tools. Read-only against the archive itself;
- * extraction writes only to the destination the user picks. Wildcard/regex filtering and the
- * archive-compare tool were ported from AlexxEG/BSA_Browser (GPL-3.0, reviewed directly) -- see
- * ArchiveService.BuildMatcher/CompareArchivesJson for the exact algorithms. */
+
+
+
+
+
 export default function ArchivePanel({ onClose }: { onClose: () => void }) {
   const [archivePath, setArchivePath] = useState(() => LS('archivePath', ''));
   const [filter, setFilter] = useState('');
@@ -24,14 +24,14 @@ export default function ArchivePanel({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState('');
   const [lastOutDir, setLastOutDir] = useState('');
 
-  // Compare sub-panel
+
   const [compareOpen, setCompareOpen] = useState(false);
   const [compareB, setCompareB] = useState('');
   const [compareBusy, setCompareBusy] = useState(false);
   const [compareResult, setCompareResult] = useState<ArchiveCompareResult | null>(null);
   const [compareError, setCompareError] = useState('');
 
-  // Pack sub-panel
+
   const [packOpen, setPackOpen] = useState(false);
   const [packSources, setPackSources] = useState<string[]>(() => {
     try { return JSON.parse(LS('packSources', '[]')); } catch { return []; }

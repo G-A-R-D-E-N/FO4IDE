@@ -15,10 +15,9 @@
     <PackageReference Include="Markdig.Wpf" Version="0.5.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4022.49" />
-    <!-- Vendored in-repo (Mutagen/), so this repo builds standalone. See THIRD_PARTY_NOTICES.md. -->
+
     <ProjectReference Include="..\Mutagen\Mutagen.Bethesda.Fallout4\Mutagen.Bethesda.Fallout4.csproj" />
-    <!-- WriteService/CellService/NifService/MutagenLoader and their dependency closure: extracted
-         2026-07-20 so the Godot prototype (Tools\GodotCreationKit\) can reference the same logic. -->
+
     <ProjectReference Include="..\FO4RecordEditor.Core\FO4RecordEditor.Core.csproj" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="WPF-UI" Version="4.3.0" />

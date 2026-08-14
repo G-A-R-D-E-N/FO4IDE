@@ -6,7 +6,7 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>A throwaway source root, so index tests exercise the real directory walk.</summary>
+
 public sealed class SourceRoot : IDisposable
 {
     public SourceRoot()
@@ -50,7 +50,7 @@ public class PapyrusScriptIndexTests
     [Fact]
     public void Unqualified_name_still_finds_a_namespaced_script()
     {
-        // What "Import MyNamespace" then a bare reference has to do.
+
         using var root = new SourceRoot();
         root.Write("MyNamespace/MyScript.psc", "ScriptName MyNamespace:MyScript\n");
 
@@ -63,8 +63,8 @@ public class PapyrusScriptIndexTests
     [Fact]
     public void First_root_wins()
     {
-        // F4SE's extended Game.psc and Actor.psc must shadow the vanilla ones; getting this
-        // backwards is the bug the closed import-root issue fixed.
+
+
         using var first = new SourceRoot();
         using var second = new SourceRoot();
         first.Write("Actor.psc", "ScriptName Actor\nFunction FromF4SE()\nEndFunction\n");
@@ -108,7 +108,7 @@ public class PapyrusScriptIndexTests
         var first = index.Resolve("A");
         ReferenceEquals(index.Resolve("A"), first).Should().BeTrue("an unchanged file must not re-parse");
 
-        // Size differs, so the cache key is invalidated without depending on clock resolution.
+
         File.WriteAllText(file, "ScriptName A\nFunction One()\nEndFunction\nFunction Two()\nEndFunction\n");
         index.Resolve("A")!.Functions.Should().HaveCount(2);
     }
@@ -131,8 +131,8 @@ public class PapyrusScriptIndexTests
     [Fact]
     public void Base_chain_survives_a_cycle()
     {
-        // Not legal Papyrus, but two mods can easily leave this on disk, and the index reads what
-        // is on disk rather than what compiles.
+
+
         using var root = new SourceRoot();
         root.Write("A.psc", "ScriptName A extends B\n");
         root.Write("B.psc", "ScriptName B extends A\n");

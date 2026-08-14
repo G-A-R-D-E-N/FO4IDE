@@ -8,12 +8,12 @@ using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Authors / repairs / inspects Fallout 4 NIFs by shelling out to niftool.exe (our self-contained
-/// nifly-based CLI), replacing NifSkope in the Blender -> NIF -> record -> game pipeline. Same
-/// process pattern as PapyrusService: run the exe, capture stdout+stderr concurrently, timeout,
-/// return the tool's text (a leading 'RESULT:' line or JSON) straight back to the AI.
-/// </summary>
+
+
+
+
+
+
 public static class NifService
 {
     private static string? ResolveExe() => ToolPaths.Niftool();
@@ -52,21 +52,21 @@ public static class NifService
         return Run(new List<string> { "geo", nifPath });
     }
 
-    /// <summary>Live progress for an in-flight GeoBatch call -- polled by CellInterop.
-    /// GetGeometryBatchProgress so the UI can show a real N/total bar instead of a spinner. Reset at
-    /// the start of each batch; safe for a single Cell Viewer session (the only current caller), not
-    /// designed for multiple concurrent batches.</summary>
+
+
+
+
     public static int GeoBatchDone;
     public static int GeoBatchTotal;
 
-    /// <summary>
-    /// Batch-resolve+convert unique Data-relative NIF paths (e.g. "Clutter\Rock01.nif") to geometry
-    /// JSON, for the cell viewer. One resolve+niftool call per UNIQUE path, not per placed reference
-    /// -- a mesh placed 40 times in a cell converts once, not 40 times -- run in parallel with a
-    /// capped degree since each call is a real child process. Keyed by the ORIGINAL relative path the
-    /// caller passed in, so the frontend can match each placed reference back to its geometry without
-    /// needing to know how the path was actually resolved (loose vs. extracted from which archive).
-    /// </summary>
+
+
+
+
+
+
+
+
     public static string GeoBatch(IEnumerable<string> relModelPaths)
     {
         var unique = relModelPaths
@@ -86,10 +86,10 @@ public static class NifService
             var resolved = TextureService.ResolveNif(rel);
             if (resolved == null)
             {
-                // Previously silent -- a batch of hundreds of unique meshes with a handful of
-                // failures gave no way to find WHICH ones without a debugger attached. A single
-                // widely-reused failed mesh (a common wall/floor tile in a big cell) can look like
-                // "many walls just don't show" even when the batch's own failure count is tiny.
+
+
+
+
                 DebugLog.Info("Nif.GeoBatch", $"Not found (loose or in any indexed archive): {rel}");
                 results[rel] = new { error = "Not found (loose or in any indexed archive)." };
                 Interlocked.Increment(ref GeoBatchDone);
@@ -97,10 +97,10 @@ public static class NifService
             }
 
             var raw = Geo(resolved);
-            // niftool's geo command emits raw JSON on success; anything else (a "NIF not found"/
-            // "niftool.exe not found." line, a parse failure inside niftool) is plain text. Embed
-            // success as JRaw so it nests as a real object in the batch result instead of a
-            // JSON-string-inside-a-JSON-string that the frontend would have to double-parse.
+
+
+
+
             var ok = raw.TrimStart().StartsWith('{');
             if (!ok) DebugLog.Info("Nif.GeoBatch", $"niftool geo failed for {rel} (resolved: {resolved}): {raw}");
             results[rel] = ok ? new Newtonsoft.Json.Linq.JRaw(raw) : new { error = raw };
@@ -128,7 +128,7 @@ public static class NifService
         return Run(new List<string> { "fix", nifPath, outNif });
     }
 
-    /// <summary>Dump a NIF's curated editable property tree (Nodes / Shapes / Extra) as JSON.</summary>
+
     public static string Tree(string nifPath)
     {
         nifPath = Clean(nifPath);
@@ -137,9 +137,9 @@ public static class NifService
         return Run(new List<string> { "tree", nifPath });
     }
 
-    /// <summary>Apply a JSON array of field edits (from Edit mode) and save. outNif blank = save in
-    /// place. Writes to a sibling temp first, then swaps over the target so a mid-save failure can't
-    /// corrupt the original.</summary>
+
+
+
     public static string ApplyEdits(string nifPath, string editsJson, string outNif = "")
     {
         nifPath = Clean(nifPath);
@@ -157,7 +157,7 @@ public static class NifService
             var res = Run(new List<string> { "set", nifPath, writeTmp, editsPath });
             if (res.Contains("set OK") && File.Exists(writeTmp))
             {
-                File.Copy(writeTmp, target, true);   // swap the successful save over the target
+                File.Copy(writeTmp, target, true);
                 return res + $"\nSaved: {target}";
             }
             return res;
@@ -183,7 +183,7 @@ public static class NifService
         {
             FileName = exe,
             WorkingDirectory = Path.GetDirectoryName(exe) ?? ".",
-            // niftool emits UTF-8 (nlohmann JSON); decode as UTF-8 so non-ASCII paths/labels don't mangle.
+
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8,
         };

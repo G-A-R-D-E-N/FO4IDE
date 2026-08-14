@@ -1,4 +1,4 @@
-/* Archive panel -- reuses PapyrusPanel.css for the modal shell/banner; adds the toolbar + table. */
+
 .archive-modal {
   width: 820px;
   max-width: 94vw;

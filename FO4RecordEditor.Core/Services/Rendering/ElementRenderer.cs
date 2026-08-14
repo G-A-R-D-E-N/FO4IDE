@@ -6,12 +6,12 @@ using Mutagen.Bethesda.Plugins;
 
 namespace FO4RecordEditor.Services.Rendering;
 
-/// <summary>
-/// Renders a single record element as ONE human-readable line. WalkObject calls TryRenderLine before
-/// its generic reflection walk; a true result means "show this text and do not recurse". The FormLink
-/// and Condition formatters live in MutagenLoader (they need the link cache); they are injected here
-/// via Init to avoid a circular dependency.
-/// </summary>
+
+
+
+
+
+
 public static class ElementRenderer
 {
     private static Func<IFormLinkIdentifier, string> _formatFormLink = MutagenLoader.FormatFormLink;

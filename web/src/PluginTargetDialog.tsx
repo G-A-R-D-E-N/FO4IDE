@@ -1,12 +1,12 @@
-// xEdit's "into which plugin?" picker.
-//
-// This replaces window.prompt(). The prompt asked for an exact filename, pre-filled with
-// editablePlugins[0] (blank in an ordinary session), with nothing to choose from, no validation, and
-// a typo silently created a new plugin. xEdit instead shows the load order and puts <new file> in
-// the same list, which is what this does.
-//
-// Order is the real load order from GetActivePlugins (index, kind, editable), not alphabetical and
-// not editable-first: choosing a target is a load-order decision, so the list has to read like one.
+
+
+
+
+
+
+
+
+
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { X, Check } from 'lucide-react';
@@ -18,13 +18,13 @@ export interface TargetRequest {
   description?: string;
   confirmLabel?: string;
   defaultTarget?: string;
-  /** A second value the caller needs, e.g. the EditorID for a duplicated record. */
+
   extraField?: { label: string; defaultValue: string; placeholder?: string };
 }
 
 export interface TargetResult { target: string; extra: string }
 
-/** The two synthetic rows, mirroring xEdit's <new file> entries. */
+
 type NewKind = 'esp' | 'esl';
 const NEW_ROWS: { kind: NewKind; label: string; hint: string }[] = [
   { kind: 'esp', label: '<new file.esp>', hint: 'a full plugin' },
@@ -61,7 +61,7 @@ export default function PluginTargetDialog(
       try {
         const list = JSON.parse(await b?.GetActivePlugins() ?? '[]') as ActivePlugin[];
         if (cancelled) return;
-        // Trust the backend's LoadOrder rather than array position.
+
         setPlugins([...list].sort((a, b2) => a.LoadOrder - b2.LoadOrder));
         if (list.length === 0) setNote('No plugins are loaded. Load a modlist with Open MO2, or create a new file below.');
       } catch (e) {
@@ -92,7 +92,7 @@ export default function PluginTargetDialog(
         className="ptd-modal glass-panel"
         onClick={e => e.stopPropagation()}
         onKeyDown={e => {
-          // Esc cancels, Enter confirms -- everywhere in the dialog, including the inputs.
+
           if (e.key === 'Escape') { e.stopPropagation(); onResolve(null); }
           if (e.key === 'Enter' && canConfirm) { e.preventDefault(); confirm(); }
         }}
@@ -113,7 +113,7 @@ export default function PluginTargetDialog(
         />
 
         <div className="ptd-list">
-          {/* <new file> first, as in xEdit */}
+          {}
           {NEW_ROWS.map(r => (
             <button
               key={r.kind}

@@ -4,14 +4,14 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Values read on a path that never produced them.
-/// </summary>
-/// <remarks>
-/// Papyrus declares locals at function scope and zero-initialises them, so every graph in here would
-/// otherwise compile and misbehave in the game rather than on the canvas. These are the cases where
-/// the wire looks right and the control flow is what makes it wrong.
-/// </remarks>
+
+
+
+
+
+
+
+
 public class GraphDefiniteAssignmentTests
 {
     private static GraphDiagnostic Refused(GraphDocument document, string expectedCode)
@@ -39,8 +39,8 @@ public class GraphDefiniteAssignmentTests
     [Fact]
     public void A_value_produced_on_one_arm_and_read_after_the_merge_is_refused()
     {
-        // The wire looks correct on the canvas. Only the else arm, which skips the call, makes it
-        // wrong, and Papyrus would read the local as 0 rather than complain.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -70,7 +70,7 @@ public class GraphDefiniteAssignmentTests
     [Fact]
     public void An_operator_between_the_call_and_the_use_does_not_hide_it()
     {
-        // Pure nodes are inlined at the use, so the call is still what has to have run.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -104,7 +104,7 @@ public class GraphDefiniteAssignmentTests
     [Fact]
     public void A_value_produced_inside_a_loop_and_read_after_it_is_refused()
     {
-        // The loop can run zero times, in which case nothing in the body ever ran.
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -133,8 +133,8 @@ public class GraphDefiniteAssignmentTests
     [Fact]
     public void A_loop_condition_fed_from_the_loop_body_is_refused_by_name()
     {
-        // Distinct from the general case because the fix is different: the value has to be produced
-        // once before the loop, not moved.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 

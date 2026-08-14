@@ -6,9 +6,9 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Comparing recovered C++ registrations against Papyrus declarations of the same functions.
-/// </summary>
+
+
+
 public class F4SECrossCheckTests
 {
     private static NativeBinding Binding(
@@ -48,9 +48,9 @@ public class F4SECrossCheckTests
     [Fact]
     public void An_owner_qualified_struct_name_matches_the_bare_cpp_typedef()
     {
-        // The shipped ObjectReference.ApplyMaterialSwap returns MatSwap:RemapData[] against a C++
-        // VMArray<RemapData>. Both spellings are correct, and treating that as a mismatch would
-        // report a defect that is not there.
+
+
+
         var result = F4SECrossCheck.Compare(
             new[] { Binding("ObjectReference", "ApplyMaterialSwap", "RemapData[]") },
             OracleOf(Native("ObjectReference", "ApplyMaterialSwap", "MatSwap:RemapData[]")));
@@ -101,8 +101,8 @@ public class F4SECrossCheckTests
     [Fact]
     public void A_registration_with_no_declaration_is_reported_as_cpp_only()
     {
-        // F4SE.TestInventoryFunc is a real instance of this: registered in PapyrusF4SE.cpp and
-        // declared in no .psc at all.
+
+
         var result = F4SECrossCheck.Compare(
             new[] { Binding("F4SE", "TestInventoryFunc", "None", F4SETypeMap.StaticFunctionTag, "ObjectReference") },
             OracleOf(Native("F4SE", "GetVersion", "int", global: true)));
@@ -115,12 +115,12 @@ public class F4SECrossCheckTests
     [Fact]
     public void Latency_and_no_wait_are_counted_but_never_compared()
     {
-        // Neither can be expressed in a .psc, so a latent registration against a plain declaration
-        // has to agree. Claiming this check covers them would be overstating it.
+
+
         var latent = Binding("UI", "Set", "bool", F4SETypeMap.StaticFunctionTag, "string")
             with { IsLatent = true, NoWait = true };
 
-        // The real UI.psc declares this native global, matching the StaticFunctionTag receiver.
+
         var result = F4SECrossCheck.Compare(
             new[] { latent },
             OracleOf(Native("UI", "Set", "bool", global: true, "string")));

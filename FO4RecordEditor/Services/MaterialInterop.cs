@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-// WebView2 host object for the Materials panel (lives inside the NIF panel in the UI): inspect and
-// edit .bgsm shader fields via MaterialService. Same COM rules as NifInterop/PapyrusInterop:
-// AutoDual, ComVisible, only string/bool params and string/Task<string> returns. File-parsing calls
-// run on a background task so a large or malformed file never blocks the UI thread.
+
+
+
+
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class MaterialInterop
@@ -20,7 +20,7 @@ public class MaterialInterop
         return HostServices.PickFile(title, filter);
     }
 
-    /// <summary>Structured field list (JSON) for the panel to render editable controls from.</summary>
+
     public Task<string> Inspect(string path) =>
         Task.Run(() =>
         {
@@ -32,8 +32,8 @@ public class MaterialInterop
             }
         });
 
-    /// <summary>Apply the panel's changed fields in one save. fieldsJson: {"FieldName":"newValue", ...}.
-    /// outPath blank = overwrite in place.</summary>
+
+
     public Task<string> SetFields(string path, string fieldsJson, string outPath) =>
         Task.Run(() =>
         {
@@ -46,7 +46,7 @@ public class MaterialInterop
             catch (Exception ex) { DebugLog.Exception("Material.SetFields", ex); return "Error: " + ex.Message; }
         });
 
-    /// <summary>Open a folder (or the folder containing a file) in Windows Explorer. Returns "" on success.</summary>
+
     public string OpenFolder(string path)
     {
         try
@@ -61,8 +61,8 @@ public class MaterialInterop
         catch (Exception ex) { return "Error: " + ex.Message; }
     }
 
-    /// <summary>Stage a dropped file's bytes to a temp path and return it (drag-and-drop helper,
-    /// since WebView2 hides dropped files' real OS paths). "ERR:" prefix on failure.</summary>
+
+
     public string StageDroppedFile(string name, string base64)
     {
         try

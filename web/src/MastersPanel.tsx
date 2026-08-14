@@ -7,18 +7,18 @@ import './MastersPanel.css';
 const LS = (k: string, d: string) => localStorage.getItem('masters.' + k) ?? d;
 const setLS = (k: string, v: string) => localStorage.setItem('masters.' + k, v);
 
-/**
- * Inspect and repair a plugin's master table + ESL flag by hand -- the GUI counterpart of the
- * list_masters/reorder_masters/set_light_flag MCP tools. Reordering writes to disk immediately
- * (matches reorder_masters's own contract: it bypasses save_plugin's automatic load-order-derived
- * ordering on purpose, see WriteService.ReorderMasters's doc comment); the ESL flag stays in memory
- * until Save Plugin, matching every other in-app edit.
- */
+
+
+
+
+
+
+
 export default function MastersPanel({ onClose }: { onClose: () => void }) {
   const [plugins, setPlugins] = useState<string[]>([]);
   const [plugin, setPlugin] = useState(() => LS('plugin', ''));
   const [rows, setRows] = useState<MasterRow[] | null>(null);
-  const [order, setOrder] = useState<string[]>([]);   // working (possibly-reordered) name list
+  const [order, setOrder] = useState<string[]>([]);
   const [light, setLight] = useState(false);
   const [origLight, setOrigLight] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -88,13 +88,13 @@ export default function MastersPanel({ onClose }: { onClose: () => void }) {
 
   const toggleLight = async (checked: boolean) => {
     if (!masters || !plugin.trim()) return;
-    setLight(checked);   // optimistic; SetLight is in-memory anyway
+    setLight(checked);
     setBusy(true);
     try {
       const res = await masters.SetLight(plugin, checked);
       const ok = /^Set the ESL|^Cleared the ESL/.test(res);
       appendLog(`${ok ? '✓' : '✗'} ${res}`);
-      if (!ok) setLight(!checked);   // revert the checkbox if the call itself failed
+      if (!ok) setLight(!checked);
     } catch (e) {
       setLight(!checked);
       appendLog('✗ set_light_flag failed -- ' + (e instanceof Error ? e.message : String(e)));

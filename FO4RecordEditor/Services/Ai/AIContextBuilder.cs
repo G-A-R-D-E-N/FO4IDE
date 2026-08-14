@@ -14,8 +14,8 @@ public sealed class AIContextBuilder
         "keywords, leveled lists, OMODs, conditions (CTDA), and crafting (COBJ). When asked to " +
         "modify records, respond with a concrete change plan the user can approve. Be concise.";
 
-    // Cap on field lines emitted per record so a wide record (e.g. a leveled list with
-    // hundreds of entries) cannot balloon the prompt. Depth is already capped at 3.
+
+
     private const int MaxFieldLines = 200;
 
     public string BuildForRecord(RecordEntry rec)
@@ -30,10 +30,10 @@ public sealed class AIContextBuilder
     public string BuildForQuestion(string question, RecordNode? selected, IReadOnlyList<string>? loadedPlugins = null)
     {
         var sb = new StringBuilder();
-        sb.AppendLine(SystemPreamble);   // preamble emitted exactly once
+        sb.AppendLine(SystemPreamble);
 
-        // Inject the current plugin list so Claude never has to call list_plugins just to discover
-        // what's loaded. This is the single most important piece of ambient context.
+
+
         sb.AppendLine();
         if (loadedPlugins != null && loadedPlugins.Count > 0)
         {
@@ -59,7 +59,7 @@ public sealed class AIContextBuilder
         var fk = node.GetValue("FormKey");
         var eid = node.GetValue("EditorID");
         var type = node.GetValue("Type") ?? "Group/Plugin";
-        
+
         if (fk != null)
         {
             sb.AppendLine($"## Selected record: {eid} ({type}) [{fk}]");
@@ -128,7 +128,7 @@ public sealed class AIContextBuilder
             if (lines >= MaxFieldLines) { sb.AppendLine("  ... (fields truncated)"); return; }
             lines++;
             var indent = new string(' ', depth * 2);
-            
+
             if (c.IsLeaf)
             {
                 if (c.Values.Count > 1)
@@ -143,10 +143,10 @@ public sealed class AIContextBuilder
                     sb.AppendLine($"{indent}{c.Key}: {c.Value}");
                 }
             }
-            else 
-            { 
-                sb.AppendLine($"{indent}{c.Key}:"); 
-                AppendFields(sb, c, depth + 1, maxDepth, ref lines); 
+            else
+            {
+                sb.AppendLine($"{indent}{c.Key}:");
+                AppendFields(sb, c, depth + 1, maxDepth, ref lines);
             }
         }
     }

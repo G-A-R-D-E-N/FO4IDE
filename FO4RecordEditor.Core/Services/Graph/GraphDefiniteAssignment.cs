@@ -4,27 +4,27 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph;
 
-/// <summary>
-/// Checks that every value read on the canvas was actually produced on every path that reaches the
-/// read.
-/// </summary>
-/// <remarks>
-/// An impure node's output becomes a local assigned where that node runs. Papyrus declares locals at
-/// function scope, so reading one on a path that never assigned it compiles cleanly and yields the
-/// type's zero value at runtime. A wire drawn out of one arm of a branch into something after the
-/// merge is the ordinary way to write that mistake, and it looks correct on the canvas: the wire is
-/// right there.
-/// <para>
-/// The question is answered with dominance rather than with emission order. The lowering walks each
-/// arm before the merge, so by the time it reaches the merge the local looks bound; only the control
-/// flow graph knows that one arm was optional.
-/// </para>
-/// <para>
-/// Pure producers are exempt because they are rebuilt inline at each use and never become a local.
-/// A read through a chain of pure nodes is therefore attributed to the exec node at the end of the
-/// chain, which is where the expression is actually evaluated.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static class GraphDefiniteAssignment
 {
     public static IReadOnlyList<GraphDiagnostic> Check(
@@ -39,13 +39,13 @@ public static class GraphDefiniteAssignment
             var consumer = document.Node(consumerId);
             if (consumer == null || !definitions.TryGetValue(consumerId, out var consumerDefinition)) continue;
 
-            // The entry reads nothing: its data pins are outputs that name parameters.
+
             if (consumerDefinition.Kind is GraphNodeKind.EventEntry or GraphNodeKind.FunctionEntry) continue;
 
             foreach (var (producerId, pin) in Sources(document, definitions, consumer, consumerDefinition))
             {
                 if (string.Equals(producerId, consumerId, StringComparison.Ordinal)) continue;
-                if (!flow.IsReachable(producerId)) continue;   // already refused as unreachable
+                if (!flow.IsReachable(producerId)) continue;
                 if (flow.Dominates(producerId, consumerId)) continue;
 
                 problems.Add(Describe(definitions, flow, producerId, consumerId, pin));
@@ -92,14 +92,14 @@ public static class GraphDefiniteAssignment
         };
     }
 
-    /// <summary>
-    /// The impure producers this node reads, paired with the pin on this node that reaches them.
-    /// </summary>
-    /// <remarks>
-    /// Pure producers are walked through rather than reported, so a chain of operators between an
-    /// impure call and its consumer does not hide the call. The pin reported stays the one on the
-    /// consumer, because that is the pin the canvas can paint.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private static IEnumerable<(string Producer, PinRef Pin)> Sources(
         GraphDocument document,
         IReadOnlyDictionary<string, NodeDefinition> definitions,
@@ -132,8 +132,8 @@ public static class GraphDefiniteAssignment
                     continue;
                 }
 
-                // A pure node is inlined at the use, so its own inputs are read here too. The guard
-                // is against a data cycle, which has its own diagnostic and must not hang this pass.
+
+
                 if (!visited.Add(sourceId)) continue;
 
                 foreach (var upstream in sourceDefinition.PinsFor(source, document))

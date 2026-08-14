@@ -7,7 +7,7 @@ interface OverriddenByProps {
   onExpand?: () => void;
 }
 
-// Variant B conflict-card section: lists the plugins overriding the base master.
+
 export default function OverriddenBy({ plugins, onExpand }: OverriddenByProps) {
   if (plugins.length === 0) {
     return null;

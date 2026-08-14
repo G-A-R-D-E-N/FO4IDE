@@ -5,19 +5,19 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The reduced base script tree works as an import root: scripts written against it resolve, type
-/// check and reach <c>.pex</c>.
-/// </summary>
-/// <remarks>
-/// This is the enabling check for the whole graph gate. If a script cannot compile against these
-/// stubs then every fixture graph downstream is measuring the stubs rather than the compiler, so
-/// this file runs ungated and fails loudly.
-/// <para>
-/// Fidelity against the real base scripts is a separate question and lives in
-/// <see cref="BaseStubFidelityTests"/>, which is opt-in because it needs a game install.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class BaseStubTests
 {
     private static PapyrusCompileResult Compile(string source)
@@ -56,16 +56,16 @@ public class BaseStubTests
         }
     }
 
-    /// <summary>
-    /// Scripts whose base chain is legitimately incomplete, and why.
-    /// </summary>
-    /// <remarks>
-    /// <c>ScriptObject</c> declares parameters typed <c>CustomEventName</c> and
-    /// <c>ScriptEventName</c>. Those are lexer keywords, not scripts, so no root declares them and
-    /// the resolver records the doubt. The real base script behaves identically, which
-    /// <see cref="BaseStubFidelityTests.The_real_ScriptObject_reports_the_same_incomplete_base_chain_as_the_stub"/>
-    /// pins against a game install rather than leaving it asserted here.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
     private static readonly string[] IncompleteByDesign = { "ScriptObject.psc" };
 
     [Fact]
@@ -91,7 +91,7 @@ public class BaseStubTests
     [Fact]
     public void The_exemption_list_is_not_hiding_a_stub_that_now_resolves()
     {
-        // An exemption that stopped being needed would quietly weaken the check above.
+
         var index = PapyrusCompiler.IndexFor(new[] { TestRoots.BaseStubs });
 
         foreach (var name in IncompleteByDesign)
@@ -120,7 +120,7 @@ public class BaseStubTests
     [Fact]
     public void A_script_extending_nothing_still_names_ScriptObject()
     {
-        // The implicit parent rule PAPYRUS.md records, exercised through the stub tree.
+
         var result = CompileOk("""
             Scriptname Fixture
 
@@ -135,7 +135,7 @@ public class BaseStubTests
     [Fact]
     public void Optional_parameters_and_defaults_resolve_from_the_stubs()
     {
-        // AddItem declares (Form, int = 1, bool = false); supplying only the form has to be legal.
+
         CompileOk("""
             Scriptname Fixture extends ObjectReference
 
@@ -150,7 +150,7 @@ public class BaseStubTests
     [Fact]
     public void A_named_argument_after_a_skipped_optional_resolves()
     {
-        // The emitter will rely on this shape, so the stubs must support it.
+
         CompileOk("""
             Scriptname Fixture extends ObjectReference
 
@@ -177,8 +177,8 @@ public class BaseStubTests
     [Fact]
     public void Inheritance_across_three_levels_resolves()
     {
-        // Actor extends ObjectReference extends Form extends ScriptObject, so a Form member has to
-        // be reachable on an Actor.
+
+
         CompileOk("""
             Scriptname Fixture
 
@@ -203,9 +203,9 @@ public class BaseStubTests
     [Fact]
     public void The_custom_and_remote_event_keyword_types_resolve()
     {
-        // CustomEventName and ScriptEventName are declared in no .psc at all: they are lexer
-        // keywords. The stubs carry those signatures, so this proves the tree does not depend on a
-        // script that cannot exist.
+
+
+
         CompileOk("""
             Scriptname Fixture extends ObjectReference
 
@@ -218,8 +218,8 @@ public class BaseStubTests
     [Fact]
     public void A_missing_member_is_refused_rather_than_guessed()
     {
-        // The failure mode that matters: when a stub lacks a member, the gate must go red, not
-        // invent an arity. This is what makes "the stubs are incomplete" safe.
+
+
         var result = Compile("""
             Scriptname Fixture extends ObjectReference
 

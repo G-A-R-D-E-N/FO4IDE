@@ -2,20 +2,20 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-/// <summary>
-/// Decompiles a Fallout 4 .pex into Papyrus source (.psc), or a faithful assembly listing.
-/// Declarations (script header, structs, properties, variables, states, function signatures) are
-/// reconstructed exactly. Function bodies are best-effort: instructions become expressions/statements
-/// with compiler temporaries inlined, and jumps are restructured into If/Else/While. A body that
-/// can't be structured at all falls back to an annotated assembly listing for that function.
-/// </summary>
-/// <remarks>
-/// That fallback is not a guarantee that the output is never silently wrong, and it was read as one
-/// for too long. A short circuit used to come back as two separate Ifs, which structures cleanly,
-/// parses, compiles, and is a different program. The measurement is DecompilerSweep: 1,202 of 1,498
-/// real scripts decompile to something that recompiles to the same instructions, 80.2%. The other
-/// 275 are named there, and any of them could be a difference of that kind rather than of spelling.
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static class PapyrusDecompiler
 {
     public static string Decompile(string pexPath, bool assembly)
@@ -24,11 +24,11 @@ public static class PapyrusDecompiler
         return assembly ? Disassemble(pex) : ToSource(pex);
     }
 
-    // ───────────────────────────── source mode ─────────────────────────────
+
     private static string ToSource(PexFile pex)
     {
         var sb = new StringBuilder();
-        // bit index -> user flag name (for resolving userFlags bitmasks)
+
         var flagNames = new Dictionary<int, string>();
         foreach (var uf in pex.UserFlags) flagNames[uf.Index] = uf.Name;
         string Flags(uint mask, params string[] omit)
@@ -50,7 +50,7 @@ public static class PapyrusDecompiler
             if (!string.IsNullOrEmpty(obj.DocString)) sb.AppendLine($"{{ {obj.DocString} }}");
             sb.AppendLine();
 
-            // structs
+
             foreach (var st in obj.Structs)
             {
                 sb.AppendLine($"Struct {st.Name}");
@@ -67,7 +67,7 @@ public static class PapyrusDecompiler
                 sb.AppendLine();
             }
 
-            // properties
+
             foreach (var p in obj.Properties)
             {
                 if (p.IsAutoVar)
@@ -92,7 +92,7 @@ public static class PapyrusDecompiler
                 sb.AppendLine();
             }
 
-            // user variables (skip compiler-generated "::"-prefixed backing vars / temps)
+
             bool anyVar = false;
             foreach (var v in obj.Variables)
             {
@@ -106,7 +106,7 @@ public static class PapyrusDecompiler
             }
             if (anyVar) sb.AppendLine();
 
-            // states: empty-named state = base/top-level functions; named states wrapped.
+
             foreach (var state in obj.States)
             {
                 bool isDefault = string.IsNullOrEmpty(state.Name);
@@ -138,8 +138,8 @@ public static class PapyrusDecompiler
             return names.Count == 0 ? "" : " " + string.Join(" ", names);
         }
 
-        // A RegisterForRemoteEvent handler is compiled to a function named "::remote_<Type>_On<Event>";
-        // its source form is "Event <Type>.On<Event>(...)".
+
+
         bool isRemote = nameOverride == null && fn.Name.StartsWith("::remote_", StringComparison.OrdinalIgnoreCase);
         bool isEvent = nameOverride == null
             && fn.ReturnType.Equals("None", StringComparison.OrdinalIgnoreCase)
@@ -151,12 +151,12 @@ public static class PapyrusDecompiler
             header = $"{nameOverride}({ps})";
         else if (isRemote)
         {
-            // The type and the event are joined by an underscore and both may contain underscores,
-            // so the name alone cannot be split reliably. The sender parameter can: every dotted
-            // handler takes the raising object first, typed as the owner, so its type IS the
-            // boundary. Splitting on "_On" instead only works for handlers whose event name starts
-            // with On, which is true of the built-in events and false of custom events, whose names
-            // the author chooses.
+
+
+
+
+
+
             var rest = fn.Name.Substring("::remote_".Length);
             string type = fn.Params.Count > 0 ? fn.Params[0].Type : "";
             string ev = rest;
@@ -167,8 +167,8 @@ public static class PapyrusDecompiler
             }
             else
             {
-                // The sender did not match, so fall back to the old guess rather than emit a name
-                // built from a type this object does not actually mention.
+
+
                 int idx = rest.IndexOf("_On", StringComparison.OrdinalIgnoreCase);
                 type = idx > 0 ? rest.Substring(0, idx) : "";
                 ev = idx > 0 ? rest.Substring(idx + 1) : rest;
@@ -195,9 +195,9 @@ public static class PapyrusDecompiler
         try
         {
             body = DecompileBody(obj, fn, indent + "\t", inlineTemps: true);
-            // If inlining leaked a raw compiler temp (a "::" survives) -- happens with loops where a
-            // temp is read before it's written in linear order -- re-emit verbosely (temps become
-            // declared locals with explicit assignments). Valid Papyrus never contains "::".
+
+
+
             if (body.Contains("::")) body = DecompileBody(obj, fn, indent + "\t", inlineTemps: false);
         }
         catch (Exception ex) { body = $"{indent}\t; [decompile failed: {ex.Message}; assembly follows]\n" + AsmBody(fn, indent + "\t"); }
@@ -207,42 +207,42 @@ public static class PapyrusDecompiler
         sb.AppendLine(indent + end);
     }
 
-    // ───────────────────────────── body decompiler ─────────────────────────────
+
     private enum JKind { JmpF, JmpT, Jmp }
     private sealed class JInfo { public JKind Kind; public int Target; public string Cond = ""; public string CondVar = ""; }
 
     private static string DecompileBody(PexObject obj, PexFunction fn, string indent, bool inlineTemps)
     {
-        // name -> declared type (params + locals + object vars/properties), for casts / array_create.
+
         var types = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var p in fn.Params) types[p.Name] = p.Type;
         foreach (var l in fn.Locals) types[l.Name] = l.Type;
         foreach (var v in obj.Variables) types[v.Name] = v.Type;
         foreach (var pr in obj.Properties) types[pr.Name] = pr.Type;
 
-        // map auto-property backing variable (::PropName_var) -> the property's source name, so
-        // direct backing-var access in bytecode reads back as the property. Exact via AutoVarName.
+
+
         var backing = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var pr in obj.Properties)
             if (pr.IsAutoVar && !string.IsNullOrEmpty(pr.AutoVarName)) backing[pr.AutoVarName] = pr.Name;
 
-        var temps = new Dictionary<string, string>();   // ::tempN -> inlined expression
+        var temps = new Dictionary<string, string>();
         var instrs = fn.Instructions;
         var stmt = new string?[instrs.Count];
         var jumps = new JInfo?[instrs.Count];
         var firstWrite = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        // Inlined temporaries, by the instruction that produced them. A temp that nothing goes on to
-        // read has to come back as a statement in its own right, or the call that filled it is lost.
-        var tempDefinition = new Dictionary<string, int>();   // temp name -> the instruction that last wrote it
-        var tempExpression = new Dictionary<int, string>();   // that instruction -> what it produced
+
+
+        var tempDefinition = new Dictionary<string, int>();
+        var tempExpression = new Dictionary<int, string>();
         var tempWasRead = new HashSet<int>();
 
         string TypeOf(string name) => types.TryGetValue(name, out var t) ? t : "";
-        // ONLY real compiler temporaries (::tempN) are inlinable. Backing vars (::X_var) are storage.
+
         bool IsTemp(string n) => n.StartsWith("::temp", StringComparison.OrdinalIgnoreCase);
         string ResolveName(string n) => backing.TryGetValue(n, out var pn) ? pn : n;
-        // Sanitize an identifier for emission: "::tempN" -> "_tempN" (used in verbose mode where temps
-        // become declared locals). Backing vars are already mapped to property names by ResolveName.
+
+
         string San(string n) => n.StartsWith("::") ? "_" + n.Substring(2) : n;
 
         string Op(PexValue v)
@@ -258,9 +258,9 @@ public static class PapyrusDecompiler
             return San(ResolveName(n));
         }
         string A(PexInstruction ins, int i) => Op(ins.Args[i]);
-        string Dest(PexInstruction ins, int i) => ins.Args[i].Str;   // dest is always an identifier
+        string Dest(PexInstruction ins, int i) => ins.Args[i].Str;
 
-        // store an expression to dest: inline if temp (inline mode), else record an assignment statement.
+
         void Put(int idx, string dest, string expr)
         {
             if (!firstWrite.ContainsKey(dest)) firstWrite[dest] = idx;
@@ -270,7 +270,7 @@ public static class PapyrusDecompiler
                 tempDefinition[dest] = idx;
                 tempExpression[idx] = expr;
             }
-            else if (dest.Equals("::NoneVar", StringComparison.OrdinalIgnoreCase)) stmt[idx] = expr; // bare expr stmt
+            else if (dest.Equals("::NoneVar", StringComparison.OrdinalIgnoreCase)) stmt[idx] = expr;
             else stmt[idx] = $"{San(ResolveName(dest))} = {expr}";
         }
 
@@ -290,19 +290,19 @@ public static class PapyrusDecompiler
                 case "assign": Put(i, Dest(ins,0), A(ins,1)); break;
                 case "cast":
                 {
-                    // Casting None is illegal in Papyrus (and unnecessary -- None is valid for any
-                    // object type), so collapse "(None as X)" to just "None".
+
+
                     string src = A(ins, 1);
                     if (src == "None") { Put(i, Dest(ins, 0), "None"); break; }
                     string dt = TypeOf(Dest(ins,0));
-                    // An upcast to ScriptObject (the universal base) is always implicit; emitting the
-                    // explicit "(x as ScriptObject)" both is redundant AND strips the concrete type the
-                    // compiler needs to validate Register/UnregisterForRemoteEvent/HitEvent event names.
+
+
+
                     if (dt.Equals("ScriptObject", StringComparison.OrdinalIgnoreCase)) { Put(i, Dest(ins, 0), src); break; }
-                    // A cast to the type the operand already has is the compiler's own doing, not
-                    // something the author wrote: it is how a Bool operand of && or || reaches the
-                    // test. Writing it back out as an explicit cast reads as an author's cast, which
-                    // compiles to an assign instead and loses the instruction it came from.
+
+
+
+
                     if (ins.Args[1].Type == PexValueType.Identifier
                         && TypeOf(ins.Args[1].Str).Equals(dt, StringComparison.OrdinalIgnoreCase))
                     {
@@ -370,11 +370,11 @@ public static class PapyrusDecompiler
             }
         }
 
-        // Rejoin short circuits. "A && B" tests one temp, jumps on failure to a second test of that
-        // same temp, and fills the temp with B in between; "A || B" is the same with the first jump
-        // taken when A holds. Read one jump at a time, the first test looks like an If with an empty
-        // body and the second like an unguarded If, which is a different script: the operand that
-        // short circuits stops guarding anything. So the pair is folded back into one condition.
+
+
+
+
+
         for (bool folding = true; folding;)
         {
             folding = false;
@@ -387,8 +387,8 @@ public static class PapyrusDecompiler
                 var second = jumps[first.Target];
                 if (second == null || !second.CondVar.Equals(first.CondVar, StringComparison.OrdinalIgnoreCase)) continue;
 
-                // Only the operand may sit between the two tests. Anything else would be dropped by
-                // folding, so leave that shape alone and let it decompile as it stands.
+
+
                 bool clear = true;
                 for (int k = i + 1; k < first.Target && clear; k++) clear = stmt[k] == null && jumps[k] == null;
                 if (!clear) continue;
@@ -401,10 +401,10 @@ public static class PapyrusDecompiler
             }
         }
 
-        // A call whose result is discarded still writes a temp, and inlining a temp nothing reads
-        // would drop the call with it. Papyrus only accepts a call as a statement, so this recovers
-        // calls and leaves any other dead temp alone rather than emitting something that would not
-        // parse.
+
+
+
+
         foreach (var (idx, expression) in tempExpression)
         {
             if (tempWasRead.Contains(idx)) continue;
@@ -412,38 +412,38 @@ public static class PapyrusDecompiler
             stmt[idx] = expression;
         }
 
-        // Where each local's declaration goes. A bare "Type name" line is not free: the compiler
-        // zero assigns the slot for it, because that is what the Creation Kit does (the case
-        // PapyrusCodeGenerator was checked against is ObjectReference.SellItem). So hoisting every
-        // local to the top of the body invents an instruction whenever the original wrote the slot
-        // straight from an expression, and duplicates one whenever the original really did zero it.
-        // What the first write was decides which rendering is faithful.
-        var declaredAt = new Dictionary<int, string>();       // statement index -> type to prefix it with
-        var zeroedByDeclaration = new HashSet<int>();         // statement the hoisted declaration already emits
+
+
+
+
+
+
+        var declaredAt = new Dictionary<int, string>();
+        var zeroedByDeclaration = new HashSet<int>();
         var hoisted = new List<PexTypedName>();
 
         foreach (var l in fn.Locals)
         {
             if (l.Name.Equals("::NoneVar", StringComparison.OrdinalIgnoreCase)) continue;
             if (l.Type.Equals("None", StringComparison.OrdinalIgnoreCase)) continue;
-            if (inlineTemps && IsTemp(l.Name)) continue;   // inlined, no declaration needed
+            if (inlineTemps && IsTemp(l.Name)) continue;
 
             if (firstWrite.TryGetValue(l.Name, out var at)
                 && instrs[at].Mnemonic == "assign"
                 && IsZeroFor(l.Type, instrs[at].Args[1]))
             {
-                // The original zeroed the slot, which is exactly what a bare declaration compiles
-                // to, so the declaration stands in for that instruction rather than adding to it.
+
+
                 zeroedByDeclaration.Add(at);
                 hoisted.Add(l);
                 continue;
             }
 
-            // Otherwise the declaration belongs on the first write, so that write stays a single
-            // instruction. It can only move there if that write runs unconditionally: inside a
-            // branch or a loop the declaration would be scoped to that block, and a later read
-            // outside it would not resolve. Hoisting is the fallback, at the cost of one zero
-            // assign the original did not have.
+
+
+
+
+
             if (firstWrite.TryGetValue(l.Name, out at)
                 && stmt[at] != null
                 && stmt[at]!.StartsWith(San(l.Name) + " = ", StringComparison.Ordinal)
@@ -457,29 +457,29 @@ public static class PapyrusDecompiler
         }
 
         var sb = new StringBuilder();
-        // Locals declared up front (sanitized). This includes compiler block-scoped locals named
-        // "::mangled_*" (referenced by name in both modes, so always declared) and, in verbose mode,
-        // the "::tempN" temporaries (which become explicit assignments).
+
+
+
         foreach (var l in hoisted) sb.AppendLine($"{indent}{l.Type} {San(l.Name)}");
 
         Structure(0, instrs.Count, indent);
         return sb.ToString();
 
-        // True when no structured region encloses this instruction: nothing jumps over it, and
-        // nothing jumps back past it, so it is at the top level of the body.
+
+
         bool RunsUnconditionally(int idx)
         {
             for (int k = 0; k < instrs.Count; k++)
             {
                 var j = jumps[k];
                 if (j == null) continue;
-                if (k < idx && j.Target > idx) return false;    // a forward jump spans it
-                if (k > idx && j.Target <= idx) return false;   // a back edge reaches past it
+                if (k < idx && j.Target > idx) return false;
+                if (k > idx && j.Target <= idx) return false;
             }
             return true;
         }
 
-        // recursive control-flow structurer
+
         void Structure(int start, int end, string ind)
         {
             int i = start;
@@ -512,7 +512,7 @@ public static class PapyrusDecompiler
                         int elseEnd = Math.Min(lastJ.Target, end);
                         if (elseEnd <= target)
                         {
-                            // trailing jump skips to the same exit -> there is no else body.
+
                             sb.AppendLine($"{ind}If ({j.Cond})");
                             Structure(i + 1, lastIdx, ind + "\t");
                             sb.AppendLine($"{ind}EndIf");
@@ -537,20 +537,20 @@ public static class PapyrusDecompiler
                     sb.AppendLine($"{ind}EndIf");
                     i = j.Target; continue;
                 }
-                // backward/stray jump: consumed by loop detection or unstructurable
+
                 i++;
             }
         }
     }
 
-    /// <summary>Whether this operand is the value an uninitialised slot of that type already holds.</summary>
+
     private static bool IsZeroFor(string type, PexValue value) => type.ToLowerInvariant() switch
     {
         "bool" => value.Type == PexValueType.Bool && !value.Bool,
         "int" => value.Type == PexValueType.Integer && value.Int == 0,
         "float" => value.Type == PexValueType.Float && value.Float == 0f,
         "string" => value.Type == PexValueType.String && value.Str.Length == 0,
-        // Every other type is an object or an array, and both start as None.
+
         _ => value.IsNoneType,
     };
 
@@ -563,7 +563,7 @@ public static class PapyrusDecompiler
     private static string ElemType(string arrayType) =>
         arrayType.EndsWith("[]") ? arrayType[..^2] : arrayType;
 
-    // ───────────────────────────── assembly mode ─────────────────────────────
+
     private static string Disassemble(PexFile pex)
     {
         var sb = new StringBuilder();

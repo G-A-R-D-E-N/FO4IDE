@@ -4,30 +4,30 @@ using Mutagen.Bethesda.Plugins.Cache;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// xEdit parity: FO4 Previs/Precombine tooling (#59).
-///
-/// Verified against the real xEdit script this ports (TES5Edit-dev-4.1.6/Build/Edit Scripts/
-/// Fallout4 - Disable PreVis.pas), not written from general modding knowledge. That script: skips
-/// interior cells, skips cells with no PCMB subrecord, copies the cell as an override, ORs $80 onto
-/// the record header flags, and removes four subrecords: VISI, RVIS, PCMB, XCRI. Cross-checked each
-/// against Mutagen's own Cell parser (Cell_Generated.cs) to find the exact typed equivalent instead
-/// of guessing a field name:
-///   VISI -> PreVisFilesTimestamp (UInt16?)
-///   RVIS -> InPreVisFileOf (IFormLinkNullable&lt;ICellGetter&gt;)
-///   PCMB -> PreCombinedFilesTimestamp (UInt16?) -- NOT PrecombinedObjectLevelXY/Z, which come from a
-///           different subrecord this script never touches
-///   XCRI -> CombinedMeshes (list) + CombinedMeshReferences (list), confirmed via Cell.cs's
-///           FillBinaryCombinedMeshLogicCustom
-///   $80  -> Cell.MajorFlag.NoPreVis (confirmed in Cell.cs's own MajorFlag enum)
-///
-/// Deliberately does NOT reuse ResolveConflict/AddOverrideReturning (the copy_as_override primitive):
-/// that walks the mod's own TOP-LEVEL group properties via reflection, and Cell is nested inside
-/// CellBlock/CellSubBlock (or a Worldspace's block tree), not a top-level group -- the same
-/// limitation WriteService.CellEdit.cs already documented and worked around for placed references.
-/// Uses the same fix here: ILinkCache.TryResolveContext + IModContext.GetOrAddAsOverride, which
-/// resolves and creates the record's full parent chain in the patch, not just the leaf.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static partial class WriteService
 {
     public static string DisablePrevis(object? env, string cellId, string patchPlugin, bool apply)

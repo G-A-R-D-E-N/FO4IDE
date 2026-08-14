@@ -4,20 +4,20 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Loops whose body can be left early.
-/// </summary>
-/// <remarks>
-/// Every graph in here used to overflow the stack rather than fail, which aborts the whole test
-/// process instead of producing a diagnostic. The cause was region lowering walking a back edge: a
-/// branch inside a loop with one terminating arm has no post-dominator, so the other arm was lowered
-/// with no stopping point and ran back into the loop header. The iteration guard could not catch it
-/// because the runaway is recursion, and the guard is per call.
-/// <para>
-/// These also pin the shape Break and Continue are built on: a terminal node in one arm collapses
-/// the merge, so the rest of the body lands in the other arm on its own.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class GraphLoopExitTests
 {
     private static string Source(GraphDocument document)
@@ -59,7 +59,7 @@ public class GraphLoopExitTests
 
         var source = Source(graph.Document);
 
-        // The remaining body belongs to the else arm, and the loop is emitted exactly once.
+
         source.Should().Contain("Return");
         source.Should().Contain("Debug.Notification(\"B\")");
         source.Split("While (").Length.Should().Be(2, "the loop should be emitted once");
@@ -72,8 +72,8 @@ public class GraphLoopExitTests
     [Fact]
     public void A_branch_arm_wired_straight_back_to_the_loop_header_compiles()
     {
-        // Written by hand this is a continue. The arm's target IS the loop node, so lowering it
-        // without a back edge check re-entered the loop immediately.
+
+
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 

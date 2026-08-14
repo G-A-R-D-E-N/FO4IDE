@@ -1,5 +1,5 @@
-/* Blueprint canvas. Everything here reads theme variables from index.css, so light mode needs no
-   second set of values. */
+
+
 
 .bp-body {
   flex: 1;
@@ -8,7 +8,7 @@
   min-height: 0;
 }
 
-/* ---- palette ---- */
+
 
 .bp-palette {
   display: flex;
@@ -66,11 +66,11 @@
   font-size: 11px;
 }
 
-/* ---- stage ---- */
+
 
 .bp-stage { position: relative; min-width: 0; overflow: hidden; }
 
-/* The gate turning red is visible in peripheral vision, not only as a number in the header. */
+
 .bp-stage.bp-gate-error { box-shadow: inset 0 0 0 2px var(--status-changed); }
 
 .bp-canvas {
@@ -128,7 +128,7 @@
   pointer-events: none;
 }
 
-/* ---- nodes ---- */
+
 
 .bp-node {
   position: absolute;
@@ -226,7 +226,7 @@
   padding: 1px 4px;
 }
 
-/* ---- right rail ---- */
+
 
 .bp-side {
   display: flex;
@@ -287,7 +287,7 @@
   font-size: 11px;
 }
 
-/* ---- header extras ---- */
+
 
 .bp-actions { display: flex; gap: 6px; margin-left: auto; }
 
@@ -307,7 +307,7 @@
 
 .bp-source { flex: 1; overflow: auto; margin: 0; padding: 12px; }
 
-/* ---- add-node popover ---- */
+
 
 .bp-popover {
   position: absolute;
@@ -361,8 +361,8 @@
 .bp-popover-list button:hover { background: var(--bg-hover); }
 .bp-popover-list span { color: var(--text-muted); font-size: 11px; }
 
-/* Canvas context menu. The backdrop covers the whole stage so any click dismisses it, which is
-   cheaper and less racy than a document-level pointerdown listener that has to ignore its own menu. */
+
+
 .bp-menu-backdrop {
   position: fixed;
   inset: 0;
@@ -418,8 +418,8 @@
   background: var(--border-color);
 }
 
-/* Minimap. Node boxes only, no wires: at this scale a wire is a couple of pixels of clutter, and
-   what the reader needs is where the mass of the graph is and where they are inside it. */
+
+
 .bp-minimap {
   position: absolute;
   right: 12px;

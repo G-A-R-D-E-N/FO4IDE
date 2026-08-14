@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Builds a .deb of FO4RecordEditor for Linux (amd64).
-#
-# The package is self-contained: it carries its own .NET runtime, so nothing has to be installed
-# first. Output lands in packaging/linux/out/.
-#
-# Usage:  packaging/linux/build-deb.sh [version]
+
+
+
+
+
+
 set -euo pipefail
 
 VERSION="${1:-1.0.0}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 OUT="$HERE/out"
-# The repo may live on a filesystem that cannot express unix permissions (exfat/ntfs report 777,
-# which dpkg-deb rejects for DEBIAN/), so staging always happens somewhere that can.
+
+
 STAGE_ROOT="$(mktemp -d)"
 STAGE="$STAGE_ROOT/fo4recordeditor_${VERSION}_amd64"
 trap 'rm -rf "$STAGE_ROOT"' EXIT

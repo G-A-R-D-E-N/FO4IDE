@@ -6,27 +6,27 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-/// <summary>
-/// Cell Viewer transform-gizmo save path: move/rotate a placed reference (REFR) that's already
-/// resolved and on screen.
-///
-/// This does NOT reuse AddOverrideReturning (the ResolveConflict/BatchPatchRecords primitive):
-/// that method finds a TOP-LEVEL group on the mod matching the record's type via reflection, and
-/// placed references have no such group -- a REFR isn't a top-level record, it lives nested inside
-/// a Cell's Persistent/Temporary list (see WriteService.Placed.cs's doc comment). Reflection over
-/// Fallout4Mod's own properties would find nothing for PlacedObject/PlacedNpc/APlacedTrap and this
-/// method would silently fail on every real reference -- caught before it shipped by checking
-/// Fallout4Mod_Generated.cs for a matching group property (there isn't one).
-///
-/// Instead this uses Mutagen's own context API (ILinkCache.TryResolveContext + IModContext.
-/// GetOrAddAsOverride), which is what Mutagen itself provides specifically for overriding nested
-/// records: the returned context already encodes the record's full parent chain (Cell, in turn its
-/// Block/SubBlock), so GetOrAddAsOverride creates/finds ALL of it in the patch mod, not just the
-/// leaf record. TMajor is tried as each of the three real placed-record interfaces in turn since the
-/// caller only has a FormKey, not the record's concrete type; all three (IPlacedObject/IPlacedNpc/
-/// IAPlacedTrap) implement the shared mutable IPositionRotation aspect, confirmed in
-/// Interfaces/Aspect/IPositionRotation.cs.
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public static partial class WriteService
 {
     public static string SetPlacedReferenceTransform(

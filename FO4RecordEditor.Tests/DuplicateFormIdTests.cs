@@ -79,9 +79,9 @@ public class DuplicateFormIdTests
     public void Problems_UseTheEnvironmentPathAndQueueAnUncachedScan()
     {
         var plugin = $"DuplicateEnvPath_{Guid.NewGuid():N}.esp";
-        // Both files represent the same plugin, so each must be named exactly `plugin` (Mutagen's
-        // RunMasterMatch throws "ModKeys were misaligned" if the target filename differs from the
-        // mod's ModKey); distinct directories keep the env and loose paths distinct.
+
+
+
         var envDir = Path.Combine(Path.GetTempPath(), $"envdir_{Guid.NewGuid():N}");
         var looseDir = Path.Combine(Path.GetTempPath(), $"loosedir_{Guid.NewGuid():N}");
         Directory.CreateDirectory(envDir);

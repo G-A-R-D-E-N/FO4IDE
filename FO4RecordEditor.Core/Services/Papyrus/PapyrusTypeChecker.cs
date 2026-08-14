@@ -4,28 +4,28 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-/// <summary>
-/// Checks a resolved script: what may be assigned to what, and whether a call fits its declaration.
-/// </summary>
-/// <remarks>
-/// The resolver computes facts; this is the half that judges them. It reads a
-/// <see cref="PapyrusResolution"/> and reports nothing that resolution did not already understand.
-/// <para>
-/// The rules are the Creation Kit's. Assignability is the Cast Reference's "Compiler auto-cast from"
-/// table, implemented once in <see cref="PapyrusConversions"/>. Calls follow the Function Reference:
-/// arguments are positional and in declaration order, an optional parameter may be omitted, a named
-/// argument may appear out of order, and a parameter with a default forces every later parameter to
-/// have one. An override must match its parent's return type and parameters.
-/// </para>
-/// <para>
-/// <b>Silence is the default whenever certainty is missing.</b> Nothing is reported when the
-/// resolution's sources were incomplete, when either side of a comparison is
-/// <see cref="PapyrusTypeKind.Error"/>, or when a callee has no source declaration to check against
-/// (array built-ins, today). A type checker that cries wolf on a working script is worse than one
-/// that stays quiet, because the first thing anyone does with a false positive is stop reading the
-/// output.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class PapyrusTypeChecker
 {
     private readonly PapyrusScriptIndex _index;
@@ -38,7 +38,7 @@ public sealed class PapyrusTypeChecker
     {
         if (resolution == null) throw new ArgumentNullException(nameof(resolution));
 
-        // Incomplete sources mean half the types are Error and every judgement would be a guess.
+
         if (!resolution.BaseChainComplete) return Array.Empty<PapyrusDiagnostic>();
 
         var state = new State(resolution, resolution.Script.FilePath);
@@ -79,14 +79,14 @@ public sealed class PapyrusTypeChecker
         public string? File { get; }
         public List<PapyrusDiagnostic> Diagnostics { get; } = new();
 
-        /// <summary>Declared return type of the callable being walked, null for one returning nothing.</summary>
+
         public PapyrusType? ReturnType;
 
         public void Report(string code, string message, PapyrusSpan span) =>
             Diagnostics.Add(new PapyrusDiagnostic(code, PapyrusSeverity.Error, message, span, File));
     }
 
-    // ---- callables ------------------------------------------------------------------------------
+
 
     private void CheckCallable(State state, PapyrusCallableDecl callable)
     {
@@ -94,7 +94,7 @@ public sealed class PapyrusTypeChecker
             ? state.Resolution.TypeOf(fn.ReturnType)
             : null;
 
-        // "If a parameter has a default value, every parameter after it must also have a default."
+
         var seenDefault = false;
         foreach (var p in callable.Parameters)
         {
@@ -114,10 +114,10 @@ public sealed class PapyrusTypeChecker
         state.ReturnType = null;
     }
 
-    /// <summary>
-    /// "If the identifier matches a function in the parent script, then the return type and
-    /// parameters much match the parent script's version of the function."
-    /// </summary>
+
+
+
+
     private void CheckOverride(State state, PapyrusFunctionDecl fn)
     {
         var script = state.Resolution.Script;
@@ -137,11 +137,11 @@ public sealed class PapyrusTypeChecker
                     $"{parent.Parameters.Count} parameter(s), not {fn.Parameters.Count}.",
                     fn.NameSpan);
             }
-            return;   // nearest ancestor wins; anything above it is already overridden
+            return;
         }
     }
 
-    // ---- statements -----------------------------------------------------------------------------
+
 
     private void CheckStatements(State state, IEnumerable<PapyrusStatement> body)
     {
@@ -167,9 +167,9 @@ public sealed class PapyrusTypeChecker
                 CheckExpression(state, assign.Target);
                 CheckExpression(state, assign.Value);
 
-                // Only a plain assignment compares the two sides directly. A compound assignment
-                // (+=, *= ...) is an arithmetic operation whose result is then stored, and int += float
-                // is ordinary code, so those are left alone rather than checked as a bare assignment.
+
+
+
                 if (assign.Operator == PapyrusTokenKind.Assign)
                 {
                     CheckAssignable(
@@ -225,7 +225,7 @@ public sealed class PapyrusTypeChecker
             initializer.Span, "initialise");
     }
 
-    // ---- expressions ----------------------------------------------------------------------------
+
 
     private void CheckExpression(State state, PapyrusExpression? expr)
     {
@@ -268,14 +268,14 @@ public sealed class PapyrusTypeChecker
         }
     }
 
-    /// <summary>Arity, named arguments and argument types, against the callee's declaration.</summary>
+
     private void CheckCall(State state, PapyrusCallExpression call)
     {
         var binding = state.Resolution.BindingFor(call);
 
-        // No source declaration means nothing to check against. Array built-ins are the live case:
-        // they are real members with real signatures, but they are not declared in any .psc, so
-        // their arguments go unchecked rather than wrongly checked.
+
+
+
         if (binding?.Declaration is not PapyrusCallableDecl declaration) return;
 
         var parameters = declaration.Parameters;
@@ -292,8 +292,8 @@ public sealed class PapyrusTypeChecker
             return;
         }
 
-        // A named argument may fill any parameter, so a call is only definitely short when even the
-        // named ones cannot cover what is required.
+
+
         if (positional < required && call.Arguments.Count < required)
         {
             state.Report(
@@ -327,8 +327,8 @@ public sealed class PapyrusTypeChecker
                 }
             }
 
-            // The parameter's type belongs to the declaring script, which may not be the one being
-            // checked, so it is resolved against that script rather than read from this resolution.
+
+
             var expected = ParameterType(parameter, binding.Owner);
             CheckAssignable(
                 state, expected, state.Resolution.TypeOf(arg.Value), arg.Value.Span,
@@ -336,7 +336,7 @@ public sealed class PapyrusTypeChecker
         }
     }
 
-    /// <summary>A parameter's type, resolved relative to the script that declared it.</summary>
+
     private PapyrusType ParameterType(PapyrusParameter parameter, PapyrusScript? owner)
     {
         var name = parameter.Type.Name;
@@ -358,14 +358,14 @@ public sealed class PapyrusTypeChecker
         if (resolved == null)
         {
             var script = _index.Resolve(name);
-            // A parameter type the index cannot see is not checkable, and Error converts silently.
+
             resolved = script == null ? PapyrusType.Error : PapyrusType.Object(script.Name);
         }
 
         return parameter.Type.IsArray ? PapyrusType.ArrayOf(resolved) : resolved;
     }
 
-    // ---- the one judgement everything funnels through -------------------------------------------
+
 
     private void CheckAssignable(State state, PapyrusType target, PapyrusType value, PapyrusSpan span, string what)
     {
@@ -378,7 +378,7 @@ public sealed class PapyrusTypeChecker
             span);
     }
 
-    /// <summary>Whether <paramref name="child"/> is <paramref name="ancestor"/> or descends from it.</summary>
+
     private bool Inherits(string child, string ancestor)
     {
         if (string.Equals(child, ancestor, StringComparison.OrdinalIgnoreCase)) return true;

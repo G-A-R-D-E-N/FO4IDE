@@ -9,7 +9,7 @@ interface DetailRailProps {
   matrix: ConflictMatrix | null;
   onOpenConflictsTab?: () => void;
   onOpenRecord?: (formKey: string, plugin: string) => void;
-  /** Push a value into the navigator's FormID filter. */
+
   onAddToFilter?: (needle: string) => void;
 }
 
@@ -58,7 +58,7 @@ export default function DetailRail({
   const isFavourite = favourites.some(f => f.formKey === formKey);
   const flash = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 1600); };
 
-  // Keep in step when the Explorer's Favourites section removes one.
+
   useEffect(() => {
     const sync = () => setFavourites(readFavourites());
     window.addEventListener(FAVOURITES_CHANGED, sync);
@@ -67,7 +67,7 @@ export default function DetailRail({
 
   const toggleFavourite = () => {
     if (!formKey) return;
-    // Capture a usable label now: the Explorer list has only what is stored here to show.
+
     const nowFavourite = toggleFav({
       formKey,
       label: matrix?.EditorID || details?.EditorId || formKey,

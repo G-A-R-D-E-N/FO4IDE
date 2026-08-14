@@ -21,7 +21,7 @@ interface TopBarProps {
   chatVisible: boolean;
   isDark: boolean;
   onToggleTheme: () => void;
-  // Command bar wiring (reuses the existing record search bridge).
+
   onSearch: (query: string) => Promise<SearchHit[]>;
   onOpenHit: (hit: SearchHit) => void;
 }
@@ -39,7 +39,7 @@ export default function TopBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  // Ctrl+K focuses the command bar from anywhere.
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -52,7 +52,7 @@ export default function TopBar({
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // Debounced search (>= 2 chars) against the existing SearchRecords bridge.
+
   useEffect(() => {
     const q = query.trim();
     if (q.length < 2) { setResults(null); setOpen(false); return; }
@@ -67,7 +67,7 @@ export default function TopBar({
     return () => { cancelled = true; clearTimeout(t); };
   }, [query, onSearch]);
 
-  // Close the dropdown on outside click.
+
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
@@ -93,12 +93,12 @@ export default function TopBar({
 
   return (
     <div className="topbar">
-      {/* Brand */}
+      {}
       <div className="topbar-brand">
-        <span className="brand-x">NexusEdit</span>
+        <span className="brand-x">FO4IDE</span>
       </div>
 
-      {/* Tab strip */}
+      {}
       <div className="topbar-tabs">
         <button
           className={`top-tab ${activeTab === 'home' ? 'active' : ''}`}
@@ -125,7 +125,7 @@ export default function TopBar({
         )}
       </div>
 
-      {/* Command bar */}
+      {}
       <div className="topbar-command" ref={wrapRef}>
         <div className="command-field">
           <Search size={14} className="command-icon" />
@@ -162,7 +162,7 @@ export default function TopBar({
         )}
       </div>
 
-      {/* Tool cluster */}
+      {}
       <div className="topbar-tools">
         <button className={`tool-btn`} onClick={onToggleTheme} title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
           {isDark ? <Sun size={17} strokeWidth={1.6} /> : <Moon size={17} strokeWidth={1.6} />}

@@ -5,30 +5,30 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-/// <summary>
-/// Hand-written recursive descent parser for Papyrus, producing a <see cref="PapyrusScript"/>.
-/// </summary>
-/// <remarks>
-/// Hand-written rather than generated because the language is genuinely tiny: 56 BNF productions,
-/// 45 keywords, and exactly five statement forms (define, assign, return, if, while). There is no
-/// <c>for</c>, no <c>switch</c>, no <c>do/while</c>, no <c>break</c> or <c>continue</c>, and no
-/// exceptions. The complete grammar is the Creation Kit wiki's Papyrus Language Reference, all 20
-/// pages of it, mirrored under <c>tools/ckwiki</c>; every production this file implements is quoted
-/// in the comment above the method that implements it.
-/// <para>
-/// <b>This parser never throws on bad input and never returns null.</b> It records a diagnostic,
-/// recovers to the next line or block terminator, and carries on, so a file that is mid-keystroke
-/// still yields a symbol table. That is a requirement, not politeness: the point of phase 1 is
-/// editor intelligence, and an outline that vanishes whenever the file is briefly invalid is worse
-/// than no outline.
-/// </para>
-/// <para>
-/// Phase 1 stops at syntax. Nothing here binds a name to a declaration, checks a type, or resolves
-/// an override -- that is the resolver and type checker, which is the part of a real compiler this
-/// deliberately does not attempt. <see cref="PapyrusScriptIndex"/> does name-based lookup on top of
-/// these trees, which is enough for go-to-definition and hover and not enough for codegen.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public sealed class PapyrusParser
 {
     private readonly IReadOnlyList<PapyrusToken> _tokens;
@@ -41,9 +41,9 @@ public sealed class PapyrusParser
         _diagnostics = diagnostics;
     }
 
-    /// <summary>Parses Papyrus source text.</summary>
-    /// <param name="text">The .psc contents.</param>
-    /// <param name="filePath">Path to attach to diagnostics and to the script, if it came from disk.</param>
+
+
+
     public static PapyrusScript Parse(string text, string? filePath = null)
     {
         var bag = new DiagnosticBag();
@@ -55,12 +55,12 @@ public sealed class PapyrusParser
         return script;
     }
 
-    /// <summary>Reads and parses a .psc file.</summary>
+
     public static PapyrusScript ParseFile(string path) => Parse(File.ReadAllText(path), path);
 
-    // -----------------------------------------------------------------------------------------
-    // Token plumbing
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     private PapyrusToken Current => _tokens[_index];
 
@@ -95,8 +95,8 @@ public sealed class PapyrusParser
             PapyrusDiagnosticCodes.ExpectedToken,
             $"Expected {what}, found '{Describe(Current)}'.",
             Current.Span);
-        // A zero-length synthetic token at the current position keeps spans monotonic without
-        // consuming input the caller may still be able to recover on.
+
+
         return new PapyrusToken(kind, string.Empty, new PapyrusSpan(Current.Span.Start, 0, Current.Span.Line, Current.Span.Column));
     }
 
@@ -112,7 +112,7 @@ public sealed class PapyrusParser
         while (Kind == PapyrusTokenKind.Newline) Advance();
     }
 
-    /// <summary>Consumes the statement terminator, complaining about trailing junk first.</summary>
+
     private void ExpectEndOfLine()
     {
         if (Kind == PapyrusTokenKind.Newline || AtEnd)
@@ -133,14 +133,14 @@ public sealed class PapyrusParser
         Match(PapyrusTokenKind.Newline);
     }
 
-    /// <summary>
-    /// Pulls in a documentation comment belonging to the declaration just parsed.
-    /// </summary>
-    /// <remarks>
-    /// Per the wiki, a <c>{ ... }</c> comment may only follow a script header, property, group,
-    /// struct member or function definition, so scanning past blank lines to find one cannot steal
-    /// it from anything else -- there is nothing else it could attach to.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private string? TakeDocComment()
     {
         var save = _index;
@@ -150,14 +150,14 @@ public sealed class PapyrusParser
         return null;
     }
 
-    /// <summary>Collects trailing flag words. Both keyword flags and user flags land here.</summary>
-    /// <remarks>
-    /// User flags -- <c>Hidden</c>, <c>Conditional</c>, <c>Mandatory</c>, <c>CollapsedOnRef</c> and
-    /// friends -- are not language keywords. They are defined by <c>Institute_Papyrus_Flags.flg</c>,
-    /// which ships with the Creation Kit and is not in the game archives. Accepting any identifier
-    /// here is what lets this front end read scripts on a machine that has no CK installed; a real
-    /// compiler back end would have to validate the names against that file.
-    /// </remarks>
+
+
+
+
+
+
+
+
     private void ParseFlags(List<string> into)
     {
         while (true)
@@ -180,13 +180,13 @@ public sealed class PapyrusParser
         }
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Script structure
-    //   <header line>
-    //   (<import> | <variable definition> | <struct definition> | <custom event definition> |
-    //    <property definition> | <group definition> | <state definition> | <function definition> |
-    //    <event definition>)*
-    // -----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
     private PapyrusScript ParseScript()
     {
@@ -200,8 +200,8 @@ public sealed class PapyrusParser
 
             var before = _index;
             ParseScriptMember(script);
-            // Every path above should consume something. This guard is what makes "never hangs" a
-            // property of the parser rather than a hope about its branches.
+
+
             if (_index == before) Advance();
         }
 
@@ -211,14 +211,14 @@ public sealed class PapyrusParser
         return script;
     }
 
-    /// <summary>
-    /// <c>&lt;Header Line&gt; ::= 'ScriptName' &lt;identifier&gt; ['extends' &lt;identifier&gt;] ['Native'] (&lt;flags&gt;)*</c>
-    /// </summary>
+
+
+
     private void ParseHeader(PapyrusScript script)
     {
         SkipNewlines();
-        // A stray doc comment before the header is not legal, but tolerating it costs nothing and
-        // keeps a file that opens with a banner comment from losing its whole symbol table.
+
+
         while (Kind == PapyrusTokenKind.DocComment)
         {
             script.Documentation ??= Advance().Text;
@@ -252,16 +252,16 @@ public sealed class PapyrusParser
         script.Documentation ??= TakeDocComment();
     }
 
-    /// <summary>
-    /// <c>&lt;full script name&gt; ::= &lt;identifier&gt; (':' &lt;identifier&gt;)*</c>
-    /// </summary>
-    /// <remarks>
-    /// The colons are namespace separators and they are also folder separators: a script named
-    /// <c>MyCoolStuff:Quests:MyQuest</c> lives at <c>MyCoolStuff\Quests\MyQuest.psc</c>. That
-    /// equivalence is what <see cref="PapyrusScriptIndex"/> uses to find a script on disk from its
-    /// name, and it is the same rule the existing <c>PapyrusService.Compile</c> staging already
-    /// implements for the shell-out compiler.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
     private string ParseQualifiedName(out PapyrusSpan span)
     {
         var first = Expect(PapyrusTokenKind.Identifier, "an identifier");
@@ -314,8 +314,8 @@ public sealed class PapyrusParser
                 return;
         }
 
-        // Everything left starts with a type: a variable, a property, or a function with a return
-        // type. Which of the three only becomes clear after the type is read.
+
+
         if (!TryParseType(out var type))
         {
             _diagnostics.Report(
@@ -347,7 +347,7 @@ public sealed class PapyrusParser
         }
     }
 
-    /// <summary><c>'Import' &lt;identifier&gt;</c></summary>
+
     private void ParseImport(PapyrusScript script)
     {
         var keyword = Advance();
@@ -357,7 +357,7 @@ public sealed class PapyrusParser
         ExpectEndOfLine();
     }
 
-    /// <summary><c>'CustomEvent' &lt;identifier&gt;</c></summary>
+
     private void ParseCustomEvent(PapyrusScript script)
     {
         var keyword = Advance();
@@ -371,18 +371,18 @@ public sealed class PapyrusParser
         ExpectEndOfLine();
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Types
-    //   <type>       ::= ('int'|'float'|'bool'|'string'|'var'|<full script name>) ['[' ']']
-    //   <array type> ::= <element type> '[' ']'
-    // -----------------------------------------------------------------------------------------
 
-    /// <remarks>
-    /// <c>ScriptEventName</c>, <c>CustomEventName</c> and <c>StructVarName</c> are keywords, but they
-    /// appear where a type appears -- they are the Function Reference's "special parameter types",
-    /// which accept only a raw string literal and are checked by the compiler against the events or
-    /// struct members of the preceding parameter. Syntactically they are types, so they belong here.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
     private static bool IsTypeStart(PapyrusTokenKind kind) => kind switch
     {
         PapyrusTokenKind.Int or PapyrusTokenKind.Float or PapyrusTokenKind.Bool
@@ -392,7 +392,7 @@ public sealed class PapyrusParser
         _ => false,
     };
 
-    /// <summary>Parses a type without consuming anything if the current token cannot start one.</summary>
+
     private bool TryParseType(out PapyrusTypeRef type)
     {
         type = null!;
@@ -442,13 +442,13 @@ public sealed class PapyrusParser
         return new PapyrusTypeRef(name, isArray, start);
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Variables, structs, properties, groups
-    // -----------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// <c>&lt;variable definition&gt; ::= &lt;type&gt; &lt;identifier&gt; ['=' &lt;constant&gt;] (&lt;flags&gt;)*</c>
-    /// </summary>
+
+
+
+
+
+
     private PapyrusVariableDecl ParseVariable(PapyrusTypeRef type, bool allowDocumentation)
     {
         var name = Expect(PapyrusTokenKind.Identifier, "a variable name");
@@ -464,14 +464,14 @@ public sealed class PapyrusParser
         ParseFlags(decl.Flags);
         decl.Span = type.Span.To(_tokens[Math.Max(0, _index - 1)].Span);
         ExpectEndOfLine();
-        // Only struct members may carry a doc string, per the Variable Reference.
+
         if (allowDocumentation) decl.Documentation = TakeDocComment();
         return decl;
     }
 
-    /// <summary>
-    /// <c>&lt;struct&gt; ::= 'struct' &lt;identifier&gt; &lt;variable definition&gt;+ 'endstruct'</c>
-    /// </summary>
+
+
+
     private PapyrusStructDecl ParseStruct()
     {
         var keyword = Advance();
@@ -513,16 +513,16 @@ public sealed class PapyrusParser
         return decl;
     }
 
-    /// <summary>
-    /// <c>&lt;property&gt;</c>, <c>&lt;auto property&gt;</c> and <c>&lt;auto read-only property&gt;</c>.
-    /// </summary>
-    /// <remarks>
-    /// The three forms are only distinguishable after the flag list: an auto property ends on its
-    /// own line, a full one opens a block of Get/Set functions closed by <c>EndProperty</c>.
-    /// </remarks>
+
+
+
+
+
+
+
     private PapyrusPropertyDecl ParseProperty(PapyrusTypeRef type, string? groupName)
     {
-        var keyword = Advance(); // 'Property'
+        var keyword = Advance();
         var name = Expect(PapyrusTokenKind.Identifier, "a property name");
         var decl = new PapyrusPropertyDecl
         {
@@ -543,11 +543,11 @@ public sealed class PapyrusParser
         ExpectEndOfLine();
         decl.Documentation = TakeDocComment();
 
-        // A property is the one declaration whose single-line and block forms are told apart only
-        // by what follows: no Auto flag means a full property, which then consumes everything up to
-        // EndProperty. So a header that did not even yield a name must not open a block -- otherwise
-        // one bad property line eats the rest of the file, and every declaration after it vanishes
-        // from the outline. Bailing out here costs nothing: the header is already reported.
+
+
+
+
+
         if (decl.Kind != PapyrusPropertyKind.Full || name.Text.Length == 0) return decl;
 
         while (true)
@@ -588,9 +588,9 @@ public sealed class PapyrusParser
         return decl;
     }
 
-    /// <summary>
-    /// <c>&lt;group&gt; ::= 'Group' &lt;identifier&gt; &lt;flags&gt; (&lt;property&gt;)+ 'endGroup'</c>
-    /// </summary>
+
+
+
     private void ParseGroup(PapyrusScript script)
     {
         var keyword = Advance();
@@ -610,8 +610,8 @@ public sealed class PapyrusParser
             {
                 var property = ParseProperty(type, group.Name);
                 group.Properties.Add(property);
-                // Also listed on the script so a caller asking "what properties does this script
-                // expose?" does not have to know about grouping.
+
+
                 script.Properties.Add(property);
             }
             else
@@ -630,9 +630,9 @@ public sealed class PapyrusParser
         script.Groups.Add(group);
     }
 
-    /// <summary>
-    /// <c>&lt;state&gt; ::= ['Auto'] 'State' &lt;identifier&gt; &lt;function or event&gt;* 'EndState'</c>
-    /// </summary>
+
+
+
     private PapyrusStateDecl ParseState()
     {
         var start = Current.Span;
@@ -691,17 +691,17 @@ public sealed class PapyrusParser
         return Current.Span;
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Functions and events
-    //   <function header> ::= [<type>] 'Function' <identifier> '(' [<parameters>] ')'
-    //                         ('global' | 'native')* <flags>*
-    //   <event header>    ::= 'Event' <identifier> '(' [<parameters>] ')' ['Native'] <flags>*
-    //   <remote event>    ::= 'Event' <object type> '.' <identifier> '(' ... ')' ['Native'] <flags>*
-    // -----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
     private PapyrusFunctionDecl ParseFunction(PapyrusTypeRef? returnType, string? stateName)
     {
-        var keyword = Advance(); // 'Function'
+        var keyword = Advance();
         var start = returnType?.Span ?? keyword.Span;
         var name = Expect(PapyrusTokenKind.Identifier, "a function name");
         var fn = new PapyrusFunctionDecl
@@ -719,7 +719,7 @@ public sealed class PapyrusParser
         ExpectEndOfLine();
         fn.Documentation = TakeDocComment();
 
-        // A native function is implemented by the game and has no body or terminator.
+
         if (fn.IsNative)
         {
             fn.Span = start.To(name.Span);
@@ -734,13 +734,13 @@ public sealed class PapyrusParser
 
     private PapyrusEventDecl ParseEvent(string? stateName)
     {
-        var keyword = Advance(); // 'Event'
+        var keyword = Advance();
         var evt = new PapyrusEventDecl { StateName = stateName };
 
         var first = ParseQualifiedName(out var firstSpan);
         if (Kind == PapyrusTokenKind.Dot)
         {
-            // Remote or custom event handler: Event ObjectReference.OnActivate(...)
+
             Advance();
             evt.RemoteObjectType = first;
             var name = Expect(PapyrusTokenKind.Identifier, "an event name after '.'");
@@ -771,10 +771,10 @@ public sealed class PapyrusParser
         return evt;
     }
 
-    /// <summary>
-    /// <c>&lt;parameters&gt; ::= &lt;parameter&gt; (',' &lt;parameter&gt;)*</c>,
-    /// <c>&lt;parameter&gt; ::= &lt;type&gt; &lt;identifier&gt; ['=' &lt;constant&gt;]</c>
-    /// </summary>
+
+
+
+
     private void ParseParameterList(List<PapyrusParameter> into)
     {
         Expect(PapyrusTokenKind.LParen, "'('");
@@ -818,9 +818,9 @@ public sealed class PapyrusParser
         Expect(PapyrusTokenKind.RParen, "')'");
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Statements. Five forms, per the Statement Reference: define, assign, return, if, while.
-    // -----------------------------------------------------------------------------------------
+
+
+
 
     private static bool IsBlockTerminator(PapyrusTokenKind kind) => kind switch
     {
@@ -861,9 +861,9 @@ public sealed class PapyrusParser
 
         if (TryParseDefine(out var define)) return define;
 
-        // Whatever is left is an expression, and it is an assignment if an assignment operator
-        // follows it. Papyrus has no standalone increment or compound-expression statement, so
-        // anything else is a bare call.
+
+
+
         var expression = ParseExpression();
         if (IsAssignmentOperator(Kind))
         {
@@ -893,17 +893,17 @@ public sealed class PapyrusParser
         _ => false,
     };
 
-    /// <summary>
-    /// <c>&lt;define statement&gt; ::= &lt;type&gt; &lt;identifier&gt; ['=' &lt;expression&gt;]</c>
-    /// </summary>
-    /// <remarks>
-    /// This is the one place the grammar needs lookahead past a whole construct. A statement opening
-    /// with an identifier is a definition if a *second* identifier follows the type, and an
-    /// assignment otherwise -- <c>MyType x = 1</c> against <c>x = 1</c>, and worse,
-    /// <c>Foo[] bar</c> against <c>foo[0] = 1</c>, where the difference is whether the brackets are
-    /// empty. Speculating and rewinding the token index is exact, and cheap because the tokens are
-    /// already materialised in a list.
-    /// </remarks>
+
+
+
+
+
+
+
+
+
+
+
     private bool TryParseDefine(out PapyrusStatement? statement)
     {
         statement = null;
@@ -939,10 +939,10 @@ public sealed class PapyrusParser
         return true;
     }
 
-    /// <summary>
-    /// <c>&lt;if statement&gt; ::= 'if' &lt;expression&gt; &lt;statement&gt;*
-    /// ['elseif' &lt;expression&gt; &lt;statement&gt;*]* ['else' &lt;statement&gt;*] 'endIf'</c>
-    /// </summary>
+
+
+
+
     private PapyrusStatement ParseIf()
     {
         var keyword = Advance();
@@ -980,7 +980,7 @@ public sealed class PapyrusParser
         return statement;
     }
 
-    /// <summary><c>'while' &lt;expression&gt; &lt;statement&gt;* 'endWhile'</c></summary>
+
     private PapyrusStatement ParseWhile()
     {
         var keyword = Advance();
@@ -992,7 +992,7 @@ public sealed class PapyrusParser
         return statement;
     }
 
-    /// <summary><c>'Return' [&lt;expression&gt;]</c></summary>
+
     private PapyrusStatement ParseReturn()
     {
         var keyword = Advance();
@@ -1006,10 +1006,10 @@ public sealed class PapyrusParser
         return statement;
     }
 
-    // -----------------------------------------------------------------------------------------
-    // Expressions. Precedence follows the Expression Reference exactly, lowest binding first:
-    //   '||'  '&&'  comparison  '+' '-'  '*' '/' '%'  unary '-' '!'  'as' 'is'  '.'  '()'
-    // -----------------------------------------------------------------------------------------
+
+
+
+
 
     private PapyrusExpression ParseExpression() => ParseOr();
 
@@ -1048,7 +1048,7 @@ public sealed class PapyrusParser
         return left;
     }
 
-    /// <summary><c>&lt;unary expression&gt; ::= ['-' | '!'] &lt;cast atom&gt;</c></summary>
+
     private PapyrusExpression ParseUnary()
     {
         if (Kind == PapyrusTokenKind.Minus || Kind == PapyrusTokenKind.Not)
@@ -1065,7 +1065,7 @@ public sealed class PapyrusParser
         return ParseCast();
     }
 
-    /// <summary><c>&lt;cast atom&gt; ::= &lt;dot atom&gt; ['as' &lt;type&gt;]</c>, plus the <c>is</c> check.</summary>
+
     private PapyrusExpression ParseCast()
     {
         var expression = ParseDotChain();
@@ -1080,9 +1080,9 @@ public sealed class PapyrusParser
         return expression;
     }
 
-    /// <summary>
-    /// <c>&lt;dot atom&gt; ::= &lt;array atom&gt; ('.' &lt;array func or id&gt;)*</c>
-    /// </summary>
+
+
+
     private PapyrusExpression ParseDotChain()
     {
         var expression = ParsePostfix(ParseAtom());
@@ -1090,8 +1090,8 @@ public sealed class PapyrusParser
         while (Kind == PapyrusTokenKind.Dot)
         {
             Advance();
-            // 'Length' is a keyword, not an identifier, but it is spelled after a dot like any
-            // member. Anything else keyword-shaped here is a real syntax error.
+
+
             PapyrusToken name;
             if (Kind == PapyrusTokenKind.Identifier || Kind == PapyrusTokenKind.Length)
             {
@@ -1119,7 +1119,7 @@ public sealed class PapyrusParser
         return expression;
     }
 
-    /// <summary>Applies any call parentheses and array subscripts sitting after an atom.</summary>
+
     private PapyrusExpression ParsePostfix(PapyrusExpression expression)
     {
         while (true)
@@ -1151,7 +1151,7 @@ public sealed class PapyrusParser
         }
     }
 
-    /// <summary><c>&lt;parameter&gt; ::= [&lt;identifier&gt; '='] &lt;expression&gt;</c></summary>
+
     private void ParseArgumentList(List<PapyrusArgument> into, out PapyrusSpan closeSpan)
     {
         var open = Expect(PapyrusTokenKind.LParen, "'('");
@@ -1168,8 +1168,8 @@ public sealed class PapyrusParser
             var before = _index;
             var argument = new PapyrusArgument();
 
-            // A named argument is an identifier followed by a single '='; '==' is a comparison and
-            // must not be mistaken for one, which is why the lexer's two-character pass matters here.
+
+
             if (Kind == PapyrusTokenKind.Identifier && Peek(1).Kind == PapyrusTokenKind.Assign)
             {
                 var name = Advance();
@@ -1194,10 +1194,10 @@ public sealed class PapyrusParser
         closeSpan = close.Span;
     }
 
-    /// <summary>
-    /// <c>&lt;atom&gt; ::= ('(' &lt;expression&gt; ')') | ('new' &lt;type&gt; '[' &lt;int&gt; ']') | &lt;func or id&gt;</c>,
-    /// widened to include literals and <c>new &lt;struct type&gt;</c>.
-    /// </summary>
+
+
+
+
     private PapyrusExpression ParseAtom()
     {
         var token = Current;
@@ -1208,8 +1208,8 @@ public sealed class PapyrusParser
                 Advance();
                 var inner = ParseExpression();
                 Expect(PapyrusTokenKind.RParen, "')'");
-                // The parentheses are not kept as a node: they exist only to override precedence,
-                // which the tree shape already records.
+
+
                 return inner;
             }
 
@@ -1260,21 +1260,21 @@ public sealed class PapyrusParser
 
             case PapyrusTokenKind.Identifier:
             {
-                // A namespaced script name can appear as the receiver of a global call:
-                // MyNamespace:MyScript.MyGlobal(). Read the colons here so the dot chain sees one
-                // atom rather than a member access on a namespace part.
+
+
+
                 var name = ParseQualifiedName(out var span);
                 return new PapyrusIdentifierExpression { Name = name, Span = span };
             }
 
-            // 'Length' after a dot is handled in the dot chain; standing alone it is a bare
-            // reference to the array-length pseudo-property, which some scripts do write.
+
+
             case PapyrusTokenKind.Length:
                 Advance();
                 return new PapyrusIdentifierExpression { Name = token.Text, Span = token.Span };
 
-            // These three are type names in a parameter position ("ScriptEventName", etc) but they
-            // are also legal identifiers in practice in older scripts. Accept them as names.
+
+
             case PapyrusTokenKind.ScriptEventName:
             case PapyrusTokenKind.CustomEventName:
             case PapyrusTokenKind.StructVarName:
@@ -1286,8 +1286,8 @@ public sealed class PapyrusParser
                     PapyrusDiagnosticCodes.ExpectedExpression,
                     $"Expected an expression, found '{Describe(Current)}'.",
                     Current.Span);
-                // Do not consume: the caller's end-of-line recovery decides how far to skip, and
-                // eating the token here would hide a block terminator from it.
+
+
                 return new PapyrusErrorExpression { Span = new PapyrusSpan(token.Span.Start, 0, token.Span.Line, token.Span.Column) };
         }
     }

@@ -8,16 +8,16 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// Regression coverage for TextureService's .bgsm-diffuse fallback. Many FO4 meshes carry no texture
-// in their own BSShaderTextureSet at all -- the BSLightingShaderProperty instead points at a shared
-// .bgsm material file (rootMaterialName) that holds the real diffuse path. Without resolving that,
-// GetTexturePngDataUrl returns "" for such a shape and it renders flat gray even though the mesh
-// legitimately has a texture: a shape whose "textures" array niftool reports as empty, but whose
-// base object visibly has wood grain in-game.
-//
-// The fixture .bgsm's DiffuseTexture holds "architecture/buildings/woodfloor01_d.dds".
-//
-// Skips loudly when the fixture archives aren't present, rather than passing.
+
+
+
+
+
+
+
+
+
+
 public class BgsmDiffuseFallbackTests
 {
     private static readonly string[] DataRootCandidates =
@@ -39,8 +39,8 @@ public class BgsmDiffuseFallbackTests
         TextureService.SetSessionRoots(new[] { dataRoot });
         try
         {
-            // Passed exactly as the frontend would when a shape's own texture slots came up empty --
-            // no nifPath anchor needed since resolution falls through to the session Data root.
+
+
             var url = TextureService.GetTexturePngDataUrl(
                 nifPath: Path.Combine(dataRoot, "nonexistent.nif"),
                 relTexPath: @"Architecture\Buildings\WoodPlanks01.BGSM");
@@ -62,9 +62,9 @@ public class BgsmDiffuseFallbackTests
         TextureService.SetSessionRoots(new[] { dataRoot });
         try
         {
-            // Template\DefaultTemplate_Wet.bgsm genuinely has an empty DiffuseTexture field (parsed
-            // by hand: len=1, byte=0x00, the documented "empty slot" encoding) -- this must return ""
-            // rather than throw or return a bogus/garbage image.
+
+
+
             var url = TextureService.GetTexturePngDataUrl(
                 nifPath: Path.Combine(dataRoot, "nonexistent.nif"),
                 relTexPath: @"Template\DefaultTemplate_Wet.bgsm");

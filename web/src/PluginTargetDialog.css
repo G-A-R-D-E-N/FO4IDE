@@ -1,10 +1,10 @@
-/* Target-plugin picker. Deliberately close to the other modals in the app (papyrus-modal et al)
-   rather than a new visual language: it is the same kind of question, asked properly. */
+
+
 
 .ptd-overlay {
   position: fixed;
   inset: 0;
-  z-index: 10000;          /* above the record view and its context menu */
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,7 +146,7 @@
 .ptd-btn-primary:hover { background: #1177bb; }
 .ptd-btn-primary:disabled { background: #2d4a5e; color: #8899a4; cursor: not-allowed; }
 
-/* Load-order index + type tags, so the list reads like xEdit's. */
+
 .ptd-idx {
   font-family: var(--mono, ui-monospace, monospace);
   font-size: 10.5px;

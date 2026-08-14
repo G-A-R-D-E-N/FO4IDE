@@ -3,12 +3,12 @@ using System.IO.Compression;
 
 namespace FO4RecordEditor.Services.Textures;
 
-/// <summary>
-/// Writes 8-bit RGBA to PNG. Small on purpose: the viewport's contract is a PNG data URL, and
-/// pulling in an imaging package to produce one 8-bit RGBA image would be the larger change.
-/// System.Drawing is not an option here either -- this assembly is plain net8.0 so the Godot
-/// project can reference it.
-/// </summary>
+
+
+
+
+
+
 public static class PngWriter
 {
     private static readonly byte[] Signature = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
@@ -24,11 +24,11 @@ public static class PngWriter
         Span<byte> ihdr = stackalloc byte[13];
         WriteBigEndian(ihdr, 0, (uint)width);
         WriteBigEndian(ihdr, 4, (uint)height);
-        ihdr[8] = 8;    // bit depth
-        ihdr[9] = 6;    // colour type: truecolour with alpha
-        ihdr[10] = 0;   // deflate
-        ihdr[11] = 0;   // adaptive filtering
-        ihdr[12] = 0;   // no interlace
+        ihdr[8] = 8;
+        ihdr[9] = 6;
+        ihdr[10] = 0;
+        ihdr[11] = 0;
+        ihdr[12] = 0;
         WriteChunk(output, "IHDR", ihdr.ToArray());
 
         WriteChunk(output, "IDAT", Deflate(rgba, width, height, level));
@@ -37,8 +37,8 @@ public static class PngWriter
         return output.ToArray();
     }
 
-    // Every scanline gets filter type 0 (None) in front of it. Filtering would compress better but
-    // costs a pass over the whole image, and these are throwaway previews, not shipped assets.
+
+
     private static byte[] Deflate(byte[] rgba, int width, int height, CompressionLevel level)
     {
         var stride = width * 4;

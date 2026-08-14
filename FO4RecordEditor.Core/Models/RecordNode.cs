@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 
 namespace FO4RecordEditor.Models;
 
-/// <summary>How the value cell should be edited: a free textbox, a checkbox (bool), a dropdown
-/// (enum), or a record picker (Ref -- a FormLink to another record).</summary>
+
+
 public enum FieldEditKind { Text, Bool, Enum, Ref }
 
 public class RecordNode : INotifyPropertyChanged
@@ -20,19 +20,19 @@ public class RecordNode : INotifyPropertyChanged
 
     public Dictionary<string, string> Values { get; } = new();
 
-    // Editor hint for the value cell: a bool field renders as a checkbox, an enum as a dropdown
-    // (xEdit-style), everything else as a textbox. Set by the walker from the field's CLR type.
+
+
     public FieldEditKind EditKind { get; set; } = FieldEditKind.Text;
     public string[]? EnumOptions { get; set; }
 
-    // For a FormLink (EditKind == Ref): a short display label for the target (e.g. "Keyword").
+
     public string? RefType { get; set; }
-    // Comma-separated list of EVERY concrete record class the link may point at (e.g. an "item"
-    // link -> "Ammunition,Armor,Ingestible,MiscItem,Weapon,..."). The picker filters on this set.
+
+
     public string? RefTypes { get; set; }
 
-    // True for a record row in the Explorer tree. Records are shown as leaves there (their
-    // fields live in the center property grid), so the tree binds TreeChildren, not Children.
+
+
     public bool IsRecordNode { get; set; }
 
     public IEnumerable<RecordNode> TreeChildren => IsRecordNode ? System.Array.Empty<RecordNode>() : Children;
@@ -72,15 +72,15 @@ public class RecordNode : INotifyPropertyChanged
 
     public bool IsLeaf => Children.Count == 0;
 
-    // A node that has a complete one-line summary (e.g. a condition "GetGlobalValue(...) == 0" or a
-    // component "Adhesive x3") AND keeps its sub-fields as children for editing. Flattened views
-    // (conflict grid, get_record) show the summary line and stop; the Record tree still expands the
-    // children so individual fields stay editable.
+
+
+
+
     public bool IsSummary { get; set; }
 
     public string DisplayValue => (IsLeaf || IsSummary) ? Value : $"({Children.Count} items)";
 
-    // ---- helpers used by scripts ----------------------------------------
+
 
     public RecordNode? GetChild(string key) =>
         Children.FirstOrDefault(c => string.Equals(c.Key, key, StringComparison.OrdinalIgnoreCase));
@@ -112,7 +112,7 @@ public class RecordNode : INotifyPropertyChanged
     public IEnumerable<RecordNode> SelfAndDescendants() =>
         Enumerable.Repeat(this, 1).Concat(Descendants());
 
-    // Deep path access: "Conditions[0].Function"
+
     public RecordNode? Navigate(string path)
     {
         RecordNode? cur = this;
@@ -139,7 +139,7 @@ public class RecordNode : INotifyPropertyChanged
 
     public string? GetPath(string path) => Navigate(path)?.Value;
 
-    // ---- INotifyPropertyChanged -----------------------------------------
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Notify([CallerMemberName] string name = "") =>

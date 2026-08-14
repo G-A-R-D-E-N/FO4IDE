@@ -7,19 +7,19 @@ import './WorkspaceHeader.css';
 
 interface WorkspaceHeaderProps {
   matrix: ConflictMatrix;
-  /** The two plugin columns the compare is anchored to. */
+
   anchors: [string, string] | null;
   onAnchorsChange: (next: [string, string] | null) => void;
-  /** Collapse every non-anchored column into "Other Plugins (N)". */
+
   compareOnly: boolean;
   onCompareOnlyChange: (next: boolean) => void;
-  /** Compare anchors only mean something on the Conflicts tab; elsewhere the pills are noise. */
+
   showCompare: boolean;
   actions: WorkspaceAction[];
   onOpenRecord: (formKey: string, plugin: string) => void;
 }
 
-/** Plugin compare pills, containment breadcrumb, and the record's action menu. */
+
 export default function WorkspaceHeader({
   matrix, anchors, onAnchorsChange, compareOnly, onCompareOnlyChange, showCompare, actions,
   onOpenRecord,
@@ -29,8 +29,8 @@ export default function WorkspaceHeader({
   const [picking, setPicking] = useState<0 | 1 | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // The containment chain is per-record and only meaningful for placed references; a record with
-  // no hierarchy simply yields a one-entry path, which still beats an empty strip.
+
+
   useEffect(() => {
     let cancelled = false;
     const b = window.chrome?.webview?.hostObjects?.backend;
@@ -136,7 +136,7 @@ export default function WorkspaceHeader({
   );
 }
 
-/** Containment chain, inline in the header's single row. */
+
 function Breadcrumb({ path, matrix, onOpenRecord }: {
   path: BreadcrumbNode[];
   matrix: ConflictMatrix;

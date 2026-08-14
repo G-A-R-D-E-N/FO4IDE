@@ -9,21 +9,21 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// Source in, graph, source out, and the same instructions at both ends.
-/// </summary>
-/// <remarks>
-/// This is the only claim about the lifter worth making. A graph that merely loads proves nothing:
-/// the question is whether the graph <em>means</em> what the file meant, and the only way to answer
-/// it is to compile both and compare instruction for instruction with the same
-/// <see cref="PexComparer"/> the Creation Kit differential uses.
-/// <para>
-/// The corpus is the fixture reference sources, which are hand-written Papyrus covering branches,
-/// loops, states, remote events, arrays, casts and early returns. They were written as the target
-/// of the lowering, which makes them an independent input here rather than something shaped to suit
-/// the lifter.
-/// </para>
-/// </remarks>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class GraphLiftRoundTripTests
 {
     private readonly ITestOutputHelper _output;
@@ -36,7 +36,7 @@ public class GraphLiftRoundTripTests
     private static PapyrusScriptIndex Index(string extraRoot) =>
         PapyrusCompiler.IndexFor(new[] { extraRoot, TestRoots.BaseStubs, TestRoots.GraphScripts });
 
-    /// <summary>Compiles source the way GraphCompiler does, publishing it to a root first.</summary>
+
     private static (PexFile? Pex, string Diagnostics) CompileText(string text)
     {
         var root = Directory.CreateTempSubdirectory("fo4re-lift-");
@@ -56,7 +56,7 @@ public class GraphLiftRoundTripTests
         }
     }
 
-    /// <summary>Parses source, lifts it to a graph, and compiles the graph back to a .pex.</summary>
+
     private (PexFile? Pex, string Report) ThroughGraph(string text)
     {
         var root = Directory.CreateTempSubdirectory("fo4re-lift-src-");
@@ -112,9 +112,9 @@ public class GraphLiftRoundTripTests
     [Fact]
     public void A_source_the_lifter_cannot_express_is_refused_rather_than_mangled()
     {
-        // A loop whose condition calls a function. The graph evaluates a condition from a data wire
-        // and binds an impure producer to a local before the loop, so it would be tested once. That
-        // is a different script, so it has to be refused.
+
+
+
         var text = """
             Scriptname Fixture extends ObjectReference
 

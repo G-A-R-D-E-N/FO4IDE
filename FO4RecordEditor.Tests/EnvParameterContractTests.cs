@@ -7,14 +7,14 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// The 'env' argument is what orders a plugin's MAST table by real load order. Omit it and Mutagen
-// emits its own order, which can place a dependent ESM before its dependency -- the game then hangs
-// on load with no crash log.
-//
-// It was declared `object? env = null` on the save paths, so omitting it was silent and legal. Eight
-// callers did exactly that over time: five inside WriteService, then BackendInterop's two (the live
-// WebView2 GUI save path) and RecordTabViewModel's. Making the parameter required turns the next
-// omission into a compile error; this test stops anyone reinstating the default.
+
+
+
+
+
+
+
+
 public class EnvParameterContractTests
 {
     private readonly ITestOutputHelper _out;
@@ -39,8 +39,8 @@ public class EnvParameterContractTests
             "produces a plugin that hangs the game on load -- pass null explicitly if you truly have none");
     }
 
-    // Guards the specific methods that write bytes to disk, by name, so a rename or a new overload
-    // that reintroduces the default is still caught.
+
+
     [Theory]
     [InlineData("SavePlugin")]
     [InlineData("SaveScriptPatch")]

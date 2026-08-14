@@ -31,7 +31,7 @@ public class ArmorResistanceCurveTests
         armor.FormVersion = checked((ushort)formVersion);
         armor.Resistances = new();
 
-        // Exercise the same generic element and field-editing paths exposed to the UI and MCP tools.
+
         ElementService.AddElement(plugin, editorId, "Resistances", template: null, env: null)
             .Should().Contain("Added a ArmorResistance");
         ElementService.AddElement(plugin, editorId, "Resistances", template: null, env: null)
@@ -59,11 +59,11 @@ public class ArmorResistanceCurveTests
             var parsed = Fallout4Mod.CreateFromBinary(ModPath.FromPath(path), Fallout4Release.Fallout4);
             AssertParsedEntries(((IArmorGetter)parsed.Armors.Single()).Resistances!, expectCurveTable);
 
-            // The overlay path is the regression target: its parent list used to index every DAMA
-            // entry at a fixed size. Two legacy entries prove the second one begins at byte 8, while
-            // two next-gen entries prove the version-152 stride is 12. Reading CurveTable on both
-            // legacy entries also proves an absent tail cannot bleed into the next entry or slice
-            // beyond the final entry.
+
+
+
+
+
             overlay = Fallout4Mod.CreateFromBinaryOverlay(ModPath.FromPath(path), Fallout4Release.Fallout4);
             AssertParsedEntries(overlay.Armors.Single().Resistances!, expectCurveTable);
         }

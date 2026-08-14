@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=FO4RecordEditor
-GenericName=Fallout 4 Plugin Editor
+Name=FO4IDE
+GenericName=Fallout 4 Plugin IDE
 Comment=Edit Fallout 4 plugins, resolve conflicts, inspect cells, archives and Papyrus scripts
 Exec=fo4recordeditor
 Icon=fo4recordeditor

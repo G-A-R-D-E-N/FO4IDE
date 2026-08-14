@@ -13,22 +13,22 @@ from pathlib import Path
 SCRIPT = Path(__file__).with_name("check-wiki-links.py")
 
 MAP = """\
-# Wiki map
 
-## Paired
+
+
 
 | docs/internal | wiki page | notes |
 |---|---|---|
 | `PAIRED.md` | PAIRED | |
 
-## Wiki-only pages
+
 
 | wiki page | source in the repo |
 |---|---|
 | Home | wiki landing page; no repo file |
 | README | root `README.md` |
 
-## Internal-only docs
+
 
 `INTERNAL.md`
 """

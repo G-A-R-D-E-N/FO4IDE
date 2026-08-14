@@ -7,15 +7,15 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The type checker: what it rejects, and just as importantly what it must not.
-/// </summary>
-/// <remarks>
-/// The corpus sweep proves the checker is quiet on 7,832 vanilla scripts. On its own that is also
-/// what a checker which never fires would score, so these tests are the other half of the claim:
-/// each diagnostic has a test that makes it fire, and each rule that must stay silent has a test
-/// that keeps it silent.
-/// </remarks>
+
+
+
+
+
+
+
+
+
 public class PapyrusTypeCheckerTests : IDisposable
 {
     private readonly string _root;
@@ -50,7 +50,7 @@ public class PapyrusTypeCheckerTests : IDisposable
         return new PapyrusTypeChecker(index).Check(resolution);
     }
 
-    /// <summary>Wraps a function body in a script that also declares a small type hierarchy.</summary>
+
     private void WriteWithHierarchy(string body, string members = "")
     {
         Write("Form", "ScriptName Form");
@@ -64,7 +64,7 @@ Function Go()
 EndFunction");
     }
 
-    // ---- assignment -----------------------------------------------------------------------------
+
 
     [Fact]
     public void Assigning_a_string_to_an_int_is_rejected()

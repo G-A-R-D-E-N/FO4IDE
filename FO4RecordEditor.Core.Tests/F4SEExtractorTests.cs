@@ -4,24 +4,24 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-/// <summary>
-/// The registration scanner, over every text shape the shipped F4SE source actually contains.
-/// </summary>
-/// <remarks>
-/// Each excerpt here is copied from a real file and cited, because the point of the scanner is that
-/// it survives the formatting real source uses rather than the formatting an emitter would produce.
-/// <see cref="F4SECorpusTests"/> runs it over the whole tree; this file is what says why it works.
-/// </remarks>
+
+
+
+
+
+
+
+
 public class F4SEExtractorTests
 {
     private static readonly F4SERegistrationExtractor Extractor = new();
 
-    // ---- the two whitespace styles ------------------------------------------------------------
+
 
     [Fact]
     public void The_compact_style_is_recovered()
     {
-        // f4se-master/f4se/PapyrusActor.cpp:135
+
         var schema = Extractor.Extract("""
             void papyrusActor::RegisterFuncs(VirtualMachine* vm)
             {
@@ -44,7 +44,7 @@ public class F4SEExtractorTests
     [Fact]
     public void The_spaced_style_with_a_static_tag_is_recovered()
     {
-        // f4se-master/f4se/PapyrusGame.cpp:191
+
         var schema = Extractor.Extract("""
             vm->RegisterFunction(
                 new NativeFunction0 <StaticFunctionTag, TESObjectREFR*>("GetCurrentConsoleRef", "Game", papyrusGame::GetCurrentConsoleRef, vm));
@@ -61,7 +61,7 @@ public class F4SEExtractorTests
     [Fact]
     public void A_registration_split_across_lines_is_recovered()
     {
-        // The majority form in the shipped source, which is why the scanner runs over whole files.
+
         var schema = Extractor.Extract("""
             vm->RegisterFunction(
                 new NativeFunction1<
@@ -79,12 +79,12 @@ public class F4SEExtractorTests
         schema.Natives.Should().ContainSingle().Which.FunctionName.Should().Be("HasKeyword");
     }
 
-    // ---- nesting and scoping ------------------------------------------------------------------
+
 
     [Fact]
     public void A_nested_template_argument_is_split_correctly()
     {
-        // A non-greedy regex stops at the inner '>', which is why depth counting is required.
+
         var schema = Extractor.Extract("""
             vm->RegisterFunction(new NativeFunction1<Actor, VMArray<BGSMod::Attachment::Mod*>, UInt32>("GetWornItemMods", "Actor", papyrusActor::GetWornItemMods, vm));
             """);
@@ -109,7 +109,7 @@ public class F4SEExtractorTests
     [Fact]
     public void A_pointer_with_a_space_before_the_star_is_recovered()
     {
-        // One real occurrence of this spelling exists in the shipped source.
+
         var schema = Extractor.Extract("""
             vm->RegisterFunction(new NativeFunction0<StaticFunctionTag, TESObjectMISC *>("Get", "Thing", papyrusThing::Get, vm));
             """);
@@ -118,13 +118,13 @@ public class F4SEExtractorTests
         schema.Natives.Should().ContainSingle().Which.ReturnType.ToString().Should().Be("MiscObject");
     }
 
-    // ---- latent, flags, structs ---------------------------------------------------------------
+
 
     [Fact]
     public void A_latent_registration_is_marked_latent()
     {
-        // f4se-master/f4se/PapyrusUI.cpp:339 registers UI.Set as latent, though UI.psc declares it
-        // as a plain native, which is why latency can never be cross checked against a .psc.
+
+
         var schema = Extractor.Extract("""
             vm->RegisterFunction(new LatentNativeFunction3<StaticFunctionTag, bool, BSFixedString, BSFixedString, VMVariable>("Set", "UI", papyrusUI::Set, vm));
             """);
@@ -137,7 +137,7 @@ public class F4SEExtractorTests
     [Fact]
     public void A_no_wait_flag_lands_on_the_function_it_names()
     {
-        // f4se-master/f4se/PapyrusObjectReference.cpp:765 shape.
+
         var schema = Extractor.Extract("""
             vm->RegisterFunction(new NativeFunction0<TESObjectREFR, void>("AttachWire", "ObjectReference", papyrusObjectReference::AttachWire, vm));
             vm->RegisterFunction(new NativeFunction0<TESObjectREFR, void>("Other", "ObjectReference", papyrusObjectReference::Other, vm));
@@ -172,7 +172,7 @@ public class F4SEExtractorTests
         declared.VmTypeName.Should().Be(owner + "#" + name);
     }
 
-    // ---- what must not be recovered -----------------------------------------------------------
+
 
     [Fact]
     public void A_line_commented_registration_is_not_recovered()
@@ -211,8 +211,8 @@ public class F4SEExtractorTests
     [Fact]
     public void An_arity_that_disagrees_with_its_type_name_is_refused()
     {
-        // The arity is spelled in the type, so a mismatch means the scan drifted. Recording the
-        // binding anyway would put a signature into the palette that no C++ function has.
+
+
         var schema = Extractor.Extract("""
             vm->RegisterFunction(new NativeFunction2<Actor, bool, UInt32>("Wrong", "Actor", papyrusActor::Wrong, vm));
             """);
@@ -221,7 +221,7 @@ public class F4SEExtractorTests
         schema.Problems.Should().ContainSingle().Which.Should().Contain("carries 1 parameter types");
     }
 
-    // ---- bookkeeping --------------------------------------------------------------------------
+
 
     [Fact]
     public void A_recovered_binding_carries_the_line_it_came_from()
@@ -250,8 +250,8 @@ public class F4SEExtractorTests
     [Fact]
     public void A_struct_the_same_file_declares_is_mapped_in_signatures()
     {
-        // Caught by the corpus sweep: reading registrations before collecting struct names left 71
-        // of 228 real natives carrying an unmapped type. Struct names have to be gathered first.
+
+
         var schema = Extractor.Extract("""
             DECLARE_STRUCT(WornItem, "Actor")
             vm->RegisterFunction(new NativeFunction2<Actor, WornItem, UInt32, bool>("GetWornItem", "Actor", papyrusActor::GetWornItem, vm));

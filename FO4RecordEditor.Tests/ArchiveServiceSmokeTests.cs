@@ -7,11 +7,11 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-// Exercises the real Archive2.exe end to end: pack a tiny loose folder into a .ba2, then read it back
-// with ArchiveService's own Mutagen-backed reader to confirm the round trip. Generates its own fixture
-// files rather than depending on a checked-in sample.
-//
-// Skips loudly when the local Creation Kit / Archive2.exe is absent, rather than passing.
+
+
+
+
+
 public class ArchiveServiceSmokeTests
 {
     private readonly ITestOutputHelper _out;

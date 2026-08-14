@@ -1,10 +1,11 @@
-# FO4RecordEditor as an MCP server
+# FO4IDE as an MCP server
 
 ## What this actually is
 
 MCP (Model Context Protocol) is a standard way to hand an AI assistant a set of tools it can call.
-FO4RecordEditor implements it: launched with `--mcp`, it does not open a window. It sits on stdin and
+FO4IDE implements it: launched with `--mcp`, it does not open a window. It sits on stdin and
 stdout speaking JSON-RPC, and it advertises **109 tools** for reading and writing Fallout 4 plugins.
+The public product name is FO4IDE. The executable remains `FO4RecordEditor.exe` for compatibility.
 
 The practical effect is that your AI stops guessing about your load order and starts *querying* it. It
 can open a plugin, resolve an EditorID, read the winning override of a record, edit a field, save, and
