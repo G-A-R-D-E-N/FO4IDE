@@ -2,9 +2,9 @@ namespace Mutagen.Bethesda.Plugins.Records;
 
 public interface IMajorRecordIdentifierGetter : IFormKeyGetter
 {
-    /// <summary>
-    /// The usually unique string identifier assigned to the Major Record
-    /// </summary>
+
+
+
     string? EditorID { get; }
 }
 
@@ -12,7 +12,7 @@ public record MajorRecordIdentifier : IMajorRecordIdentifierGetter
 {
     public required FormKey FormKey { get; init; }
     public string? EditorID { get; init; }
-    
+
     public virtual bool Equals(MajorRecordIdentifier? other)
     {
         if (ReferenceEquals(null, other)) return false;
@@ -24,7 +24,7 @@ public record MajorRecordIdentifier : IMajorRecordIdentifierGetter
     {
         return HashCode.Combine(FormKey, EditorID?.GetHashCode(StringComparison.OrdinalIgnoreCase));
     }
-    
+
     public static IEqualityComparer<IMajorRecordIdentifierGetter> EqualityComparer => _equalityComparer;
 
     private static readonly Comparer _equalityComparer = new();
@@ -39,7 +39,7 @@ public record MajorRecordIdentifier : IMajorRecordIdentifierGetter
             return x.FormKey.Equals(y.FormKey)
                    && string.Equals(x.EditorID, y.EditorID, StringComparison.OrdinalIgnoreCase);
         }
-        
+
         public int GetHashCode(IMajorRecordIdentifierGetter obj)
         {
             return HashCode.Combine(obj.FormKey, obj.EditorID?.GetHashCode(StringComparison.OrdinalIgnoreCase));

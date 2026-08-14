@@ -4,20 +4,20 @@ using System.Drawing;
 
 namespace Mutagen.Bethesda.Binary;
 
-/// <summary>
-/// Extension functions adding Mutagen specific parsing functionality
-/// </summary>
+
+
+
 public static class IBinaryStreamExt
 {
-    /// <summary>
-    /// Reads a color from the binary stream.
-    /// The stream will be advanced 4 bytes (or 3 if only 3 remain). 
-    /// If the stream has more than 3 bytes, the 4th byte will be interpreted as alpha.
-    /// Will throw an exception if there is not at least 3 bytes remaining.
-    /// </summary>
-    /// <param name="stream">Stream to read from</param>
-    /// <param name="binaryType">Format to read the color as</param>
-    /// <returns>Bytes converted to a Color object</returns>
+
+
+
+
+
+
+
+
+
     public static Color ReadColor<TStream>(this TStream stream, ColorBinaryType binaryType)
         where TStream : IBinaryReadStream
     {
@@ -36,14 +36,14 @@ public static class IBinaryStreamExt
         }
     }
 
-    /// <summary>
-    /// Extracts a color from binary span. 
-    /// If the span more than 3 bytes, the 4th byte will be interpreted as alpha.
-    /// Will throw an exception if there is not at least 3 bytes.
-    /// </summary>
-    /// <param name="span">Span to read from</param>
-    /// <param name="binaryType">Format to read the color as</param>
-    /// <returns>Bytes converted to a Color object</returns>
+
+
+
+
+
+
+
+
     public static Color ReadColor(this ReadOnlySpan<byte> span, ColorBinaryType binaryType)
     {
         switch (binaryType)
@@ -93,14 +93,14 @@ public static class IBinaryStreamExt
         }
     }
 
-    /// <summary>
-    /// Extracts a color from binary span. 
-    /// If the span more than 3 bytes, the 4th byte will be interpreted as alpha.
-    /// Will throw an exception if there is not at least 3 bytes.
-    /// </summary>
-    /// <param name="span">Span to read from</param>
-    /// <param name="binaryType">Format to read the color as</param>
-    /// <returns>Bytes converted to a Color object</returns>
+
+
+
+
+
+
+
+
     public static Color ReadColor(this ReadOnlyMemorySlice<byte> span, ColorBinaryType binaryType)
     {
         return span.Span.ReadColor(binaryType);

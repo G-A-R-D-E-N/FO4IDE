@@ -2,9 +2,9 @@
 
 namespace Mutagen.Bethesda.Plugins.Binary.Parameters;
 
-/// <summary>
-/// An abstract class representing a logic choice for ordering masters
-/// </summary>
+
+
+
 public abstract class AMastersListOrderingOption
 {
     public static implicit operator AMastersListOrderingOption(MastersListOrderingOption option)

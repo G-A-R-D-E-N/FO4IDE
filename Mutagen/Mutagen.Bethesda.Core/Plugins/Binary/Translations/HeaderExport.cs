@@ -5,26 +5,26 @@ using static Mutagen.Bethesda.Translations.Binary.UtilityTranslation;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Translations;
 
-/// <summary>
-/// A disposable class that helps streamline writing headers.
-/// Track number of bytes written inside its using statement, and then 
-/// updates the header's length bytes appropriately when it is disposed.
-/// </summary>
+
+
+
+
+
 public readonly struct HeaderExport : IDisposable
 {
-    /// <summary>
-    /// Writer being tracked
-    /// </summary>
+
+
+
     public readonly MutagenWriter Writer;
-    
-    /// <summary>
-    /// Location of the header's length bytes
-    /// </summary>
+
+
+
+
     public readonly long SizePosition;
-    
-    /// <summary>
-    /// Record constants to use
-    /// </summary>
+
+
+
+
     public readonly RecordHeaderConstants RecordConstants;
 
     private HeaderExport(
@@ -37,14 +37,14 @@ public readonly struct HeaderExport : IDisposable
         SizePosition = sizePosition;
     }
 
-    /// <summary>
-    /// Exports a header, and creates disposable to track content length.
-    /// When disposed, header will automatically update its length bytes.
-    /// </summary>
-    /// <param name="writer">Writer to export header to</param>
-    /// <param name="record">RecordType of the header</param>
-    /// <param name="type">ObjectType the header is for</param>
-    /// <returns>Object to dispose when header's content has been written</returns>
+
+
+
+
+
+
+
+
     public static HeaderExport Header(
         MutagenWriter writer,
         RecordType record,
@@ -56,13 +56,13 @@ public readonly struct HeaderExport : IDisposable
         return new HeaderExport(writer, sizePosition, writer.MetaData.Constants.Constants(type));
     }
 
-    /// <summary>
-    /// Exports a record header, and creates disposable to track content length.
-    /// When disposed, header will automatically update its length bytes.
-    /// </summary>
-    /// <param name="writer">Writer to export header to</param>
-    /// <param name="record">RecordType of the header</param>
-    /// <returns>Object to dispose when header's content has been written</returns>
+
+
+
+
+
+
+
     public static HeaderExport Record(
         MutagenWriter writer,
         RecordType record)
@@ -70,13 +70,13 @@ public readonly struct HeaderExport : IDisposable
         return Header(writer, record, ObjectType.Record);
     }
 
-    /// <summary>
-    /// Exports a group header, and creates disposable to track content length.
-    /// When disposed, header will automatically update its length bytes.
-    /// </summary>
-    /// <param name="writer">Writer to export header to</param>
-    /// <param name="record">RecordType of the header</param>
-    /// <returns>Object to dispose when header's content has been written</returns>
+
+
+
+
+
+
+
     public static HeaderExport Group(
         MutagenWriter writer,
         RecordType record)
@@ -84,13 +84,13 @@ public readonly struct HeaderExport : IDisposable
         return Header(writer, record, ObjectType.Group);
     }
 
-    /// <summary>
-    /// Exports a subrecord header, and creates disposable to track content length.
-    /// When disposed, header will automatically update its length bytes.
-    /// </summary>
-    /// <param name="writer">Writer to export header to</param>
-    /// <param name="record">RecordType of the header</param>
-    /// <returns>Object to dispose when header's content has been written</returns>
+
+
+
+
+
+
+
     public static HeaderExport Subrecord(
         MutagenWriter writer,
         RecordType record)
@@ -98,15 +98,15 @@ public readonly struct HeaderExport : IDisposable
         return Header(writer, record, ObjectType.Subrecord);
     }
 
-    /// <summary>
-    /// Exports a subrecord header, and creates disposable to track content length.
-    /// When disposed, header will automatically update its length bytes.
-    /// </summary>
-    /// <param name="writer">Writer to export header to</param>
-    /// <param name="record">RecordType of the header</param>
-    /// <param name="overflowRecord">RecordType to use for an extra preceding subrecord, if the length is too large</param>
-    /// <param name="writerToUse">Writer to write to for the contents of the header</param>
-    /// <returns>Object to dispose when header's content has been written</returns>
+
+
+
+
+
+
+
+
+
     public static IDisposable Subrecord(
         MutagenWriter writer,
         RecordType record,
@@ -129,9 +129,9 @@ public readonly struct HeaderExport : IDisposable
         }
     }
 
-    /// <summary>
-    /// Measures length of content and writes results to header
-    /// </summary>
+
+
+
     public void Dispose()
     {
         var endPos = Writer.Position;
@@ -146,8 +146,8 @@ public readonly struct HeaderExport : IDisposable
             diff -= RecordConstants.LengthAfterType;
         }
 
-        // If negative, we're likely mid-exception.
-        // We want exit out and trickle up the original
+
+
         if (diff < 0)
         {
             return;

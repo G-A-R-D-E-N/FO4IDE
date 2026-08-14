@@ -3,53 +3,53 @@ using System.Diagnostics;
 
 namespace Mutagen.Bethesda.Plugins;
 
-/// <summary>
-/// A struct representing a four character header for a record.
-/// These are used commonly in the binary format to delineate records and subrecords.
-/// </summary>
+
+
+
+
 [DebuggerDisplay("{Type}")]
 public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
 {
-    /// <summary>
-    /// The common length for all RecordTypes
-    /// </summary>
+
+
+
     public const byte Length = 4;
 
-    /// <summary>
-    /// A static readonly singleton string representing a null RecordType
-    /// </summary>
+
+
+
     public static readonly RecordType Null = new RecordType("\0\0\0\0");
-        
-    /// <summary>
-    /// The type as an integer
-    /// </summary>
+
+
+
+
     public readonly int TypeInt;
 
-    /// <summary>
-    /// The type as a four character string
-    /// </summary>
+
+
+
     public string Type => GetStringType(TypeInt);
 
-    /// <summary>
-    /// The type as a four character string, checking that all characters are printable
-    /// </summary>
+
+
+
     public string CheckedType => GetCheckedStringType(TypeInt);
 
-    /// <summary>
-    /// Constructor taking in an integer
-    /// </summary>
+
+
+
     [DebuggerStepThrough]
     public RecordType (int type)
     {
         TypeInt = type;
     }
 
-    /// <summary>
-    /// Constructor taking in a string
-    /// The integer constructor is preferable in most cases, as it is faster and can never throw an exception.
-    /// </summary>
-    /// <param name="typeStr">String of four characters</param>
-    /// <exception cref="ArgumentException">If string does not contain exactly four characters</exception>
+
+
+
+
+
+
     [DebuggerStepThrough]
     public RecordType(ReadOnlySpan<char> typeStr)
     {
@@ -60,13 +60,13 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         TypeInt = GetTypeInt(typeStr);
     }
 
-    /// <summary>
-    /// Attempts to construct a RecordType from a string.
-    /// Must be of size 4 to succeed.
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <param name="recType">RecordType if successfully converted</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
+
     public static bool TryFactory(ReadOnlySpan<char> str, out RecordType recType)
     {
         if (str.Length != Length)
@@ -78,32 +78,32 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         return true;
     }
 
-    /// <summary>
-    /// Default equality operator
-    /// </summary>
-    /// <param name="other">object to compare to</param>
-    /// <returns>True if RecordType with equal TypeInt</returns>
+
+
+
+
+
     public override bool Equals(object? other)
     {
         if (other is not RecordType rhs) return false;
         return Equals(rhs);
     }
 
-    /// <summary>
-    /// RecordType equality operator
-    /// </summary>
-    /// <param name="other">RecordType to compare to</param>
-    /// <returns>True if equal TypeInt value</returns>
+
+
+
+
+
     public bool Equals(RecordType other)
     {
         return TypeInt == other.TypeInt;
     }
 
-    /// <summary>
-    /// String equality operator
-    /// </summary>
-    /// <param name="other">String to compare to</param>
-    /// <returns>True if equal Type string value</returns>
+
+
+
+
+
     public bool Equals(string? other)
     {
         if (string.IsNullOrWhiteSpace(other)) return false;
@@ -121,29 +121,29 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         return !r1.Equals(r2);
     }
 
-    /// <summary>
-    /// Hashcode retrieved from TypeInt value.
-    /// </summary>
-    /// <returns>Hashcode retrieved from TypeInt value.</returns>
+
+
+
+
     public override int GetHashCode()
     {
         return HashCode.Combine(TypeInt);
     }
 
-    /// <summary>
-    /// Converts to a four character string.
-    /// </summary>
-    /// <returns>String representation of RecordType</returns>
+
+
+
+
     public override string ToString()
     {
         return Type;
     }
 
-    /// <summary>
-    /// Converts an integer to its string RecordType representation
-    /// </summary>
-    /// <param name="typeInt">Integer to convert</param>
-    /// <returns>Four character string</returns>
+
+
+
+
+
     [DebuggerStepThrough]
     public static string GetStringType(int typeInt)
     {
@@ -156,12 +156,12 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         });
     }
 
-    /// <summary>
-    /// Converts an integer to its string RecordType representation.
-    /// If unprintable characters are encountered, they will be modified
-    /// </summary>
-    /// <param name="typeInt">Integer to convert</param>
-    /// <returns>Character string</returns>
+
+
+
+
+
+
     public static string GetCheckedStringType(int typeInt)
     {
         var ret = GetStringType(typeInt);
@@ -175,12 +175,12 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         return ret;
     }
 
-    /// <summary>
-    /// Converts an string to its int RecordType representation
-    /// </summary>
-    /// <param name="typeStr">Four character string to convert</param>
-    /// <returns>Integer representing the record type</returns>
-    /// <exception cref="ArgumentException">If string does not contain exactly four characters</exception>
+
+
+
+
+
+
     [DebuggerStepThrough]
     public static int GetTypeInt(ReadOnlySpan<char> typeStr)
     {

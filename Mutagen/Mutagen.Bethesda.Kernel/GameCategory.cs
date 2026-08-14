@@ -2,15 +2,15 @@
 
 namespace Mutagen.Bethesda;
 
-/// <summary>
-/// Game categories that generally have similar or the same formats
-/// </summary>
+
+
+
 public enum GameCategory
 {
     [Description("Oblivion")]
     Oblivion,
     [Description("Skyrim")]
-    Skyrim, 
+    Skyrim,
     [Description("Fallout4")]
     Fallout4,
     [Description("Starfield")]
@@ -38,12 +38,12 @@ public static class GameReleaseKernelExt
             _ => throw new NotImplementedException(),
         };
     }
-    
+
     public static int GetMasterFlagIndex(this GameCategory release)
     {
         return 0x0000_0001;
     }
-    
+
     public static int? GetLocalizedFlagIndex(this GameCategory release)
     {
         return 0x0000_0080;

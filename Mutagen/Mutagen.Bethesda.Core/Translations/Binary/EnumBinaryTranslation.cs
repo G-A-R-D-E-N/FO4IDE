@@ -156,9 +156,9 @@ public sealed class EnumBinaryTranslation<TEnum, TReader, TWriter>
         TEnum? item,
         long length)
     {
-        // A null nullable-enum being written into an already-open fixed-length field (e.g. an
-        // activate-choice perk's EPF3 flags) should serialize as the default (0), not throw. The
-        // previous NotImplementedException here was the real cause of the perk EPF3 write failure.
+
+
+
         WriteValue(writer, item ?? default(TEnum), length);
     }
 

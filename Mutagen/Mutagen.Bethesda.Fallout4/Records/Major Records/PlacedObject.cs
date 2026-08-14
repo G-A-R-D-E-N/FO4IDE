@@ -32,10 +32,10 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-    /// <summary>
-    /// Used when Placed Object refers to:
-    /// [Activator, Static, StaticCollection, Tree]
-    /// </summary>
+
+
+
+
     [Flags]
     public enum StaticMajorFlag : uint
     {
@@ -54,10 +54,10 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-    /// <summary>
-    /// Used when Placed Object refers to:
-    /// [Container, Terminal]
-    /// </summary>
+
+
+
+
     [Flags]
     public enum ContainerMajorFlag : uint
     {
@@ -73,9 +73,9 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-    /// <summary>
-    /// Used when Placed Object refers to: [Door]
-    /// </summary>
+
+
+
     [Flags]
     public enum DoorMajorFlag : uint
     {
@@ -92,9 +92,9 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-    /// <summary>
-    /// Used when Placed Object refers to: [Light]
-    /// </summary>
+
+
+
     [Flags]
     public enum LightMajorFlag : uint
     {
@@ -111,9 +111,9 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-    /// <summary>
-    /// Used when Placed Object refers to: [MoveableStatic]
-    /// </summary>
+
+
+
     [Flags]
     public enum MoveableStaticMajorFlag : uint
     {
@@ -130,9 +130,9 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-    /// <summary>
-    /// Used when Placed Object refers to: [AddonNode]
-    /// </summary>
+
+
+
     [Flags]
     public enum AddonNodeMajorFlag : uint
     {
@@ -145,10 +145,10 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-    /// <summary>
-    /// Used when Placed Object refers to:
-    /// [Ingestible, Book, Scroll, Ammunition, Armor, Ingredient, Key, MiscItem, Furniture, Weapon]
-    /// </summary>
+
+
+
+
     [Flags]
     public enum ItemMajorFlag : uint
     {

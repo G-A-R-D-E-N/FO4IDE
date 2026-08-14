@@ -6,11 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Mutagen.Bethesda.Plugins;
 
-/// <summary>
-/// A FormKey with an associated Major Record Type that it is allowed to link to.
-/// This provides type safety concepts on top of a basic FormKey.
-/// </summary>
-/// <typeparam name="TMajorGetter">The type of Major Record the Link is allowed to connect with</typeparam>
+
+
+
+
+
 [DebuggerDisplay("{this.FormKey}")]
 public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
     IEquatable<FormLink<TMajorGetter>>,
@@ -22,22 +22,22 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
 {
     protected FormKey _formKey;
 
-    /// <summary>
-    /// A readonly singleton representing an unlinked FormLink
-    /// </summary>
+
+
+
     public static readonly IFormLinkGetter<TMajorGetter> Null = new FormLinkGetter<TMajorGetter>();
 
-    /// <summary>
-    /// FormKey of the target record
-    /// </summary>
+
+
+
     public FormKey FormKey => _formKey;
 
-    /// <summary>
-    /// True if unlinked and ID points to Null
-    /// </summary>
+
+
+
     public bool IsNull => FormKey.IsNull;
 
-    /// <inheritdoc />
+
     public Type Type => typeof(TMajorGetter);
 
     FormKey? IFormLinkGetter.FormKeyNullable => FormKey;
@@ -75,11 +75,11 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
         return true;
     }
 
-    /// <summary> 
-    /// Attempts to locate link target in given Link Cache. 
-    /// </summary> 
-    /// <param name="cache">Link Cache to resolve against</param> 
-    /// <returns>TryGet object with located record if successful</returns> 
+
+
+
+
+
     public TMajorGetter? TryResolve(ILinkCache cache)
     {
         if (this.TryResolve(cache, out var rec))
@@ -89,54 +89,54 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
         return default;
     }
 
-    /// <summary>
-    /// Default Equality
-    /// </summary>
-    /// <param name="obj">Object to compare to</param>
-    /// <returns>True if object is ILinkGetter and FormKeys match</returns>
+
+
+
+
+
     public override bool Equals(object? obj)
     {
         return IFormLinkExt.EqualsWithInheritanceConsideration(this, obj);
     }
 
-    /// <summary>
-    /// Compares equality of two links.
-    /// </summary>
-    /// <param name="other">Other link to compare to</param>
-    /// <returns>True if FormKey members are equal</returns>
+
+
+
+
+
     public bool Equals(FormLink<TMajorGetter>? other) => FormKey.Equals(other?.FormKey ?? FormKey.Null);
 
-    /// <summary>
-    /// Compares equality of two links, where rhs is a nullable link.
-    /// </summary>
-    /// <param name="other">Other link to compare to</param>
-    /// <returns>True if FormKey members are equal</returns>
+
+
+
+
+
     public bool Equals(FormLinkNullable<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(FormKey, other?.FormKeyNullable);
 
-    /// <summary>
-    /// Compares equality of two links.
-    /// </summary>
-    /// <param name="other">Other link to compare to</param>
-    /// <returns>True if FormKey members are equal</returns>
+
+
+
+
+
     public bool Equals(IFormLinkGetter<TMajorGetter>? other) => FormKey.Equals(other?.FormKey);
 
-    /// <summary>
-    /// Compares equality of two links, where rhs is a nullable link.
-    /// </summary>
-    /// <param name="other">Other link to compare to</param>
-    /// <returns>True if FormKey members are equal</returns>
+
+
+
+
+
     public bool Equals(IFormLinkNullableGetter<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(FormKey, other?.FormKeyNullable);
 
-    /// <summary>
-    /// Returns hash code
-    /// </summary>
-    /// <returns>Hash code evaluated from FormKey member</returns>
+
+
+
+
     public override int GetHashCode() => FormKey.GetHashCode();
 
-    /// <summary>
-    /// Returns string representation of link
-    /// </summary>
-    /// <returns>Returns FormKey string</returns>
+
+
+
+
     public override string ToString() => $"{FormKey}<{MajorRecordPrinter<TMajorGetter>.TypeString}>";
 
     public bool Equals(TMajorGetter? other)
@@ -144,7 +144,7 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
         return IFormLinkExt.EqualsWithInheritanceConsideration(this, other);
     }
 
-    public IFormLink<TMajorRet> Cast<TMajorRet>() 
+    public IFormLink<TMajorRet> Cast<TMajorRet>()
         where TMajorRet : class, IMajorRecordGetter
     {
         return new FormLink<TMajorRet>(FormKey);
@@ -153,18 +153,18 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
     public static IEqualityComparer<IFormLinkGetter<TMajorGetter>> TypelessComparer => FormLinkTypelessComparer<TMajorGetter>.Instance;
 }
 
-/// <summary>
-/// A FormKey with an associated Major Record Type that it is allowed to link to.
-/// This provides type safety concepts on top of a basic FormKey.
-/// </summary>
-/// <typeparam name="TMajorGetter">The type of Major Record the Link is allowed to connect with</typeparam>
+
+
+
+
+
 [DebuggerDisplay("{this.FormKey}")]
 public sealed class FormLink<TMajorGetter> : FormLinkGetter<TMajorGetter>, IFormLink<TMajorGetter>
     where TMajorGetter : class, IMajorRecordGetter
 {
-    /// <summary>
-    /// FormKey of the target record
-    /// </summary>
+
+
+
     public new FormKey FormKey
     {
         get => _formKey;
@@ -182,44 +182,44 @@ public sealed class FormLink<TMajorGetter> : FormLinkGetter<TMajorGetter>, IForm
     {
     }
 
-    /// <summary>
-    /// Default constructor that creates a link to the target FormKey
-    /// </summary>
+
+
+
     public FormLink(FormKey formKey)
         : base(formKey)
     {
     }
 
-    /// <summary>
-    /// Default constructor that creates a link to the target FormKey
-    /// </summary>
+
+
+
     public FormLink(TMajorGetter record)
         : base(record.FormKey)
     {
     }
 
-    /// <summary>
-    /// Sets the link to the target FormKey
-    /// </summary>
-    /// <param name="formKey">Target FormKey to link to</param>
+
+
+
+
     public void SetTo(FormKey? formKey)
     {
         FormKey = formKey ?? FormKey.Null;
     }
 
-    /// <summary>
-    /// Sets the link to the target Record
-    /// </summary>
-    /// <param name="record">Target record to link to</param>
+
+
+
+
     public void SetTo(TMajorGetter? record)
     {
         FormKey = record?.FormKey ?? FormKey.Null;
     }
 
-    /// <summary>
-    /// Sets the link to match another link
-    /// </summary>
-    /// <param name="link">Target link to set to</param>
+
+
+
+
     public void SetTo(IFormLinkNullableGetter<TMajorGetter> link)
     {
         FormKey = link.FormKey;

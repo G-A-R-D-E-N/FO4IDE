@@ -112,13 +112,13 @@ public static class BipedObjectConverter
         { 61, (BipedObject.FX, BipedObjectFlag.FX) }
     };
 
-    /// <summary>
-    /// returns the enum by providing the slot - e.g. 'Ring' when called with 51, 
-    /// returns 'None' when called with -1,
-    /// throws an exception if the slot does not represent an enum
-    /// </summary>
-    /// <param name="slot">the slot to convert</param>
-    /// <returns>the enum by providing the slot - e.g. 'Ring' when called with 51, 'None' when called with -1</returns>
+
+
+
+
+
+
+
     public static BipedObject BipedObjectBySlot(int slot)
     {
         if (slot == -1)
@@ -130,12 +130,12 @@ public static class BipedObjectConverter
         return result.Item1;
     }
 
-    /// <summary>
-    /// returns the flag enum by providing the slot - e.g. 'Ring' when called with 51, 
-    /// throws an exception if the slot does not represent a flag enum
-    /// </summary>
-    /// <param name="slot">the slot to convert</param>
-    /// <returns>the enum by providing the slot - e.g. 'Ring' when called with 51</returns>
+
+
+
+
+
+
     public static BipedObjectFlag BipedObjectFlagBySlot(int slot)
     {
         if (!ConversionList.TryGetValue(slot, out (BipedObject, BipedObjectFlag) result))
@@ -147,11 +147,11 @@ public static class BipedObjectConverter
 
 public static class BipedObjectExtensions
 {
-    /// <summary>
-    /// converts the object enum to the corresponding flag enum, throws an exception when called with 'None'
-    /// </summary>
-    /// <param name="bipedObject"></param>
-    /// <returns></returns>
+
+
+
+
+
     public static BipedObjectFlag ToFlagEnum(this BipedObject bipedObject)
     {
         if (bipedObject == BipedObject.None)
@@ -159,11 +159,11 @@ public static class BipedObjectExtensions
         return (BipedObjectFlag)Enum.Parse(typeof(BipedObjectFlag), bipedObject.ToString());
     }
 
-    /// <summary>
-    /// returns the slot number for the BipedObjectEnum - e.g. 51 for 'Ring'
-    /// </summary>
-    /// <param name="bipedObject">the enum to convert</param>
-    /// <returns>the slot number for the BipedObjectEnum - e.g. 51 for 'Ring', -1 when called with "None"</returns>
+
+
+
+
+
     public static int ToSlot(this BipedObject bipedObject)
     {
         if (bipedObject == BipedObject.None)
@@ -174,21 +174,21 @@ public static class BipedObjectExtensions
 
 public static class BipedObjectFlagExtensions
 {
-    /// <summary>
-    /// converts the flag enum to the corresponding object enum
-    /// </summary>
-    /// <param name="bipedObjectFlag"></param>
-    /// <returns></returns>
+
+
+
+
+
     public static BipedObject ToObjectEnum(this BipedObjectFlag bipedObjectFlag)
     {
         return (BipedObject)Enum.Parse(typeof(BipedObject), bipedObjectFlag.ToString());
     }
 
-    /// <summary>
-    /// returns the slot number for the BipedObjectFlagEnum - e.g. 51 for 'Ring'
-    /// </summary>
-    /// <param name="bipedObjectFlag">the enum to convert</param>
-    /// <returns>the slot number for the BipedObjectEnum - e.g. 51 for 'Ring'</returns>
+
+
+
+
+
     public static int ToSlot(this BipedObjectFlag bipedObjectFlag)
     {
         return BipedObjectConverter.ConversionList.First(itm => itm.Value.Item2 == bipedObjectFlag).Key;

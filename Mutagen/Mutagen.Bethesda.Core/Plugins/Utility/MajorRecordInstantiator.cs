@@ -6,18 +6,18 @@ using System.Reflection;
 
 namespace Mutagen.Bethesda.Plugins.Utility;
 
-/// <summary>
-/// A static class encapsulating the job of creating a new Major Record in a generic context
-/// </summary>
-/// <typeparam name="TMajor">
-/// Type of Major Record to instantiate.  Can be the direct class, or one of its interfaces.
-/// </typeparam>
+
+
+
+
+
+
 public static class MajorRecordInstantiator<TMajor>
     where TMajor : IMajorRecordGetter
 {
-    /// <summary>
-    /// Function to call to retrieve a new Major Record of type T
-    /// </summary>
+
+
+
     public static readonly Func<FormKey, GameRelease, TMajor> Activator;
 
     static MajorRecordInstantiator()
@@ -45,17 +45,17 @@ public static class MajorRecordInstantiator<TMajor>
         Activator = (Func<FormKey, GameRelease, TMajor>)lambda.Compile();
     }
 }
-    
-/// <summary>
-/// A static class encapsulating the job of creating a new Major Record in a generic context
-/// </summary>
+
+
+
+
 public static class MajorRecordInstantiator
 {
     private static ImmutableDictionary<Type, Func<FormKey, GameRelease, IMajorRecord>> _activators = ImmutableDictionary<Type, Func<FormKey, GameRelease, IMajorRecord>>.Empty;
 
-    /// <summary>
-    /// Function to call to retrieve a new Major Record of type T
-    /// </summary>
+
+
+
     public static IMajorRecord Activator(FormKey formKey, GameRelease release, Type recordType)
     {
         if (!LoquiRegistration.TryGetRegister(recordType, out var regis))

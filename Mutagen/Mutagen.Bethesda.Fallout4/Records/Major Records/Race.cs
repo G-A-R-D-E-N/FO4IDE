@@ -72,7 +72,7 @@ public partial class Race
     }
 
     partial void CustomCtor()
-    {      
+    {
         for (int key = 0; key < 32; ++key)
         {
             this.BipedObjects[(BipedObject)key] = new BipedObjectData();
@@ -160,7 +160,7 @@ partial class RaceBinaryCreateTranslation
     public static partial ParseResult FillBinaryBoneDataParseCustom(MutagenFrame frame, IRaceInternal item, PreviousParse lastParsed)
     {
         var genderFrame = frame.ReadSubrecord(RecordTypes.BSMP);
-                
+
         ExtendedList<Bone> list = Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<Bone>.Instance.Parse(
             reader: frame.SpawnAll(),
             triggeringRecord: Bone_Registration.TriggerSpecs,
@@ -185,10 +185,10 @@ partial class RaceBinaryCreateTranslation
 
     public static partial void FillBinaryFlags2Custom(MutagenFrame frame, IRaceInternal item)
     {
-        // Clear out upper flags
+
         item.Flags &= ((Race.Flag)0x00000000FFFFFFFF);
 
-        // Set upper flags
+
         ulong flags2 = frame.ReadUInt32();
         flags2 <<= 32;
         item.Flags |= ((Race.Flag)flags2);
@@ -239,10 +239,10 @@ partial class RaceBinaryOverlay
         if (!_DATALocation.HasValue) return default;
         var flag = (Race.Flag)BinaryPrimitives.ReadInt32LittleEndian(_recordData.Span.Slice(_FlagsLocation, 4));
 
-        // Clear out upper flags
+
         flag &= ((Race.Flag)0x00000000FFFFFFFF);
 
-        // Set upper flags
+
         ulong flags2 = BinaryPrimitives.ReadUInt32LittleEndian(_recordData.Span.Slice(_Flags2Location, 4));
         flags2 <<= 32;
         flag |= ((Race.Flag)flags2);
@@ -310,7 +310,7 @@ partial class RaceBinaryWriteTranslation
             using var name = HeaderExport.Subrecord(writer, RecordTypes.NAME);
             StringBinaryTranslation.Instance.Write(writer, bipedObjs[(BipedObject)i].Name, StringBinaryType.NullTerminate);
         }
-                
+
         using var rbpc = HeaderExport.Subrecord(writer, RecordTypes.RBPC);
         if (item.FormVersion < 78)
         {
@@ -379,14 +379,14 @@ partial class RaceBinaryWriteTranslation
 
     public static partial void WriteBinaryFaceFxPhonemesRawParsingCustom(MutagenWriter writer, IRaceGetter item)
     {
-        // Handled by Listing section
+
     }
 
     public static partial void WriteBinaryMorphValuesCustom(MutagenWriter writer, IRaceGetter item)
     {
         var morphs = item.MorphValues;
         if (morphs.Count == 0) return;
-                
+
         Mutagen.Bethesda.Plugins.Binary.Translations.ListBinaryTranslation<IMorphValueGetter>.Instance.Write(
             writer: writer,
             items: morphs,

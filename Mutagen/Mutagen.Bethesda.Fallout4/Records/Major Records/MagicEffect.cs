@@ -50,19 +50,19 @@ partial class MagicEffectBinaryCreateTranslation
 
     public static partial void FillBinaryAssociatedItemCustom(MutagenFrame frame, IMagicEffectInternal item)
     {
-        // Skip for now.  Will be parsed by Archetype.
+
         frame.Position += 4;
     }
 
     public static AMagicEffectArchetype ReadArchetype(MutagenFrame frame)
     {
-        // Jump back and read in association FormKey
+
         var curPos = frame.Position;
         frame.Position -= 56;
         FormKey associatedItemKey = FormKeyBinaryTranslation.Instance.Parse(frame);
         frame.Position = curPos;
 
-        // Finish reading archetype
+
         MagicEffectArchetype.TypeEnum archetypeEnum = (MagicEffectArchetype.TypeEnum)frame.ReadInt32();
         AMagicEffectArchetype archetype;
         switch (archetypeEnum)

@@ -7,9 +7,9 @@ namespace Mutagen.Bethesda.Plugins.Allocators;
 [DebuggerDisplay("FormKeyAllocator {Mod.ModKey}")]
 public abstract class BaseFormKeyAllocator : IFormKeyAllocator
 {
-    /// <summary>
-    /// Attached Mod that will be used as reference when allocating new keys
-    /// </summary>
+
+
+
     public IMod Mod { get; }
 
     private readonly HashSet<string> _allocatedEditorIDs = new();
@@ -39,24 +39,24 @@ public abstract class BaseFormKeyAllocator : IFormKeyAllocator
     protected abstract FormKey GetNextFormKeyNotNull(string editorID);
 }
 
-/// <summary>
-/// An interface for something that can allocate new FormKeys when requested
-/// </summary>
+
+
+
 public interface IFormKeyAllocator
 {
-    /// <summary>
-    /// Requests a new unused FormKey, with no other requirements
-    /// </summary>
-    /// <returns>An unused FormKey</returns>
+
+
+
+
     FormKey GetNextFormKey();
 
-    /// <summary>
-    /// Requests a new unused FormKey, given an EditorID to be used for syncronization purposes.
-    /// The EditorID can be used to provide Persistence syncronization by the implementation.
-    /// </summary>
-    /// <param name="editorID">The target EditorID that may potentially be used for synchronization.</br>
-    /// Null if no syncronization desired.
-    /// </param> 
-    /// <returns>An unused FormKey</returns>
+
+
+
+
+
+
+
+
     FormKey GetNextFormKey(string? editorID);
 }

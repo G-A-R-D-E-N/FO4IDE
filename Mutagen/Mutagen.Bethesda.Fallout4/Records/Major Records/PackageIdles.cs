@@ -34,7 +34,7 @@ partial class PackageIdlesBinaryCreateTranslation
             var subRecord = frame.GetSubrecord();
             if (subRecord.RecordType == RecordTypes.IDLC)
             {
-                // Counter start
+
                 if (subRecord.Content.Length != 1)
                 {
                     throw new ArgumentException("Unexpected counter length");
@@ -144,7 +144,7 @@ partial class PackageIdlesBinaryOverlay
             var subRecord = stream.GetSubrecord();
             if (subRecord.RecordType == RecordTypes.IDLC)
             {
-                // Counter start
+
                 if (subRecord.Content.Length != 1)
                 {
                     throw new ArgumentException("Unexpected counter length");

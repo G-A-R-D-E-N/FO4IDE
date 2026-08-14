@@ -21,19 +21,19 @@ partial class ImageSpaceAdapterBinaryCreateTranslation
 {
     public static partial void FillBinaryCounts1Custom(MutagenFrame frame, IImageSpaceAdapterInternal item)
     {
-        // Don't care about counts, currently
+
         frame.Position += 192;
     }
 
     public static partial void FillBinaryCounts2Custom(MutagenFrame frame, IImageSpaceAdapterInternal item)
     {
-        // Don't care about counts, currently
+
         frame.Position += 12;
     }
 
     public static partial void FillBinaryCounts3Custom(MutagenFrame frame, IImageSpaceAdapterInternal item)
     {
-        // Don't care about counts, currently
+
         frame.Position += 16;
     }
 }
@@ -112,19 +112,19 @@ partial class ImageSpaceAdapterBinaryOverlay
 {
     partial void Counts1CustomParse(OverlayStream stream, int offset)
     {
-        // Don't care about counts, currently
+
         stream.Position += 192;
     }
 
     partial void Counts2CustomParse(OverlayStream stream, int offset)
     {
-        // Don't care about counts, currently
+
         stream.Position += 12;
     }
 
     partial void Counts3CustomParse(OverlayStream stream, int offset)
     {
-        // Don't care about counts, currently
+
         stream.Position += 16;
     }
 }

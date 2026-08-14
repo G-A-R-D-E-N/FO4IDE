@@ -11,15 +11,15 @@ public interface IModImporter
 
     IModGetter Import(ModPath modPath, BinaryReadParameters? param = null);
 
-    /// <summary>
-    /// Imports multiple split mod files and returns a multi-file overlay that presents them as a single unified mod.
-    /// </summary>
-    /// <typeparam name="TMod">Type of mod to return</typeparam>
-    /// <param name="targetModKey">The ModKey for the unified overlay (typically the base name without _1, _2 suffixes)</param>
-    /// <param name="splitFiles">Paths to the split mod files to merge</param>
-    /// <param name="loadOrder">Load order to use for master ordering</param>
-    /// <param name="param">Binary read parameters</param>
-    /// <returns>Multi-file overlay presenting all split files as a single mod</returns>
+
+
+
+
+
+
+
+
+
     TMod ImportMultiFile<TMod>(
         ModKey targetModKey,
         IEnumerable<ModPath> splitFiles,
@@ -27,7 +27,7 @@ public interface IModImporter
         BinaryReadParameters? param = null)
         where TMod : IModDisposeGetter;
 }
-    
+
 public interface IModImporter<TMod>
     where TMod : IModKeyed
 {

@@ -177,7 +177,7 @@ partial class WorldspaceBinaryOverlay
             _recordData.Slice(_NAM9Location.Value.Min).Float() / 4096f,
             _recordData.Slice(_NAM9Location.Value.Min + 4).Float() / 4096f)
         : default;
-    
+
     private ReadOnlyMemorySlice<byte>? _grupData;
 
     private int? _topCellLocation;
@@ -238,7 +238,7 @@ partial class WorldspaceBinaryOverlay
                                 skipHeader: false));
                         break;
                     default:
-                        i = 2; // Break out
+                        i = 2;
                         break;
                 }
             }

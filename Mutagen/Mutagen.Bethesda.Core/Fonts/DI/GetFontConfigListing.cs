@@ -9,24 +9,24 @@ namespace Mutagen.Bethesda.Fonts.DI;
 
 public interface IGetFontConfigListing
 {
-	/// <summary>
-	/// Queries the related ini file and looks for the font configuration asset
-	/// </summary>
-	/// <returns>The file path of the font configuration asset</returns>
+
+
+
+
 	DataRelativePath? Get();
 
-	/// <summary>
-	/// Queries the related ini file and looks for the font configuration asset
-	/// </summary>
-	/// <param name="path">Path to the file containing INI data</param>
-	/// <returns>The file path of the font configuration asset</returns>
+
+
+
+
+
 	DataRelativePath? Get(FilePath path);
 
-	/// <summary>
-	/// Queries the related ini file and looks for the font configuration asset
-	/// </summary>
-	/// <param name="iniStream">Stream containing INI data</param>
-	/// <returns>The file path of the font configuration asset</returns>
+
+
+
+
+
 	DataRelativePath? Get(Stream iniStream);
 }
 
@@ -53,13 +53,13 @@ public sealed class GetFontConfigListing : IGetFontConfigListing
 		_iniPathProvider = iniPathProvider;
 	}
 
-	/// <inheritdoc />
+
 	public DataRelativePath? Get()
 	{
 		return Get(_iniPathProvider.Path);
 	}
 
-	/// <inheritdoc />
+
 	public DataRelativePath? Get(FilePath path)
 	{
 		if (!_fileSystem.File.Exists(path)) return null;
@@ -68,10 +68,10 @@ public sealed class GetFontConfigListing : IGetFontConfigListing
 		return Get(fileStream);
 	}
 
-	/// <inheritdoc />
+
 	public DataRelativePath? Get(Stream iniStream)
 	{
-		// Release exists as parameter, in case future games need different handling
+
 		var iniDataParser = new IniDataParser(Config);
 		var parser = new FileIniDataParser(iniDataParser);
 		var data = parser.ReadData(new StreamReader(iniStream));

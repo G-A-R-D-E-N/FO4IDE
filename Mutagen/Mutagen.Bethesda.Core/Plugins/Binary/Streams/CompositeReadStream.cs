@@ -2,10 +2,10 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Streams;
 
-/// <summary>
-/// Class for reading through several streams.
-/// Minimal implementation, but can be fleshed out eventually
-/// </summary>
+
+
+
+
 public sealed class CompositeReadStream : Stream
 {
     private readonly Stream[] _subStreams;

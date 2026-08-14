@@ -50,7 +50,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
     {
         lock (_winningRecords)
         {
-            // Get cache object by type
+
             if (!_winningRecords.TryGetValue(type, out var cache))
             {
                 cache = new DepthCache<TKey, LinkCacheItem>(_equalityComparer);
@@ -89,7 +89,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
 
     private void FillNextCacheDepth(DepthCache<TKey, LinkCacheItem> cache, Type type)
     {
-        // Get next unprocessed mod 
+
         var targetIndex = _listedOrder.Count - cache.Depth - 1;
         var targetMod = _listedOrder[targetIndex];
         cache.Depth++;
@@ -98,8 +98,8 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
         void AddRecords(IModGetter mod, Type type, bool throwIfUnknown)
         {
             foreach (var record in mod.EnumerateMajorRecords(type, throwIfUnknown: throwIfUnknown)
-                         // ToDo
-                         // Capture and expose errors optionally via TryResolve /w out param
+
+
                          .Catch((Exception ex) => { }))
             {
                 var key = _keyGetter(record);
@@ -108,7 +108,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             }
         }
 
-        // Add records from that mod that aren't already cached 
+
         if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_gameCategory, type, out var objs))
         {
             foreach (var regis in objs.Registrations)
@@ -136,16 +136,16 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
 
         DepthCache<TKey, LinkCacheItem> cache = GetTypeCache(type);
 
-        // If we're done, we can just query without locking
+
         if (cache.Done)
         {
             return cache.TryGetValue(key, out majorRec);
         }
 
-        // Potentially more to query, need to lock
+
         lock (cache)
         {
-            // Check for record 
+
             if (cache.TryGetValue(key, out majorRec))
             {
                 return true;
@@ -160,13 +160,13 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             {
                 FillNextCacheDepth(cache, type);
 
-                // Check again 
+
                 if (cache.TryGetValue(key, out majorRec))
                 {
                     return true;
                 }
             }
-            // Record doesn't exist 
+
             majorRec = default;
             return false;
         }
@@ -182,14 +182,14 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             yield break;
         }
 
-        // Grab the type cache
+
         DepthCache<TKey, ImmutableList<LinkCacheItem>> cache;
         lock (_allRecords)
         {
             cache = _allRecords.GetOrAdd(type, () => new DepthCache<TKey, ImmutableList<LinkCacheItem>>(_equalityComparer));
         }
 
-        // If we're done, we can just query without locking
+
         if (cache.Done)
         {
             if (cache.TryGetValue(key, out var doneList))
@@ -202,7 +202,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             yield break;
         }
 
-        // Grab the formkey's list
+
         ImmutableList<LinkCacheItem>? list;
         int consideredDepth;
         int iteratedCount;
@@ -219,22 +219,22 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
         }
 
-        // Return everything we have already
+
         foreach (var item in list)
         {
             yield return item;
         }
 
-        // While there's more depth to consider
+
         while (more)
         {
-            // Process one more mod
+
             lock (cache)
             {
-                // Only process if no one else has done some work
+
                 if (consideredDepth == cache.Depth)
                 {
-                    // Get next unprocessed mod
+
                     var targetIndex = _listedOrder.Count - cache.Depth - 1;
                     var targetMod = _listedOrder[targetIndex];
                     cache.Depth++;
@@ -243,8 +243,8 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                     void AddRecords(IModGetter mod, Type type, bool throwIfUnknown)
                     {
                         foreach (var item in mod.EnumerateMajorRecords(type, throwIfUnknown: throwIfUnknown)
-                                     // ToDo
-                                     // Capture and expose errors optionally via TryResolve /w out param
+
+
                                      .Catch((Exception ex) => { }))
                         {
                             var iterKey = _keyGetter(item);
@@ -261,7 +261,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                         }
                     }
 
-                    // Add records from that mod that aren't already cached
+
                     if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_gameCategory, type, out var objs))
                     {
                         foreach (var regis in objs.Registrations)
@@ -285,7 +285,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                 more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
             }
 
-            // Return any new data
+
             for (int i = iteratedCount; i < list.Count; i++)
             {
                 yield return list[i];
@@ -307,16 +307,16 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             return [];
         }
 
-        // If we're done, we can just query without locking
+
         if (cache.Done)
         {
             return cache.Values;
         }
 
-        // Potentially more to query, need to lock
+
         lock (cache)
         {
-            // Fill all
+
             while (!InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey: null, _listedOrder.Count, cache))
             {
                 if (cancel?.IsCancellationRequested ?? false) return [];
@@ -324,7 +324,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             }
         }
 
-        // Safe to return not-locked, because this particular cache will never be modified anymore, as it's fully queried
+
         if (cancel?.IsCancellationRequested ?? false) return [];
         return cache.Values;
     }
@@ -335,7 +335,7 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
 
         lock (cache)
         {
-            // Fill all
+
             while (!InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey: null, _listedOrder.Count, cache))
             {
                 FillNextCacheDepth(cache, type);

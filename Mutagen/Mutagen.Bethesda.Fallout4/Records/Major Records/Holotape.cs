@@ -61,7 +61,7 @@ partial class HolotapeBinaryCreateTranslation
                         voice.Scene.SetTo(FormKeyBinaryTranslation.Instance.Parse(frame));
                         break;
                     case HolotapeProgram _:
-                        // Discard
+
                         break;
                     case HolotapeTerminal term:
                         term.Terminal.SetTo(FormKeyBinaryTranslation.Instance.Parse(frame));
@@ -81,7 +81,7 @@ partial class HolotapeBinaryCreateTranslation
                     case HolotapeSound _:
                     case HolotapeVoice _:
                     case HolotapeTerminal _:
-                        // Discard
+
                         break;
                     default:
                         throw SubrecordException.Enrich(
@@ -175,7 +175,7 @@ partial class HolotapeBinaryOverlay
                     {
                         sound.Sound.SetTo(
                             FormKeyBinaryTranslation.Instance.Parse(
-                                HeaderTranslation.ExtractSubrecordMemory(_recordData, _dataContentLocation.Value, _package.MetaData.Constants), 
+                                HeaderTranslation.ExtractSubrecordMemory(_recordData, _dataContentLocation.Value, _package.MetaData.Constants),
                                 _package.MetaData.MasterReferences));
                     }
                     return sound;
@@ -185,7 +185,7 @@ partial class HolotapeBinaryOverlay
                     {
                         voice.Scene.SetTo(
                             FormKeyBinaryTranslation.Instance.Parse(
-                                HeaderTranslation.ExtractSubrecordMemory(_recordData, _dataContentLocation.Value, _package.MetaData.Constants), 
+                                HeaderTranslation.ExtractSubrecordMemory(_recordData, _dataContentLocation.Value, _package.MetaData.Constants),
                                 _package.MetaData.MasterReferences));
                     }
                     return voice;
@@ -202,7 +202,7 @@ partial class HolotapeBinaryOverlay
                     {
                         term.Terminal.SetTo(
                             FormKeyBinaryTranslation.Instance.Parse(
-                                HeaderTranslation.ExtractSubrecordMemory(_recordData, _dataContentLocation.Value, _package.MetaData.Constants), 
+                                HeaderTranslation.ExtractSubrecordMemory(_recordData, _dataContentLocation.Value, _package.MetaData.Constants),
                                 _package.MetaData.MasterReferences));
                     }
                     return term;

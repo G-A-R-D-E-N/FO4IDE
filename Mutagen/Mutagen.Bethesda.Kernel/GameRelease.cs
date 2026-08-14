@@ -2,9 +2,9 @@ using System.ComponentModel;
 
 namespace Mutagen.Bethesda;
 
-/// <summary>
-/// Specific game releases
-/// </summary>
+
+
+
 public enum GameRelease
 {
     [Description("Oblivion")]

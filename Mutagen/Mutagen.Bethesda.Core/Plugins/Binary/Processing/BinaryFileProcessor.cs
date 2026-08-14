@@ -2,9 +2,9 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Processing;
 
-/// <summary>
-/// Processing stream that modifies input according to explicit instructions
-/// </summary>
+
+
+
 public sealed class BinaryFileProcessor : Stream
 {
     #region Config
@@ -15,10 +15,10 @@ public sealed class BinaryFileProcessor : Stream
         internal readonly RangeCollection _moveRanges = new RangeCollection();
         internal readonly Dictionary<RangeInt64, long> _moves = new Dictionary<RangeInt64, long>();
         internal readonly Dictionary<long, List<RangeInt64>> _sameLocMoves = new Dictionary<long, List<RangeInt64>>();
-            
-        /// <summary>
-        /// True if config contains any instructions that would modify the stream
-        /// </summary>
+
+
+
+
         public bool HasProcessing => _moves?.Count > 0
                                      || _substitutions?.Count > 0;
 
@@ -142,7 +142,7 @@ public sealed class BinaryFileProcessor : Stream
         }
 
         RangeInt64 targetSection = new RangeInt64(_position + bufferPos, _position + bufferEnd - 1);
-            
+
         DoSubstitutions(targetSection);
         DoMoves(prevExtraRead, targetSection);
     }
@@ -226,12 +226,12 @@ public sealed class BinaryFileProcessor : Stream
                 && (moveToKey == null || moveFromKey < moveToKey)
                 && (additionKey == null || moveFromKey < additionKey))
             {
-                // Delete out move
+
                 var moveRange = _sortedMoves[moveFromKey.Value];
                 var moveLocBufStart = moveRange.Min - _position - moveDeletions;
                 int len = (int)Math.Min(bufferEnd - moveLocBufStart, moveRange.Width);
 
-                // Copy to move cache
+
                 byte[] moveContents = new byte[moveRange.Width];
                 CopyOver(
                     sourceIndex: (int)moveLocBufStart,
@@ -250,7 +250,7 @@ public sealed class BinaryFileProcessor : Stream
                     PreSortedListExt.Set<long>(moveToKeys, moveLoc);
                 }
 
-                // Delete moved snippet
+
                 if (len == moveRange.Width)
                 {
                     var sourceIndex = checked((int)(moveRange.Max + 1 - _position - moveDeletions));

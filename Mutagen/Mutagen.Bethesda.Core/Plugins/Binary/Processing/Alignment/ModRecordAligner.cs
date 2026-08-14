@@ -8,7 +8,7 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Processing.Alignment;
 
-public static class ModRecordAligner 
+public static class ModRecordAligner
 {
     public static void Align(
         ModPath inputPath,
@@ -22,7 +22,7 @@ public static class ModRecordAligner
         {
             EmptyMeansInterested = false
         };
-        // Always interested in parent record types 
+
         interest.InterestingTypes.Add("CELL");
         interest.InterestingTypes.Add("WRLD");
         interest.InterestingTypes.Add("QUST");
@@ -82,7 +82,7 @@ public static class ModRecordAligner
                     var noRecordLength = grup - mutaReader.Position;
                     mutaReader.WriteTo(writer.BaseStream, (int)noRecordLength);
 
-                    // If complete overall, return
+
                     if (mutaReader.Complete) break;
 
                     var nextGrup = mutaReader.GetGroupHeader();
@@ -112,7 +112,7 @@ public static class ModRecordAligner
                     var noRecordLength = grup - mutaReader.Position;
                     mutaReader.WriteTo(writer.BaseStream, (int)noRecordLength);
 
-                    // If complete overall, return
+
                     if (mutaReader.Complete) break;
 
                     mutaReader.WriteTo(writer.BaseStream, 12);
@@ -140,95 +140,95 @@ public static class ModRecordAligner
             File.Delete(path);
         }
     }
- 
-    private static void AlignMajorRecordsByRules( 
-        IMutagenReadStream inputStream, 
-        MutagenWriter writer, 
-        AlignmentRules alignmentRules, 
-        RecordLocatorResults fileLocs) 
-    { 
-        while (!inputStream.Complete) 
-        { 
-            // Import until next listed major record 
-            long noRecordLength; 
-            if (fileLocs.ListedRecords.TryGetInDirection( 
-                    inputStream.Position, 
-                    higher: true, 
-                    result: out var nextRec)) 
-            { 
-                var recordLocation = fileLocs.ListedRecords.Keys[nextRec.Key]; 
-                noRecordLength = recordLocation - inputStream.Position; 
-            } 
-            else 
-            { 
-                noRecordLength = inputStream.Remaining; 
-            } 
-            inputStream.WriteTo(writer.BaseStream, (int)noRecordLength); 
- 
-            // If complete overall, return 
+
+    private static void AlignMajorRecordsByRules(
+        IMutagenReadStream inputStream,
+        MutagenWriter writer,
+        AlignmentRules alignmentRules,
+        RecordLocatorResults fileLocs)
+    {
+        while (!inputStream.Complete)
+        {
+
+            long noRecordLength;
+            if (fileLocs.ListedRecords.TryGetInDirection(
+                    inputStream.Position,
+                    higher: true,
+                    result: out var nextRec))
+            {
+                var recordLocation = fileLocs.ListedRecords.Keys[nextRec.Key];
+                noRecordLength = recordLocation - inputStream.Position;
+            }
+            else
+            {
+                noRecordLength = inputStream.Remaining;
+            }
+            inputStream.WriteTo(writer.BaseStream, (int)noRecordLength);
+
+
             if (inputStream.Complete) break;
 
             var majorHeader = inputStream.GetMajorRecordHeader();
-            var recType = HeaderTranslation.ReadNextRecordType( 
-                inputStream, 
-                out var len); 
-            if (!alignmentRules.StopMarkers.TryGetValue(recType, out var stopMarkers)) 
-            { 
-                stopMarkers = null; 
-            } 
- 
-            bool started = false; 
-            if (!alignmentRules.StartMarkers.TryGetValue(recType, out var startMarkers)) 
-            { 
-                startMarkers = null; 
-                started = true; 
-            } 
- 
-            var startTriggers = startMarkers?.ToHashSet(); 
-            writer.Write(recType.TypeInt); 
-            writer.Write(len); 
-            if (!alignmentRules.Alignments.TryGetValue(recType, out var alignments)) 
-            { 
-                inputStream.WriteTo(writer.BaseStream, inputStream.MetaData.Constants.MajorConstants.LengthAfterLength + len); 
-                continue; 
-            } 
-            inputStream.WriteTo(writer.BaseStream, inputStream.MetaData.Constants.MajorConstants.LengthAfterLength); 
-            var writerEndPos = writer.Position + len; 
-            var endPos = inputStream.Position + len; 
-            var dataDict = new Dictionary<RecordType, List<ReadOnlyMemorySlice<byte>>>(); 
+            var recType = HeaderTranslation.ReadNextRecordType(
+                inputStream,
+                out var len);
+            if (!alignmentRules.StopMarkers.TryGetValue(recType, out var stopMarkers))
+            {
+                stopMarkers = null;
+            }
+
+            bool started = false;
+            if (!alignmentRules.StartMarkers.TryGetValue(recType, out var startMarkers))
+            {
+                startMarkers = null;
+                started = true;
+            }
+
+            var startTriggers = startMarkers?.ToHashSet();
+            writer.Write(recType.TypeInt);
+            writer.Write(len);
+            if (!alignmentRules.Alignments.TryGetValue(recType, out var alignments))
+            {
+                inputStream.WriteTo(writer.BaseStream, inputStream.MetaData.Constants.MajorConstants.LengthAfterLength + len);
+                continue;
+            }
+            inputStream.WriteTo(writer.BaseStream, inputStream.MetaData.Constants.MajorConstants.LengthAfterLength);
+            var writerEndPos = writer.Position + len;
+            var endPos = inputStream.Position + len;
+            var dataDict = new Dictionary<RecordType, List<ReadOnlyMemorySlice<byte>>>();
             ReadOnlyMemorySlice<byte>? rest = null;
             RecordType? last = null;
-            
+
 
             while (inputStream.Position < endPos)
             {
                 var subType = inputStream.GetSubrecord();
-                if (stopMarkers?.Contains(subType.RecordType) ?? false) 
-                { 
-                    rest = inputStream.ReadMemory((int)(endPos - inputStream.Position), readSafe: true); 
-                    break; 
-                } 
-                     
-                if (!started && (startTriggers?.Contains(subType.RecordType) ?? false)) 
-                { 
-                    started = true; 
+                if (stopMarkers?.Contains(subType.RecordType) ?? false)
+                {
+                    rest = inputStream.ReadMemory((int)(endPos - inputStream.Position), readSafe: true);
+                    break;
                 }
- 
-                if (!started) 
+
+                if (!started && (startTriggers?.Contains(subType.RecordType) ?? false))
+                {
+                    started = true;
+                }
+
+                if (!started)
                 {
                     if (inputStream.MetaData.Constants.HeaderOverflow.Contains(subType.RecordType))
                     {
                         var overflowLen = subType.AsInt32();
-                        inputStream.WriteTo(writer.BaseStream, subType.TotalLength); 
-                        inputStream.WriteTo(writer.BaseStream, overflowLen + inputStream.MetaData.Constants.SubConstants.HeaderLength); 
+                        inputStream.WriteTo(writer.BaseStream, subType.TotalLength);
+                        inputStream.WriteTo(writer.BaseStream, overflowLen + inputStream.MetaData.Constants.SubConstants.HeaderLength);
                     }
                     else
                     {
-                        inputStream.WriteTo(writer.BaseStream, subType.TotalLength); 
+                        inputStream.WriteTo(writer.BaseStream, subType.TotalLength);
                     }
-                    continue; 
+                    continue;
                 }
-                
+
                 SubrecordFrame? overflowRec = null;
 
                 if (inputStream.MetaData.Constants.HeaderOverflow.Contains(subType.RecordType))
@@ -236,7 +236,7 @@ public static class ModRecordAligner
                     overflowRec = subType;
                     subType = inputStream.GetSubrecord(offset: overflowRec.Value.TotalLength);
                 }
-                     
+
                 if (alignments.TryGetValue(subType.RecordType, out var rule))
                 {
                     if (overflowRec != null)
@@ -250,7 +250,7 @@ public static class ModRecordAligner
                         dataDict.GetOrAdd(subType.RecordType).Add(rule.ReadBytes(inputStream, null));
                     }
                     last = subType.RecordType;
-                } 
+                }
                 else
                 {
                     if (last != null)
@@ -276,71 +276,71 @@ public static class ModRecordAligner
                         inputStream.WriteTo(writer.BaseStream, subType.TotalLength);
                     }
                 }
-            } 
-            foreach (var alignment in alignmentRules.Alignments[recType]) 
-            { 
-                if (dataDict.TryGetValue( 
-                        alignment.Key, 
-                        out var data)) 
+            }
+            foreach (var alignment in alignmentRules.Alignments[recType])
+            {
+                if (dataDict.TryGetValue(
+                        alignment.Key,
+                        out var data))
                 {
                     foreach (var item in data)
                     {
                         writer.Write(item);
                     }
-                    dataDict.Remove(alignment.Key); 
-                } 
-            } 
-            if (dataDict.Count > 0) 
-            { 
-                throw new ArgumentException($"Encountered an unknown record: {dataDict.First().Key}"); 
-            } 
-            if (rest != null) 
-            { 
-                writer.Write(rest.Value); 
-            } 
-            if (writer.Position != writerEndPos) 
-            { 
-                throw new ArgumentException($"Record alignment changed length on record {majorHeader.FormID}.  Expected len {writerEndPos}, but was {writer.Position}"); 
-            } 
-        } 
-    } 
- 
-    private static void AlignGroupsByRules( 
-        MutagenBinaryReadStream inputStream, 
-        MutagenWriter writer, 
-        AlignmentRules alignmentRules, 
-        RecordLocatorResults fileLocs) 
-    { 
-        while (!inputStream.Complete) 
-        { 
-            // Import until next listed major record 
-            long noRecordLength; 
-            if (fileLocs.GrupLocations.TryGetInDirection( 
-                    inputStream.Position, 
-                    higher: true, 
-                    result: out var nextRec)) 
-            { 
-                noRecordLength = nextRec.Value.Location.Min - inputStream.Position; 
-            } 
-            else 
-            { 
-                noRecordLength = inputStream.Remaining; 
-            } 
-            inputStream.WriteTo(writer.BaseStream, (int)noRecordLength); 
- 
-            // If complete overall, return 
-            if (inputStream.Complete) break; 
-            var groupMeta = inputStream.GetGroupHeader(); 
-            if (!groupMeta.IsGroup) 
-            { 
-                throw new ArgumentException(); 
-            } 
-            writer.Write(inputStream.ReadSpan(groupMeta.HeaderLength)); 
- 
-            if (!alignmentRules.GroupAlignment.TryGetValue(groupMeta.GroupType, out var groupRules)) continue; 
- 
-            var storage = new Dictionary<RecordType, List<ReadOnlyMemorySlice<byte>>>(); 
-            var rest = new List<ReadOnlyMemorySlice<byte>>(); 
+                    dataDict.Remove(alignment.Key);
+                }
+            }
+            if (dataDict.Count > 0)
+            {
+                throw new ArgumentException($"Encountered an unknown record: {dataDict.First().Key}");
+            }
+            if (rest != null)
+            {
+                writer.Write(rest.Value);
+            }
+            if (writer.Position != writerEndPos)
+            {
+                throw new ArgumentException($"Record alignment changed length on record {majorHeader.FormID}.  Expected len {writerEndPos}, but was {writer.Position}");
+            }
+        }
+    }
+
+    private static void AlignGroupsByRules(
+        MutagenBinaryReadStream inputStream,
+        MutagenWriter writer,
+        AlignmentRules alignmentRules,
+        RecordLocatorResults fileLocs)
+    {
+        while (!inputStream.Complete)
+        {
+
+            long noRecordLength;
+            if (fileLocs.GrupLocations.TryGetInDirection(
+                    inputStream.Position,
+                    higher: true,
+                    result: out var nextRec))
+            {
+                noRecordLength = nextRec.Value.Location.Min - inputStream.Position;
+            }
+            else
+            {
+                noRecordLength = inputStream.Remaining;
+            }
+            inputStream.WriteTo(writer.BaseStream, (int)noRecordLength);
+
+
+            if (inputStream.Complete) break;
+            var groupMeta = inputStream.GetGroupHeader();
+            if (!groupMeta.IsGroup)
+            {
+                throw new ArgumentException();
+            }
+            writer.Write(inputStream.ReadSpan(groupMeta.HeaderLength));
+
+            if (!alignmentRules.GroupAlignment.TryGetValue(groupMeta.GroupType, out var groupRules)) continue;
+
+            var storage = new Dictionary<RecordType, List<ReadOnlyMemorySlice<byte>>>();
+            var rest = new List<ReadOnlyMemorySlice<byte>>();
             using (var frame = MutagenFrame.ByLength(inputStream, groupMeta.ContentLength))
             {
                 RecordType? lastType = null;
@@ -350,52 +350,52 @@ public static class ModRecordAligner
                     if (variable.IsGroup && lastType.HasValue)
                     {
                         var bytes = inputStream.ReadMemory(checked((int)variable.TotalLength));
-                        storage.GetOrAdd(lastType.Value).Add(bytes); 
+                        storage.GetOrAdd(lastType.Value).Add(bytes);
                     }
                     else
                     {
-                        var majorMeta = inputStream.GetMajorRecordHeader(); 
-                        var bytes = inputStream.ReadMemory(checked((int)majorMeta.TotalLength)); 
+                        var majorMeta = inputStream.GetMajorRecordHeader();
+                        var bytes = inputStream.ReadMemory(checked((int)majorMeta.TotalLength));
                         var type = majorMeta.RecordType;
-                        if (groupRules.Contains(type)) 
-                        { 
-                            storage.GetOrAdd(type).Add(bytes); 
-                        } 
+                        if (groupRules.Contains(type))
+                        {
+                            storage.GetOrAdd(type).Add(bytes);
+                        }
                         else
-                        { 
-                            rest.Add(bytes); 
-                        } 
+                        {
+                            rest.Add(bytes);
+                        }
                         lastType = type;
                     }
-                } 
-            } 
-            foreach (var rule in groupRules) 
-            { 
-                if (storage.TryGetValue(rule, out var storageBytes)) 
-                { 
-                    foreach (var item in storageBytes) 
-                    { 
-                        writer.Write(item); 
-                    } 
-                } 
-            } 
-            foreach (var item in rest) 
-            { 
-                writer.Write(item); 
-            } 
-        } 
-    } 
- 
+                }
+            }
+            foreach (var rule in groupRules)
+            {
+                if (storage.TryGetValue(rule, out var storageBytes))
+                {
+                    foreach (var item in storageBytes)
+                    {
+                        writer.Write(item);
+                    }
+                }
+            }
+            foreach (var item in rest)
+            {
+                writer.Write(item);
+            }
+        }
+    }
+
     private static void AlignTopLevelGroups(
         IMutagenReadStream inputStream,
         MutagenWriter writer,
         List<RecordType> topLevelOrder)
     {
-        // Write the TES4 header record first (it's always the first record, not a GRUP)
+
         var tes4Header = inputStream.GetMajorRecordHeader();
         inputStream.WriteTo(writer.BaseStream, checked((int)tes4Header.TotalLength));
 
-        // Read all remaining top-level GRUPs
+
         var groups = new Dictionary<RecordType, List<ReadOnlyMemorySlice<byte>>>();
         var ungroupedOrder = new List<RecordType>();
         while (!inputStream.Complete)
@@ -414,7 +414,7 @@ public static class ModRecordAligner
             groups[containedType].Add(bytes);
         }
 
-        // Write in canonical order
+
         foreach (var type in topLevelOrder)
         {
             if (groups.TryGetValue(type, out var entries))
@@ -427,7 +427,7 @@ public static class ModRecordAligner
             }
         }
 
-        // Write any remaining GRUPs not in the canonical order
+
         foreach (var type in ungroupedOrder)
         {
             if (groups.TryGetValue(type, out var entries))
@@ -443,87 +443,87 @@ public static class ModRecordAligner
     private static void AlignCellChildren(
         IMutagenReadStream mutaReader,
         MutagenWriter writer)
-    {  
-        var storage = new Dictionary<int, ReadOnlyMemorySlice<byte>>(); 
-        for (int i = 0; i < 3; i++) 
+    {
+        var storage = new Dictionary<int, ReadOnlyMemorySlice<byte>>();
+        for (int i = 0; i < 3; i++)
         {
             if (!mutaReader.TryGetGroupHeader(out var grupHeader)) break;
             var subGroupType = grupHeader.GroupType;
-            if (!writer.MetaData.Constants.GroupConstants.Cell.SubTypes.Contains(subGroupType)) 
+            if (!writer.MetaData.Constants.GroupConstants.Cell.SubTypes.Contains(subGroupType))
             {
                 break;
-            } 
-            storage[subGroupType] = mutaReader.ReadMemory(checked((int)grupHeader.TotalLength), readSafe: true); 
-        } 
-        foreach (var item in writer.MetaData.Constants.GroupConstants.Cell.SubTypes) 
-        { 
-            if (storage.TryGetValue(item, out var content)) 
-            { 
-                writer.Write(content); 
-            } 
-        } 
-    } 
- 
-    private static void AlignWorldChildren( 
-        IMutagenReadStream reader, 
-        MutagenWriter writer) 
-    { 
-        reader.WriteTo(writer.BaseStream, 4); 
-        ReadOnlyMemorySlice<byte>? roadStorage = null; 
-        ReadOnlyMemorySlice<byte>? cellStorage = null; 
-        List<ReadOnlyMemorySlice<byte>> grupBytes = new List<ReadOnlyMemorySlice<byte>>(); 
-        for (int i = 0; i < 3; i++) 
-        { 
-            RecordType type = HeaderTranslation.GetNextRecordType(reader); 
-            switch (type.TypeInt) 
-            { 
-                case RecordTypeInts.ROAD: 
-                    roadStorage = reader.ReadMemory(checked((int)reader.GetMajorRecordHeader().TotalLength)); 
-                    break; 
-                case RecordTypeInts.CELL: 
-                    if (cellStorage != null) 
-                    { 
-                        throw new ArgumentException(); 
-                    } 
-                    var cellMajorMeta = reader.GetMajorRecordHeader(); 
-                    var startPos = reader.Position; 
-                    reader.Position += cellMajorMeta.HeaderLength; 
-                    long cellGroupLen = 0; 
-                    if (reader.TryGetGroupHeader(out var cellSubGroupMeta) 
-                        && cellSubGroupMeta.GroupType == writer.MetaData.Constants.GroupConstants.Cell.TopGroupType) 
-                    { 
-                        cellGroupLen = cellSubGroupMeta.TotalLength; 
-                    } 
-                    reader.Position = startPos; 
-                    cellStorage = reader.ReadMemory(checked((int)(cellMajorMeta.TotalLength + cellGroupLen))); 
-                    break; 
-                case RecordTypeInts.GRUP: 
-                    if (roadStorage != null 
-                        && cellStorage != null) 
-                    { 
-                        i = 3; // end loop 
-                        continue; 
-                    } 
-                    grupBytes.Add(reader.ReadMemory(checked((int)reader.GetGroupHeader().TotalLength))); 
-                    break; 
-                case RecordTypeInts.WRLD: 
-                    i = 3; // end loop 
-                    continue; 
-                default: 
-                    throw new NotImplementedException(); 
-            } 
-        } 
-        if (roadStorage != null) 
-        { 
-            writer.Write(roadStorage.Value); 
-        } 
-        if (cellStorage != null) 
-        { 
-            writer.Write(cellStorage.Value); 
-        } 
-        foreach (var item in grupBytes) 
-        { 
-            writer.Write(item); 
-        } 
-    } 
+            }
+            storage[subGroupType] = mutaReader.ReadMemory(checked((int)grupHeader.TotalLength), readSafe: true);
+        }
+        foreach (var item in writer.MetaData.Constants.GroupConstants.Cell.SubTypes)
+        {
+            if (storage.TryGetValue(item, out var content))
+            {
+                writer.Write(content);
+            }
+        }
+    }
+
+    private static void AlignWorldChildren(
+        IMutagenReadStream reader,
+        MutagenWriter writer)
+    {
+        reader.WriteTo(writer.BaseStream, 4);
+        ReadOnlyMemorySlice<byte>? roadStorage = null;
+        ReadOnlyMemorySlice<byte>? cellStorage = null;
+        List<ReadOnlyMemorySlice<byte>> grupBytes = new List<ReadOnlyMemorySlice<byte>>();
+        for (int i = 0; i < 3; i++)
+        {
+            RecordType type = HeaderTranslation.GetNextRecordType(reader);
+            switch (type.TypeInt)
+            {
+                case RecordTypeInts.ROAD:
+                    roadStorage = reader.ReadMemory(checked((int)reader.GetMajorRecordHeader().TotalLength));
+                    break;
+                case RecordTypeInts.CELL:
+                    if (cellStorage != null)
+                    {
+                        throw new ArgumentException();
+                    }
+                    var cellMajorMeta = reader.GetMajorRecordHeader();
+                    var startPos = reader.Position;
+                    reader.Position += cellMajorMeta.HeaderLength;
+                    long cellGroupLen = 0;
+                    if (reader.TryGetGroupHeader(out var cellSubGroupMeta)
+                        && cellSubGroupMeta.GroupType == writer.MetaData.Constants.GroupConstants.Cell.TopGroupType)
+                    {
+                        cellGroupLen = cellSubGroupMeta.TotalLength;
+                    }
+                    reader.Position = startPos;
+                    cellStorage = reader.ReadMemory(checked((int)(cellMajorMeta.TotalLength + cellGroupLen)));
+                    break;
+                case RecordTypeInts.GRUP:
+                    if (roadStorage != null
+                        && cellStorage != null)
+                    {
+                        i = 3;
+                        continue;
+                    }
+                    grupBytes.Add(reader.ReadMemory(checked((int)reader.GetGroupHeader().TotalLength)));
+                    break;
+                case RecordTypeInts.WRLD:
+                    i = 3;
+                    continue;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+        if (roadStorage != null)
+        {
+            writer.Write(roadStorage.Value);
+        }
+        if (cellStorage != null)
+        {
+            writer.Write(cellStorage.Value);
+        }
+        foreach (var item in grupBytes)
+        {
+            writer.Write(item);
+        }
+    }
 }

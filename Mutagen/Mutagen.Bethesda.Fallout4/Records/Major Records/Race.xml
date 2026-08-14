@@ -114,7 +114,7 @@
           <FormLink refName="ColorRecord" />
         </Fields>
       </Gendered>
-      <!-- ToDo: Need to remove and turn into derivative field -->
+
       <UInt16 name="NumberOfTintsInList" recordType="TINL" />
       <Float name="FacegenMainClamp" recordType="PNAM" nullable="False" />
       <Float name="FacegenFaceClamp" recordType="UNAM" nullable="False" />

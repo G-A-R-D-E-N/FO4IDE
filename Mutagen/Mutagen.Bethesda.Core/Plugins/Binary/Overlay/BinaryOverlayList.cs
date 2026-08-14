@@ -22,7 +22,7 @@ internal abstract class BinaryOverlayList
             getter,
             locs);
     }
-    
+
     public static IReadOnlyList<T> FactoryBySubrecordArray<T>(
         ReadOnlyMemorySlice<byte> mem,
         BinaryOverlayFactoryPackage package,
@@ -599,18 +599,18 @@ internal abstract class BinaryOverlayList
         var mem = stream.RemainingMemory.Slice(0, subLen);
 
         if (trimNullSuffix
-            && mem.Length > 1 
+            && mem.Length > 1
             && mem[^1] == 0
             && mem[^2] == 0)
         {
             mem = mem.Slice(0, mem.Length - 1);
         }
-        
+
         var ret = FactoryByLazyParse<T>(
             mem,
             package,
             getter);
-        
+
         stream.Position += subLen;
         return ret;
     }
@@ -648,7 +648,7 @@ internal abstract class BinaryOverlayList
         byte countLength,
         PluginBinaryOverlay.Factory<T> getter)
     {
-        // Don't care about count, at the moment
+
         var contentMem = mem.Slice(countLength);
         return FactoryByLazyParse(contentMem, package, getter);
     }

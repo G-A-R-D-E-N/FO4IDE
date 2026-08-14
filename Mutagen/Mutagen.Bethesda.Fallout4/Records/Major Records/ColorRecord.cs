@@ -18,13 +18,13 @@ partial class ColorRecord
     {
         NonPlayable = 0x02,
     }
-    
+
     [Flags]
     public enum Flag
     {
         Playable = 0x01,
-        // Handled by abstract subclassing
-        //RemappingIndex = 0x02,
+
+
         ExtendedLut = 0x04,
     }
 }

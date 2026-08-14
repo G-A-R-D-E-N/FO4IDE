@@ -6,39 +6,39 @@ using Mutagen.Bethesda.Strings.DI;
 
 namespace Mutagen.Bethesda.Plugins.Meta;
 
-/// <summary> 
-/// Reference for all the alignment and length constants related to a specific game 
-/// </summary> 
+
+
+
 public sealed record GameConstants
 {
-    /// <summary> 
-    /// Associated game type 
-    /// </summary> 
+
+
+
     public GameRelease Release { get; init; }
 
-    /// <summary> 
-    /// Length of the Mod header's metadata, excluding content 
-    /// </summary> 
+
+
+
     public sbyte ModHeaderLength { get; }
 
-    /// <summary> 
-    /// Length of the Mod header's non-fundamental metadata 
-    /// </summary> 
+
+
+
     public sbyte ModHeaderFluffLength { get; }
 
-    /// <summary> 
-    /// Group constants 
-    /// </summary> 
+
+
+
     public GroupConstants GroupConstants { get; }
 
-    /// <summary> 
-    /// Major Record constants 
-    /// </summary> 
+
+
+
     public MajorRecordConstants MajorConstants { get; }
 
-    /// <summary> 
-    /// Sub Record constants 
-    /// </summary> 
+
+
+
     public RecordHeaderConstants SubConstants { get; }
 
     public ReadOnlyMemorySlice<Language> Languages { get; }
@@ -47,27 +47,27 @@ public sealed record GameConstants
     public IReadOnlyCollection<RecordType> HeaderOverflow { get; } = new SingleCollection<RecordType>(RecordTypes.XXXX);
 
     public bool HasEnabledMarkers { get; init; }
-    
+
     public ushort? DefaultFormVersion { get; init; }
-    
+
     public float? DefaultModHeaderVersion { get; init; }
-    
+
     public string? MyDocumentsString { get; init; }
-    
+
     public bool PluginsFileInGameFolder { get; init; }
-    
+
     public string IniName { get; init; }
-    
+
     public uint DefaultHighRangeFormID { get; init; }
-    
+
     public float? UseLowerRangeFormIDVersion { get; init; }
-    
+
     public StringsLanguageFormat? StringsLanguageFormat { get; init; }
 
     public string DataFolderRelativePath { get; init; } = "Data";
 
     public bool UsesStrings => StringsLanguageFormat != null;
-    
+
     public bool SeparateMasterLoadOrders { get; init; }
     public int? SmallMasterFlag { get; }
     public int? MediumMasterFlag { get; }
@@ -88,7 +88,7 @@ public sealed record GameConstants
         string? myDocumentsString,
         bool pluginsFileInGameFolder,
         string iniName,
-        uint defaultHighRangeFormId, 
+        uint defaultHighRangeFormId,
         float? useLowerRangeFormIdVersion,
         bool separateMasterLoadOrders,
         int? smallMasterFlag,
@@ -116,9 +116,9 @@ public sealed record GameConstants
         MediumMasterFlag = mediumMasterFlag;
     }
 
-    /// <summary> 
-    /// Readonly singleton of Oblivion game constants 
-    /// </summary> 
+
+
+
     public static readonly GameConstants Oblivion = new GameConstants(
         release: GameRelease.Oblivion,
         modHeaderLength: 20,
@@ -187,9 +187,9 @@ public sealed record GameConstants
         DataFolderRelativePath = Path.Combine("OblivionRemastered", "Content", "Dev", "ObvData", "Data")
     };
 
-    /// <summary>
-    /// Readonly singleton of Skyrim LE game constants
-    /// </summary>
+
+
+
     public static readonly GameConstants SkyrimLE = new GameConstants(
         release: GameRelease.SkyrimLE,
         modHeaderLength: 24,
@@ -205,7 +205,7 @@ public sealed record GameConstants
                 CellSubGroupTypes: new[] { 3, 5 }),
             topic: new GroupTopicConstants(7),
             hasSubGroups: new int[] { 1, 2, 4, 6, 7 },
-            hasParentFormId: new int[] {  }, // ToDo
+            hasParentFormId: new int[] {  },
             new GroupNesting[]
             {
                 new GroupNesting(2,
@@ -266,10 +266,10 @@ public sealed record GameConstants
         MyDocumentsString = "Enderal",
         IniName = "Enderal",
     };
-    
-    /// <summary>
-    /// Readonly singleton of Skyrim SE game constants
-    /// </summary>
+
+
+
+
     public static readonly GameConstants SkyrimSE = SkyrimLE with
     {
         Release = GameRelease.SkyrimSE,
@@ -278,19 +278,19 @@ public sealed record GameConstants
         DefaultModHeaderVersion = 1.71f,
         MyDocumentsString = "Skyrim Special Edition",
     };
-    
-    /// <summary> 
-    /// Readonly singleton of Skyrim SE game constants 
-    /// </summary> 
+
+
+
+
     public static readonly GameConstants SkyrimSEGog = SkyrimSE with
     {
         Release = GameRelease.SkyrimSEGog,
         MyDocumentsString = "Skyrim Special Edition GOG",
     };
 
-    /// <summary> 
-    /// Readonly singleton of Skyrim SE game constants 
-    /// </summary> 
+
+
+
     public static readonly GameConstants SkyrimVR = SkyrimSE with
     {
         Release = GameRelease.SkyrimVR,
@@ -312,9 +312,9 @@ public sealed record GameConstants
         IniName = "Enderal",
     };
 
-    /// <summary> 
-    /// Readonly singleton of Fallout4 game constants 
-    /// </summary> 
+
+
+
     public static readonly GameConstants Fallout4 = new GameConstants(
         release: GameRelease.Fallout4,
         modHeaderLength: 24,
@@ -330,7 +330,7 @@ public sealed record GameConstants
                 CellSubGroupTypes: new[] { 3, 5 }),
             topic: new GroupTopicConstants(7),
             hasSubGroups: new int[] { 1, 2, 4, 6, 7, 10 },
-            hasParentFormId: new int[] {  }, // ToDo
+            hasParentFormId: new int[] {  },
             new GroupNesting[]
             {
                 new GroupNesting(2,
@@ -398,9 +398,9 @@ public sealed record GameConstants
         IniName = "Fallout4",
     };
 
-    /// <summary> 
-    /// Readonly singleton of Starfield game constants 
-    /// </summary> 
+
+
+
     public static readonly GameConstants Starfield = new GameConstants(
         release: GameRelease.Starfield,
         modHeaderLength: 24,
@@ -416,7 +416,7 @@ public sealed record GameConstants
                 CellSubGroupTypes: new[] { 3, 5 }),
             topic: new GroupTopicConstants(7),
             hasSubGroups: new int[] { 1, 2, 4, 6, 7, 10 },
-            hasParentFormId: new int[] {  }, // ToDo
+            hasParentFormId: new int[] {  },
             new GroupNesting[]
             {
                 new GroupNesting(2,
@@ -477,11 +477,11 @@ public sealed record GameConstants
         mediumMasterFlag: 0x0000_0400,
         encodings: new(NonTranslated: MutagenEncoding._1252, NonLocalized: MutagenEncoding._1252));
 
-    /// <summary> 
-    /// Returns record constants related to a certain ObjectType 
-    /// </summary> 
-    /// <param name="type">ObjectType to query</param> 
-    /// <returns>Record Constants associated with type</returns> 
+
+
+
+
+
     public RecordHeaderConstants Constants(ObjectType type)
     {
         return type switch
@@ -493,11 +493,11 @@ public sealed record GameConstants
         };
     }
 
-    /// <summary> 
-    /// Returns GameConstant readonly singleton associated with a game release  
-    /// </summary> 
-    /// <param name="release">Game Release to query</param> 
-    /// <returns>GameConstant readonly singleton associated with mode</returns> 
+
+
+
+
+
     public static GameConstants Get(GameRelease release)
     {
         return release switch

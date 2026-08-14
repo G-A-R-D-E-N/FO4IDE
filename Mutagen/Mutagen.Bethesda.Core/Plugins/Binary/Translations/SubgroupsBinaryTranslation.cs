@@ -35,7 +35,7 @@ internal sealed class SubgroupsBinaryTranslation<T>
         Subgroups = (IReadOnlyCollection<int>?)LoquiRegistration.GetRegister(typeof(T))!.GetType()
             .GetProperty(Constants.SubgroupsMember, BindingFlags.Static | BindingFlags.Public)?.GetValue(null) ?? [];
     }
-    
+
     private static FillFunc GetCreateFunc()
     {
         var tType = typeof(T);
@@ -86,8 +86,8 @@ internal sealed class SubgroupsBinaryTranslation<T>
             return false;
         }
 
-        // ToDo
-        // Avoid array copy by using MemoryPair
+
+
         var formId = new FormID(BinaryPrimitives.ReadUInt32LittleEndian(group.ContainedRecordTypeData));
         byte[] bytes = new byte[package.MetaData.Constants.MajorConstants.HeaderLength + group.TotalLength];
         MajorRecordHeaderWritable majorWritable = new MajorRecordHeaderWritable(package.MetaData, bytes);

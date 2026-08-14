@@ -86,10 +86,10 @@ public partial class Furniture
     }
 }
 
-/// <summary>
-/// Parsing for Furniture is fairly custom.  The 2nd flags subrecord has sit booleans, which are combined with both the
-/// 'Markers' list and the 'Marker Entry Points' list from the binary data into one list of objects to be exposed
-/// </summary>
+
+
+
+
 partial class FurnitureBinaryCreateTranslation
 {
     public const uint UpperFlagsMask = 0xFFC0_0000;
@@ -98,14 +98,14 @@ partial class FurnitureBinaryCreateTranslation
     public static partial void FillBinaryFlagsCustom(MutagenFrame frame, IFurnitureInternal item, PreviousParse lastParsed)
     {
         var subFrame = frame.ReadSubrecord();
-        // Read flags like normal
+
         item.Flags = (Furniture.Flag)BinaryPrimitives.ReadUInt16LittleEndian(subFrame.Content);
     }
 
     public static partial ParseResult FillBinaryFlags2Custom(MutagenFrame frame, IFurnitureInternal item, PreviousParse lastParsed)
     {
-        // Clear out old stuff
-        // This assumes flags will be parsed first.  Might need to be upgraded to not need that assumption
+
+
         item.MarkerParameters = null;
         item.Flags = FillBinaryFlags2(frame, (i) => GetNthMarker(item, i), item.Flags);
         return null;
@@ -116,15 +116,15 @@ partial class FurnitureBinaryCreateTranslation
         var subFrame = stream.ReadSubrecord();
         uint raw = BinaryPrimitives.ReadUInt32LittleEndian(subFrame.Content);
 
-        // Clear out upper bytes of existing flags
+
         var curFlags = (uint)(existingFlag ?? 0);
         curFlags &= ~UpperFlagsMask;
 
-        // Add in new upper flags
+
         uint upperFlags = raw & UpperFlagsMask;
         var ret = (Furniture.Flag)(curFlags | upperFlags);
 
-        // Create marker objects for sit flags
+
         uint markers = raw & 0x003F_FFFF;
         uint indexToCheck = 1;
         for (int i = 0; i < NumSlots; i++)
@@ -201,7 +201,7 @@ partial class FurnitureBinaryWriteTranslation
     public static partial void WriteBinaryFlagsCustom(MutagenWriter writer, IFurnitureGetter item)
     {
         var flags = (uint)(item.Flags ?? 0);
-        // Trim out upper flags
+
         var normalFlags = flags & ~FurnitureBinaryCreateTranslation.UpperFlagsMask;
         using (HeaderExport.Subrecord(writer, RecordTypes.FNAM))
         {
@@ -212,13 +212,13 @@ partial class FurnitureBinaryWriteTranslation
     public static partial void WriteBinaryFlags2Custom(MutagenWriter writer, IFurnitureGetter item)
     {
         var flags = (uint)(item.Flags ?? 0);
-        // Trim out lower flags
+
         var exportFlags = flags & FurnitureBinaryCreateTranslation.UpperFlagsMask;
 
         var markers = item.MarkerParameters;
         if (markers != null)
         {
-            // Enable appropriate sit markers
+
             uint indexToCheck = 1;
             foreach (var marker in markers)
             {
@@ -227,7 +227,7 @@ partial class FurnitureBinaryWriteTranslation
             }
         }
 
-        // Write out mashup of upper flags and sit markers
+
         using (HeaderExport.Subrecord(writer, RecordTypes.MNAM))
         {
             writer.Write(exportFlags);
@@ -301,7 +301,7 @@ partial class FurnitureBinaryOverlay
     partial void FlagsCustomParse(OverlayStream stream, int finalPos, int offset)
     {
         var subFrame = stream.ReadSubrecord();
-        // Read flags like normal
+
         _flags = (Furniture.Flag)BinaryPrimitives.ReadUInt16LittleEndian(subFrame.Content);
     }
 
@@ -313,7 +313,7 @@ partial class FurnitureBinaryOverlay
             this._flags);
         return null;
     }
-            
+
     partial void EnabledEntryPointsCustomParse(
         OverlayStream stream,
         int finalPos,

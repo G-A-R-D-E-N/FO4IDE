@@ -9,20 +9,20 @@ using Mutagen.Bethesda.Plugins.Records.Mapping;
 
 namespace Mutagen.Bethesda;
 
-/// <summary>
-/// A static class that contains extension functions for FormLinks
-/// </summary>
+
+
+
 public static class IFormLinkExt
 {
     #region Resolve
-    /// <summary>
-    /// Attempts to locate link's winning target record in given Link Cache. 
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="majorRecord">Major Record if located</param>
-    /// <returns>True if successful in linking to record</returns>
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static bool TryResolve<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache, [MaybeNullWhen(false)] out TMajor majorRecord)
         where TMajor : class, IMajorRecordGetter
     {
@@ -34,15 +34,15 @@ public static class IFormLinkExt
         return cache.TryResolve<TMajor>(formKey, out majorRecord);
     }
 
-    /// <summary>
-    /// Attempts to locate link winning target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">FormLink to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="majorRecord">Located record if successful</param>
-    /// <returns>True if link was resolved and a record was retrieved</returns>
-    /// <typeparam name="TSource">Major Record type that the FormLink specifies explicitly</typeparam>
-    /// <typeparam name="TScopedMajor">Inheriting Major Record type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
     public static bool TryResolve<TSource, TScopedMajor>(this IFormLinkGetter<TSource> link, ILinkCache cache, [MaybeNullWhen(false)] out TScopedMajor majorRecord)
         where TSource : class, IMajorRecordGetter
         where TScopedMajor : class, TSource
@@ -55,14 +55,14 @@ public static class IFormLinkExt
         return cache.TryResolve(formKey, out majorRecord);
     }
 
-    /// <summary>
-    /// Attempts to locate link winning target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">FormLink to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="majorRecord">Located record if successful</param>
-    /// <returns>True if link was resolved and a record was retrieved</returns>
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static bool TryResolve<TMajor>(this IFormLinkGetter link, ILinkCache cache, [MaybeNullWhen(false)] out TMajor majorRecord)
         where TMajor : class, IMajorRecordGetter
     {
@@ -74,14 +74,14 @@ public static class IFormLinkExt
         return cache.TryResolve(formKey, out majorRecord);
     }
 
-    /// <summary>
-    /// Locates link winning target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Located Major Record</returns>
-    /// <exception cref="NullReferenceException">If link was not successful</exception>
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static TMajor? TryResolve<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -96,14 +96,14 @@ public static class IFormLinkExt
         return null;
     }
 
-    /// <summary> 
-    /// Locates link winning target record in given Link Cache. 
-    /// </summary> 
-    /// <param name="link">Link to resolve</param> 
-    /// <param name="cache">Link Cache to resolve against</param> 
-    /// <returns>Located Major Record, or null if not located</returns> 
-    /// <typeparam name="TMajor">Major Record type of the FormLink</typeparam> 
-    /// <typeparam name="TScopedMajor">Major Record type to resolve to</typeparam> 
+
+
+
+
+
+
+
+
     public static TScopedMajor? TryResolve<TMajor, TScopedMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
         where TScopedMajor : class, TMajor
@@ -115,13 +115,13 @@ public static class IFormLinkExt
         return null;
     }
 
-    /// <summary> 
-    /// Locates link winning target record in given Link Cache. 
-    /// </summary> 
-    /// <param name="link">Link to resolve</param> 
-    /// <param name="cache">Link Cache to resolve against</param> 
-    /// <returns>Located Major Record, or null if not located</returns> 
-    /// <typeparam name="TMajor">Major Record type of the FormLink</typeparam> 
+
+
+
+
+
+
+
     public static TMajor? TryResolve<TMajor>(this IFormLinkGetter link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -132,15 +132,15 @@ public static class IFormLinkExt
         return null;
     }
 
-    /// <summary> 
-    /// Locates link winning target record in given Link Cache. 
-    /// </summary> 
-    /// <param name="link">Link to resolve</param> 
-    /// <param name="cache">Link Cache to resolve against</param> 
-    /// <returns>Located Major Record</returns> 
-    /// <exception cref="RecordException">If link was not successful</exception> 
-    /// <typeparam name="TMajor">Major Record type of the FormLink</typeparam> 
-    /// <typeparam name="TScopedMajor">Major Record type to resolve to</typeparam> 
+
+
+
+
+
+
+
+
+
     public static TScopedMajor Resolve<TMajor, TScopedMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
         where TScopedMajor : class, TMajor
@@ -156,14 +156,14 @@ public static class IFormLinkExt
             message: "Could not resolve record");
     }
 
-    /// <summary>
-    /// Locates link winning target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Located Major Record</returns>
-    /// <exception cref="RecordException">If link was not successful</exception> 
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static TMajor Resolve<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -182,14 +182,14 @@ public static class IFormLinkExt
             message: "Could not resolve record");
     }
 
-    /// <summary> 
-    /// Locates link winning target record in given Link Cache. 
-    /// </summary> 
-    /// <param name="link">Link to resolve</param> 
-    /// <param name="cache">Link Cache to resolve against</param> 
-    /// <returns>Located Major Record</returns> 
-    /// <exception cref="RecordException">If link was not successful</exception> 
-    /// <typeparam name="TMajor">Major Record type of the FormLink</typeparam> 
+
+
+
+
+
+
+
+
     public static TMajor Resolve<TMajor>(this IFormLinkGetter link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -206,14 +206,14 @@ public static class IFormLinkExt
     #endregion
 
     #region ResolveAll
-    /// <summary>
-    /// Locate all of a link's target records in given Link Cache.<br /> 
-    /// The winning override will be returned first, and finished by the original defining definition.
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Enumerable of the linked records</returns>
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static IEnumerable<TMajor> ResolveAll<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -224,15 +224,15 @@ public static class IFormLinkExt
         return cache.ResolveAll<TMajor>(formKey);
     }
 
-    /// <summary>
-    /// Locate all of a link's target records in given Link Cache.<br /> 
-    /// The winning override will be returned first, and finished by the original defining definition.
-    /// </summary>
-    /// <param name="link">FormLink to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Enumerable of the linked records</returns>
-    /// <typeparam name="TSource">Major Record type that the FormLink specifies explicitly</typeparam>
-    /// <typeparam name="TScopedMajor">Inheriting Major Record type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
     public static IEnumerable<TScopedMajor> ResolveAll<TSource, TScopedMajor>(this IFormLinkGetter<TSource> link, ILinkCache cache)
         where TSource : class, IMajorRecordGetter
         where TScopedMajor : class, TSource
@@ -246,17 +246,17 @@ public static class IFormLinkExt
     #endregion
 
     #region Resolve Context
-    /// <summary>
-    /// Attempts to locate link's winning target record in given Link Cache. 
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="majorRecord">Major Record if located</param>
-    /// <returns>True if successful in linking to record</returns>
-    /// <typeparam name="TMod">Mod setter type that can be overridden into</typeparam>
-    /// <typeparam name="TModGetter">Mod getter type that can be overridden into</typeparam>
-    /// <typeparam name="TMajor">Major Record setter type to resolve to</typeparam>
-    /// <typeparam name="TMajorGetter">Major Record getter type to resolve to</typeparam>
+
+
+
+
+
+
+
+
+
+
+
     public static bool TryResolveContext<TMod, TModGetter, TMajor, TMajorGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache,
@@ -274,17 +274,17 @@ public static class IFormLinkExt
         return cache.TryResolveContext<TMajor, TMajorGetter>(formKey, out majorRecord);
     }
 
-    /// <summary>
-    /// Locates link winning target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Located Major Record</returns>
-    /// <exception cref="NullReferenceException">If link was not successful</exception>
-    /// <typeparam name="TMod">Mod setter type that can be overridden into</typeparam>
-    /// <typeparam name="TModGetter">Mod getter type that can be overridden into</typeparam>
-    /// <typeparam name="TMajor">Major Record setter type to resolve to</typeparam>
-    /// <typeparam name="TMajorGetter">Major Record getter type to resolve to</typeparam>
+
+
+
+
+
+
+
+
+
+
+
     public static IModContext<TMod, TModGetter, TMajor, TMajorGetter>? ResolveContext<TMod, TModGetter, TMajor, TMajorGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache)
@@ -300,18 +300,18 @@ public static class IFormLinkExt
         return null;
     }
 
-    /// <summary>
-    /// Attempts to winning locate link target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">FormLink to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="majorRecord">Located record if successful</param>
-    /// <returns>True if link was resolved and a record was retrieved</returns>
-    /// <typeparam name="TMod">Mod setter type that can be overridden into</typeparam>
-    /// <typeparam name="TModGetter">Mod getter type that can be overridden into</typeparam>
-    /// <typeparam name="TMajorGetter">Original links Major Record type</typeparam>
-    /// <typeparam name="TScopedSetter">Inheriting Major Record setter type to scope to</typeparam>
-    /// <typeparam name="TScopedGetter">Inheriting Major Record getter type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
+
+
+
     public static bool TryResolveContext<TMod, TModGetter, TMajorGetter, TScopedSetter, TScopedGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache,
@@ -330,18 +330,18 @@ public static class IFormLinkExt
         return cache.TryResolveContext<TScopedSetter, TScopedGetter>(formKey, out majorRecord);
     }
 
-    /// <summary> 
-    /// Locates link winning target record in given Link Cache. 
-    /// </summary> 
-    /// <param name="link">Link to resolve</param> 
-    /// <param name="cache">Link Cache to resolve against</param> 
-    /// <returns>Located Major Record</returns> 
-    /// <exception cref="NullReferenceException">If link was not successful</exception>
-    /// <typeparam name="TMod">Mod setter type that can be overridden into</typeparam>
-    /// <typeparam name="TModGetter">Mod getter type that can be overridden into</typeparam>
-    /// <typeparam name="TMajorGetter">Original links Major Record type</typeparam>
-    /// <typeparam name="TScopedSetter">Inheriting Major Record setter type to scope to</typeparam>
-    /// <typeparam name="TScopedGetter">Inheriting Major Record getter type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
+
+
+
     public static IModContext<TMod, TModGetter, TScopedSetter, TScopedGetter>? ResolveContext<TMod, TModGetter, TMajorGetter, TScopedSetter, TScopedGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache)
@@ -360,17 +360,17 @@ public static class IFormLinkExt
     #endregion
 
     #region ResolveAll Context
-    /// <summary>
-    /// Locate all of a link's target record contexts in given Link Cache.<br /> 
-    /// The winning override will be returned first, and finished by the original defining definition.
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Enumerable of the linked records</returns>
-    /// <typeparam name="TMod">Mod setter type that can be overridden into</typeparam>
-    /// <typeparam name="TModGetter">Mod getter type that can be overridden into</typeparam>
-    /// <typeparam name="TMajor">Major Record setter type to resolve to</typeparam>
-    /// <typeparam name="TMajorGetter">Major Record getter type to resolve to</typeparam>
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> ResolveAllContexts<TMod, TModGetter, TMajor, TMajorGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache)
@@ -386,18 +386,18 @@ public static class IFormLinkExt
         return cache.ResolveAllContexts<TMajor, TMajorGetter>(formKey);
     }
 
-    /// <summary>
-    /// Locate all of a link's target record contexts in given Link Cache.<br /> 
-    /// The winning override will be returned first, and finished by the original defining definition.
-    /// </summary>
-    /// <param name="link">FormLink to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Enumerable of the linked records</returns>
-    /// <typeparam name="TMod">Mod setter type that can be overridden into</typeparam>
-    /// <typeparam name="TModGetter">Mod getter type that can be overridden into</typeparam>
-    /// <typeparam name="TMajorGetter">Original links Major Record type</typeparam>
-    /// <typeparam name="TScopedSetter">Inheriting Major Record setter type to scope to</typeparam>
-    /// <typeparam name="TScopedGetter">Inheriting Major Record getter type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TMod, TModGetter, TScopedSetter, TScopedGetter>> ResolveAllContexts<TMod, TModGetter, TMajorGetter, TScopedSetter, TScopedGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache)
@@ -416,14 +416,14 @@ public static class IFormLinkExt
     #endregion
 
     #region Resolve Simple Context
-    /// <summary>
-    /// Attempts to locate link's winning target record in given Link Cache. 
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="majorRecord">Major Record if located</param>
-    /// <returns>True if successful in linking to record</returns>
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static bool TryResolveSimpleContext<TMajor>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache,
@@ -438,14 +438,14 @@ public static class IFormLinkExt
         return cache.TryResolveSimpleContext<TMajor>(formKey, out majorRecord);
     }
 
-    /// <summary>
-    /// Locates link winning target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Located Major Record</returns>
-    /// <exception cref="NullReferenceException">If link was not successful</exception>
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static IModContext<TMajor>? ResolveSimpleContext<TMajor>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache)
@@ -458,15 +458,15 @@ public static class IFormLinkExt
         return null;
     }
 
-    /// <summary>
-    /// Attempts to winning locate link target record in given Link Cache.
-    /// </summary>
-    /// <param name="link">FormLink to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="majorRecord">Located record if successful</param>
-    /// <returns>True if link was resolved and a record was retrieved</returns>
-    /// <typeparam name="TMajor">Original links Major Record type</typeparam>
-    /// <typeparam name="TScoped">Inheriting Major Record type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
     public static bool TryResolveSimpleContext<TMajor, TScoped>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache,
@@ -482,15 +482,15 @@ public static class IFormLinkExt
         return cache.TryResolveSimpleContext<TScoped>(formKey, out majorRecord);
     }
 
-    /// <summary> 
-    /// Locates link winning target record in given Link Cache. 
-    /// </summary> 
-    /// <param name="link">Link to resolve</param> 
-    /// <param name="cache">Link Cache to resolve against</param> 
-    /// <returns>Located Major Record</returns> 
-    /// <exception cref="NullReferenceException">If link was not successful</exception>
-    /// <typeparam name="TMajor">Original links Major Record type</typeparam>
-    /// <typeparam name="TScoped">Inheriting Major Record type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
     public static IModContext<TScoped>? ResolveSimpleContext<TMajor, TScoped>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache)
@@ -506,14 +506,14 @@ public static class IFormLinkExt
     #endregion
 
     #region ResolveAll Simple Context
-    /// <summary>
-    /// Locate all of a link's target record contexts in given Link Cache.<br /> 
-    /// The winning override will be returned first, and finished by the original defining definition.
-    /// </summary>
-    /// <param name="link">Link to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Enumerable of the linked records</returns>
-    /// <typeparam name="TMajor">Major Record type to resolve to</typeparam>
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache)
@@ -526,15 +526,15 @@ public static class IFormLinkExt
         return cache.ResolveAllSimpleContexts<TMajor>(formKey);
     }
 
-    /// <summary>
-    /// Locate all of a link's target record contexts in given Link Cache.<br /> 
-    /// The winning override will be returned first, and finished by the original defining definition.
-    /// </summary>
-    /// <param name="link">FormLink to resolve</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>Enumerable of the linked records</returns>
-    /// <typeparam name="TMajor">Original links Major Record type</typeparam>
-    /// <typeparam name="TScoped">Inheriting Major Record type to scope to</typeparam>
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TScoped>> ResolveAllSimpleContexts<TMajor, TScoped>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache)
@@ -551,23 +551,23 @@ public static class IFormLinkExt
 
     #region ResolveIdentifier
 
-    /// <summary>
-    /// Retrieves the winning EditorID that matches the FormKey relative to the source the cache was attached to.<br/>
-    /// <br/>
-    /// If a record exists that matches the FormKey, but does not inherit from the given generic, it will not be returned, and 
-    /// the function will return false.
-    /// </summary>
-    /// <param name="formLink">FormLink to look for</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="editorId">Out parameter containing the EditorID if successful</param>
-    /// <param name="target">Resolution target to look up</param>
-    /// <exception cref="ArgumentException">
-    /// An unexpected type will throw an exception.<br/>
-    /// Unexpected types include:<br/>
-    ///   - Major Record Types that are not part of this game type.  (Querying for Oblivion records on a Skyrim mod)<br/>
-    ///   - A setter type is requested from a getter only object.
-    /// </exception>
-    /// <returns>True if a matching record was found</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public static bool TryResolveIdentifier(
         this IFormLinkGetter formLink,
@@ -577,22 +577,22 @@ public static class IFormLinkExt
         return cache.TryResolveIdentifier(formLink.FormKey, out editorId);
     }
 
-    /// <summary>
-    /// Retrieves the winning EditorID that matches the FormKey relative to the source the cache was attached to.<br/>
-    /// <br/>
-    /// If a record exists that matches the FormKey, but does not inherit from the given generic, it will not be returned, and 
-    /// the function will return false.
-    /// </summary>
-    /// <param name="formLink">FormLink to look for</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="target">Resolution target to look up</param>
-    /// <exception cref="ArgumentException">
-    /// An unexpected type will throw an exception.<br/>
-    /// Unexpected types include:<br/>
-    ///   - Major Record Types that are not part of this game type.  (Querying for Oblivion records on a Skyrim mod)<br/>
-    ///   - A setter type is requested from a getter only object.
-    /// </exception>
-    /// <returns>the EditorID</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public static string? ResolveIdentifier(
         this IFormLinkGetter formLink,
@@ -602,24 +602,24 @@ public static class IFormLinkExt
         return cache.ResolveIdentifier(formLink.FormKey);
     }
 
-    /// <summary>
-    /// Retrieves the winning EditorID that matches the FormKey relative to the source the cache was attached to.<br/>
-    /// <br/>
-    /// If a record exists that matches the FormKey, but does not inherit from the given generic, it will not be returned, and 
-    /// the function will return false.
-    /// </summary>
-    /// <param name="formLink">FormLink to look for</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="type">The type of Major Record to look up</param>
-    /// <param name="editorId">Out parameter containing the EditorID if successful</param>
-    /// <param name="target">Resolution target to look up</param>
-    /// <exception cref="ArgumentException">
-    /// An unexpected type will throw an exception.<br/>
-    /// Unexpected types include:<br/>
-    ///   - Major Record Types that are not part of this game type.  (Querying for Oblivion records on a Skyrim mod)<br/>
-    ///   - A setter type is requested from a getter only object.
-    /// </exception>
-    /// <returns>True if a matching record was found</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static bool TryResolveIdentifier(
         this IFormLinkGetter formLink,
         Type type,
@@ -629,23 +629,23 @@ public static class IFormLinkExt
         return cache.TryResolveIdentifier(formLink.FormKey, type, out editorId);
     }
 
-    /// <summary>
-    /// Retrieves the winning EditorID that matches the FormKey relative to the source the cache was attached to.<br/>
-    /// <br/>
-    /// If a record exists that matches the FormKey, but does not inherit from the given generic, it will not be returned, and 
-    /// the function will return false.
-    /// </summary>
-    /// <param name="formLink">FormLink to look for</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="type">The type of Major Record to look up</param>
-    /// <param name="target">Resolution target to look up</param>
-    /// <exception cref="ArgumentException">
-    /// An unexpected type will throw an exception.<br/>
-    /// Unexpected types include:<br/>
-    ///   - Major Record Types that are not part of this game type.  (Querying for Oblivion records on a Skyrim mod)<br/>
-    ///   - A setter type is requested from a getter only object.
-    /// </exception>
-    /// <returns>the EditorID</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static string? ResolveIdentifier(
         this IFormLinkGetter formLink,
         Type type,
@@ -655,23 +655,23 @@ public static class IFormLinkExt
         return cache.ResolveIdentifier(formLink.FormKey, type);
     }
 
-    /// <summary>
-    /// Retrieves the winning EditorID that matches the FormKey relative to the source the cache was attached to.<br/>
-    /// <br/>
-    /// If a record exists that matches the FormKey, but does not inherit from the given generic, it will not be returned, and 
-    /// the function will return false.
-    /// </summary>
-    /// <param name="formLink">FormLink to look for</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="editorId">Out parameter containing the EditorID if successful</param>
-    /// <param name="target">Resolution target to look up</param>
-    /// <exception cref="ArgumentException">
-    /// An unexpected type will throw an exception.<br/>
-    /// Unexpected types include:<br/>
-    ///   - Major Record Types that are not part of this game type.  (Querying for Oblivion records on a Skyrim mod)<br/>
-    ///   - A setter type is requested from a getter only object.
-    /// </exception>
-    /// <returns>True if a matching record was found</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static bool TryResolveIdentifier<TMajor>(
         this IFormLinkGetter<TMajor> formLink,
         ILinkCache cache, [MaybeNullWhen(false)] out string? editorId,
@@ -681,22 +681,22 @@ public static class IFormLinkExt
         return cache.TryResolveIdentifier<TMajor>(formLink.FormKey, out editorId);
     }
 
-    /// <summary>
-    /// Retrieves the winning EditorID that matches the FormKey relative to the source the cache was attached to.<br/>
-    /// <br/>
-    /// If a record exists that matches the FormKey, but does not inherit from the given generic, it will not be returned, and 
-    /// the function will return false.
-    /// </summary>
-    /// <param name="formLink">FormLink to look for</param>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="target">Resolution target to look up</param>
-    /// <exception cref="ArgumentException">
-    /// An unexpected type will throw an exception.<br/>
-    /// Unexpected types include:<br/>
-    ///   - Major Record Types that are not part of this game type.  (Querying for Oblivion records on a Skyrim mod)<br/>
-    ///   - A setter type is requested from a getter only object.
-    /// </exception>
-    /// <returns>the EditorID</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static string? ResolveIdentifier<TMajor>(
         this IFormLinkGetter<TMajor> formLink,
         ILinkCache cache,
@@ -751,7 +751,7 @@ public static class IFormLinkExt
             {
                 return x.FormKey == y.FormKey;
             }
-            
+
             return false;
         }
 
@@ -784,18 +784,18 @@ public static class IFormLinkExt
         link.SetTo(rhs.FormKeyNullable);
     }
 
-    /// <summary>
-    /// Creates a new FormLinkNullable with the same type
-    /// </summary>
+
+
+
     public static IFormLinkNullable<TMajor> AsNullable<TMajor>(this IFormLinkGetter<TMajor> link)
         where TMajor : class, IMajorRecordGetter
     {
         return new FormLinkNullable<TMajor>(link.FormKeyNullable);
     }
 
-    /// <summary>
-    /// Creates a new FormLinkNullable with the same type
-    /// </summary>
+
+
+
     public static IFormLink<TMajor> AsSetter<TMajor>(this IFormLinkGetter<TMajor> link)
         where TMajor : class, IMajorRecordGetter
     {

@@ -11,7 +11,7 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 public interface ILiveLoadOrderProvider : ISomeLiveLoadOrderProvider
 {
 }
-    
+
 public sealed class LiveLoadOrderProvider : ILiveLoadOrderProvider
 {
     public IPluginLiveLoadOrderProvider PluginLive { get; }
@@ -30,7 +30,7 @@ public sealed class LiveLoadOrderProvider : ILiveLoadOrderProvider
         ListingsProvider = loadListingsProvider;
         Timings = timings;
     }
-    
+
     public IObservable<IChangeSet<ILoadOrderListingGetter>> Get(out IObservable<ErrorResponse> state, IScheduler? scheduler = null)
     {
         var stateSubj = new BehaviorSubject<Exception?>(null);
@@ -56,20 +56,20 @@ public sealed class LiveLoadOrderProvider : ILiveLoadOrderProvider
                                 {
                                     try
                                     {
-                                        // Short circuit if not subscribed anymore
+
                                         if (disp.IsDisposed) return;
 
                                         var refreshedListings = ListingsProvider.Get().ToArray();
-                                        // ToDo
-                                        // Upgrade to SetTo mechanics.
-                                        // SourceLists' EditDiff seems weird
+
+
+
                                         list.Clear();
                                         list.AddRange(refreshedListings);
                                         stateSubj.OnNext(null);
                                     }
                                     catch (Exception ex)
                                     {
-                                        // Short circuit if not subscribed anymore
+
                                         if (disp.IsDisposed) return;
 
                                         stateSubj.OnNext(ex);

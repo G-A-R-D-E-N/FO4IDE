@@ -1,18 +1,18 @@
 using System.Runtime.InteropServices;
 
 namespace Mutagen.Bethesda.Archives.Ba2;
-/*
- * Copied from https://raw.githubusercontent.com/AlexxEG/BSA_Browser/master/Sharp.BSA.BA2/BA2Util/DDS.cs
- * which is also GPL3 code. Modified slightly for Wabbajack
- * 
- */
 
-/* 
- * Copied from dds.h. Includes (almost) only stuff I need in this project.
- * 
- * Link: https://github.com/digitalutopia1/BA2Lib/blob/master/BA2Lib/dds.h
- * 
- */
+
+
+
+
+
+
+
+
+
+
+
 
 class DDS
 {
@@ -33,24 +33,24 @@ class DDS
         }
     }
 
-    public const int DDS_MAGIC = 0x20534444; // "DDS "
+    public const int DDS_MAGIC = 0x20534444;
 
     public static uint MAKEFOURCC(char ch0, char ch1, char ch2, char ch3)
     {
-        // This is alien to me...
+
         return ((uint)(byte)(ch0) | ((uint)(byte)(ch1) << 8) | ((uint)(byte)(ch2) << 16 | ((uint)(byte)(ch3) << 24)));
     }
 
-    public const int DDS_FOURCC = 0x00000004; // DDPF_FOURCC
-    public const int DDS_RGB = 0x00000040; // DDPF_RGB
-    public const int DDS_RGBA = 0x00000041; // DDPF_RGB | DDPF_ALPHAPIXELS
+    public const int DDS_FOURCC = 0x00000004;
+    public const int DDS_RGB = 0x00000040;
+    public const int DDS_RGBA = 0x00000041;
 
-    public const int DDS_HEADER_FLAGS_TEXTURE = 0x00001007; // DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT
-    public const int DDS_HEADER_FLAGS_MIPMAP = 0x00020000; // DDSD_MIPMAPCOUNT
-    public const int DDS_HEADER_FLAGS_LINEARSIZE = 0x00080000; // DDSD_LINEARSIZE
+    public const int DDS_HEADER_FLAGS_TEXTURE = 0x00001007;
+    public const int DDS_HEADER_FLAGS_MIPMAP = 0x00020000;
+    public const int DDS_HEADER_FLAGS_LINEARSIZE = 0x00080000;
 
-    public const int DDS_SURFACE_FLAGS_TEXTURE = 0x00001000; // DDSCAPS_TEXTURE
-    public const int DDS_SURFACE_FLAGS_MIPMAP = 0x00400008; // DDSCAPS_COMPLEX | DDSCAPS_MIPMAP
+    public const int DDS_SURFACE_FLAGS_TEXTURE = 0x00001000;
+    public const int DDS_SURFACE_FLAGS_MIPMAP = 0x00400008;
 
     public const int DDS_ALPHA_MODE_UNKNOWN = 0x0;
 }
@@ -94,18 +94,18 @@ struct DDS_HEADER
     public uint dwHeight;
     public uint dwWidth;
     public uint dwPitchOrLinearSize;
-    public uint dwDepth; // only if DDS_HEADER_FLAGS_VOLUME is set in dwHeaderFlags
+    public uint dwDepth;
     public uint dwMipMapCount;
-    public uint dwReserved1; // [11]
-    public DDS_PIXELFORMAT PixelFormat; // ddspf
+    public uint dwReserved1;
+    public DDS_PIXELFORMAT PixelFormat;
     public uint dwSurfaceFlags;
     public uint dwCubemapFlags;
-    public uint dwReserved2; // [3]
+    public uint dwReserved2;
 
     public uint GetSize()
     {
-        // 9 uint + DDS_PIXELFORMAT uints + 2 uint arrays with 14 uints total
-        // each uint 4 bytes each
+
+
         return (9 * 4) + PixelFormat.GetSize() + (14 * 4);
     }
 
@@ -119,11 +119,11 @@ struct DDS_HEADER
         bw.Write(dwDepth);
         bw.Write(dwMipMapCount);
 
-        // Just write it multiple times, since it's never assigned a value anyway
+
         for (int i = 0; i < 11; i++)
             bw.Write(dwReserved1);
 
-        // DDS_PIXELFORMAT
+
         bw.Write(PixelFormat.dwSize);
         bw.Write(PixelFormat.dwFlags);
         bw.Write(PixelFormat.dwFourCC);
@@ -136,7 +136,7 @@ struct DDS_HEADER
         bw.Write(dwSurfaceFlags);
         bw.Write(dwCubemapFlags);
 
-        // Just write it multiple times, since it's never assigned a value anyway
+
         for (int i = 0; i < 3; i++)
             bw.Write(dwReserved2);
     }
@@ -209,7 +209,7 @@ unsafe struct DDS_PIXELFORMAT
 
     public uint GetSize()
     {
-        // 8 uints, each 4 bytes each
+
         return 8 * 4;
     }
 }

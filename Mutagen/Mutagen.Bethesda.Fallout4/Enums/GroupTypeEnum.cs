@@ -1,8 +1,8 @@
 namespace Mutagen.Bethesda.Fallout4;
 
-/// <summary>
-/// Different categories of Group records
-/// </summary>
+
+
+
 public enum GroupTypeEnum
 {
     Type = 0,

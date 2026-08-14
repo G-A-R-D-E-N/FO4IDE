@@ -37,7 +37,7 @@ class BsaReader : IArchiveReader
     public bool CompressedByDefault => ArchiveFlags.HasFlag(BsaArchiveFlags.Compressed);
 
     public bool Bit9Set => ArchiveFlags.HasFlag(BsaArchiveFlags.HasFileNameBlobs);
-        
+
     public FilePath? FilePath { get; }
 
     public bool HasNameBlobs
@@ -108,7 +108,7 @@ class BsaReader : IArchiveReader
         for (var idx = 0; idx < FolderCount; idx += 1)
             ret[idx] = new BsaFolderRecord(this, folderHeaderData.Slice(idx * folderHeaderLength, folderHeaderLength), idx);
 
-        // Slice off appropriate file header data per folder
+
         int fileCountTally = 0;
         foreach (var folder in ret)
         {

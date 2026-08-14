@@ -27,8 +27,8 @@ public sealed class LoadOrderWriter : ILoadOrderWriter
         _hasEnabledMarkersProvider = hasEnabledMarkersProvider;
         _implicitListingsProvider = implicitListingsProvider;
     }
-        
-    /// <inheritdoc />
+
+
     public void Write(
         FilePath path,
         IEnumerable<ILoadOrderListingGetter> loadOrder,

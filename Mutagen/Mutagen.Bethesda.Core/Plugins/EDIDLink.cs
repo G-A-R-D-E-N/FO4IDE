@@ -4,24 +4,24 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Mutagen.Bethesda.Plugins;
 
-/// <summary>
-/// A specialized link for Oblivion Magic Effects, which use 4 character EditorIDs rather than FormIDs to link.
-/// This class stores the target EDID as RecordType, as that is a convenient 4 character struct
-/// </summary>
-/// <typeparam name="TMajor">The type of Major Record the Link is allowed to connect with</typeparam>
+
+
+
+
+
 public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<TMajor>>
     where TMajor : class, IMajorRecordGetter
 {
-    /// <summary>
-    /// A readonly singleton representing an unlinked EDIDLink
-    /// </summary>
+
+
+
     public static readonly IEDIDLinkGetter<TMajor> Null = new EDIDLink<TMajor>();
-        
-    /// <summary>
-    /// Record type representing the target EditorID to link against
-    /// </summary>
+
+
+
+
     public RecordType EDID { get; set; }
-        
+
     Type ILinkIdentifier.Type => typeof(TMajor);
 
     public EDIDLink()
@@ -29,9 +29,9 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         EDID = RecordType.Null;
     }
 
-    /// <summary>
-    /// Default constructor that creates an EDIDLink linked to the target EditorID
-    /// </summary>
+
+
+
     public EDIDLink(RecordType edid)
         : this()
     {
@@ -44,23 +44,23 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         return Equals(rhs);
     }
 
-    /// <summary>
-    /// Compares equality of two links.
-    /// </summary>
-    /// <param name="other">Other link to compare to</param>
-    /// <returns>True if EDID members are equal</returns>
+
+
+
+
+
     public bool Equals(IEDIDLink<TMajor>? other) => EDID.Equals(other?.EDID);
 
-    /// <summary>
-    /// Returns hash code
-    /// </summary>
-    /// <returns>Hash code evaluated from EDID member</returns>
+
+
+
+
     public override int GetHashCode() => EDID.GetHashCode();
 
-    /// <summary>
-    /// Returns string representation of link
-    /// </summary>
-    /// <returns>Returns EDID RecordType string</returns>
+
+
+
+
     public override string ToString() => EDID.ToString();
 
     private bool TryLinkToMod(
@@ -72,8 +72,8 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
             item = default;
             return false;
         }
-        // ToDo
-        // Improve to not be a forloop
+
+
         var group = mod.TryGetTopLevelGroup<TMajor>();
         if (group == null)
         {
@@ -92,12 +92,12 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         return false;
     }
 
-    /// <summary>
-    /// Attempts to locate link target in given Link Cache.
-    /// </summary>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="major">Located record if successful</param>
-    /// <returns>True if link was resolved and a record was retrieved</returns>
+
+
+
+
+
+
     public bool TryResolve(ILinkCache cache, out TMajor major)
     {
         if (EDID == RecordType.Null)
@@ -117,12 +117,12 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         return false;
     }
 
-    /// <summary>
-    /// Attempts to locate link target's FormKey in given Link Cache.
-    /// </summary>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <param name="formKey">Located FormKey if successful</param>
-    /// <returns>True if link was resolved and a record was retrieved</returns>
+
+
+
+
+
+
     public bool TryResolveFormKey(ILinkCache cache, [MaybeNullWhen(false)]out FormKey formKey)
     {
         if (TryResolve(cache, out var rec))
@@ -145,12 +145,12 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         return false;
     }
 
-    /// <summary>
-    /// Attempts to locate link target in given Link Cache.
-    /// </summary>
-    /// <param name="cache">Link Cache to resolve against</param>
-    /// <returns>TryGet object with located record if successful</returns>
-    public TMajor? TryResolve(ILinkCache cache) 
+
+
+
+
+
+    public TMajor? TryResolve(ILinkCache cache)
     {
         if (TryResolve(cache, out TMajor rec))
         {

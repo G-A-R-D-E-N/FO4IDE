@@ -39,13 +39,13 @@ partial class TerminalBinaryCreateTranslation
 
     public static partial void FillBinaryLoopingSoundExportCustom(MutagenFrame frame, ITerminalInternal item)
     {
-        // Let later custom logic parse
+
     }
 
     public static partial void FillBinaryFlagsCustom(MutagenFrame frame, ITerminalInternal item, PreviousParse lastParsed)
     {
-        // Clear out old stuff
-        // This assumes flags will be parsed first.  Might need to be upgraded to not need that assumption
+
+
         item.MarkerParameters = null;
         item.Flags = FillBinaryFlags(frame, (i) => GetNthMarker(item, i));
     }
@@ -56,7 +56,7 @@ partial class TerminalBinaryCreateTranslation
         uint raw = BinaryPrimitives.ReadUInt32LittleEndian(subFrame.Content);
         var ret = (Terminal.Flag)(raw & UpperFlagsMask);
 
-        // Create marker objects for sit flags
+
         uint markers = raw & 0x003F_FFFF;
         uint indexToCheck = 1;
         for (int i = 0; i < NumSlots; i++)
@@ -125,13 +125,13 @@ partial class TerminalBinaryWriteTranslation
     public static partial void WriteBinaryFlagsCustom(MutagenWriter writer, ITerminalGetter item)
     {
         var flags = (uint)(item.Flags ?? 0);
-        // Trim out lower flags
+
         var exportFlags = flags & FurnitureBinaryCreateTranslation.UpperFlagsMask;
 
         var markers = item.MarkerParameters;
         if (markers != null)
         {
-            // Enable appropriate sit markers
+
             uint indexToCheck = 1;
             foreach (var marker in markers)
             {
@@ -140,7 +140,7 @@ partial class TerminalBinaryWriteTranslation
             }
         }
 
-        // Write out mashup of upper flags and sit markers
+
         using (HeaderExport.Subrecord(writer, RecordTypes.MNAM))
         {
             writer.Write(exportFlags);

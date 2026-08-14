@@ -43,12 +43,12 @@ public static class AssetLinkExt
     }
 #endif
 
-    /// <summary>
-    /// Takes in a nullable string, and applies a string converter if it is not null or empty.
-    /// </summary>
-    /// <param name="src">String to process</param>
-    /// <param name="decorator">String decorator if source not null or empty</param>
-    /// <returns>Decorated string, or null/empty if source was null/empty</returns>
+
+
+
+
+
+
     [return: NotNullIfNotNull("src")]
     public static string? Decorate(this IAssetLinkGetter? src, Func<string, string> decorator) =>
         src?.GivenPath.Decorate(decorator);

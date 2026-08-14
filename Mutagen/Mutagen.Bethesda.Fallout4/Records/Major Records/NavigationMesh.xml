@@ -4,7 +4,7 @@
     <Fields>
       <RefDirect name="NavmeshGeometry" refName="NavmeshGeometry" overflowRecordType="XXXX" />
       <FormLink name="ONAM" recordType="ONAM">
-        <!-- Best Guess -->
+
         <Interface>IStaticTarget</Interface>
       </FormLink>
       <ByteArray name="NNAM" recordType="NNAM" />

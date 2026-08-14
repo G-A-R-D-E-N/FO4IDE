@@ -8,11 +8,11 @@ namespace Mutagen.Bethesda.Archives.DI;
 
 public interface IArchiveReaderProvider
 {
-    /// <summary>
-    /// Creates an Archive reader object from the given path, for the given Game Release.
-    /// </summary>
-    /// <param name="path">Path to create archive reader from</param>
-    /// <returns>Archive reader object</returns>
+
+
+
+
+
     IArchiveReader Create(FilePath path);
 }
 
@@ -28,8 +28,8 @@ public sealed class ArchiveReaderProvider : IArchiveReaderProvider
         _fileSystem = fileSystem;
         _gameRelease = gameRelease;
     }
-        
-    /// <inheritdoc />
+
+
     public IArchiveReader Create(FilePath path)
     {
         switch (_gameRelease.Release)

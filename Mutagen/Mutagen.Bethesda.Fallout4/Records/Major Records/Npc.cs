@@ -27,7 +27,7 @@ public partial class Npc
         AutoCalcStats = 0x0000_0010,
         Unique = 0x0000_0020,
         DoesntAffectStealthMeter = 0x0000_0040,
-        //PcLevelMult = 0x0000_0080,
+
         CalcForEachTemplate = 0x0000_0200,
         Protected = 0x0000_0800,
         Summonable = 0x0000_4000,
@@ -126,7 +126,7 @@ partial class NpcBinaryCreateTranslation
 
     public static partial void FillBinaryFlagsCustom(MutagenFrame frame, INpcInternal item)
     {
-        // Read normally
+
         item.Flags = (Npc.Flag)frame.ReadUInt32();
     }
 
@@ -150,7 +150,7 @@ partial class NpcBinaryCreateTranslation
             };
         }
 
-        // Clear out PcLevelMult flag, as that information is kept in the field type above
+
         uint rawFlags = (uint)item.Flags;
         rawFlags &= ~PcLevelMultFlag;
         item.Flags = (Npc.Flag)rawFlags;
@@ -158,7 +158,7 @@ partial class NpcBinaryCreateTranslation
 
     public static partial ParseResult FillBinaryMorphParsingCustom(
         MutagenFrame frame,
-        INpcInternal item, 
+        INpcInternal item,
         PreviousParse lastParsed)
     {
         var subrec = frame.ReadSubrecordHeader();
@@ -202,7 +202,7 @@ partial class NpcBinaryWriteTranslation
 {
     public static partial void WriteBinaryFlagsCustom(MutagenWriter writer, INpcGetter item)
     {
-        // Add back PcLevelMult flag
+
         uint raw = (uint)item.Flags;
         switch (item.Level)
         {
@@ -261,7 +261,7 @@ partial class NpcBinaryOverlay
     private int? _templateLinksLocation;
     private int? _MSDKLocation;
     private int? _MSDVLocation;
-    
+
     #region Level
     private int _LevelLocation => _ACBSLocation!.Value.Min + 0x6;
     public partial IANpcLevelGetter GetLevelCustom();
@@ -271,7 +271,7 @@ partial class NpcBinaryOverlay
     public partial Npc.Flag GetFlagsCustom()
     {
         uint rawFlags = BinaryPrimitives.ReadUInt32LittleEndian(_recordData.Slice(_FlagsLocation));
-        // Clear out PcLevelMult flag, as that information is kept in the field type above
+
         rawFlags &= ~NpcBinaryCreateTranslation.PcLevelMultFlag;
         return (Npc.Flag)rawFlags;
     }
@@ -322,7 +322,7 @@ partial class NpcBinaryOverlay
             if (!_MSDVLocation.HasValue && !_MSDKLocation.HasValue) return [];
             ReadOnlyMemorySlice<byte> msdk = _MSDKLocation.HasValue ? HeaderTranslation.ExtractSubrecordMemory(_recordData, _MSDKLocation.Value, _package.MetaData.Constants) : [];
             ReadOnlyMemorySlice<byte> msdv = _MSDVLocation.HasValue ? HeaderTranslation.ExtractSubrecordMemory(_recordData, _MSDVLocation.Value, _package.MetaData.Constants) : [];
-            var amount = Math.Max(msdk.Length, msdv.Length) / 4; 
+            var amount = Math.Max(msdk.Length, msdv.Length) / 4;
             var ret = new List<INpcMorphGetter>(amount);
             for (int i = 0; i < amount; i++)
             {

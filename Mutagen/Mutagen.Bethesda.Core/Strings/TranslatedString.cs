@@ -4,25 +4,25 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Mutagen.Bethesda.Strings;
 
-/// <summary>
-/// A string that can be represented in multiple different languages.<br/>
-/// Threadsafe.
-/// </summary>
+
+
+
+
 [DebuggerDisplay("{String}")]
 public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedString>, IOptionalStringsKeyGetter
 {
-    /// <summary>
-    /// Whether to only consider the DefaultLanguage in equality/hash comparisons.
-    /// This is not good to change during a program's execution.  It should only be 
-    /// modified early during initialization.
-    /// </summary>
+
+
+
+
+
     public static bool DefaultLanguageComparisonOnly = true;
 
     private static Language _defaultLanguage;
 
-    /// <summary>
-    /// The default language to use as the main target language
-    /// </summary>
+
+
+
     public static Language DefaultLanguage
     {
         get => _defaultLanguage;
@@ -33,24 +33,24 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         }
     }
 
-    /// <summary>
-    /// Language the string is targeting, and will be set/return when accessed normally
-    /// </summary>
+
+
+
     public Language TargetLanguage { get; }
 
     private string? _directString;
     private readonly object _lock = new();
     internal Dictionary<Language, string?>? _localization;
 
-    // Alternate way of populating a Translated String
-    // Will cause it to act in a lazy lookup fashion
+
+
     public uint? StringsKey { get; internal set; }
     internal IStringsFolderLookup? StringsLookup;
     internal StringsSource StringsSource;
 
     internal bool UsingLocalizationDictionary => _localization != null || StringsLookup != null;
 
-    /// <inheritdoc />
+
     public string? String
     {
         get
@@ -80,30 +80,30 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
     private static TranslatedString _empty = new(Language.English, string.Empty);
     public static ITranslatedStringGetter Empty => _empty;
 
-    /// <summary>
-    /// Creates a translated string with empty string set for the default language
-    /// </summary>
-    /// <param name="language">Optional target language override</param>
+
+
+
+
     public TranslatedString(Language language)
     {
         TargetLanguage = language;
     }
 
-    /// <summary>
-    /// Creates a translated string with a value for the default language
-    /// </summary>
-    /// <param name="directString">String to register for the default language</param>
+
+
+
+
     public TranslatedString(Language targetLanguage, string? directString)
     {
         _directString = directString;
         TargetLanguage = targetLanguage;
     }
 
-    /// <summary>
-    /// Creates a translated string with a number of strings for languages.
-    /// If no string is provided for the default language, string.Empty will be assigned.
-    /// </summary>
-    /// <param name="strs">Language string pairs to register</param>
+
+
+
+
+
     public TranslatedString(Language targetLanguage, IEnumerable<KeyValuePair<Language, string>> strs)
     {
         _localization = new Dictionary<Language, string?>();
@@ -114,18 +114,18 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         TargetLanguage = targetLanguage;
     }
 
-    /// <summary>
-    /// Creates a translated string with a number of strings for languages.
-    /// If no string is provided for the default language, string.Empty will be assigned.
-    /// </summary>
-    /// <param name="targetLanguage">Target language override</param>
-    /// <param name="strs">Language string pairs to register</param>
+
+
+
+
+
+
     public TranslatedString(Language targetLanguage, params KeyValuePair<Language, string>[] strs)
         : this(targetLanguage, (IEnumerable<KeyValuePair<Language, string>>)strs)
     {
     }
 
-    /// <inheritdoc />
+
     public bool TryLookup(Language language, [MaybeNullWhen(false)] out string str)
     {
         lock (_lock)
@@ -165,11 +165,11 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         return false;
     }
 
-    /// <summary>
-    /// Sets the string for a specific language
-    /// </summary>
-    /// <param name="language">Language to register the string under</param>
-    /// <param name="str">String to register</param>
+
+
+
+
+
     public void Set(Language language, string? str)
     {
         lock (_lock)
@@ -189,7 +189,7 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         }
     }
 
-    /// <inheritdoc />
+
     public void RemoveNonDefault(Language language)
     {
         if (language == TargetLanguage) return;
@@ -207,7 +207,7 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
     {
         var ret = new Dictionary<Language, string?>();
 
-        // Swap direct string to the internal setup where it's stored in the dictionary
+
         if (_directString != null)
         {
             ret[TargetLanguage] = _directString;
@@ -216,7 +216,7 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         return ret;
     }
 
-    /// <inheritdoc />
+
     public void ClearNonDefault()
     {
         lock (_lock)
@@ -230,7 +230,7 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         }
     }
 
-    /// <inheritdoc />
+
     public void Clear()
     {
         ClearNonDefault();
@@ -291,7 +291,7 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
     public static implicit operator TranslatedString?(string? str)
     {
         return str == null
-            ? default(TranslatedString?) 
+            ? default(TranslatedString?)
             : new TranslatedString(DefaultLanguage, str);
     }
 

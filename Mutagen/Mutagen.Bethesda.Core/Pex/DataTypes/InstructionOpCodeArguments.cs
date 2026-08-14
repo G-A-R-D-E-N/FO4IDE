@@ -7,54 +7,54 @@ public static class InstructionOpCodeArguments
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public static IReadOnlyList<string> Arguments => new[]
     {
-        "", // 00
+        "",
         "SII",
         "SFF",
         "SII",
-        "SFF", // 04
+        "SFF",
         "SII",
         "SFF",
         "SII",
-        "SFF", // 08
+        "SFF",
         "SII",
         "SA",
         "SI",
-        "SF", // 0C
+        "SF",
         "SA",
         "SA",
         "SAA",
-        "SAA", // 10
         "SAA",
         "SAA",
         "SAA",
-        "L", // 14
+        "SAA",
+        "L",
         "AL",
         "AL",
         "NSS*",
-        "NS*", // 18
+        "NS*",
         "NNS*",
         "A",
         "SQQ",
-        "NSS", // 1C
+        "NSS",
         "NSA",
         "Su",
         "SS",
-        "SSI", // 20
+        "SSI",
         "SIA",
         "SSII",
         "SSII",
-            
-        //F04
-        //TODO: find the right argument types, only length is correct
-        "SSS", // 24
+
+
+
+        "SSS",
         "S",
         "SS",
         "SSS",
-        "SSSSS", // 28
+        "SSSSS",
         "SSSSS",
         "SSS",
         "SSS",
-        "S", // 2C
+        "S",
         "SSS",
         "S"
     };

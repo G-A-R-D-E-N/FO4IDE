@@ -92,14 +92,14 @@ partial class PerkBinaryCreateTranslation
 
         return ret;
     }
-    
+
     public static APerkEffect ParseEffect<TStream>(TStream stream, SubrecordFrame prkeFrame)
         where TStream : IMutagenReadStream
     {
         var type = (Perk.EffectType)prkeFrame.Content[0];
         var rank = prkeFrame.Content[1];
         var priority = prkeFrame.Content[2];
-        
+
         var payload = ReadPayload(stream);
 
         APerkEffect effect;
@@ -348,7 +348,7 @@ partial class PerkBinaryCreateTranslation
         {
             effect.PerkEntryID = payload.EPFB.Value.AsUInt16();
         }
-        
+
         if (stream.TryReadSubrecord(RecordTypes.EPFT, out var epftFrame)
             && epftFrame.ContentLength != 1
             && epftFrame.Content[0] != (byte)APerkEntryPointEffect.ParameterType.None)
@@ -358,7 +358,7 @@ partial class PerkBinaryCreateTranslation
         stream.TryReadSubrecord(RecordTypes.PRKF, out var _);
         return effect;
     }
-    
+
     public static IEnumerable<APerkEffect> ParseEffects(IMutagenReadStream stream)
     {
         while (stream.TryReadSubrecord(RecordTypes.PRKE, out var prkeFrame))
@@ -492,10 +492,10 @@ partial class PerkBinaryWriteTranslation
                     }
                     using (HeaderExport.Subrecord(writer, RecordTypes.EPF3))
                     {
-                        // EnumBinaryTranslation.WriteValue has no case for a short-backed enum and
-                        // throws NotImplementedException for PerkEntryPointAddActivateChoice.Flag
-                        // (2-byte). The read side already uses a raw ReadInt16, so mirror it with a
-                        // direct 2-byte write instead of the enum translation.
+
+
+
+
                         writer.Write((ushort)choice.Flags.GetValueOrDefault());
                     }
                 }

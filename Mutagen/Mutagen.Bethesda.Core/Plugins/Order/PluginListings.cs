@@ -12,7 +12,7 @@ namespace Mutagen.Bethesda.Plugins.Order;
 
 public static class PluginListings
 {
-    /// <inheritdoc cref="IPluginListingsProvider"/>
+
     public static string GetListingsPath(GameRelease game)
     {
         var gameReleaseInjection = new GameReleaseInjection(game);
@@ -26,24 +26,24 @@ public static class PluginListings
             gameReleaseInjection).Path;
     }
 
-    /// <summary>
-    /// Attempts to locate the path to a game's load order file, and ensure existence
-    /// </summary>
-    /// <param name="game">Release to query</param>
-    /// <param name="path">Path to load order file if it was located</param>
-    /// <returns>True if file located</returns>
+
+
+
+
+
+
     public static bool TryGetListingsFile(GameRelease game, out FilePath path)
     {
         path = GetListingsPath(game);
         return File.Exists(path);
     }
 
-    /// <summary>
-    /// Attempts to locate the path to a game's load order file, and ensure existence
-    /// </summary>
-    /// <param name="game">Release to query</param>
-    /// <returns>Path to load order file if it was located</returns>
-    /// <exception cref="FileNotFoundException">If expected plugin file did not exist</exception>
+
+
+
+
+
+
     public static FilePath GetListingsFile(GameRelease game)
     {
         if (TryGetListingsFile(game, out var path))
@@ -55,13 +55,13 @@ public static class PluginListings
             $"Could not locate load order automatically.  Expected a file at: {path.Path}");
     }
 
-    /// <summary>
-    /// Parses a stream to retrieve all ModKeys in expected plugin file format
-    /// </summary>
-    /// <param name="stream">Stream to read from</param>
-    /// <param name="game">Game type</param>
-    /// <returns>List of ModKeys representing a load order</returns>
-    /// <exception cref="ArgumentException">Line in plugin stream is unexpected</exception>
+
+
+
+
+
+
+
     public static IEnumerable<ILoadOrderListingGetter> LoadOrderListingsFromStream(Stream stream, GameRelease game)
     {
         return new PluginListingsParser(
@@ -72,7 +72,7 @@ public static class PluginListings
             .Parse(stream);
     }
 
-    /// <inheritdoc cref="IPluginListingsProvider"/>
+
     public static IEnumerable<ILoadOrderListingGetter> LoadOrderListings(
         GameRelease game,
         DirectoryPath dataPath,
@@ -93,7 +93,7 @@ public static class PluginListings
             throwOnMissingMods);
     }
 
-    /// <inheritdoc cref="IPluginListingsProvider"/>
+
     public static IEnumerable<ILoadOrderListingGetter> LoadOrderListingsFromPath(
         FilePath pluginTextPath,
         GameRelease game,
@@ -109,7 +109,7 @@ public static class PluginListings
             fileSystem ?? IFileSystemExt.DefaultFilesystem).Get();
     }
 
-    /// <inheritdoc cref="IPluginListingsProvider"/>
+
     public static IEnumerable<ILoadOrderListingGetter> RawLoadOrderListingsFromPath(
         FilePath pluginTextPath,
         GameRelease game)
@@ -118,7 +118,7 @@ public static class PluginListings
         return LoadOrderListingsFromStream(fs, game).ToList();
     }
 
-    /// <inheritdoc cref="IPluginLiveLoadOrderProvider"/>
+
     public static IObservable<IChangeSet<ILoadOrderListingGetter>> GetLiveLoadOrder(
         GameRelease game,
         FilePath loadOrderFilePath,
@@ -142,13 +142,13 @@ public static class PluginListings
             pluginPath).Get(out state, scheduler);
     }
 
-    /// <inheritdoc cref="IPluginLiveLoadOrderProvider"/>
+
     public static IObservable<Unit> GetLoadOrderChanged(FilePath loadOrderFilePath)
     {
         return ObservableExt.WatchFile(loadOrderFilePath.Path);
     }
 
-    /// <inheritdoc cref="IPluginLiveLoadOrderProvider"/>
+
     public static IObservable<Unit> GetLoadOrderChanged(GameRelease game)
     {
         var gameReleaseInjection = new GameReleaseInjection(game);
@@ -166,7 +166,7 @@ public static class PluginListings
     private static PluginListingsProvider PluginListingsProvider(
         IDataDirectoryProvider dataDirectory,
         IGameReleaseContext gameContext,
-        IPluginListingsPathContext listingsPathContext, 
+        IPluginListingsPathContext listingsPathContext,
         bool throwOnMissingMods,
         IFileSystem fs)
     {

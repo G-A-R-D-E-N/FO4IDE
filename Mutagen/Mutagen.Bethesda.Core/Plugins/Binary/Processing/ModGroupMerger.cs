@@ -25,7 +25,7 @@ public static class ModGroupMerger
             {
                 return majorHeader.IsCompressed;
             });
-        
+
         inputStream.Position = 0;
 
         var dict = new Dictionary<RecordType, List<GroupLocationMarker>>();
@@ -51,13 +51,13 @@ public static class ModGroupMerger
             inputStream.BaseStream.CopyTo(outputStream);
             return;
         }
-        
+
         inputStream.Position = 0;
 
         var passedSet = new HashSet<RecordType>();
         while (!inputStream.Complete)
         {
-            // Import until next listed group
+
             long noRecordLength;
             if (fileLocs.GrupLocations.TryGetInDirection(
                     inputStream.Position,
@@ -74,7 +74,7 @@ public static class ModGroupMerger
             inputStream.WriteTo(writer.BaseStream, (int)noRecordLength);
 
             if (inputStream.Complete) break;
-            
+
             var groupMeta = inputStream.GetGroupHeader();
 
             if (!dict.TryGetValue(groupMeta.ContainedRecordType, out var groupLocations))
@@ -88,8 +88,8 @@ public static class ModGroupMerger
                 inputStream.Position += groupMeta.TotalLength;
                 continue;
             }
-            
-            // Write last group header
+
+
             var readPos = inputStream.Position;
             var writePos = writer.BaseStream.Position;
             long totalLen = groupMeta.HeaderLength;
@@ -97,7 +97,7 @@ public static class ModGroupMerger
             inputStream.Position = groupLocations.Last().Location.Min;
             inputStream.WriteTo(writer.BaseStream, groupMeta.HeaderLength);
 
-            // Write all group contents
+
             foreach (var groupLoc in groupLocations)
             {
                 inputStream.Position = groupLoc.Location.Min;
@@ -106,11 +106,11 @@ public static class ModGroupMerger
                 writer.BaseStream.Write(targetGroupMeta.Content);
             }
 
-            // Update group length
+
             writer.BaseStream.Position = writePos + 4;
             writer.Write(checked((uint)totalLen));
-            
-            // reset for next
+
+
             writer.BaseStream.Position = writePos + totalLen;
             inputStream.Position = readPos + groupMeta.TotalLength;
         }

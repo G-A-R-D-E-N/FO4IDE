@@ -26,7 +26,7 @@ public sealed class GameEnvironment
     private GameEnvironment()
     {
     }
-        
+
     public IGameEnvironment<TModSetter, TModGetter> Construct<TModSetter, TModGetter>(
         GameRelease release,
         LinkCachePreferences? linkCachePrefs = null)
@@ -74,28 +74,28 @@ public interface IGameEnvironment : IDisposable
     FilePath? LoadOrderFilePath { get; }
     FilePath? CreationClubListingsFilePath { get; }
 
-    /// <summary>
-    /// Load Order object containing all the mods present in the environment.
-    /// </summary>
+
+
+
     ILoadOrderGetter<IModListingGetter<IModGetter>> LoadOrder { get; }
 
-    /// <summary>
-    /// Convenience Link Cache to use created from the provided Load Order object
-    /// </summary>
+
+
+
     ILinkCache LinkCache { get; }
-    
-    /// <summary>
-    /// Convenience Asset Provider created from the environment's context
-    /// </summary>
+
+
+
+
     IAssetProvider AssetProvider { get; }
 }
 
 public interface IGameEnvironment<TMod> : IGameEnvironment
     where TMod : class, IModGetter
 {
-    /// <summary>
-    /// Load Order object containing all the mods present in the environment.
-    /// </summary>
+
+
+
     new ILoadOrderGetter<IModListingGetter<TMod>> LoadOrder { get; }
 }
 
@@ -103,14 +103,14 @@ public interface IGameEnvironment<TModSetter, TModGetter> : IGameEnvironment<TMo
     where TModSetter : class, IContextMod<TModSetter, TModGetter>, TModGetter
     where TModGetter : class, IContextGetterMod<TModSetter, TModGetter>
 {
-    /// <summary>
-    /// Load Order object containing all the mods present in the environment.
-    /// </summary>
+
+
+
     new ILoadOrderGetter<IModListingGetter<TModGetter>> LoadOrder { get; }
 
-    /// <summary>
-    /// Convenience Link Cache to use created from the provided Load Order object
-    /// </summary>
+
+
+
     new ILinkCache<TModSetter, TModGetter> LinkCache { get; }
 }
 
@@ -137,9 +137,9 @@ partial class GameEnvironmentProviderContainer<TMod> : IContainer<GameEnvironmen
     }
 }
 
-/// <summary>
-/// A class housing commonly used utilities when interacting with a game environment
-/// </summary>
+
+
+
 public sealed class GameEnvironmentState :
     IDataDirectoryProvider,
     IPluginListingsPathContext,
@@ -220,9 +220,9 @@ public sealed class GameEnvironmentState :
     FilePath? ICreationClubListingsPathProvider.Path => CreationClubListingsFilePath;
 }
 
-/// <summary>
-/// A class housing commonly used utilities when interacting with a game environment
-/// </summary>
+
+
+
 public sealed class GameEnvironmentState<TMod> :
     IDataDirectoryProvider,
     IPluginListingsPathContext,
@@ -320,9 +320,9 @@ partial class GameEnvironmentProviderGenericContainer<TModSetter, TModGetter> : 
     }
 }
 
-/// <summary>
-/// A class housing commonly used utilities when interacting with a game environment
-/// </summary>
+
+
+
 public sealed class GameEnvironmentState<TModSetter, TModGetter> :
     IDataDirectoryProvider,
     IPluginListingsPathContext,
@@ -343,19 +343,19 @@ public sealed class GameEnvironmentState<TModSetter, TModGetter> :
     public FilePath? CreationClubListingsFilePath => _creationClubListingsFilePathProvider.Path;
     private readonly ICreationClubListingsPathProvider _creationClubListingsFilePathProvider;
 
-    /// <summary>
-    /// Load Order object containing all the mods present in the environment.
-    /// </summary>
+
+
+
     public ILoadOrderGetter<IModListingGetter<TModGetter>> LoadOrder { get; }
 
-    /// <summary>
-    /// Convenience Link Cache to use created from the provided Load Order object
-    /// </summary>
+
+
+
     public ILinkCache<TModSetter, TModGetter> LinkCache { get; }
 
-    /// <summary>
-    /// Convenience Asset Provider created from the environment's context
-    /// </summary>
+
+
+
     public IAssetProvider AssetProvider { get; }
 
     public GameEnvironmentState(

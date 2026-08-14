@@ -7,10 +7,10 @@ public partial class PexObject
         var ret = new PexObject();
         ret.Name = parse.ReadString();
 
-        /*
-         * This is the size of the entire object in bytes not some count variable for a loop. This also includes
-         * the size of itself thus the - sizeof(uint)
-         */
+
+
+
+
         var size = parse.Reader.ReadUInt32() - sizeof(uint);
         var currentPos = parse.Reader.Position;
 
@@ -66,7 +66,7 @@ public partial class PexObject
     {
         write.WriteString(Name);
 
-        //needed for later changing
+
         var currentPos = write.Writer.BaseStream.Position;
         write.Writer.Write(sizeof(uint));
 
@@ -108,7 +108,7 @@ public partial class PexObject
             objectState.Write(write);
         }
 
-        //calculate object size, go back, change it and return to the current position
+
         var newPos = write.Writer.BaseStream.Position;
         write.Writer.BaseStream.Position = currentPos;
 
@@ -170,7 +170,7 @@ public partial class PexObjectStructInfoMember
         write.WriteString(DocString);
     }
 }
-    
+
 public partial class PexObjectVariable
 {
     internal static PexObjectVariable Create(PexParseMeta parse)
@@ -215,7 +215,7 @@ public partial class PexObjectVariableData
                 ret.FloatValue = parse.Reader.ReadFloat();
                 break;
             case VariableType.Bool:
-                //TODO: use ReadByte instead?
+
                 ret.BoolValue = parse.Reader.ReadBoolean();
                 break;
             default:
@@ -455,11 +455,11 @@ public partial class PexObjectFunctionInstruction
 
                     break;
                 }
-                //TODO: figure out what do to with this
-                /*
-                 * u apparently means unsigned integer and indicates that the integer value we get should be
-                 * interpreted as an unsigned integer.
-                 */
+
+
+
+
+
                 case 'u' when argument.VariableType != VariableType.Integer:
                     throw new InvalidDataException($"Argument is unsigned integer but Variable Type is not integer: {argument.VariableType}");
             }

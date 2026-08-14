@@ -7,10 +7,10 @@ namespace Mutagen.Bethesda;
 
 public static class StreamOperationsMixIn
 {
-    /// <summary>
-    /// Tries to locate a given subrecord in the upcoming stream.  Will stop looking if any unexpected types are encountered.  Stream's position
-    /// will be moved to located record if found, otherwise it will be reset to its original position.
-    /// </summary>
+
+
+
+
     public static bool TryScanToRecord<T>(this T stream, RecordType type, out SubrecordFrame foundRecord, IReadOnlyRecordCollection expectedTypes)
         where T : IMutagenReadStream
     {

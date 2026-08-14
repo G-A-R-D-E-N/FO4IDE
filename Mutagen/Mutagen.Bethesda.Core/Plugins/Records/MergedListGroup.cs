@@ -8,21 +8,21 @@ using Noggog.StructuredStrings;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-/// <summary>
-/// Interface for blocks that can be merged by a numeric key (like BlockNumber).
-/// </summary>
+
+
+
 public interface IMergeableBlock : ILoquiObject, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
 {
-    /// <summary>
-    /// The numeric key used to merge blocks (e.g., BlockNumber).
-    /// </summary>
+
+
+
     int BlockNumber { get; }
 }
 
-/// <summary>
-/// Merged list group that combines multiple list groups (like Cells) into a single unified view.
-/// Blocks from different mods are merged by a numeric key (like BlockNumber).
-/// </summary>
+
+
+
+
 public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGetter<TBlock>, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
     where TBlock : class, ILoquiObject, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
     where TListGroup : IEnumerable<TBlock>
@@ -33,13 +33,13 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
     private List<TBlock>? _cache;
     private readonly object _cacheLock = new object();
 
-    /// <summary>
-    /// Creates a new MergedListGroup.
-    /// </summary>
-    /// <param name="sourceGroups">Source list groups to merge</param>
-    /// <param name="getBlockNumberFunc">Function to extract the block number from a block</param>
-    /// <param name="mergeBlocksFunc">Function to merge multiple blocks with the same block number.
-    /// Takes (blockNumber, blocksToMerge) and returns a merged block.</param>
+
+
+
+
+
+
+
     public MergedListGroup(
         IEnumerable<TListGroup> sourceGroups,
         Func<TBlock, int> getBlockNumberFunc,
@@ -60,7 +60,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
             {
                 if (_cache != null) return _cache;
 
-                // Merge blocks by block number
+
                 var blocksByNumber = new Dictionary<int, List<TBlock>>();
 
                 foreach (var group in _sourceGroups)
@@ -76,7 +76,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
                     }
                 }
 
-                // Create merged blocks
+
                 var result = new List<TBlock>();
                 foreach (var blockNumber in blocksByNumber.Keys.OrderBy(k => k))
                 {
@@ -87,7 +87,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
                     }
                     else
                     {
-                        // Multiple blocks with same number - merge them
+
                         result.Add(_mergeBlocksFunc(blockNumber, blocksForNumber));
                     }
                 }
@@ -112,7 +112,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
 
     IEnumerable<TBlock> IListGroupGetter<TBlock>.GetEnumerator() => Cache;
 
-    // ILoquiObject
+
     ILoquiRegistration ILoquiObject.Registration => null!;
 
     public void Print(StructuredStringBuilder sb, string? name = null)
@@ -128,7 +128,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
         }
     }
 
-    // IAssetLinkContainerGetter
+
     public IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(AssetLinkQuery queryCategories = AssetLinkQuery.Listed, IAssetLinkCache? linkCache = null, Type? assetType = null)
     {
         foreach (var block in Cache)
@@ -140,7 +140,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
         }
     }
 
-    // IBinaryItem - write all blocks in the merged list
+
     void IBinaryItem.WriteToBinary(MutagenWriter writer, TypedWriteParams translationParams)
     {
         foreach (var block in Cache)
@@ -151,7 +151,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
 
     object IBinaryItem.BinaryWriteTranslator => this;
 
-    // IFormLinkContainerGetter
+
     public IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true)
     {
         foreach (var block in Cache)
@@ -163,7 +163,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
         }
     }
 
-    // IGroupCommonGetter
+
     public ILoquiRegistration ContainedRecordRegistration
     {
         get
@@ -178,7 +178,7 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
     }
     public Type ContainedRecordType => typeof(TBlock);
 
-    // IMajorRecordGetterEnumerable
+
     public IEnumerable<IMajorRecordGetter> EnumerateMajorRecords()
     {
         foreach (var block in Cache)

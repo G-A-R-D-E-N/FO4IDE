@@ -9,19 +9,19 @@ namespace Mutagen.Bethesda.Plugins.Cache.Internals.Implementations.Internal;
 
 internal interface IImmutableModLinkCacheContextCategory<TMod, TModGetter, TKey> : IImmutableModLinkCacheSimpleContextCategory<TKey>
     where TMod : class, IContextMod<TMod, TModGetter>, TModGetter
-    where TModGetter : class, IContextGetterMod<TMod, TModGetter> 
+    where TModGetter : class, IContextGetterMod<TMod, TModGetter>
     where TKey : notnull
 {
     bool TryResolveContext<TMajor, TMajorGetter>(TKey key, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, TMajor, TMajorGetter> majorRec)
         where TMajor : class, IMajorRecordQueryable, TMajorGetter
         where TMajorGetter : class, IMajorRecordQueryableGetter;
-        
+
     bool TryResolveContext(TKey key, Type type, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec);
-        
+
     bool TryResolveUntypedContext(TKey key, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec);
 }
 
-internal sealed class ImmutableModLinkCacheContextCategory<TMod, TModGetter, TKey> : IImmutableModLinkCacheContextCategory<TMod, TModGetter, TKey> 
+internal sealed class ImmutableModLinkCacheContextCategory<TMod, TModGetter, TKey> : IImmutableModLinkCacheContextCategory<TMod, TModGetter, TKey>
     where TMod : class, IContextMod<TMod, TModGetter>, TModGetter
     where TModGetter : class, IContextGetterMod<TMod, TModGetter>
     where TKey : notnull
@@ -37,7 +37,7 @@ internal sealed class ImmutableModLinkCacheContextCategory<TMod, TModGetter, TKe
     {
         Plugins.Warmup.Init();
     }
-    
+
     public ImmutableModLinkCacheContextCategory(
         ImmutableModLinkCache<TMod, TModGetter> parent,
         IMetaInterfaceMapGetter metaInterfaceMapGetter,
@@ -85,7 +85,7 @@ internal sealed class ImmutableModLinkCacheContextCategory<TMod, TModGetter, TKe
         return true;
     }
 
-    public bool TryResolveSimpleContext<TMajorGetter>(TKey key, [MaybeNullWhen(false)] out IModContext<TMajorGetter> majorRec) 
+    public bool TryResolveSimpleContext<TMajorGetter>(TKey key, [MaybeNullWhen(false)] out IModContext<TMajorGetter> majorRec)
         where TMajorGetter : IMajorRecordQueryableGetter
     {
         if (_shortCircuit(key))
@@ -105,7 +105,7 @@ internal sealed class ImmutableModLinkCacheContextCategory<TMod, TModGetter, TKe
     }
 
     public bool TryResolveContext(
-        TKey key, 
+        TKey key,
         Type type,
         [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec)
     {
@@ -206,8 +206,8 @@ internal sealed class ImmutableModLinkCacheContextCategory<TMod, TModGetter, TKe
         try
         {
             var cache = new Cache<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>, TKey>(x => _keyGetter(x.Record).Value);
-            // ToDo
-            // Upgrade to call EnumerateGroups(), which will perform much better
+
+
             foreach (var majorRec in _parent._sourceMod.EnumerateMajorRecordContexts(_parent, type, throwIfUnknown: false))
             {
                 var key = _keyGetter(majorRec.Record);

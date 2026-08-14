@@ -1,7 +1,7 @@
 using Mutagen.Bethesda.Plugins.Implicit;
 using Noggog;
 
-// Intentionally not in Implicit
+
 namespace Mutagen.Bethesda.Plugins;
 
 public static class Implicits
@@ -73,7 +73,7 @@ public static class Implicits
             Listings: skyrimBaseMasters,
             RecordFormKeys: new HashSet<FormKey>()
             {
-                // Actor Value Information
+
                 skyrimModKey.MakeFormKey(0x3F5),
                 skyrimModKey.MakeFormKey(0x5E0),
                 skyrimModKey.MakeFormKey(0x5E1),
@@ -90,26 +90,26 @@ public static class Implicits
                 skyrimModKey.MakeFormKey(0x648),
                 skyrimModKey.MakeFormKey(0x649),
 
-                // Body Part Data
+
                 skyrimModKey.MakeFormKey(0x1C),
 
-                // Eyes
+
                 skyrimModKey.MakeFormKey(0x1A),
 
-                // Globals
+
                 skyrimModKey.MakeFormKey(0x63),
 
-                // Image Space Adapter
+
                 skyrimModKey.MakeFormKey(0x164),
                 skyrimModKey.MakeFormKey(0x166),
 
-                // Impact Data Set
+
                 skyrimModKey.MakeFormKey(0x276),
 
-                // Player Reference
+
                 skyrimModKey.MakeFormKey(0x14),
 
-                // Texture Set
+
                 skyrimModKey.MakeFormKey(0x28),
             });
         EnderalLE = SkyrimLE with { BaseMasters = new ImplicitModKeyCollection(SkyrimLE.Listings.And(enderal)) };
@@ -140,7 +140,7 @@ public static class Implicits
             Listings: new ImplicitModKeyCollection(falloutBaseMasters),
             RecordFormKeys: new HashSet<FormKey>()
             {
-                // ToDo
+
             });
         Fallout4VR = Fallout4 with
         {
@@ -174,7 +174,7 @@ public static class Implicits
             Listings: new ImplicitModKeyCollection(starfieldBaseMasters),
             RecordFormKeys: new HashSet<FormKey>()
             {
-                // ToDo
+
             });
         #endregion
     }

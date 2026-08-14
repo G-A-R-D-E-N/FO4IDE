@@ -22,8 +22,8 @@ public sealed class LoadOrderListingsProvider : ILoadOrderListingsProvider
         _pluginListingsProvider = pluginListingsProvider;
         _cccListingsProvider = cccListingsProvider;
     }
-        
-    /// <inheritdoc />
+
+
     public IEnumerable<ILoadOrderListingGetter> Get()
     {
         var implicitListings = _implicitListingsProvider.Get().ToArray();
@@ -38,23 +38,23 @@ public sealed class LoadOrderListingsProvider : ILoadOrderListingsProvider
 public sealed class LoadOrderListingsInjection : ILoadOrderListingsProvider
 {
     private readonly ILoadOrderListingGetter[] _listings;
-        
+
     public LoadOrderListingsInjection(IEnumerable<ILoadOrderListingGetter> listings)
     {
         _listings = listings.ToArray();
     }
-        
+
     public LoadOrderListingsInjection(params ILoadOrderListingGetter[] listings)
     {
         _listings = listings;
     }
-        
+
     public LoadOrderListingsInjection(params ModKey[] keys)
     {
         _listings = keys
             .Select<ModKey, ILoadOrderListingGetter>(x => new LoadOrderListing(x, true))
             .ToArray();
     }
-        
+
     public IEnumerable<ILoadOrderListingGetter> Get() => _listings;
 }

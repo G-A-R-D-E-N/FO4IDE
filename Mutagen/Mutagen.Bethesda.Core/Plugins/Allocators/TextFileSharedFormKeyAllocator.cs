@@ -10,11 +10,11 @@ using InvalidDataException = System.IO.InvalidDataException;
 
 namespace Mutagen.Bethesda.Plugins.Allocators;
 
-/// <summary>
-/// A FormKey allocator that utilizes a folder of text files to persist and sync.
-/// 
-/// This class is made thread safe by locking internally on the Mod object.
-/// </summary>
+
+
+
+
+
 public sealed class TextFileSharedFormKeyAllocator : BaseSharedFormKeyAllocator
 {
     private readonly object _lock = new();
@@ -31,7 +31,7 @@ public sealed class TextFileSharedFormKeyAllocator : BaseSharedFormKeyAllocator
         public readonly HashSet<uint> FormIDSet = new();
     }
 
-    public TextFileSharedFormKeyAllocator(IMod mod, string saveFolder, string activePatcherName, bool preload = false, IFileSystem? fileSystem = null) 
+    public TextFileSharedFormKeyAllocator(IMod mod, string saveFolder, string activePatcherName, bool preload = false, IFileSystem? fileSystem = null)
         : base(mod, saveFolder, activePatcherName)
     {
         _fileSystem = fileSystem ?? IFileSystemExt.DefaultFilesystem;

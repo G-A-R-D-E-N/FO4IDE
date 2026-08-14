@@ -10,56 +10,56 @@ namespace Mutagen.Bethesda.Plugins.Records
         Male,
         Female,
     }
-    
-    /// <summary>
-    /// An interface for an object exposing readonly Gendered Items
-    /// </summary>
+
+
+
+
     public interface IGenderedItemGetter<out T> : IEnumerable<T>, IPrintable
     {
-        /// <summary>
-        /// Male item
-        /// </summary>
+
+
+
         T Male { get; }
 
-        /// <summary>
-        /// Female item
-        /// </summary>
+
+
+
         T Female { get; }
-        
+
         T this[MaleFemaleGender gender] { get; }
     }
 
-    /// <summary>
-    /// An interface for an object exposing readonly Gendered Items
-    /// </summary>
+
+
+
     public interface IGenderedItem<T> : IGenderedItemGetter<T>
     {
-        /// <summary>
-        /// Male item
-        /// </summary>
+
+
+
         new T Male { set; get; }
 
-        /// <summary>
-        /// Female item
-        /// </summary>
+
+
+
         new T Female { set; get; }
-        
+
         new T this[MaleFemaleGender gender] { get; set; }
     }
 
-    /// <summary>
-    /// An object exposing data in a gendered format
-    /// </summary>
+
+
+
     public sealed class GenderedItem<T> : IGenderedItem<T>
     {
-        /// <summary>
-        /// Male item
-        /// </summary>
+
+
+
         public T Male { get; set; }
-        
-        /// <summary>
-        /// Female item
-        /// </summary>
+
+
+
+
         public T Female { get; set; }
 
         public T this[MaleFemaleGender gender]
@@ -78,18 +78,18 @@ namespace Mutagen.Bethesda.Plugins.Records
             }
         }
 
-        /// <summary>
-        /// Constructor that takes a male and female item
-        /// </summary>
+
+
+
         public GenderedItem(T male, T female)
         {
             Male = male;
             Female = female;
         }
 
-        /// <summary>
-        /// Enumerates first the male item, then the female item
-        /// </summary>
+
+
+
         public IEnumerator<T> GetEnumerator()
         {
             yield return Male;
@@ -98,11 +98,11 @@ namespace Mutagen.Bethesda.Plugins.Records
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        /// <summary>
-        /// Prints the male and female items to the stream
-        /// </summary>
-        /// <param name="sb">Stream to print into</param>
-        /// <param name="name">Optional name to include</param>
+
+
+
+
+
         public void Print(StructuredStringBuilder sb, string? name)
         {
             GenderedItem.Print(this, sb, name);

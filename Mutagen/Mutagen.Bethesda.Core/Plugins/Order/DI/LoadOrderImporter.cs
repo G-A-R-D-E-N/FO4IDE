@@ -11,18 +11,18 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 
 public interface ILoadOrderImporter
 {
-    /// <summary>
-    /// Returns a load order filled with mods constructed
-    /// </summary>
+
+
+
     ILoadOrder<IModListing<IModGetter>> Import(BinaryReadParameters? param = null);
 }
-    
+
 public interface ILoadOrderImporter<TMod>
     where TMod : class, IModKeyed
 {
-    /// <summary>
-    /// Returns a load order filled with mods constructed
-    /// </summary>
+
+
+
     ILoadOrder<IModListing<TMod>> Import(BinaryReadParameters? param = null);
 }
 
@@ -48,7 +48,7 @@ public sealed class LoadOrderImporter<TMod> : ILoadOrderImporter<TMod>
         LoadOrderListingsProvider = loadOrderListingsProvider;
         Importer = importer;
     }
-        
+
     public ILoadOrder<IModListing<TMod>> Import(BinaryReadParameters? param = null)
     {
         var loList = LoadOrderListingsProvider.Get().ToList();
@@ -96,7 +96,7 @@ public sealed class LoadOrderImporter<TMod> : ILoadOrderImporter<TMod>
         }
         catch (Exception)
         {
-            // We're aborting, but we still want to dispose any that were successful
+
             foreach (var result in results)
             {
                 if (result.Mod.Value is IDisposable disp)
@@ -133,7 +133,7 @@ public sealed class LoadOrderImporter : ILoadOrderImporter
         LoadOrderListingsProvider = loadOrderListingsProvider;
         Importer = importer;
     }
-        
+
     public ILoadOrder<IModListing<IModGetter>> Import(BinaryReadParameters? param = null)
     {
         var loList = LoadOrderListingsProvider.Get().ToList();
@@ -191,7 +191,7 @@ public sealed class LoadOrderImporter : ILoadOrderImporter
         }
         catch (Exception)
         {
-            // We're aborting, but we still want to dispose any that were successful
+
             foreach (var result in results)
             {
                 if (result.Mod.Value is IDisposable disp)

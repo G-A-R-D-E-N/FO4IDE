@@ -113,7 +113,7 @@ public sealed class FloatBinaryTranslation<TReader, TWriter> : PrimitiveBinaryTr
     public void Write(
         TWriter writer,
         float? item,
-        FloatIntegerType integerType, 
+        FloatIntegerType integerType,
         float? multiplier = null,
         float? divisor = null,
         [CallerArgumentExpression("item")] string? propertyName = default)
@@ -123,7 +123,7 @@ public sealed class FloatBinaryTranslation<TReader, TWriter> : PrimitiveBinaryTr
         try
         {
             var transformed = FloatBinaryTranslation.ApplyTransformationsToUInt32(item.Value, multiplier: multiplier, divisor: divisor);
-        
+
             switch (integerType)
             {
                 case FloatIntegerType.UInt:
@@ -143,8 +143,8 @@ public sealed class FloatBinaryTranslation<TReader, TWriter> : PrimitiveBinaryTr
         {
             throw new FloatStoredAsIntegerOverflowException(
                 propertyName,
-                // Intentionally flipped
-                divisor: multiplier, 
+
+                divisor: multiplier,
                 multiplier: divisor,
                 integerType: integerType);
         }
@@ -181,7 +181,7 @@ internal static class FloatBinaryTranslation
         }
 
         double transformed = input;
-        
+
         if (multiplier == null)
         {
             transformed /= divisor!.Value;

@@ -7,14 +7,14 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 
 public interface IFindImplicitlyIncludedMods
 {
-    /// <summary>
-    /// Given a list of mods to consider and their enabled state, locate all mods that are implicitly
-    /// required but not active.
-    /// </summary>
-    /// <param name="loadOrderListing">List of mods to consider</param>
-    /// <param name="skipMissingMods">Whether to skip any mod that does not exist in the data directory</param>
-    /// <returns>ModKeys that were referenced but not enabled</returns>
-    /// <exception cref="MissingModException">If a mod was missing and <see cref="skipMissingMods"/> was false</exception>
+
+
+
+
+
+
+
+
     IEnumerable<ModKey> Find(
         IEnumerable<ILoadOrderListingGetter> loadOrderListing,
         bool skipMissingMods = false);
@@ -55,7 +55,7 @@ public sealed class FindImplicitlyIncludedMods : IFindImplicitlyIncludedMods
             {
                 yield return listing.ModKey;
             }
-                
+
             var path = Path.Combine(DirectoryProvider.Path, listing.ModKey.FileName);
             if (!_fileSystem.File.Exists(path))
             {

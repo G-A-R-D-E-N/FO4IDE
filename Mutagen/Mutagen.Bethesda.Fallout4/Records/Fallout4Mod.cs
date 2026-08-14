@@ -19,13 +19,13 @@ public partial class Fallout4Mod : AMod
 {
     public override uint GetDefaultInitialNextFormID(bool? forceUseLowerFormIDRanges = false) =>
         GetDefaultInitialNextFormIDStatic(this.Fallout4Release, this.ModHeader.Stats.Version, forceUseLowerFormIDRanges);
-    
+
     public override bool IsMaster
     {
         get => this.ModHeader.Flags.HasFlag(Fallout4ModHeader.HeaderFlag.Master);
         set => this.ModHeader.Flags = this.ModHeader.Flags.SetFlag(Fallout4ModHeader.HeaderFlag.Master, value);
     }
-    
+
     public override bool CanBeSmallMaster => true;
 
     public override bool IsSmallMaster
@@ -46,7 +46,7 @@ public partial class Fallout4Mod : AMod
     {
         this.ModHeader.FormVersion = GameConstants.Get(GameRelease).DefaultFormVersion!.Value;
     }
-    
+
     internal static uint GetDefaultInitialNextFormIDStatic(Fallout4Release release, float headerVersion, bool? forceUseLowerFormIDRanges)
     {
         return HeaderVersionHelper.GetInitialFormId(
@@ -63,7 +63,7 @@ public partial class Fallout4Mod : AMod
     internal class Fallout4CreateBuilderInstantiator : IBinaryReadBuilderInstantiator<IFallout4Mod, IFallout4ModDisposableGetter, GroupMask>
     {
         public static readonly Fallout4CreateBuilderInstantiator Instance = new();
-        
+
         public IFallout4Mod Mutable(BinaryReadMutableBuilder<IFallout4Mod, IFallout4ModDisposableGetter, GroupMask> builder)
         {
             if (builder._param._path != null)
@@ -133,13 +133,13 @@ public partial class Fallout4Mod : AMod
             }
         }
     }
-    
-    public static BinaryReadBuilderSourceStreamFactoryChoice<IFallout4Mod, IFallout4ModDisposableGetter, GroupMask> 
-        Create(Fallout4Release release) => new( 
-        release.ToGameRelease(), 
+
+    public static BinaryReadBuilderSourceStreamFactoryChoice<IFallout4Mod, IFallout4ModDisposableGetter, GroupMask>
+        Create(Fallout4Release release) => new(
+        release.ToGameRelease(),
         Fallout4CreateBuilderInstantiator.Instance,
         needsRecordTypeInfoCacheReader: false);
-    
+
     internal class Fallout4WriteBuilderInstantiator : IBinaryWriteBuilderWriter<IFallout4ModGetter>
     {
         public static readonly Fallout4WriteBuilderInstantiator Instance = new();
@@ -186,16 +186,16 @@ public partial class Fallout4Mod : AMod
         }
     }
 
-    public BinaryModdedWriteBuilderTargetChoice<IFallout4ModGetter> 
+    public BinaryModdedWriteBuilderTargetChoice<IFallout4ModGetter>
         BeginWrite => new(
-        this, 
+        this,
         Fallout4WriteBuilderInstantiator.Instance);
 
     IBinaryModdedWriteBuilderTargetChoice IModGetter.BeginWrite => this.BeginWrite;
 
     public static BinaryWriteBuilderTargetChoice<IFallout4ModGetter> WriteBuilder(Fallout4Release release) =>
         new(release.ToGameRelease(), Fallout4WriteBuilderInstantiator.Instance);
-    
+
     IMod IModGetter.DeepCopy() => this.DeepCopy();
 }
 
@@ -230,7 +230,7 @@ internal partial class Fallout4ModBinaryOverlay
             this.Fallout4Release,
             this.ModHeader.Stats.Version,
             forceUseLowerFormIDRanges);
-    
+
     public bool IsMaster => this.ModHeader.Flags.HasFlag(Fallout4ModHeader.HeaderFlag.Master);
     public bool CanBeSmallMaster => true;
     public bool IsSmallMaster => this.ModHeader.Flags.HasFlag(Fallout4ModHeader.HeaderFlag.Small);
@@ -239,21 +239,21 @@ internal partial class Fallout4ModBinaryOverlay
     public bool IsMediumMaster => false;
     public bool ListsOverriddenForms => true;
     public MasterStyle MasterStyle => this.GetMasterStyle();
-    
+
     public IReadOnlyList<IFormLinkGetter<IMajorRecordGetter>>? OverriddenForms =>
         this.ModHeader.OverriddenForms;
 
 
-    IBinaryModdedWriteBuilderTargetChoice IModGetter.BeginWrite => 
+    IBinaryModdedWriteBuilderTargetChoice IModGetter.BeginWrite =>
         new BinaryModdedWriteBuilderTargetChoice<IFallout4ModGetter>(
-            this, 
+            this,
             Fallout4Mod.Fallout4WriteBuilderInstantiator.Instance);
 
-    public BinaryModdedWriteBuilderTargetChoice<IFallout4ModGetter> BeginWrite => 
+    public BinaryModdedWriteBuilderTargetChoice<IFallout4ModGetter> BeginWrite =>
         new BinaryModdedWriteBuilderTargetChoice<IFallout4ModGetter>(
-            this, 
+            this,
             Fallout4Mod.Fallout4WriteBuilderInstantiator.Instance);
-    
+
     IMod IModGetter.DeepCopy() => this.DeepCopy();
 }
 
@@ -290,7 +290,7 @@ partial class Fallout4ModCommon
         PluginUtilityTranslation.CompileSetGroupLength(streams, groupBytes);
         streamDepositArray[targetIndex] = new CompositeReadStream(streams, resetPositions: true);
     }
-    
+
     public static void WriteBlocksParallel(
         ICellBlockGetter block,
         int targetIndex,
@@ -515,7 +515,7 @@ partial class Fallout4ModCommon
         PluginUtilityTranslation.CompileSetGroupLength(streams, groupBytes);
         streamDepositArray[targetIndex] = new CompositeReadStream(streams, resetPositions: true);
     }
-    
+
     public static void WriteQuestsParallel(
         IFallout4GroupGetter<IQuestGetter> group,
         int targetIndex,
@@ -529,7 +529,7 @@ partial class Fallout4ModCommon
     partial void GetCustomRecordCount(IFallout4ModGetter item, Action<uint> setter)
     {
         uint count = 0;
-        // Tally Cell Group counts
+
         int cellSubGroupCount(ICellGetter cell)
         {
             int cellGroupCount = 0;
@@ -549,33 +549,33 @@ partial class Fallout4ModCommon
             }
             return cellGroupCount;
         }
-        count += (uint)item.Cells.Records.Count; // Block Count
-        count += (uint)item.Cells.Records.Sum(block => block.SubBlocks?.Count ?? 0); // Sub Block Count
+        count += (uint)item.Cells.Records.Count;
+        count += (uint)item.Cells.Records.Sum(block => block.SubBlocks?.Count ?? 0);
         count += (uint)item.Cells.Records
             .SelectMany(block => block.SubBlocks)
             .SelectMany(subBlock => subBlock.Cells)
             .Select(cellSubGroupCount)
             .Sum();
 
-        // Tally Worldspace Group Counts
-        count += (uint)item.Worldspaces.Sum(wrld => wrld.SubCells?.Count ?? 0); // Cell Blocks
+
+        count += (uint)item.Worldspaces.Sum(wrld => wrld.SubCells?.Count ?? 0);
         count += (uint)item.Worldspaces
             .SelectMany(wrld => wrld.SubCells)
-            .Sum(block => block.Items?.Count ?? 0); // Cell Sub Blocks
+            .Sum(block => block.Items?.Count ?? 0);
         count += (uint)item.Worldspaces
             .SelectMany(wrld => wrld.SubCells)
             .SelectMany(block => block.Items)
             .SelectMany(subBlock => subBlock.Items)
-            .Sum(cellSubGroupCount); // Cell sub groups
+            .Sum(cellSubGroupCount);
 
-        // Tally Dialog Group Counts
+
         var quests = item.Quests.ToArray();
         count += (uint)quests.Length;
         count += (uint)quests.SelectMany(x => x.DialogTopics)
             .Select(x => x.Responses.Count > 0 ? 1 : 0)
             .Sum();
-        
-        // Set count
+
+
         setter(count);
     }
 }

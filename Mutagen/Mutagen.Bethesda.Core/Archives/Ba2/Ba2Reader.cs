@@ -15,7 +15,7 @@ class Ba2Reader : IArchiveReader
     public bool UseATIFourCC { get; set; } = false;
 
     public bool HasNameTable => _nameTableOffset > 0;
-    
+
     public uint Version { get; }
 
     public Ba2Reader(FilePath filename, IFileSystem? fileSystem = null)
@@ -45,11 +45,11 @@ class Ba2Reader : IArchiveReader
         var numFiles = reader.ReadUInt32();
         _nameTableOffset = reader.ReadUInt64();
 
-        // v7 excluded, same as the per-entry layout below: the real v7 GNRL header is exactly 24 bytes
-        // (magic+version+fourcc+numFiles+nameTableOffset) with NO extra field -- hex-verified, the
-        // entry table starts at byte 24 and 24 + numFiles*36 lands on the first file's data offset.
-        // Reading a phantom uint32 here shifted the whole entry table by 4 bytes, corrupting every
-        // entry. Left in place for 2..6 (which don't occur as GNRL in FO4).
+
+
+
+
+
         if (Version > 1 && Version < 7)
         {
             var unknown = reader.ReadUInt32();
@@ -127,12 +127,12 @@ class BA2DX10Entry : IArchiveFile
         _bsa = ba2Reader;
         _nameHash = reader.ReadUInt32();
         Path = _nameHash.ToString("X");
-        // v7 excluded: v7 DX10 (the Next-Gen texture archives, Fallout4 - Textures*.ba2) is the plain
-        // classic v1 24-byte entry layout -- hex-verified against Fallout4 - Textures1.ba2 (ext="dds",
-        // chunkHdrLen=24, 1024x1024, 11 mips, format=71/BC1, chunk ends 0xBAADF00D). This phantom read
-        // (and its twin below, plus the chunk startMip/endMip/align read) mis-strided every entry, so
-        // _format/_width/_height came out garbage -> "Unsupported DDS header format" / arithmetic
-        // overflow on extract. Left for 2..6 (unverified, but not the observed real case).
+
+
+
+
+
+
         if (version > 1 && version < 7)
         {
             var unknown = reader.ReadUInt32();
@@ -148,7 +148,7 @@ class BA2DX10Entry : IArchiveFile
         _format = reader.ReadByte();
         _unk16 = reader.ReadUInt16();
         _index = idx;
-        if (version > 1 && version < 7)   // v7 excluded -- see the note on the first phantom read above
+        if (version > 1 && version < 7)
         {
             var unknown = reader.ReadUInt32();
         }
@@ -166,8 +166,8 @@ class BA2DX10Entry : IArchiveFile
 
     public Stream AsStream()
     {
-        // ToDo
-        // Optimize to be more streamy, rather than frontload into memory
+
+
         var ret = new byte[Size];
         var memStream = new MemoryStream(ret);
         CopyDataTo(memStream);
@@ -243,30 +243,30 @@ class BA2DX10Entry : IArchiveFile
             case DXGI_FORMAT.DXGI_FORMAT_BC1_UNORM:
                 ddsHeader.PixelFormat.dwFlags = DDS.DDS_FOURCC;
                 ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('D', 'X', 'T', '1');
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height / 2); // 4bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height / 2);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_BC2_UNORM:
                 ddsHeader.PixelFormat.dwFlags = DDS.DDS_FOURCC;
                 ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('D', 'X', 'T', '3');
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height); // 8bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_BC3_UNORM:
                 ddsHeader.PixelFormat.dwFlags = DDS.DDS_FOURCC;
                 ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('D', 'X', 'T', '5');
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height); // 8bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_BC5_UNORM:
                 ddsHeader.PixelFormat.dwFlags = DDS.DDS_FOURCC;
                 if (_bsa.UseATIFourCC)
-                    ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('A', 'T', 'I', '2'); // this is more correct but the only thing I have found that supports it is the nvidia photoshop plugin
+                    ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('A', 'T', 'I', '2');
                 else
                     ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('B', 'C', '5', 'U');
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height); // 8bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_BC1_UNORM_SRGB:
                 ddsHeader.PixelFormat.dwFlags = DDS.DDS_FOURCC;
                 ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('D', 'X', '1', '0');
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height / 2); // 4bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height / 2);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_BC3_UNORM_SRGB:
             case DXGI_FORMAT.DXGI_FORMAT_BC6H_UF16:
@@ -276,7 +276,7 @@ class BA2DX10Entry : IArchiveFile
             case DXGI_FORMAT.DXGI_FORMAT_BC7_UNORM_SRGB:
                 ddsHeader.PixelFormat.dwFlags = DDS.DDS_FOURCC;
                 ddsHeader.PixelFormat.dwFourCC = DDS.MAKEFOURCC('D', 'X', '1', '0');
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height); // 8bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM:
             case DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
@@ -286,7 +286,7 @@ class BA2DX10Entry : IArchiveFile
                 ddsHeader.PixelFormat.dwGBitMask = 0x0000FF00;
                 ddsHeader.PixelFormat.dwBBitMask = 0x00FF0000;
                 ddsHeader.PixelFormat.dwABitMask = 0xFF000000;
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height * 4); // 32bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height * 4);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_B8G8R8A8_UNORM:
             case DXGI_FORMAT.DXGI_FORMAT_B8G8R8X8_UNORM:
@@ -296,13 +296,13 @@ class BA2DX10Entry : IArchiveFile
                 ddsHeader.PixelFormat.dwGBitMask = 0x0000FF00;
                 ddsHeader.PixelFormat.dwBBitMask = 0x000000FF;
                 ddsHeader.PixelFormat.dwABitMask = 0xFF000000;
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height * 4); // 32bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height * 4);
                 break;
             case DXGI_FORMAT.DXGI_FORMAT_R8_UNORM:
                 ddsHeader.PixelFormat.dwFlags = DDS.DDS_RGB;
                 ddsHeader.PixelFormat.dwRGBBitCount = 8;
                 ddsHeader.PixelFormat.dwRBitMask = 0xFF;
-                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height); // 8bpp
+                ddsHeader.dwPitchOrLinearSize = (uint)(_width * _height);
                 break;
             default:
                 throw new Exception("Unsupported DDS header format. File: " + Path);
@@ -348,8 +348,8 @@ class BA2TextureChunk
         _offset = rdr.ReadUInt64();
         _packSz = rdr.ReadUInt32();
         _fullSz = rdr.ReadUInt32();
-        // v7 included: v7 DX10 chunks carry the full startMip/endMip/align tail (hex-verified -- chunk 0
-        // of Fallout4 - Textures1.ba2 ends 0xBAADF00D at the v1 offset). Only 2..6 remain a guess.
+
+
         if (version <= 1 || version == 7)
         {
             _startMip = rdr.ReadUInt16();
@@ -382,15 +382,15 @@ class BA2FileEntry : IArchiveFile
         _version = version;
         _nameHash = reader.ReadUInt32();
         Path = _nameHash.ToString("X");
-        // NOTE: version 7 is NOT included here. A real v7 GNRL archive (DLCRobot - Voices_en.ba2,
-        // 6112 .fuz entries) was hex-verified to use the classic v1 36-byte entry layout exactly --
-        // there is NO extra field after nameHash, and it DOES carry the trailing 0xBAADF00D align
-        // field (read below). Proof: all 6112 entries decode with ext="fuz" and align==0xBAADF00D at
-        // the v1 offsets, and 24 + 6112*36 lands exactly on the first file's data offset. Mutagen's
-        // old `<= 7` read this phantom uint32 (really the ext field) AND skipped align, making each
-        // entry 40 bytes and drifting cumulatively into garbage. Kept for 2..6 (which don't occur as
-        // GNRL in FO4 -- higher-version archives are DX10/texture, a separate entry path) rather than
-        // assert something unverified there.
+
+
+
+
+
+
+
+
+
         if (version > 1 && version < 7)
         {
             var unknown = reader.ReadUInt32();
@@ -401,16 +401,16 @@ class BA2FileEntry : IArchiveFile
         _flags = reader.ReadUInt32();
         _offset = reader.ReadUInt64();
 
-        // Version 8 (the PC Next-Gen format, distinct from Xbox's version 7) inserts a REAL packed
-        // (compressed) byte count here. What the field below is read into as `_size` is NOT the
-        // compressed size for v8 -- it is the true UNCOMPRESSED length. Verified empirically against
-        // 50 real entries across two different live Next-Gen archives (Fallout4 - Meshes.ba2 and
-        // Fallout4 - Interface.ba2): reading exactly `packedSize` bytes at `offset` and inflating them
-        // reproduces the real file, with decompressed length == `_size` every time -- including the
-        // packedSize==0 "stored, not compressed" case (e.g. STRINGS\Fallout4_en.STRINGS), where `_size`
-        // bytes must be read RAW instead. The field Mutagen calls `_realSize` below is unused garbage
-        // for v8 -- it reads back as the sentinel 0xBAADF00D for every entry regardless of true
-        // compression state, which is what made the old sentinel-based Compressed check always wrong.
+
+
+
+
+
+
+
+
+
+
         uint packedSize = 0;
         if (version > 7)
         {
@@ -420,25 +420,25 @@ class BA2FileEntry : IArchiveFile
         _realSize = reader.ReadUInt32();
         if (version <= 1 || version == 7)
         {
-            // v1 and (verified above) v7 both carry the trailing align/0xBAADF00D field. v8 does not.
+
             _align = reader.ReadUInt32();
         }
 
         if (version > 7)
         {
             Compressed = packedSize != 0;
-            _realSize = _size;   // `_size` is the true length here -- see the doc comment above.
+            _realSize = _size;
         }
         else
         {
-            // Version <= 7 (including v7): the classic v1 rule. `_size` is the packed size (0 => the
-            // data is stored uncompressed, so AsStream reads `_realSize` = the unpacked length raw);
-            // nonzero => zlib-compressed. Verified for v7 against the real DLCRobot - Voices_en.ba2
-            // now that its entry layout is read correctly (see the align note above).
+
+
+
+
             Compressed = _size != 0;
         }
     }
-        
+
     public string Path { get; internal set; }
 
     public uint Size => _realSize;
@@ -458,7 +458,7 @@ class BA2FileEntry : IArchiveFile
                 new InflaterInputStream(fs)
                 {
                     IsStreamOwner = true
-                }, 
+                },
                 _realSize,
                 doubleCheckLength: false);
         }

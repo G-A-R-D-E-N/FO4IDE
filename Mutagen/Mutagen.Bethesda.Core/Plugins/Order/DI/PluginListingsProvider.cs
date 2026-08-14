@@ -2,13 +2,13 @@
 
 namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-/// <summary>
-/// Provides load order listings explicitly listed in plugins.txt
-/// </summary>
+
+
+
 public interface IPluginListingsProvider : IListingsProvider
 {
 }
-    
+
 public sealed class PluginListingsProvider : IPluginListingsProvider
 {
     private readonly IGameReleaseContext _gameReleaseContext;
@@ -24,7 +24,7 @@ public sealed class PluginListingsProvider : IPluginListingsProvider
         _timestampedPluginsProvider = timestampedPluginsProvider;
         _enabledPluginListingsProvider = enabledPluginListingsProvider;
     }
-        
+
     public IEnumerable<ILoadOrderListingGetter> Get()
     {
         switch (_gameReleaseContext.Release)

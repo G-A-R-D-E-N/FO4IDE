@@ -301,7 +301,7 @@ partial class FaceFxPhonemesBinaryCreateTranslation
             throw new ArgumentException($"Unexpected header: {meta.RecordType}");
         }
 
-        // Read in all the slots
+
         int? expectedSize = null;
         ReadOnlyMemorySlice<byte>[] slots = new ReadOnlyMemorySlice<byte>[SlotSize];
         for (int i = 0; i < SlotSize; i++)
@@ -318,8 +318,8 @@ partial class FaceFxPhonemesBinaryCreateTranslation
             }
             slots[i] = subMetaFrame.Content;
         }
-                
-        // Loop over the targets outlined in listing, parse slots
+
+
         var expectedTargets = expectedSize / 4;
         for (int i = 0; i < expectedTargets; i++)
         {
@@ -423,7 +423,7 @@ partial class FaceFxPhonemesBinaryOverlay
     public IPhonemeGetter? Th => throw new NotImplementedException();
 
     public IPhonemeGetter? W => throw new NotImplementedException();
-            
+
     public IReadOnlyList<IPhonemeGetter> Unknowns => throw new NotImplementedException();
 
     partial void CustomFactoryEnd(OverlayStream stream, int finalPos, int offset)

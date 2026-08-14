@@ -9,15 +9,15 @@ namespace Mutagen.Bethesda.Plugins.Binary.Translations;
 public readonly struct CompressionExport : IDisposable
 {
     private readonly MemoryTributary _tributary = new();
-    
-    /// <summary>
-    /// Writer being tracked
-    /// </summary>
+
+
+
+
     public readonly MutagenWriter OriginalWriter;
-    
-    /// <summary>
-    /// Writer being used for compression
-    /// </summary>
+
+
+
+
     public MutagenWriter CompressionWriter { get; }
 
     private CompressionExport(
@@ -42,7 +42,7 @@ public readonly struct CompressionExport : IDisposable
         writerToUse = ret.CompressionWriter;
         return ret;
     }
-    
+
     public void Dispose()
     {
         Span<byte> b = stackalloc byte[4];

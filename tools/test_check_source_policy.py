@@ -68,10 +68,13 @@ class SourcePolicyTests(unittest.TestCase):
         self.assertEqual(4, len(violations))
         self.assertTrue(all(violation.kind == "comment" for violation in violations))
 
-    def test_ignores_excluded_vendor_tree(self):
+    def test_scans_vendored_csharp_tree(self):
         self.write("Mutagen/Generated.cs", "class Generated { } " + "/" + "/ retained\n")
 
-        self.assertEqual([], self.violations())
+        violations = self.violations()
+
+        self.assertEqual(1, len(violations))
+        self.assertEqual("comment", violations[0].kind)
 
 
 if __name__ == "__main__":

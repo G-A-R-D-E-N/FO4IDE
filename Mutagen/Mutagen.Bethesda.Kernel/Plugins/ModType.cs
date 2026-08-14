@@ -2,19 +2,19 @@ namespace Mutagen.Bethesda.Plugins;
 
 public enum ModType
 {
-    /// <summary>
-    /// .esm
-    /// </summary>
+
+
+
     Master,
 
-    /// <summary>
-    /// .esl
-    /// </summary>
+
+
+
     Light,
 
-    /// <summary>
-    /// .esp
-    /// </summary>
+
+
+
     Plugin,
 }
 

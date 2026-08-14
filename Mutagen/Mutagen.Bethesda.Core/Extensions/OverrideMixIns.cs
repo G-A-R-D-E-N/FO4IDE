@@ -13,21 +13,21 @@ public static class OverrideMixIns
 {
 
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type 
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </summary>
-    /// <typeparam name="TMajor">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </typeparam>
-    /// <param name="modListings">Mod listings to source from, in priority order</param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<TMajor> WinningOverrides<TMajor>(
         this IEnumerable<IModListingGetter<IModGetter>> modListings,
         bool includeDeletedRecords = false)
@@ -39,23 +39,23 @@ public static class OverrideMixIns
             .WinningOverrides<TMajor>(includeDeletedRecords: includeDeletedRecords);
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type 
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </summary>
-    /// <param name="modListings">Mod listings to source from, in priority order</param>
-    /// <param name="type">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IMajorRecordGetter> WinningOverrides(
-        this IEnumerable<IModListingGetter<IModGetter>> modListings, 
+        this IEnumerable<IModListingGetter<IModGetter>> modListings,
         Type type,
         bool includeDeletedRecords = false)
     {
@@ -65,21 +65,21 @@ public static class OverrideMixIns
             .WinningOverrides(type, includeDeletedRecords: includeDeletedRecords);
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type 
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </summary>
-    /// <typeparam name="TMajor">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </typeparam>
-    /// <param name="mods">Mods to source from, in priority order</param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<TMajor> WinningOverrides<TMajor>(
         this IEnumerable<IModGetter> mods,
         bool includeDeletedRecords = false)
@@ -98,21 +98,21 @@ public static class OverrideMixIns
         }
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type 
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </summary>
-    /// <param name="mods">Mods to source from, in priority order</param>
-    /// <param name="type">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IMajorRecordGetter> WinningOverrides(
         this IEnumerable<IModGetter> mods,
         Type type,
@@ -132,27 +132,27 @@ public static class OverrideMixIns
 
 
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <typeparam name="TSetter">
-    /// Setter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <typeparam name="TGetter">
-    /// Getter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <param name="modListings">Mod listings to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
         ILinkCache linkCache,
@@ -168,27 +168,27 @@ public static class OverrideMixIns
             .WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(linkCache, includeDeletedRecords: includeDeletedRecords);
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <param name="modListings">Mod listings to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="type">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningContextOverrides<TMod, TModGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
         ILinkCache linkCache,
@@ -203,27 +203,27 @@ public static class OverrideMixIns
             .WinningContextOverrides<TMod, TModGetter>(linkCache, type, includeDeletedRecords: includeDeletedRecords);
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <typeparam name="TSetter">
-    /// Setter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <typeparam name="TGetter">
-    /// Getter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <param name="mods">Mods to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(
         this IEnumerable<TModGetter> mods,
         ILinkCache linkCache,
@@ -246,27 +246,27 @@ public static class OverrideMixIns
         }
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <param name="mods">Mods to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="type">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningContextOverrides<TMod, TModGetter>(
         this IEnumerable<TModGetter> mods,
         ILinkCache linkCache,
@@ -294,27 +294,27 @@ public static class OverrideMixIns
 
 
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <typeparam name="TSetter">
-    /// Setter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <typeparam name="TGetter">
-    /// Getter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <param name="modListings">Mod listings to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningOverrideContexts<TMod, TModGetter, TSetter, TGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
@@ -328,27 +328,27 @@ public static class OverrideMixIns
         return WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(modListings, linkCache, includeDeletedRecords);
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <param name="modListings">Mod listings to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="type">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningOverrideContexts<TMod, TModGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
@@ -361,27 +361,27 @@ public static class OverrideMixIns
         return WinningContextOverrides<TMod, TModGetter>(modListings, linkCache, type, includeDeletedRecords);
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <typeparam name="TSetter">
-    /// Setter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <typeparam name="TGetter">
-    /// Getter interface type of record to search for and iterate.
-    /// </typeparam>
-    /// <param name="mods">Mods to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningOverrideContexts<TMod, TModGetter, TSetter, TGetter>(
         this IEnumerable<TModGetter> mods,
@@ -395,27 +395,27 @@ public static class OverrideMixIns
         return WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(mods, linkCache, includeDeletedRecords);
     }
 
-    /// <summary>
-    /// Will find and return the most overridden version of each record in the list of mods of the given type. <br/>
-    /// <br />
-    /// Additionally, it will come wrapped in a context object that has knowledge of where each record came from. <br/>
-    /// This context helps when trying to override deep records such as Cells/PlacedObjects/etc, as the context is able to navigate
-    /// and insert the record into the proper location for you. <br />
-    /// <br />
-    /// This system is overkill for simpler top-level records.
-    /// </summary>
-    /// <typeparam name="TMod">Setter Mod type to target</typeparam>
-    /// <typeparam name="TModGetter">Getter Mod type to target</typeparam>
-    /// <param name="mods">Mods to source from, in priority order</param>
-    /// <param name="linkCache">LinkCache to use when creating parent objects</param> 
-    /// <param name="type">
-    /// Type of record to search for and iterate. <br/>
-    /// USAGE NOTE: <br/>
-    /// Typically you should only supply the Getter interfaces for the type. <br/>
-    /// A setter interface being given can result in no records being found, as most LoadOrders are readonly.
-    /// </param>
-    /// <param name="includeDeletedRecords">Whether to include deleted records in the output</param>
-    /// <returns>Enumerable of the most overridden version of each record of the given type, optionally including deleted ones</returns>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningOverrideContexts<TMod, TModGetter>(
         this IEnumerable<TModGetter> mods,

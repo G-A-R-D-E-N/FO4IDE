@@ -14,7 +14,7 @@ partial class SceneAction
         Package = 1,
         Timer = 2,
         PlayerDialogue = 3,
-        //StartScene,
+
         NpcResponseDialogue = 5,
         Radio = 6,
     }
@@ -45,7 +45,7 @@ partial class SceneActionBinaryCreateTranslation
 {
     public static partial void FillBinaryTypeCustom(
         MutagenFrame frame,
-        ISceneAction item, 
+        ISceneAction item,
         PreviousParse lastParsed)
     {
         var rec = frame.ReadSubrecord(RecordTypes.ANAM);

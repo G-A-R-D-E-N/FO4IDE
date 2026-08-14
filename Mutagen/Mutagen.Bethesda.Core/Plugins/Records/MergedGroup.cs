@@ -11,10 +11,10 @@ using Noggog.StructuredStrings;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-/// <summary>
-/// Merged group that combines multiple groups into a single unified view.
-/// Validates no duplicate FormKeys exist and caches results.
-/// </summary>
+
+
+
+
 public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGetter>, IReadOnlyCache<TModGetter, FormKey>, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
     where TMod : class, IMajorRecord, TModGetter
     where TModGetter : class, IMajorRecordGetter, IBinaryItem
@@ -51,8 +51,8 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
                         {
                             if (_allowDuplicateOverrides)
                             {
-                                // Parent record duplicated across split files;
-                                // use the later copy following override rules.
+
+
                                 cache[record.FormKey] = record;
                             }
                             else
@@ -92,18 +92,18 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
 
     public IEnumerable<TModGetter> Records => Cache.Values;
 
-    // IGroupGetter members
+
     IMod IGroupGetter.SourceMod => (_sourceMod as IMod) ?? throw new InvalidOperationException("Source mod is read-only and does not implement IMod.");
     IEnumerable<TModGetter> IGroupCommonGetter<TModGetter>.Records => Cache.Values;
     IEnumerable<ILoquiObject> IGroupCommonGetter.Records => Cache.Values;
     IEnumerable<IMajorRecordGetter> IGroupGetter.Records => Cache.Values.Cast<IMajorRecordGetter>();
     IReadOnlyCache<IMajorRecordGetter, FormKey> IGroupGetter.RecordCache => new MajorRecordCacheWrapper(this);
 
-    // IGroupCommonGetter members
+
     public ILoquiRegistration ContainedRecordRegistration => _sourceGroups.First().ContainedRecordRegistration;
     public Type ContainedRecordType => typeof(TModGetter);
 
-    // IAssetLinkContainerGetter
+
     public IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(AssetLinkQuery queryCategories = AssetLinkQuery.Listed, IAssetLinkCache? linkCache = null, Type? assetType = null)
     {
         foreach (var record in Cache.Values)
@@ -118,7 +118,7 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
         }
     }
 
-    // IBinaryItem - write all records in the merged cache
+
     void IBinaryItem.WriteToBinary(MutagenWriter writer, TypedWriteParams translationParams)
     {
         foreach (var record in Cache.Values)
@@ -129,7 +129,7 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
 
     object IBinaryItem.BinaryWriteTranslator => this;
 
-    // IFormLinkContainerGetter
+
     public IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true)
     {
         foreach (var record in Cache.Values)
@@ -144,7 +144,7 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
         }
     }
 
-    // ILoquiObject - use null! since we don't have a real registration for merged groups
+
     ILoquiRegistration ILoquiObject.Registration => null!;
 
     public void Print(StructuredStringBuilder sb, string? name = null)
@@ -160,7 +160,7 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
         }
     }
 
-    // IMajorRecordGetterEnumerable - yield each top-level record and recurse into nested majors
+
     public IEnumerable<IMajorRecordGetter> EnumerateMajorRecords()
     {
         foreach (var record in Cache.Values)
@@ -200,7 +200,7 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
 
     IReadOnlyCache<TModGetter, FormKey> IGroupGetter<TModGetter>.RecordCache => this;
 
-    // IReadOnlyCache explicit implementations
+
     IEnumerable<FormKey> IReadOnlyCache<TModGetter, FormKey>.Keys => Cache.Keys;
     IEnumerable<TModGetter> IReadOnlyCache<TModGetter, FormKey>.Items => Cache.Values;
 
@@ -214,7 +214,7 @@ public class MergedGroup<TMod, TModGetter> : ILoquiObject, IGroupGetter<TModGett
         return Cache.Select(kvp => (IKeyValue<FormKey, TModGetter>)new KeyValue<FormKey, TModGetter>(kvp.Key, kvp.Value)).GetEnumerator();
     }
 
-    // Wrapper to cast TModGetter to IMajorRecordGetter for IGroupGetter.RecordCache
+
     private class MajorRecordCacheWrapper : IReadOnlyCache<IMajorRecordGetter, FormKey>
     {
         private readonly MergedGroup<TMod, TModGetter> _source;

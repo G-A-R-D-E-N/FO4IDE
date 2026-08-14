@@ -10,26 +10,26 @@ public sealed record AlignmentRepeatedSubrule(RecordType RecordType, bool Single
     public bool Ender { get; init; }
 }
 
-/// <summary> 
-/// For use when a set of records is repeated. 
-/// Does not currently enforce order within sub-group, but could be upgraded in the future 
-/// </summary> 
-public sealed class AlignmentRepeatedRule : AlignmentRule 
-{ 
+
+
+
+
+public sealed class AlignmentRepeatedRule : AlignmentRule
+{
     public Dictionary<RecordType, AlignmentRepeatedSubrule> SubTypes;
     public bool SortContents;
- 
-    private AlignmentRepeatedRule( 
-        params RecordType[] types) 
+
+    private AlignmentRepeatedRule(
+        params RecordType[] types)
         : this(types.Select(x => new AlignmentRepeatedSubrule(x, false)).ToArray())
-    { 
-    } 
- 
-    private AlignmentRepeatedRule( 
-        params AlignmentRepeatedSubrule[] types) 
-    { 
-        SubTypes = types.ToDictionary(x => x.RecordType, x => x); 
-    } 
+    {
+    }
+
+    private AlignmentRepeatedRule(
+        params AlignmentRepeatedSubrule[] types)
+    {
+        SubTypes = types.ToDictionary(x => x.RecordType, x => x);
+    }
 
     public static AlignmentRule Basic(params RecordType[] recordTypes)
     {
@@ -43,9 +43,9 @@ public sealed class AlignmentRepeatedRule : AlignmentRule
             SortContents = true
         };
     }
- 
-    public override IEnumerable<RecordType> RecordTypes => SubTypes.Keys; 
- 
+
+    public override IEnumerable<RecordType> RecordTypes => SubTypes.Keys;
+
     public override ReadOnlyMemorySlice<byte> ReadBytes(IMutagenReadStream inputStream, int? lengthOverride)
     {
         if (lengthOverride != null)
@@ -57,14 +57,14 @@ public sealed class AlignmentRepeatedRule : AlignmentRule
         var latestList = new List<ReadOnlyMemorySlice<byte>>();
         var encountered = new HashSet<RecordType>(RecordTypes);
         RecordType? lastEncountered = null;
-        MutagenWriter stream; 
-        while (!inputStream.Complete) 
-        { 
+        MutagenWriter stream;
+        while (!inputStream.Complete)
+        {
             var frame = inputStream.GetSubrecord(readSafe: true);
             var subType = frame.RecordType;
-            if (!SubTypes.TryGetValue(subType, out var rule)) 
-            { 
-                break; 
+            if (!SubTypes.TryGetValue(subType, out var rule))
+            {
+                break;
             }
 
             if (lastEncountered == subType
@@ -94,18 +94,18 @@ public sealed class AlignmentRepeatedRule : AlignmentRule
                 lastEncountered = null;
                 encountered.Clear();
             }
-        } 
+        }
         dataList.Add(latestList);
 
         Sort(dataList, inputStream.MetaData.Constants);
-        
-        byte[] ret = new byte[dataList.SelectMany(x => x).Sum((d) => d.Length)]; 
-        stream = new MutagenWriter(new MemoryStream(ret), inputStream.MetaData.Constants); 
-        foreach (var data in dataList.SelectMany(x => x)) 
-        { 
-            stream.Write(data); 
-        } 
-        return ret; 
+
+        byte[] ret = new byte[dataList.SelectMany(x => x).Sum((d) => d.Length)];
+        stream = new MutagenWriter(new MemoryStream(ret), inputStream.MetaData.Constants);
+        foreach (var data in dataList.SelectMany(x => x))
+        {
+            stream.Write(data);
+        }
+        return ret;
     }
 
     private void Sort(List<List<ReadOnlyMemorySlice<byte>>> data, GameConstants constants)
@@ -119,7 +119,7 @@ public sealed class AlignmentRepeatedRule : AlignmentRule
                 var frame = new SubrecordFrame(constants, subrecord);
                 mapping.GetOrAdd(frame.RecordType).Add(subrecord);
             }
-            
+
             item.Clear();
             foreach (var archetype in SubTypes)
             {
@@ -130,4 +130,4 @@ public sealed class AlignmentRepeatedRule : AlignmentRule
             }
         }
     }
-} 
+}

@@ -2,9 +2,9 @@ namespace Mutagen.Bethesda.Fallout4;
 
 public partial class Phoneme
 {
-    /// <summary>
-    /// Enum representing the different phonemes a weight set can be applied to
-    /// </summary>
+
+
+
     public enum Slot
     {
         IY,

@@ -1,7 +1,7 @@
 using Noggog;
 using System.Text;
 
-#pragma warning disable SYSLIB0001 // Type or member is obsolete
+#pragma warning disable SYSLIB0001
 
 namespace Mutagen.Bethesda.Archives.Bsa;
 

@@ -37,7 +37,7 @@
       <FormLink name="MultiBoundReference" recordType="XMBR">
         <Interface>IPlaced</Interface>
       </FormLink>
-      <!-- Possibly unneeded.  Never seen, just listed in xEdit -->
+
       <Bool name="IsIgnoredBySandbox2" boolAsMarker="XIBS" />
       <Float name="Scale" recordType="XSCL" />
       <Data>

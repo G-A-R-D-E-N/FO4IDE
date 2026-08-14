@@ -8,9 +8,9 @@ using Mutagen.Bethesda.Plugins.Exceptions;
 
 namespace Mutagen.Bethesda.Plugins.Utility;
 
-/// <summary>
-/// A class that can query and cache record locations by record type
-/// </summary>
+
+
+
 public sealed class RecordTypeInfoCacheReader
 {
     private record CacheItem(IReadOnlyList<FormKey> List, HashSet<FormKey> Set);
@@ -31,13 +31,13 @@ public sealed class RecordTypeInfoCacheReader
     {
         if (formKey.IsNull) return false;
 
-        // First check if the FormKey is in the current mod's cache
+
         if (GetCacheItem<T>().Set.Contains(formKey))
         {
             return true;
         }
 
-        // If the FormKey is from a different mod, we need a LinkCache to resolve it
+
         if (formKey.ModKey != _modKey)
         {
             if (_linkCache == null)
@@ -48,25 +48,25 @@ public sealed class RecordTypeInfoCacheReader
                     $"Cannot determine record type for FormKey {formKey} from mod {formKey.ModKey} because it is not in the current mod {_modKey} and no LinkCache was provided for cross-mod resolution.");
             }
 
-            // Try to resolve the record in the LinkCache to check its type
+
             if (_linkCache.TryResolve<T>(formKey, out var _))
             {
                 return true;
             }
 
-            // If we can't resolve it as type T, check if the record exists at all
-#pragma warning disable CS0618 // Type or member is obsolete
+
+#pragma warning disable CS0618
             if (!_linkCache.TryResolve(formKey, out var _))
 #pragma warning restore CS0618
             {
                 throw new MissingRecordException(formKey, typeof(T));
             }
 
-            // Record exists but is not of type T
+
             return false;
         }
 
-        // FormKey is from current mod but not in cache - record doesn't exist or isn't of type T
+
         return false;
     }
 
@@ -85,7 +85,7 @@ public sealed class RecordTypeInfoCacheReader
     private CacheItem GetCacheItem<T>()
     {
         if (_cachedLocs.TryGetValue(typeof(T), out var cache)) return cache;
-            
+
         using var stream = _streamCreator();
         var locs = RecordLocator.GetLocations(
             stream,

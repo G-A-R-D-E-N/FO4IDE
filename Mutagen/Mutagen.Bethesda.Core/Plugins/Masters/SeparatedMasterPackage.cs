@@ -32,13 +32,13 @@ public class SeparatedMasterPackage : IReadOnlySeparatedMasterPackage
     internal static readonly IReadOnlySeparatedMasterPackage EmptyNull =
         NotSeparate(new MasterReferenceCollection(ModKey.Null));
 
-    // Hack until this is better understood
+
     private static HashSet<ModKey> _starfieldMasters = new()
     {
-        "OldMars.esm", 
-        "Constellation.esm", 
-        "SFBGS003.esm", 
-        "SFBGS004.esm", 
+        "OldMars.esm",
+        "Constellation.esm",
+        "SFBGS003.esm",
+        "SFBGS004.esm",
         "SFBGS006.esm",
         "SFBGS007.esm",
         "SFBGS008.esm",

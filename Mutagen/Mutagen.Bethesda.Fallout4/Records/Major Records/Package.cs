@@ -119,7 +119,7 @@ partial class PackageBinaryCreateTranslation
 
     public static void FillPackageData(IMutagenReadStream stream, int expectedCount, IDictionary<sbyte, APackageData> data)
     {
-        // Retrieve the expected types, then skip rest of data
+
         var valuesPosition = stream.Position;
         var types = new List<string>(expectedCount);
         while (stream.TryReadSubrecord(out var subRecord))
@@ -135,7 +135,7 @@ partial class PackageBinaryCreateTranslation
                 case RecordTypeInts.PTDA:
                 case RecordTypeInts.PDTO:
                 case RecordTypeInts.PLDT:
-                    // Skip
+
                     break;
                 default:
                     stream.Position -= subRecord.TotalLength;
@@ -144,7 +144,7 @@ partial class PackageBinaryCreateTranslation
         }
     done_types:
 
-        // Parse package data
+
         APackageData? lastPackage = null;
         int itemIndex = 0;
         var packages = new List<APackageData>(expectedCount);
@@ -202,10 +202,10 @@ partial class PackageBinaryCreateTranslation
     done_indexes:
         var actualCount = packages.Count;
 
-        // Mark end for later
+
         var end = stream.Position;
 
-        // parse package data input values
+
         stream.Position = valuesPosition;
         itemIndex = -1;
         lastPackage = null;
@@ -303,13 +303,13 @@ partial class PackageBinaryCreateTranslation
         }
 
     done:
-        // Go back to end to continue
+
         stream.Position = end;
     }
 
     public static partial void FillBinaryXnamMarkerCustom(MutagenFrame frame, IPackageInternal item, PreviousParse lastParsed)
     {
-        // Skip marker
+
         item.XnamMarker = frame.ReadSubrecord().Content.ToArray();
         item.ProcedureTree.SetTo(
             ListBinaryTranslation<PackageBranch>.Instance.Parse(

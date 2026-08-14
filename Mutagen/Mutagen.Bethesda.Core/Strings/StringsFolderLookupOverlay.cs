@@ -42,7 +42,7 @@ public sealed class StringsFolderLookupOverlay : IStringsFolderLookup
     public ModKey ModKey { get; }
 
     internal record LookupItem(IStringsLookup StringsLookup, string SourcePath);
-    
+
     internal class DictionaryBundle
     {
         private readonly Dictionary<Language, Lazy<LookupItem>> _strings = new();
@@ -75,11 +75,11 @@ public sealed class StringsFolderLookupOverlay : IStringsFolderLookup
         ModKey = modKey;
     }
 
-    
-    // todo integrate IAssetProvider
+
+
     public static StringsFolderLookupOverlay TypicalFactory(
-        GameRelease release, 
-        ModKey modKey, 
+        GameRelease release,
+        ModKey modKey,
         DirectoryPath dataPath,
         StringsReadParameters? instructions,
         IFileSystem? fileSystem = null)
@@ -88,7 +88,7 @@ public sealed class StringsFolderLookupOverlay : IStringsFolderLookup
             .InternalFactory(modKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryLookup(StringsSource source, Language language, uint key, [MaybeNullWhen(false)] out string str)
     {
         var dict = Get(source);

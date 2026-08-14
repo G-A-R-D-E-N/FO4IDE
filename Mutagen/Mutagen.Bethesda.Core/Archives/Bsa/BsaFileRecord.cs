@@ -43,7 +43,7 @@ class BsaFileRecord : IArchiveFile
         Folder = folderRecord;
         _name = new Lazy<FileName?>(GetName, LazyThreadSafetyMode.PublicationOnly);
 
-        // Will be replaced if CopyDataTo is called before value is created
+
         _size = new Lazy<(uint Size, uint OnDisk, uint Original)>(
             mode: LazyThreadSafetyMode.ExecutionAndPublication,
             valueFactory: () =>
@@ -106,7 +106,7 @@ class BsaFileRecord : IArchiveFile
                         new InflaterInputStream(rdr.BaseStream)
                         {
                             IsStreamOwner = true
-                        }, 
+                        },
                         size.Original);
                 }
                 else
@@ -146,9 +146,9 @@ class BsaFileRecord : IArchiveFile
         if (BSA.HasNameBlobs)
         {
             nameBlobOffset = rdr.ReadByte();
-            // Just skip, not using
+
             rdr.BaseStream.Position += nameBlobOffset;
-            // Minus one more for the size of the name blob offset size
+
             nameBlobOffset++;
         }
         else

@@ -8,9 +8,9 @@ using Mutagen.Bethesda.Strings.DI;
 
 namespace Mutagen.Bethesda.Strings;
 
-/// <summary>
-/// Class for compiling strings of various languages, and exporting them to a .strings file
-/// </summary>
+
+
+
 public sealed class StringsWriter : IDisposable
 {
     public DirectoryPath WriteDir { get; }
@@ -26,7 +26,7 @@ public sealed class StringsWriter : IDisposable
 
     public StringsWriter(
         GameRelease release,
-        ModKey modKey, 
+        ModKey modKey,
         DirectoryPath writeDirectory,
         IMutagenEncodingProvider encodingProvider,
         IFileSystem? fileSystem = null)
@@ -41,8 +41,8 @@ public sealed class StringsWriter : IDisposable
 
     public uint Register(ITranslatedStringGetter str, StringsSource source)
     {
-        // ToDo
-        // Add Count member to TranslatedString, or something similar to short circuit array creation if unnecessary
+
+
         return Register(source, str);
     }
 
@@ -87,7 +87,7 @@ public sealed class StringsWriter : IDisposable
 
     public void Dispose()
     {
-        var languages = 
+        var languages =
             _strings
                 .Concat(_ilStrings)
                 .Concat(_dlStrings)
@@ -122,14 +122,14 @@ public sealed class StringsWriter : IDisposable
             var encoding = EncodingProvider.GetEncoding(_release, language.Key);
             using var writer = new MutagenWriter(
                 FileSystem.FileStream.New(
-                    Path.Combine(WriteDir.Path, StringsUtility.GetFileName(LanguageFormat, ModKey, language.Key, source)), 
+                    Path.Combine(WriteDir.Path, StringsUtility.GetFileName(LanguageFormat, ModKey, language.Key, source)),
                     FileMode.Create, FileAccess.Write),
                 meta: null!);
-            // Write count
+
             writer.Write(language.Value.Count);
-            // Write filler for length later
+
             writer.WriteZeros(4);
-            // Write Directory
+
             int size = 0;
             foreach (var item in language.Value)
             {
@@ -150,12 +150,12 @@ public sealed class StringsWriter : IDisposable
                         throw new NotImplementedException();
                 }
             }
-            // Go back and write content length;
+
             var pos = writer.Position;
             writer.Position = 4;
             writer.Write(size);
             writer.Position = pos;
-            // Write strings
+
             foreach (var item in language.Value)
             {
                 switch (source)

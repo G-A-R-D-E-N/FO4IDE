@@ -74,31 +74,31 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         return new(release);
     }
 
-    /// <summary>
-    /// Exposes the load order for transformation by the user before any mods are read from disk
-    /// </summary>
-    /// <param name="transformer">Transformation lambda to process the incoming enumerable and return a new desired one</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> TransformLoadOrderListings(Func<IEnumerable<ILoadOrderListingGetter>, IEnumerable<ILoadOrderListingGetter>> transformer)
     {
         return this with { LoadOrderListingProcessors = LoadOrderListingProcessors.Add((_, l) => transformer(l)) };
     }
 
-    /// <summary>
-    /// Sets the load order to the given modkeys, with all of them enabled
-    /// </summary>
-    /// <param name="modKeys">ModKeys to set the load order to</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> WithLoadOrder(params ModKey[] modKeys)
     {
         return WithLoadOrder(modKeys.Select(x => (ILoadOrderListingGetter)new LoadOrderListing(x, enabled: true)).ToArray());
     }
 
-    /// <summary>
-    /// Sets the load order to the given listings
-    /// </summary>
-    /// <param name="listings">Listings to set the load order to</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> WithLoadOrder<T>(params T[] listings)
         where T : ILoadOrderListingGetter
     {
@@ -109,33 +109,33 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         };
     }
 
-    /// <summary>
-    /// Sets the load order to the given listings
-    /// </summary>
-    /// <param name="loadOrder">Load Order to get listings from</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> WithLoadOrder(ILoadOrderGetter loadOrder)
     {
         return TransformLoadOrderListings(_ => loadOrder.ListedOrder.Select(x => (ILoadOrderListingGetter)new LoadOrderListing(x, enabled: true)).ToArray());
     }
 
-    /// <summary>
-    /// Exposes the load order for transformation by the user with mod objects loaded and accessible
-    /// </summary>
-    /// <param name="transformer">Transformation lambda to process the incoming enumerable and return a new desired one</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> TransformModListings(Func<IEnumerable<IModListingGetter<TModGetter>>, IEnumerable<IModListingGetter<TModGetter>>> transformer)
     {
         return this with { ModListingProcessors = ModListingProcessors.Add((_, l) => transformer(l)) };
     }
 
-    /// <summary>
-    /// Adds an output mod to the end of the load order as a mod that is safe to mutate.
-    /// </summary>
-    /// <param name="mod">Mutable safe mod to add to the end of the load order</param>
-    /// <param name="trimming">What load order trimming rules to follow</param>
-    /// <param name="considerModSplittingForTrimming">When true, also trims split siblings (e.g. MyMod_2.esp) of the output mod</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> WithOutputMod(TMod mod, OutputModTrimming trimming = OutputModTrimming.SelfAndPast, bool considerModSplittingForTrimming = true)
     {
         var ret = this;
@@ -181,11 +181,11 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         return this with { FileSystem = fileSystem };
     }
 
-    /// <summary>
-    /// Sets the string parameters to be used when creating mods
-    /// </summary>
-    /// <param name="stringParameters">String parameters to use</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> WithStringParameters(StringsReadParameters stringParameters)
     {
         return this with
@@ -194,12 +194,12 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         };
     }
 
-    /// <summary>
-    /// Convenience method to enable or disable UTF8 encoding for embedded localized strings when reading mods.<br/>
-    /// When enabled, uses UTF8 for reading localized strings that are embedded in the plugin files.
-    /// </summary>
-    /// <param name="on">Whether to enable UTF8 encoding (default: true)</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
+
     public GameEnvironmentBuilder<TMod, TModGetter> WithUtf8Encoding(bool on = true)
     {
         return this with
@@ -222,7 +222,7 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         {
             return value;
         }
-        
+
         if (Resolver != null)
         {
             var ret = Resolver(typeof(TObject));
@@ -235,10 +235,10 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         return fallback();
     }
 
-    /// <summary>
-    /// Creates an environment with all the given rules added to the builder
-    /// </summary>
-    /// <returns>GameEnvironment with the rules applied</returns>
+
+
+
+
     public IGameEnvironment<TMod, TModGetter> Build()
     {
         Warmup.Init();
@@ -247,9 +247,9 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         var dataDirectory = Resolve<IDataDirectoryProvider>(
             () => new DataDirectoryProvider(
                 Release,
-                GameLocatorLookupCache.Instance), 
+                GameLocatorLookupCache.Instance),
             DataDirectoryProvider);
-        
+
         var gameDirectoryLookup = Resolve<IGameDirectoryLookup>(
             () => new GameDirectoryLookupInjection(Release.Release, dataDirectory.Path.Directory));
 
@@ -320,7 +320,7 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
                             new CreationClubRawListingsReader()));
                 },
                 ListingsProvider);
-            
+
             listingsToUse = listingsProv.Get().ToArray();
         }
 
@@ -329,7 +329,7 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         {
             filteredListings = filter(param, filteredListings);
         }
-            
+
         listingsToUse = filteredListings.ToArray();
 
         var loListings = new LoadOrderListingsInjection(listingsToUse);
@@ -345,7 +345,7 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
                 fs,
                 dataDirectory));
 
-        // Create lightweight LinkCache for binary reading
+
         var lightweightMods = new List<IModGetter>();
         var modImporter = new ModImporter(fs, Release);
         foreach (var listing in listingsToUse)
@@ -364,7 +364,7 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
                 }
                 catch
                 {
-                    // Skip mods that fail to load for LinkCache
+
                 }
             }
         }
@@ -477,31 +477,31 @@ public sealed record GameEnvironmentBuilder
         return new(release);
     }
 
-    /// <summary>
-    /// Exposes the load order for transformation by the user before any mods are read from disk
-    /// </summary>
-    /// <param name="transformer">Transformation lambda to process the incoming enumerable and return a new desired one</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder TransformLoadOrderListings(Func<IEnumerable<ILoadOrderListingGetter>, IEnumerable<ILoadOrderListingGetter>> transformer)
     {
         return this with { LoadOrderListingProcessors = LoadOrderListingProcessors.Add((_, l) => transformer(l)) };
     }
 
-    /// <summary>
-    /// Sets the load order to the given modkeys, with all of them enabled
-    /// </summary>
-    /// <param name="modKeys">ModKeys to set the load order to</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder WithLoadOrder(params ModKey[] modKeys)
     {
         return WithLoadOrder(modKeys.Select(x => (ILoadOrderListingGetter)new LoadOrderListing(x, enabled: true)).ToArray());
     }
 
-    /// <summary>
-    /// Sets the load order to the given listings
-    /// </summary>
-    /// <param name="listings">Listings to set the load order to</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder WithLoadOrder<T>(params T[] listings)
         where T : ILoadOrderListingGetter
     {
@@ -512,23 +512,23 @@ public sealed record GameEnvironmentBuilder
         };
     }
 
-    /// <summary>
-    /// Exposes the load order for transformation by the user with mod objects loaded and accessible
-    /// </summary>
-    /// <param name="transformer">Transformation lambda to process the incoming enumerable and return a new desired one</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder TransformModListings(Func<IEnumerable<IModListingGetter<IModGetter>>, IEnumerable<IModListingGetter<IModGetter>>> transformer)
     {
         return this with { ModListingProcessors = ModListingProcessors.Add((_, l) => transformer(l)) };
     }
 
-    /// <summary>
-    /// Adds an output mod to the end of the load order as a mod that is safe to mutate.
-    /// </summary>
-    /// <param name="mod">Mutable safe mod to add to the end of the load order</param>
-    /// <param name="trimming">What load order trimming rules to follow</param>
-    /// <param name="considerModSplittingForTrimming">When true, also trims split siblings (e.g. MyMod_2.esp) of the output mod</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
+
+
     public GameEnvironmentBuilder WithOutputMod(IMod mod, OutputModTrimming trimming = OutputModTrimming.SelfAndPast, bool considerModSplittingForTrimming = true)
     {
         var ret = this;
@@ -568,17 +568,17 @@ public sealed record GameEnvironmentBuilder
     {
         return this with { DataDirectoryProvider = new DataDirectoryInjection(path) };
     }
-    
+
     public GameEnvironmentBuilder WithFileSystem(IFileSystem fileSystem)
     {
         return this with { FileSystem = fileSystem };
     }
 
-    /// <summary>
-    /// Sets the string parameters to be used when creating mods
-    /// </summary>
-    /// <param name="stringParameters">String parameters to use</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
     public GameEnvironmentBuilder WithStringParameters(StringsReadParameters stringParameters)
     {
         return this with
@@ -587,12 +587,12 @@ public sealed record GameEnvironmentBuilder
         };
     }
 
-    /// <summary>
-    /// Convenience method to enable or disable UTF8 encoding for embedded localized strings when reading mods.<br/>
-    /// When enabled, uses UTF8 for reading localized strings that are embedded in the plugin files.
-    /// </summary>
-    /// <param name="on">Whether to enable UTF8 encoding (default: true)</param>
-    /// <returns>New builder with the new rules</returns>
+
+
+
+
+
+
     public GameEnvironmentBuilder WithUtf8Encoding(bool on = true)
     {
         return this with
@@ -615,7 +615,7 @@ public sealed record GameEnvironmentBuilder
         {
             return value;
         }
-        
+
         if (Resolver != null)
         {
             var ret = Resolver(typeof(TObject));
@@ -628,30 +628,30 @@ public sealed record GameEnvironmentBuilder
         return fallback();
     }
 
-    /// <summary>
-    /// Creates an environment with all the given rules added to the builder
-    /// </summary>
-    /// <returns>GameEnvironment with the rules applied</returns>
+
+
+
+
     public IGameEnvironment Build()
     {
         Warmup.Init();
         var fs = Resolve<IFileSystem>(() => IFileSystemExt.DefaultFilesystem, FileSystem);
-        
+
         var dataDirectory = Resolve<IDataDirectoryProvider>(
             () => new DataDirectoryProvider(
                 Release,
-                GameLocatorLookupCache.Instance), 
+                GameLocatorLookupCache.Instance),
             DataDirectoryProvider);
-        
+
         var gameDirectoryLookup = Resolve<IGameDirectoryLookup>(
             () => new GameDirectoryLookupInjection(Release.Release, dataDirectory.Path.Directory));
-        
+
         var pluginPathProvider = Resolve<IPluginListingsPathContext>(
             () => new PluginListingsPathContext(
                 new PluginListingsPathProvider(dataDirectory, new ProtonPrefixProvider()),
                 Release),
             PluginListingsPathContext);
-        
+
         var cccPath = Resolve<ICreationClubListingsPathProvider>(
             () =>
             {
@@ -664,7 +664,7 @@ public sealed record GameEnvironmentBuilder
                         GameLocatorLookupCache.Instance));
             },
             CccListingsPathProvider);
-        
+
         var param = new GameEnvironmentBuilderProcessorParameters();
 
         ILoadOrderListingGetter[] listingsToUse;
@@ -713,7 +713,7 @@ public sealed record GameEnvironmentBuilder
                             new CreationClubRawListingsReader()));
                 },
                 ListingsProvider);
-            
+
             listingsToUse = listingsProv.Get().ToArray();
         }
 
@@ -722,9 +722,9 @@ public sealed record GameEnvironmentBuilder
         {
             filteredListings = filter(param, filteredListings);
         }
-            
+
         listingsToUse = filteredListings.ToArray();
-        
+
         var loListings = new LoadOrderListingsInjection(listingsToUse);
         var loGetter = new LoadOrderImporter(
             fs,
@@ -738,7 +738,7 @@ public sealed record GameEnvironmentBuilder
                 fs,
                 Release));
 
-        // Create lightweight LinkCache for binary reading
+
         var lightweightMods = new List<IModGetter>();
         var modImporter = new ModImporter(fs, Release);
         foreach (var listing in listingsToUse)
@@ -757,7 +757,7 @@ public sealed record GameEnvironmentBuilder
                 }
                 catch
                 {
-                    // Skip mods that fail to load for LinkCache
+
                 }
             }
         }
@@ -808,7 +808,7 @@ public sealed record GameEnvironmentBuilder
                                     new ProtonPrefixProvider()))),
                         new ArchiveNameFromModKeyProvider(Release))),
                 Release));
-        
+
         return new GameEnvironmentState(
             Release.Release,
             dataFolderPath: dataDirectory.Path,
@@ -827,7 +827,7 @@ public static class GameEnvironmentBuilderMixIns
     {
         return GameEnvironmentBuilder.Create(release);
     }
-    
+
     public static GameEnvironmentBuilder<TMod, TModGetter> Builder<TMod, TModGetter>(this GameEnvironment env, GameRelease release)
         where TMod : class, IContextMod<TMod, TModGetter>, TModGetter
         where TModGetter : class, IContextGetterMod<TMod, TModGetter>

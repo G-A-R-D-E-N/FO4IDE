@@ -9,30 +9,30 @@ namespace Mutagen.Bethesda.Archives.DI;
 
 public interface IGetArchiveIniListings
 {
-    /// <summary>
-    /// Queries the related ini file and looks for Archive ordering information
-    /// </summary>
-    /// <returns>Any Archive ordering info retrieved from the ini definition</returns>
+
+
+
+
     IEnumerable<FileName>? TryGet();
-    
-    /// <summary>
-    /// Queries the related ini file and looks for Archive ordering information
-    /// </summary>
-    /// <returns>Any Archive ordering info retrieved from the ini definition</returns>
+
+
+
+
+
     IEnumerable<FileName> Get();
 
-    /// <summary>
-    /// Queries the related ini file and looks for Archive ordering information
-    /// </summary>
-    /// <param name="path">Path to the file containing INI data</param>
-    /// <returns>Any Archive ordering info retrieved from the ini definition</returns>
+
+
+
+
+
     IEnumerable<FileName> Get(FilePath path);
 
-    /// <summary>
-    /// Queries the related ini file and looks for Archive ordering information
-    /// </summary>
-    /// <param name="iniStream">Stream containing INI data</param>
-    /// <returns>Any Archive ordering info retrieved from the ini definition</returns>
+
+
+
+
+
     IEnumerable<FileName> Get(Stream iniStream);
 }
 
@@ -47,7 +47,7 @@ public sealed class GetArchiveIniListings : IGetArchiveIniListings
         CaseInsensitive = true,
         SkipInvalidLines = true,
     };
-        
+
     private readonly IFileSystem _fileSystem;
     private readonly IIniPathProvider _iniPathProvider;
 
@@ -58,8 +58,8 @@ public sealed class GetArchiveIniListings : IGetArchiveIniListings
         _fileSystem = fileSystem;
         _iniPathProvider = iniPathProvider;
     }
-    
-    /// <inheritdoc />
+
+
     public IEnumerable<FileName>? TryGet()
     {
         var path = _iniPathProvider.TryGetPath();
@@ -67,17 +67,17 @@ public sealed class GetArchiveIniListings : IGetArchiveIniListings
         {
             return null;
         }
-        
+
         return Get();
     }
-        
-    /// <inheritdoc />
+
+
     public IEnumerable<FileName> Get()
     {
         return Get(_iniPathProvider.Path);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<FileName> Get(FilePath path)
     {
         if (!_fileSystem.File.Exists(path))
@@ -87,10 +87,10 @@ public sealed class GetArchiveIniListings : IGetArchiveIniListings
         return Get(_fileSystem.File.OpenRead(path.Path));
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<FileName> Get(Stream iniStream)
     {
-        // Release exists as parameter, in case future games need different handling
+
         var parser = new FileIniDataParser(new IniDataParser(Config));
         var data = parser.ReadData(new StreamReader(iniStream));
         var basePath = data["Archive"];

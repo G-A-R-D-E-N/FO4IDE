@@ -25,7 +25,7 @@ public static class ModRecordSorter
                 noRecordLength = grupLoc - inputStream.Position;
                 inputStream.WriteTo(writer.BaseStream, (int)noRecordLength);
 
-                // If complete overall, return
+
                 if (inputStream.Complete) return;
 
                 var groupMeta = inputStream.GetGroupHeader();
@@ -47,7 +47,7 @@ public static class ModRecordSorter
                     }
                 }
 
-                // Sorts via Record ID (as opposed to just the first 6 bytes)
+
                 foreach (var item in storage.OrderBy((i) => i.Key.ID))
                 {
                     foreach (var bytes in item.Value)

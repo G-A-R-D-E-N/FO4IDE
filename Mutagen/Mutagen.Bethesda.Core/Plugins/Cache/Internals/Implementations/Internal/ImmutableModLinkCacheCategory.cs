@@ -21,7 +21,7 @@ internal sealed class ImmutableModLinkCacheCategory<TKey>
     {
         Plugins.Warmup.Init();
     }
-    
+
     public ImmutableModLinkCacheCategory(
         InternalImmutableModLinkCache parent,
         IMetaInterfaceMapGetter metaInterfaceMapGetter,
@@ -43,8 +43,8 @@ internal sealed class ImmutableModLinkCacheCategory<TKey>
     {
         var majorRecords = new Cache<LinkCacheItem, TKey>(x => _keyGetter(x).Value);
         foreach (var majorRec in _parent._sourceMod.EnumerateMajorRecords()
-                     // ToDo
-                     // Capture and expose errors optionally via TryResolve /w out param
+
+
                      .Catch((Exception ex) => { }))
         {
             var item = LinkCacheItem.Factory(majorRec, _parent._simple);
@@ -61,8 +61,8 @@ internal sealed class ImmutableModLinkCacheCategory<TKey>
     {
         var cache = new Cache<LinkCacheItem, TKey>(x => _keyGetter(x).Value, _equalityComparer);
         foreach (var majorRec in sourceMod.EnumerateMajorRecords(type)
-                     // ToDo
-                     // Capture and expose errors optionally via TryResolve /w out param
+
+
                      .Catch((Exception ex) => { }))
         {
             var item = LinkCacheItem.Factory(majorRec, _parent._simple);

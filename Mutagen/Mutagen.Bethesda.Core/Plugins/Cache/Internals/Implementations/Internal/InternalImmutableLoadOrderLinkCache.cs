@@ -52,9 +52,9 @@ internal sealed class InternalImmutableLoadOrderLinkCache
             },
             e => e.IsNullOrWhitespace(),
             equalityComparer: StringComparer.OrdinalIgnoreCase);
-            
+
         var modsByKey = new Dictionary<ModKey, ILinkCache>();
-        foreach (var modGetter in _listedOrder) 
+        foreach (var modGetter in _listedOrder)
         {
             try
             {
@@ -79,7 +79,7 @@ internal sealed class InternalImmutableLoadOrderLinkCache
             return true;
         }
 
-        // If we're going deeper than the originating mod of the target FormKey, we can stop
+
         if (modKey != null && cache.PassedMods.Contains(modKey.Value))
         {
             return true;
@@ -133,12 +133,12 @@ internal sealed class InternalImmutableLoadOrderLinkCache
             majorRec = default;
             return false;
         }
-            
+
         if (_simple)
         {
             throw new ArgumentException("Queried for record on a simple cache");
         }
-            
+
         if (target == ResolveTarget.Origin)
         {
             if (!_modsByKey.TryGetValue(formKey.ModKey, out var origMod))
@@ -149,13 +149,13 @@ internal sealed class InternalImmutableLoadOrderLinkCache
 
             return origMod.TryResolve(formKey, type, out majorRec);
         }
-            
+
         if (_formKeyCache.TryResolve(formKey, formKey.ModKey, type, out var item))
         {
             majorRec = item.Record;
             return true;
         }
-            
+
         majorRec = default;
         return false;
     }
@@ -167,12 +167,12 @@ internal sealed class InternalImmutableLoadOrderLinkCache
             majorRec = default;
             return false;
         }
-            
+
         if (_simple)
         {
             throw new ArgumentException("Queried for record on a simple cache");
         }
-            
+
         if (_editorIdCache.TryResolve(editorId, default(ModKey?), type, out var item))
         {
             majorRec = item.Record;
@@ -259,7 +259,7 @@ internal sealed class InternalImmutableLoadOrderLinkCache
         return TryResolve(editorId, (IEnumerable<Type>)types, out majorRec, out matchedType);
     }
 
-    public bool TryResolve(FormKey formKey, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, 
+    public bool TryResolve(FormKey formKey, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec,
         [MaybeNullWhen(false)] out Type matchedType, ResolveTarget target = ResolveTarget.Winner)
     {
         foreach (var type in types)
@@ -276,7 +276,7 @@ internal sealed class InternalImmutableLoadOrderLinkCache
         return false;
     }
 
-    public bool TryResolve(string editorId, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, 
+    public bool TryResolve(string editorId, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec,
         [MaybeNullWhen(false)] out Type matchedType)
     {
         foreach (var type in types)
@@ -287,7 +287,7 @@ internal sealed class InternalImmutableLoadOrderLinkCache
                 return true;
             }
         }
-        
+
         matchedType = default;
         majorRec = default;
         return false;
@@ -325,7 +325,7 @@ internal sealed class InternalImmutableLoadOrderLinkCache
                 return false;
             }
 
-#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0618
             return origMod.TryResolveIdentifier(formKey, out editorId);
 #pragma warning restore CS0618
         }

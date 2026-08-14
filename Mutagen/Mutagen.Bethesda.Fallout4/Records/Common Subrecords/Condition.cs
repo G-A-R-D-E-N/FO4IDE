@@ -18,18 +18,18 @@ public partial class Condition
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     IConditionDataGetter IConditionGetter.Data => this.Data;
-    
+
     internal const int UseGlobal = 0x04;
-    
-    /// <summary>
-    /// UseGlobal is implicit depending on the class type used for the Condition
-    /// </summary>
+
+
+
+
     [Flags]
     public enum Flag
     {
         OR = 0x01,
         ParametersUseAliases = 0x02,
-        // UseGlobal = 0x04,
+
         UsePackData = 0x08,
         SwapSubjectAndTarget = 0x10
     }
@@ -1217,7 +1217,7 @@ partial class FunctionConditionDataBinaryCreateTranslation
         item.ParameterOneNumber = frame.ReadInt32();
         item.ParameterTwoNumber = frame.ReadInt32();
         item.ParameterOneRecord.FormKey = FormKey.Factory(
-            frame.MetaData.MasterReferences, 
+            frame.MetaData.MasterReferences,
             new FormID((uint)item.ParameterOneNumber),
             reference: true);
         item.ParameterTwoRecord.FormKey = FormKey.Factory(

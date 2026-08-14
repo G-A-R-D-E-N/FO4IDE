@@ -144,7 +144,7 @@ partial class WeatherBinaryCreateTranslation
         uint index = 1;
         for (int i = 0; i < NumLayersNew; i++)
         {
-            // Inverse because we're exposing as enabled
+
             clouds[i].Enabled = !Enums.HasFlag(raw, index);
             index <<= 1;
         }
@@ -257,7 +257,7 @@ partial class WeatherBinaryWriteTranslation
         if (HasAny(ySpeeds)
             || HasAny(xSpeeds))
         {
-            // Write YSpeeds
+
             using (HeaderExport.Subrecord(writer, RecordTypes.RNAM))
             {
                 for (int i = 0; i < ySpeeds.Length; i++)
@@ -266,7 +266,7 @@ partial class WeatherBinaryWriteTranslation
                 }
             }
 
-            // Write XSpeeds
+
             using (HeaderExport.Subrecord(writer, RecordTypes.QNAM))
             {
                 for (int i = 0; i < xSpeeds.Length; i++)
@@ -278,7 +278,7 @@ partial class WeatherBinaryWriteTranslation
 
         var numLayers = WeatherBinaryCreateTranslation.NumLayers(item.FormVersion);
 
-        // Write colors
+
         if (colors.Any(a => a != null))
         {
             using (HeaderExport.Subrecord(writer, RecordTypes.PNAM))
@@ -305,7 +305,7 @@ partial class WeatherBinaryWriteTranslation
             }
         }
 
-        // Write alphas
+
         if (alphas.Any(a => a != null))
         {
             using (HeaderExport.Subrecord(writer, RecordTypes.JNAM))
@@ -334,7 +334,7 @@ partial class WeatherBinaryWriteTranslation
 
     }
 
-    // Other partials handled in clouds custom ^
+
     #region Unused
     public static partial void WriteBinaryCloudAlphasCustom(MutagenWriter writer, IWeatherGetter item)
     {
@@ -369,7 +369,7 @@ partial class WeatherBinaryWriteTranslation
             for (int i = 0; i < WeatherBinaryCreateTranslation.NumLayersNew; i++)
             {
                 var enable = enabled[i] ?? true;
-                // Inverse because we're exposing as enabled
+
                 raw = Enums.SetFlag(raw, index, !enable);
                 index <<= 1;
             }

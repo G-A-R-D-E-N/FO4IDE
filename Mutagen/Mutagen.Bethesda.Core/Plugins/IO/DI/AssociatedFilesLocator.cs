@@ -6,16 +6,16 @@ namespace Mutagen.Bethesda.Plugins.IO.DI;
 
 public interface IAssociatedFilesLocator
 {
-    /// <summary>
-    /// Locates all existing associated files for a given mod: <br />
-    /// - Mod itself <br />
-    /// - Strings files <br />
-    /// - Archive files <br />
-    /// - Split plugin files
-    /// </summary>
-    /// <param name="modPath">Path to mod</param>
-    /// <param name="categories">Types of files to look for</param>
-    /// <returns>Enumerable of existing files associated with mod</returns>
+
+
+
+
+
+
+
+
+
+
     IEnumerable<FilePath> GetAssociatedFiles(ModPath modPath, AssociatedModFileCategory? categories = null);
 }
 
@@ -27,7 +27,7 @@ public class AssociatedFilesLocator : IAssociatedFilesLocator
     {
         _fileSystem = fileSystem;
     }
-    
+
     public IEnumerable<FilePath> GetAssociatedFiles(ModPath modPath, AssociatedModFileCategory? categories = null)
     {
         categories ??= AssociatedModFileCategory.Archives | AssociatedModFileCategory.Plugin | AssociatedModFileCategory.RawStrings | AssociatedModFileCategory.SplitPlugins;
@@ -93,7 +93,7 @@ public class AssociatedFilesLocator : IAssociatedFilesLocator
 
     private IEnumerable<FilePath> EnumerateBsas(
         DirectoryPath dir,
-        ModKey modKey, 
+        ModKey modKey,
         string bsaSuffix)
     {
         var bsaPath = new FilePath(Path.Combine(dir, $"{modKey.Name}.{bsaSuffix}"));

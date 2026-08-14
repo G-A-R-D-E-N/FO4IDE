@@ -5,23 +5,23 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins;
 
-/// <summary>
-/// ModKey represents a unique identifier for a mod.  
-/// 
-/// The proper factory format is: [ModName].es[p/m], depending on whether it is a master file or not.
-/// 
-/// A correct ModKey is very important if a mod's contents will ever be added to another mod (as an override).
-/// Otherwise, records will become mis-linked.  The ModKey should typically be the name that the mod intends to be exported
-/// to disk with.  If a mod is not going to be exported, then any unique name is sufficient.
-/// 
-/// General practice is to use ModKey.TryFactory on a mod's file name when at all possible
-/// </summary>
+
+
+
+
+
+
+
+
+
+
+
 [DebuggerDisplay("ModKey {FileName}")]
 public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
 {
-    /// <summary>
-    /// A static readonly singleton representing a null ModKey
-    /// </summary>
+
+
+
     public static readonly ModKey Null = new ModKey(null!, type: ModType.Master);
 
     public const string NullStr = "Null";
@@ -29,19 +29,19 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
     private readonly string? _name;
     private readonly int _hash;
 
-    /// <summary>
-    /// Mod name
-    /// </summary>
+
+
+
     public string Name => _name ?? string.Empty;
-        
-    /// <summary>
-    /// Mod type
-    /// </summary>
+
+
+
+
     public ModType Type { get; }
-        
-    /// <summary>
-    /// Convenience accessor to get the appropriate file name
-    /// </summary>
+
+
+
+
     public FileName FileName => new FileName(this.ToString(), check: false);
 
     private static readonly char[] InvalidChars = new char[]
@@ -55,11 +55,11 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
 
     public bool IsNull => string.IsNullOrWhiteSpace(_name);
 
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="name">Name of mod</param>
-    /// <param name="type">Type of mod</param>
+
+
+
+
+
     public ModKey(
         string? name,
         ModType type)
@@ -72,7 +72,7 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         this._name = name == null ? null : string.Intern(name);
         this.Type = type;
 
-        // Cache the hash on construction, as ModKeys are typically created rarely, but hashed often.
+
         var nameHash = (_name?.Equals(string.Empty) ?? true) ? 0 : _name.GetHashCode(StringComparison.OrdinalIgnoreCase);
         if (nameHash != 0)
         {
@@ -92,12 +92,12 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return -1 != str.IndexOfAny(InvalidChars);
     }
 
-    /// <summary>
-    /// ModKey equality operator
-    /// Name is compared ignoring case
-    /// </summary>
-    /// <param name="other">ModKey to compare to</param>
-    /// <returns>True equal Name and Master value</returns>
+
+
+
+
+
+
     public bool Equals(ModKey other)
     {
         return (IsNull && other.IsNull)
@@ -105,31 +105,31 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
                    && string.Equals(this.Name, other.Name, StringComparison.OrdinalIgnoreCase));
     }
 
-    /// <summary>
-    /// Default equality operator
-    /// Name is compared ignoring case
-    /// </summary>
-    /// <param name="obj">object to compare to</param>
-    /// <returns>True if ModKey with equal Name and Master value</returns>
+
+
+
+
+
+
     public override bool Equals(object? obj)
     {
         if (obj is not ModKey key) return false;
         return Equals(key);
     }
 
-    /// <summary>
-    /// Hashcode retrieved from upper case Name and Master values.
-    /// </summary>
-    /// <returns>Hashcode retrieved from upper case Name and Master values.</returns>
+
+
+
+
     public override int GetHashCode()
     {
         return _hash;
     }
-        
-    /// <summary>
-    /// Converts to a string: MyMod.esp
-    /// </summary>
-    /// <returns>String representation of ModKey</returns>
+
+
+
+
+
     public override string ToString()
     {
         if (string.IsNullOrWhiteSpace(Name)) return NullStr;
@@ -141,14 +141,14 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         });
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <param name="modKey">ModKey if successfully converted</param>
-    /// <param name="errorReason">Reason for a failed conversion</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
+
+
     public static bool TryFromNameAndExtension(ReadOnlySpan<char> str, [MaybeNullWhen(false)] out ModKey modKey, out string errorReason)
     {
         if (str.Length == 0 || str.IsWhiteSpace())
@@ -180,14 +180,14 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return TryFromName(str.Slice(0, index), type, out modKey, out errorReason);
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <param name="modKey">ModKey if successfully converted</param>
-    /// <param name="errorReason">Reason for a failed conversion</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
+
+
     public static bool TryFromNameAndExtension(string? str, [MaybeNullWhen(false)] out ModKey modKey, out string errorReason)
     {
         if (str == null)
@@ -200,36 +200,36 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return TryFromNameAndExtension((ReadOnlySpan<char>)str, out modKey, out errorReason);
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <param name="modKey">ModKey if successfully converted</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
+
     public static bool TryFromNameAndExtension(ReadOnlySpan<char> str, [MaybeNullWhen(false)] out ModKey modKey)
     {
         return TryFromNameAndExtension(str, out modKey, out _);
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <param name="modKey">ModKey if successfully converted</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
+
     public static bool TryFromNameAndExtension(string? str, [MaybeNullWhen(false)] out ModKey modKey)
     {
         return TryFromNameAndExtension(str, out modKey, out _);
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
     public static ModKey? TryFromNameAndExtension(ReadOnlySpan<char> str)
     {
         if (TryFromNameAndExtension(str, out var modKey, out _))
@@ -240,12 +240,12 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return default;
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
     public static ModKey? TryFromNameAndExtension(string? str)
     {
         if (TryFromNameAndExtension(str, out var modKey, out _))
@@ -256,14 +256,14 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return default;
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="fileName">FileName to parse</param>
-    /// <param name="modKey">ModKey if successfully converted</param>
-    /// <param name="errorReason">Reason for a failed conversion</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
+
+
     public static bool TryFromFileName(FileName? fileName, [MaybeNullWhen(false)] out ModKey modKey, out string errorReason)
     {
         if (fileName == null)
@@ -275,24 +275,24 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return TryFromNameAndExtension(fileName.Value.String, out modKey, out errorReason);
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="fileName">FileName to parse</param>
-    /// <param name="modKey">ModKey if successfully converted</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
+
     public static bool TryFromFileName(FileName? fileName, [MaybeNullWhen(false)] out ModKey modKey)
     {
         return TryFromFileName(fileName, out modKey, out _);
     }
 
-    /// <summary>
-    /// Attempts to construct a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="fileName">FileName to parse</param>
-    /// <returns>True if conversion successful</returns>
+
+
+
+
+
+
     public static ModKey? TryFromFileName(FileName? fileName)
     {
         if (TryFromFileName(fileName, out var modKey, out _))
@@ -389,13 +389,13 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return true;
     }
 
-    /// <summary>
-    /// Constructs a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="str">String to parse</param>
-    /// <returns>Converted ModKey</returns>
-    /// <exception cref="ArgumentException">If string malformed</exception>
+
+
+
+
+
+
+
     public static ModKey FromNameAndExtension(ReadOnlySpan<char> str)
     {
         if (TryFromNameAndExtension(str, out var key))
@@ -409,13 +409,13 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         throw new ArgumentException($"Could not construct ModKey: {str}", nameof(str));
     }
 
-    /// <summary>
-    /// Constructs a ModKey from a string:
-    ///   ModName.esp
-    /// </summary>
-    /// <param name="fileName">FileName to parse</param>
-    /// <returns>Converted ModKey</returns>
-    /// <exception cref="ArgumentException">If string malformed</exception>
+
+
+
+
+
+
+
     public static ModKey FromFileName(FileName fileName)
     {
         return FromNameAndExtension(fileName.String);
@@ -507,7 +507,7 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         }
     }
 
-    // Ported from Noggog.CSharpExt to avoid import
+
     private static int IndexOf<T>(IReadOnlyList<T> list, T item)
     {
         for (int i = 0; i < list.Count; i++)

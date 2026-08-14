@@ -20,7 +20,7 @@ partial class MaterialSwap
 partial class MaterialSwapBinaryCreateTranslation
 {
     public const int NewFormVersion = 112;
-    
+
     public static partial void FillBinaryFNAMParsingCustom(
         MutagenFrame frame,
         IMaterialSwapInternal item)
@@ -30,8 +30,8 @@ partial class MaterialSwapBinaryCreateTranslation
         frame.TryReadSubrecord(RecordTypes.EDID, out _);
         string? str = null;
         while (frame.SpawnAll().TryScanToRecord(
-                   RecordTypes.FNAM, 
-                   out var foundRecord, 
+                   RecordTypes.FNAM,
+                   out var foundRecord,
                    MaterialSubstitution_Registration.TriggerSpecs.AllRecordTypes))
         {
             var fnamStr = foundRecord.AsString(frame.MetaData.Encodings.NonTranslated);
@@ -39,7 +39,7 @@ partial class MaterialSwapBinaryCreateTranslation
             {
                 throw new MalformedDataException($"All FNAM strings should be the same");
             }
-            
+
             str = fnamStr;
         }
 
@@ -133,7 +133,7 @@ partial class MaterialSwapBinaryOverlay
     private int? _fnamLoc;
     private ushort? _formVersion;
     private int _offset;
-    
+
     public partial String? GetTreeFolderCustom()
     {
         if (_formVersion >= MaterialSwapBinaryCreateTranslation.NewFormVersion)
@@ -145,10 +145,10 @@ partial class MaterialSwapBinaryOverlay
             string? str = null;
             foreach (var fnam in RecordSpanExtensions.FindAllOfSubrecord(
                          _recordData.Slice(_package.MetaData.Constants.MajorConstants.HeaderLength - _offset),
-                         _package.MetaData.Constants, 
+                         _package.MetaData.Constants,
                          RecordTypes.FNAM))
             {
-                
+
                 var fnamStr = fnam.AsString(_package.MetaData.Encodings.NonTranslated);
                 if (str != null && !str.Equals(fnamStr))
                 {
@@ -183,11 +183,11 @@ partial class MaterialSwapBinaryOverlay
 partial class MaterialSubstitutionBinaryCreateTranslation
 {
     public static partial ParseResult FillBinaryFNAMParsingCustom(
-        MutagenFrame frame, 
-        IMaterialSubstitution item, 
+        MutagenFrame frame,
+        IMaterialSubstitution item,
         PreviousParse lastParsed)
     {
-        // Handled in parent
+
         return (int)MaterialSubstitution_FieldIndex.ReplacementMaterial;
     }
 }
@@ -195,10 +195,10 @@ partial class MaterialSubstitutionBinaryCreateTranslation
 partial class MaterialSubstitutionBinaryWriteTranslation
 {
     public static partial void WriteBinaryFNAMParsingCustom(
-        MutagenWriter writer, 
+        MutagenWriter writer,
         IMaterialSubstitutionGetter item)
     {
-        // Handled in parent
+
     }
 }
 
@@ -209,7 +209,7 @@ partial class MaterialSubstitutionBinaryOverlay
         int offset,
         PreviousParse lastParsed)
     {
-        // Handled in parent
+
         return (int)MaterialSubstitution_FieldIndex.ReplacementMaterial;
     }
 }

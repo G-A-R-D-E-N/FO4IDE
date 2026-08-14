@@ -40,11 +40,11 @@ internal sealed class GroupListOverlay<T> : IReadOnlyList<T>
         {
             uint uncompressedLength = BinaryPrimitives.ReadUInt32LittleEndian(slice.Slice(majorMeta.HeaderLength));
             byte[] buf = new byte[majorMeta.HeaderLength + checked((int)uncompressedLength)];
-            // Copy major meta bytes over
+
             slice.Span.Slice(0, majorMeta.HeaderLength).CopyTo(buf.AsSpan());
-            // Set length bytes
+
             BinaryPrimitives.WriteUInt32LittleEndian(buf.AsSpan().Slice(Constants.HeaderLength), uncompressedLength);
-            // Copy uncompressed data over
+
             using (var stream = new ZLibStream(new ByteMemorySliceStream(slice.Slice(majorMeta.HeaderLength + 4)), CompressionMode.Decompress))
             {
                 stream.ReadExactly(buf, majorMeta.HeaderLength, checked((int)uncompressedLength));
@@ -70,7 +70,7 @@ internal sealed class GroupListOverlay<T> : IReadOnlyList<T>
         var groupMeta = stream.GetGroupHeader(package);
         var finalPos = stream.Position + groupMeta.TotalLength;
         stream.Position += package.MetaData.Constants.GroupConstants.HeaderLength;
-        // Parse locations
+
         while (stream.Position < finalPos)
         {
             VariableHeader meta = package.MetaData.Constants.VariableHeader(stream.RemainingMemory, objectType);

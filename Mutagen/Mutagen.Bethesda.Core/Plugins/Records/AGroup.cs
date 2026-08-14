@@ -13,23 +13,23 @@ using Mutagen.Bethesda.Plugins.Binary.Streams;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-/// <summary>
-/// An abstract base class for Groups to inherit from for some common functionality
-/// </summary>
+
+
+
 public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
     where TMajor : class, IMajorRecordInternal
 {
     private static readonly ILoquiRegistration _registration = LoquiRegistration.GetRegister(typeof(TMajor));
-        
+
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     protected abstract ICache<TMajor, FormKey> ProtectedCache { get; }
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     internal ICache<TMajor, FormKey> InternalCache => ProtectedCache;
 
-    /// <summary>
-    /// An enumerable of all the records contained by the group.
-    /// </summary>
+
+
+
     public IEnumerable<TMajor> Records => ProtectedCache.Items;
 
     IEnumerable<IMajorRecordGetter> IGroupGetter.Records => Records;
@@ -37,28 +37,28 @@ public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
     IEnumerable<IMajorRecord> IGroup.Records => Records;
     IEnumerable<IMajorRecord> IGroup<TMajor>.Records => Records;
 
-    /// <summary>
-    /// Number of records contained in the group.
-    /// </summary>
+
+
+
     public int Count => ProtectedCache.Count;
 
-    /// <summary>
-    /// The parent Mod object associated with the group.
-    /// </summary>
+
+
+
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public IMod SourceMod { get; private set; }
 
     IReadOnlyCache<TMajor, FormKey> IGroupGetter<TMajor>.RecordCache => InternalCache;
 
-    /// <inheritdoc />
+
     public ICache<TMajor, FormKey> RecordCache => InternalCache;
 
     IReadOnlyCache<IMajorRecordGetter, FormKey> IGroupGetter.RecordCache => RecordCache;
 
-    /// <inheritdoc />
+
     public IEnumerable<FormKey> FormKeys => InternalCache.Keys;
 
-    /// <inheritdoc />
+
     public TMajor this[FormKey key] => InternalCache[key];
 
     IMajorRecordGetter IGroupGetter.this[FormKey key] => this[key];
@@ -75,39 +75,39 @@ public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
         SourceMod = null!;
     }
 
-    /// <summary>
-    /// Constructor with parent Mod to be associated with
-    /// </summary>
+
+
+
     public AGroup(IMod mod)
     {
         SourceMod = mod;
     }
 
-    /// <summary>
-    /// Constructor with parent Mod to be associated with
-    /// </summary>
-    /// <returns>String in format: "Group(_record_count_)"</returns>
+
+
+
+
     public override string ToString()
     {
         return $"Group<{typeof(TMajor).Name}>({InternalCache.Count})";
     }
 
-    /// <inheritdoc />
+
     public IEnumerator<TMajor> GetEnumerator()
     {
         return InternalCache.Items.GetEnumerator();
     }
 
-    /// <inheritdoc />
+
     IEnumerator IEnumerable.GetEnumerator()
     {
         return InternalCache.GetEnumerator();
     }
 
-    /// <inheritdoc />
+
     public void Add(TMajor record) => InternalCache.Add(record);
 
-    /// <inheritdoc />
+
     public TMajor AddReturn(TMajor record)
     {
         InternalCache.Add(record);
@@ -132,42 +132,42 @@ public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
         Add(ConfirmCorrectType(record, nameof(record)));
     }
 
-    /// <inheritdoc />
+
     public void Set(TMajor record) => InternalCache.Set(record);
 
-    /// <inheritdoc />
+
     public void SetUntyped(IMajorRecord record) => Set(ConfirmCorrectType(record, nameof(record)));
 
-    /// <inheritdoc />
+
     public void Set(IEnumerable<TMajor> records) => InternalCache.Set(records);
 
-    /// <inheritdoc />
+
     public void SetUntyped(IEnumerable<IMajorRecord> records) => SetUntyped(records.Select(r => ConfirmCorrectType(r, nameof(records))));
 
-    /// <inheritdoc />
+
     public bool Remove(FormKey key) => InternalCache.Remove(key);
 
-    /// <inheritdoc />
+
     public void Remove(IEnumerable<FormKey> keys) => InternalCache.Remove(keys);
 
-    /// <inheritdoc />
+
     public void Clear() => InternalCache.Clear();
 
-    /// <inheritdoc />
+
     public bool ContainsKey(FormKey key) => InternalCache.ContainsKey(key);
 
     public ILoquiRegistration ContainedRecordRegistration => _registration;
 
-    /// <inheritdoc />
+
     public abstract IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true);
 
-    /// <inheritdoc />
+
     public abstract IEnumerable<IAssetLink> EnumerateListedAssetLinks();
 
-    /// <inheritdoc />
+
     public abstract void RemapListedAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping);
 
-    /// <inheritdoc />
+
     public abstract void RemapAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping, AssetLinkQuery query, IAssetLinkCache? linkCache);
 
     public abstract IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(
@@ -296,7 +296,7 @@ internal sealed class GroupMajorRecordCacheWrapper<T> : IReadOnlyCache<T, FormKe
         var groupMeta = stream.GetGroupHeader(package.MetaData);
         var finalPos = stream.Position + groupMeta.TotalLength;
         stream.Position += package.MetaData.Constants.GroupConstants.HeaderLength;
-        // Parse MajorRecord locations
+
         FormKey? lastParsed = default;
         while (stream.Position < finalPos)
         {
@@ -307,7 +307,7 @@ internal sealed class GroupMajorRecordCacheWrapper<T> : IReadOnlyCache<T, FormKe
                 var formKey = FormKey.Factory(package.MetaData.MasterReferences, formId, reference: false);
                 if (formKey != lastParsed)
                 {
-                    // Orphaned subgroup
+
                     try
                     {
                         locationDict.Add(formKey, checked((int)(stream.Position - offset)));
@@ -316,7 +316,7 @@ internal sealed class GroupMajorRecordCacheWrapper<T> : IReadOnlyCache<T, FormKe
                     {
                         throw new RecordCollisionException(
                             stream.MetaData.ModKey,
-                            formKey, 
+                            formKey,
                             typeof(T));
                     }
                 }
@@ -331,18 +331,18 @@ internal sealed class GroupMajorRecordCacheWrapper<T> : IReadOnlyCache<T, FormKe
                 {
                     throw new RecordException(formKey: formKey, recordType: null, modKey: package.MetaData.ModKey, edid: null, message: "Unexpected type encountered when parsing MajorRecord locations: " + majorMeta.RecordType);
                 }
-                // FO4RecordEditor patch: a duplicate FormKey inside one group must not be fatal.
-                //
-                // Upstream throws RecordCollisionException here. Groups are parsed lazily while the
-                // link cache resolves ANY record, so a single malformed plugin anywhere in the load
-                // order made every record in every plugin unresolvable -- which presented as records
-                // that simply would not open, with no indication which plugin was at fault. Real
-                // modlists do contain such plugins (VELDT.esp ships two grass records sharing
-                // 000804), and xEdit loads them.
-                //
-                // Last occurrence wins, matching the engine, which loads a file's records in order
-                // into one form table so a later duplicate supersedes the earlier. Nothing is hidden:
-                // check_plugin and scan_broken_refs still report the plugin's real problems.
+
+
+
+
+
+
+
+
+
+
+
+
                 locationDict[formKey] = checked((int)(stream.Position - offset));
                 stream.Position += checked((int)majorMeta.TotalLength);
                 lastParsed = formKey;

@@ -5,38 +5,38 @@ namespace Mutagen.Bethesda.Plugins.IO.DI;
 
 public interface IModFilesMover
 {
-    /// <summary>
-    /// Moves a mod and all associated files to new target location. <br/>
-    /// This acts as an "overwrite", for even the related associated files.  This means
-    /// that if you overwrite a localized mod with an unlocalized one, the old strings files
-    /// will be removed.
-    /// </summary>
-    /// <param name="pathToPlugin">Path to the plugin to move</param>
-    /// <param name="newDirectory">Directory to move the plugin to, and cleanup old files within</param>
-    /// <param name="overwrite">
-    /// If false, this will throw if a conflicting mod exists in the output directory. <br />
-    /// If true, it will overwrite and delete all files associated with the replaced mod
-    /// </param>
-    /// <param name="categories">Types of files to process</param>
+
+
+
+
+
+
+
+
+
+
+
+
+
     void MoveModTo(
         ModPath pathToPlugin,
         DirectoryPath newDirectory,
         bool overwrite = false,
         AssociatedModFileCategory? categories = null);
-    
-    /// <summary>
-    /// Copies a mod and all associated files to new target location. <br/>
-    /// This acts as an "overwrite", for even the related associated files.  This means
-    /// that if you overwrite a localized mod with an unlocalized one, the old strings files
-    /// will be removed.
-    /// </summary>
-    /// <param name="pathToPlugin">Path to the plugin to copy</param>
-    /// <param name="newDirectory">Directory to copy the plugin to, and cleanup old files within</param>
-    /// <param name="overwrite">
-    /// If false, this will throw if a conflicting mod exists in the output directory. <br />
-    /// If true, it will overwrite and delete all files associated with the replaced mod
-    /// </param>
-    /// <param name="categories">Types of files to process</param>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     void CopyModTo(
         ModPath pathToPlugin,
         DirectoryPath newDirectory,
@@ -110,7 +110,7 @@ public class ModFilesMover : IModFilesMover
                 throw new IOException($"Mod file already exists: {associatedFile}");
             }
         }
-        
+
         foreach (var sourceFile in associatedSourceFiles)
         {
             var relPath = sourceFile.GetRelativePathTo(pathToPlugin.Path.Directory!.Value);

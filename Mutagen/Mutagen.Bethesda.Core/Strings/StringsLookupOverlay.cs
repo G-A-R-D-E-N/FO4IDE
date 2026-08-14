@@ -7,60 +7,60 @@ using System.IO.Abstractions;
 
 namespace Mutagen.Bethesda.Strings;
 
-/// <summary>
-/// Class that does minimal processing on string file data, exposing lookup queries in a lazy on-demand fashion.
-/// </summary>
+
+
+
 public sealed class StringsLookupOverlay : IStringsLookup
 {
     private readonly Dictionary<uint, int> _locations = new();
     private ReadOnlyMemorySlice<byte> _stringData;
     private IMutagenEncoding _encoding = null!;
-        
+
     public StringsFileFormat Type { get; private set; }
     public int Count => _locations.Count;
     public string? AssociatedPath { get; }
 
-    /// <summary>
-    /// Overlays onto a set of bytes assumed to be in Strings file format
-    /// </summary>
-    /// <param name="data">Data to wrap</param>
-    /// <param name="type">Strings file format</param>
-    /// <param name="encoding">Encoding to read strings with</param>
+
+
+
+
+
+
     public StringsLookupOverlay(ReadOnlyMemorySlice<byte> data, StringsFileFormat type, IMutagenEncoding encoding)
     {
         Init(data, type, encoding);
     }
 
-    /// <summary>
-    /// Overlays onto a set of bytes assumed to be in Strings file format
-    /// </summary>
-    /// <param name="data">Data to wrap</param>
-    /// <param name="source">Source type</param>
-    /// <param name="encoding">Encoding to read strings with</param>
+
+
+
+
+
+
     public StringsLookupOverlay(ReadOnlyMemorySlice<byte> data, StringsSource source, IMutagenEncoding encoding)
     {
         Init(data, StringsUtility.GetFormat(source), encoding);
     }
 
-    /// <summary>
-    /// Reads all bytes from a file, and overlays them
-    /// </summary>
-    /// <param name="path">Path to read in</param>
-    /// <param name="type">Strings file format</param>
-    /// <param name="encoding">Encoding to read strings with</param>
+
+
+
+
+
+
     public StringsLookupOverlay(string path, StringsFileFormat type, IMutagenEncoding encoding)
     {
         AssociatedPath = path;
         Init(File.ReadAllBytes(path), type, encoding);
     }
 
-    /// <summary>
-    /// Reads all bytes from a file, and overlays them
-    /// </summary>
-    /// <param name="path">Path to read in</param>
-    /// <param name="source">Source type</param>
-    /// <param name="encoding">Encoding to read strings with</param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
     public StringsLookupOverlay(string path, StringsSource source, IMutagenEncoding encoding, IFileSystem? fileSystem = null)
     {
         AssociatedPath = path;
@@ -97,7 +97,7 @@ public sealed class StringsLookupOverlay : IStringsLookup
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryLookup(uint key, [MaybeNullWhen(false)] out string str)
     {
         if (!TryGetLocation(key, out var loc))

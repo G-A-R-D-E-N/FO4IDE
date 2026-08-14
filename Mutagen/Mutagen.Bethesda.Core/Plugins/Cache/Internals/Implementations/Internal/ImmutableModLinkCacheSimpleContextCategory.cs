@@ -163,8 +163,8 @@ internal sealed class ImmutableModLinkCacheSimpleContextCategory<TKey> : IImmuta
     private IReadOnlyCache<IModContext<IMajorRecordGetter>, TKey> ConstructContextCache(Type type)
     {
         var cache = new Cache<IModContext<IMajorRecordGetter>, TKey>(x => _keyGetter(x.Record).Value);
-        // ToDo
-        // Upgrade to call EnumerateGroups(), which will perform much better
+
+
         foreach (var majorRec in _contextEnumerable.EnumerateMajorRecordSimpleContexts(type))
         {
             var key = _keyGetter(majorRec.Record);

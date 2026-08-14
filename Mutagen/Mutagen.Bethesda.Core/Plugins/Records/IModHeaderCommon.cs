@@ -10,9 +10,9 @@ public interface IModHeaderCommon : IBinaryItem
     uint NumRecords { get; set; }
     uint NextFormID { get; set; }
 
-    /// <summary>
-    /// Sets the listed overridden forms contained in the Mod Header
-    /// </summary>
-    /// <param name="formKeys">FormKeys to list</param>
+
+
+
+
     void SetOverriddenForms(IEnumerable<FormKey>? formKeys);
 }

@@ -1,16 +1,16 @@
 ﻿namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-/// <summary>
-/// Converts a stream into raw enumerable of ModListings
-/// </summary>
+
+
+
 public interface IPluginListingsParser
 {
-    /// <summary>
-    /// Parses a stream to retrieve all ModKeys in expected plugin file format
-    /// </summary>
-    /// <param name="stream">Stream to read from</param>
-    /// <returns>List of ModKeys representing a load order</returns>
-    /// <exception cref="ArgumentException">Line in plugin stream is unexpected</exception>
+
+
+
+
+
+
     IEnumerable<ILoadOrderListingGetter> Parse(Stream stream);
 }
 
@@ -26,8 +26,8 @@ public sealed class PluginListingsParser : IPluginListingsParser
         _commentTrimmer = commentTrimmer;
         _listingParser = listingParser;
     }
-        
-    /// <inheritdoc />
+
+
     public IEnumerable<ILoadOrderListingGetter> Parse(Stream stream)
     {
         uint currentLine = 0;

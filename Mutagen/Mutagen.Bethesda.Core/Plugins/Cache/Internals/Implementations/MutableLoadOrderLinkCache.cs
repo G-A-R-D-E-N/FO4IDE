@@ -12,12 +12,12 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
     private readonly List<MutableModLinkCache> _mutableMods;
     private bool _disposed;
 
-    /// <summary>
-    /// Constructs a mutable load order link cache by combining an existing immutable load order cache,
-    /// plus a set of mods to be put at the end of the load order and allow to be mutable.
-    /// </summary>
-    /// <param name="immutableBaseCache">LoadOrderCache to use as the immutable base</param>
-    /// <param name="mutableMods">Set of mods to place at the end of the load order, which are allowed to be modified afterwards</param>
+
+
+
+
+
+
     public MutableLoadOrderLinkCache(ImmutableLoadOrderLinkCache immutableBaseCache, params IMod[] mutableMods)
     {
         WrappedImmutableCache = immutableBaseCache;
@@ -26,11 +26,11 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         PriorityOrder = ListedOrder.Reverse().ToArray();
     }
 
-    /// <summary>
-    /// Constructs a mutable load order link cache by combining an existing immutable load order cache,
-    /// plus a set of mods to be put at the end of the load order and allow to be mutable.
-    /// </summary>
-    /// <param name="mutableMods">Set of mods to place at the end of the load order, which are allowed to be modified afterwards</param>
+
+
+
+
+
     public MutableLoadOrderLinkCache(params IMod[] mutableMods)
     {
         _mutableMods = mutableMods.Select(m => m.ToUntypedMutableLinkCache()).ToList();
@@ -38,10 +38,10 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         PriorityOrder = ListedOrder.Reverse().ToArray();
     }
 
-    /// <inheritdoc />
+
     public IReadOnlyList<IModGetter> ListedOrder { get; }
 
-    /// <inheritdoc />
+
     public IReadOnlyList<IModGetter> PriorityOrder { get; }
 
     private void CheckDisposal()
@@ -52,21 +52,21 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolve(FormKey formKey, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolve(formKey, typeof(IMajorRecordGetter), out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolve(string editorId, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec)
     {
         return TryResolve(editorId, typeof(IMajorRecordGetter), out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve<TMajor>(FormKey formKey, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -80,14 +80,14 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
-    public bool TryResolve<TMajor>(TMajor record, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner) 
+
+    public bool TryResolve<TMajor>(TMajor record, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return TryResolve<TMajor>(record.FormKey, out majorRec, target);
     }
-    
-    /// <inheritdoc />
+
+
     public bool TryResolve<TMajor>(string editorId, [MaybeNullWhen(false)] out TMajor majorRec)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -101,11 +101,11 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(FormKey formKey, Type type, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             majorRec = default;
@@ -137,17 +137,17 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(IFormLinkIdentifier formLink, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolve(formLink.FormKey, formLink.Type, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(string editorId, Type type, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             majorRec = default;
@@ -178,41 +178,41 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolve<IMajorRecordGetter>(formKey, out var majorRec, target)) return majorRec;
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId)
     {
         if (TryResolve<IMajorRecordGetter>(editorId, out var majorRec)) return majorRec;
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolve(formKey, type, out var commonRec, target)) return commonRec;
         throw new MissingRecordException(formKey, type);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return Resolve(formLink.FormKey, formLink.Type, target);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId, Type type)
     {
         if (TryResolve(editorId, type, out var commonRec)) return commonRec;
         throw new MissingRecordException(editorId, type);
     }
 
-    /// <inheritdoc />
+
     public TMajor Resolve<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -220,14 +220,14 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         throw new MissingRecordException(formKey, typeof(TMajor));
     }
 
-    /// <inheritdoc />
-    public TMajor Resolve<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner) 
+
+    public TMajor Resolve<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return Resolve<TMajor>(record.FormKey, target);
     }
-    
-    /// <inheritdoc />
+
+
     public TMajor Resolve<TMajor>(string editorId)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -235,35 +235,35 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         throw new MissingRecordException(editorId, typeof(TMajor));
     }
 
-    /// <summary>
-    /// Adds a mutable mod to the end of the load order
-    /// </summary>
-    /// <param name="mod">Mod that is safe to mutate to add to end of load order</param>
+
+
+
+
     public void Add(IMod mod)
     {
         CheckDisposal();
         _mutableMods.Add(mod.ToUntypedMutableLinkCache());
     }
-    
-    /// <inheritdoc />
+
+
     public IEnumerable<TMajor> ResolveAll<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return ResolveAll(formKey, typeof(TMajor), target).Cast<TMajor>();
     }
-    
-    /// <inheritdoc />
+
+
     public IEnumerable<TMajor> ResolveAll<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return ResolveAll<TMajor>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordGetter> ResolveAll(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -307,48 +307,48 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordGetter> ResolveAll(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAll(formLink.FormKey, formLink.Type, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IEnumerable<IMajorRecordGetter> ResolveAll(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAll(formKey, typeof(IMajorRecordGetter), target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolveSimpleContext(FormKey formKey, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveSimpleContext(formKey, typeof(IMajorRecordGetter), out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolveSimpleContext(string editorId, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec)
     {
         return TryResolveSimpleContext(editorId, typeof(IMajorRecordGetter), out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext<TMajor>(
-        FormKey formKey, 
+        FormKey formKey,
         [MaybeNullWhen(false)] out IModContext<TMajor> majorRec,
-        ResolveTarget target = ResolveTarget.Winner) 
+        ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             majorRec = default;
             return false;
         }
-        
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -366,7 +366,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
                     if (_mutableMods[i].TryResolveSimpleContext<TMajor>(formKey, out majorRec, target)) return true;
                 }
                 if (WrappedImmutableCache?.TryResolveSimpleContext<TMajor>(formKey, out majorRec, target) ?? false) return true;
-                
+
                 majorRec = default;
                 return false;
             default:
@@ -374,12 +374,12 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext<TMajor>(string editorId, [MaybeNullWhen(false)] out IModContext<TMajor> majorRec)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             majorRec = default;
@@ -395,18 +395,18 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext(FormKey formKey, Type type, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec,
         ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             majorRec = default;
             return false;
         }
-        
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -424,7 +424,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
                     if (_mutableMods[i].TryResolveSimpleContext(formKey, type, out majorRec, target)) return true;
                 }
                 if (WrappedImmutableCache?.TryResolveSimpleContext(formKey, type, out majorRec, target) ?? false) return true;
-                
+
                 majorRec = null;
                 return false;
             default:
@@ -432,18 +432,18 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext(IFormLinkIdentifier formLink, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec,
         ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveSimpleContext(formLink.FormKey, formLink.Type, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext(string editorId, Type type, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             majorRec = default;
@@ -459,7 +459,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
@@ -467,7 +467,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(string editorId)
     {
@@ -475,55 +475,55 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolveSimpleContext(formKey, type, out var rec, target)) return rec;
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveSimpleContext(formLink.FormKey, formLink.Type, target);
     }
-    
-    /// <inheritdoc />
-    public IModContext<TMajor> ResolveSimpleContext<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner) 
+
+
+    public IModContext<TMajor> ResolveSimpleContext<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return ResolveSimpleContext<TMajor>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(string editorId, Type type)
     {
         if (TryResolveSimpleContext(editorId, type, out var rec)) return rec;
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
-    public IModContext<TMajor> ResolveSimpleContext<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner) 
+
+    public IModContext<TMajor> ResolveSimpleContext<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         if (TryResolveSimpleContext<TMajor>(formKey, out var rec, target)) return rec;
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
-    public IModContext<TMajor> ResolveSimpleContext<TMajor>(string editorId) 
+
+    public IModContext<TMajor> ResolveSimpleContext<TMajor>(string editorId)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         if (TryResolveSimpleContext<TMajor>(editorId, out var rec)) return rec;
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
-    public IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner) 
+
+    public IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         CheckDisposal();
-            
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -545,7 +545,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
 
                 break;
             case ResolveTarget.Winner:
-                    
+
                 for (int i = _mutableMods.Count - 1; i >= 0; i--)
                 {
                     if (_mutableMods[i].TryResolveSimpleContext<TMajor>(formKey, out var majorRec))
@@ -568,11 +568,11 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IModContext<IMajorRecordGetter>> ResolveAllSimpleContexts(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -594,7 +594,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
 
                 break;
             case ResolveTarget.Winner:
-                    
+
                 for (int i = _mutableMods.Count - 1; i >= 0; i--)
                 {
                     if (_mutableMods[i].TryResolveSimpleContext(formKey, type, out var majorRec))
@@ -617,39 +617,39 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IModContext<IMajorRecordGetter>> ResolveAllSimpleContexts(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAllSimpleContexts(formLink.FormKey, formLink.Type, target);
     }
-    
-    /// <inheritdoc />
-    public IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner) 
+
+
+    public IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return ResolveAllSimpleContexts<TMajor>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IEnumerable<IModContext<IMajorRecordGetter>> ResolveAllSimpleContexts(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAllSimpleContexts(formKey, typeof(IMajorRecordGetter), target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(FormKey formKey, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, params Type[] types)
     {
         return TryResolve(formKey, (IEnumerable<Type>)types, out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(string editorId, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, params Type[] types)
     {
         return TryResolve(editorId, (IEnumerable<Type>)types, out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(FormKey formKey, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         foreach (var type in types)
@@ -680,7 +680,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(string editorId, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec)
     {
         foreach (var type in types)
@@ -694,43 +694,43 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, params Type[] types)
     {
         return Resolve(formKey, (IEnumerable<Type>)types);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId, params Type[] types)
     {
         return Resolve(editorId, (IEnumerable<Type>)types);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, IEnumerable<Type> types, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolve(formKey, types, out var commonRec, target)) return commonRec;
         throw new MissingRecordException(formKey, types.ToArray());
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId, IEnumerable<Type> types)
     {
         if (TryResolve(editorId, types, out var commonRec)) return commonRec;
         throw new MissingRecordException(editorId, types.ToArray());
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveIdentifier(formKey, typeof(IMajorRecordGetter), out editorId, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, [MaybeNullWhen(false)] out FormKey formKey)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             formKey = default;
@@ -747,11 +747,11 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, Type type, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             editorId = default;
@@ -781,17 +781,17 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(IFormLinkIdentifier formLink, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveIdentifier(formLink.FormKey, formLink.Type, out editorId, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, Type type, [MaybeNullWhen(false)] out FormKey formKey)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             formKey = default;
@@ -807,33 +807,33 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier<TMajor>(FormKey formKey, out string? editorId, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return TryResolveIdentifier(formKey, typeof(TMajor), out editorId);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier<TMajor>(string editorId, out FormKey formKey)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return TryResolveIdentifier(editorId, typeof(TMajor), out formKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, [MaybeNullWhen(false)] out string? editorId, params Type[] types)
     {
         return TryResolveIdentifier(formKey, (IEnumerable<Type>)types, out editorId);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, [MaybeNullWhen(false)] out FormKey formKey, params Type[] types)
     {
         return TryResolveIdentifier(editorId, (IEnumerable<Type>)types, out formKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, IEnumerable<Type> types, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         foreach (var type in types)
@@ -863,7 +863,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, IEnumerable<Type> types, [MaybeNullWhen(false)] out FormKey formKey)
     {
         foreach (var type in types)
@@ -892,7 +892,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return false;
     }
 
-    /// <inheritdoc />
+
     public string? ResolveIdentifier(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolveIdentifier(formKey, out var edid, target)) return edid;
@@ -971,34 +971,34 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return ret;
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers(Type type, CancellationToken? cancel = null)
     {
         return AllIdentifiersNoUniqueness(type, cancel)
             .Distinct(x => x.FormKey);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers<TMajor>(CancellationToken? cancel = null)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return AllIdentifiers(typeof(TMajor), cancel);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers(params Type[] types)
     {
         return AllIdentifiers((IEnumerable<Type>)types, CancellationToken.None);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers(IEnumerable<Type> types, CancellationToken? cancel = null)
     {
         return types.SelectMany(type => AllIdentifiersNoUniqueness(type, cancel))
             .Distinct(x => x.FormKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve<TMajor>(IFormLinkGetter<TMajor> formLink, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
@@ -1006,7 +1006,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return TryResolve<TMajor>(formLink.FormKey, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public TMajor Resolve<TMajor>(IFormLinkGetter<TMajor> formLink, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
@@ -1014,14 +1014,14 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         return Resolve<TMajor>(formLink.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext<TMajor>(IFormLinkGetter<TMajor> formLink, [MaybeNullWhen(false)] out IModContext<TMajor> majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return TryResolveSimpleContext<TMajor>(formLink.FormKey, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public IModContext<TMajor> ResolveSimpleContext<TMajor>(IFormLinkGetter<TMajor> formLink, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
@@ -1029,7 +1029,7 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
         throw new MissingRecordException(formLink.FormKey, typeof(TMajor));
     }
 
-    /// <inheritdoc />
+
     public void Dispose()
     {
         _disposed = true;
@@ -1073,11 +1073,11 @@ public sealed class MutableLoadOrderLinkCache : ILinkCache
     }
 }
 
-/// <summary>
-/// A link cache that allows a top set of mods on the load order to be modified without
-/// invalidating the cache.  This comes at a performance cost of needing to query those mods
-/// for every request.
-/// </summary>
+
+
+
+
+
 public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMod, TModGetter>
     where TMod : class, IContextMod<TMod, TModGetter>, TModGetter
     where TModGetter : class, IContextGetterMod<TMod, TModGetter>
@@ -1086,12 +1086,12 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
     private readonly List<MutableModLinkCache<TMod, TModGetter>> _mutableMods;
     private bool _disposed;
 
-    /// <summary>
-    /// Constructs a mutable load order link cache by combining an existing immutable load order cache,
-    /// plus a set of mods to be put at the end of the load order and allow to be mutable.
-    /// </summary>
-    /// <param name="immutableBaseCache">LoadOrderCache to use as the immutable base</param>
-    /// <param name="mutableMods">Set of mods to place at the end of the load order, which are allowed to be modified afterwards</param>
+
+
+
+
+
+
     public MutableLoadOrderLinkCache(ImmutableLoadOrderLinkCache<TMod, TModGetter> immutableBaseCache, params TMod[] mutableMods)
     {
         WrappedImmutableCache = immutableBaseCache;
@@ -1100,11 +1100,11 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         PriorityOrder = ListedOrder.Reverse().ToArray();
     }
 
-    /// <summary>
-    /// Constructs a mutable load order link cache by combining an existing immutable load order cache,
-    /// plus a set of mods to be put at the end of the load order and allow to be mutable.
-    /// </summary>
-    /// <param name="mutableMods">Set of mods to place at the end of the load order, which are allowed to be modified afterwards</param>
+
+
+
+
+
     public MutableLoadOrderLinkCache(params TMod[] mutableMods)
     {
         WrappedImmutableCache = ImmutableLoadOrderLinkCache<TMod, TModGetter>.Empty;
@@ -1113,10 +1113,10 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         PriorityOrder = ListedOrder.Reverse().ToArray();
     }
 
-    /// <inheritdoc />
+
     public IReadOnlyList<IModGetter> ListedOrder { get; }
 
-    /// <inheritdoc />
+
     public IReadOnlyList<IModGetter> PriorityOrder { get; }
 
     private void CheckDisposal()
@@ -1127,21 +1127,21 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolve(FormKey formKey, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolve(formKey, typeof(IMajorRecordGetter), out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolve(string editorId, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec)
     {
         return TryResolve(editorId, typeof(IMajorRecordGetter), out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve<TMajor>(FormKey formKey, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -1155,14 +1155,14 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
-    public bool TryResolve<TMajor>(TMajor record, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner) 
+
+    public bool TryResolve<TMajor>(TMajor record, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return TryResolve<TMajor>(record.FormKey, out majorRec, target);
     }
-    
-    /// <inheritdoc />
+
+
     public bool TryResolve<TMajor>(string editorId, [MaybeNullWhen(false)] out TMajor majorRec)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -1176,11 +1176,11 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(FormKey formKey, Type type, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             majorRec = default;
@@ -1208,17 +1208,17 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(IFormLinkIdentifier formLink, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolve(formLink.FormKey, formLink.Type, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(string editorId, Type type, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             majorRec = default;
@@ -1246,41 +1246,41 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolve<IMajorRecordGetter>(formKey, out var majorRec, target)) return majorRec;
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId)
     {
         if (TryResolve<IMajorRecordGetter>(editorId, out var majorRec)) return majorRec;
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolve(formKey, type, out var commonRec, target)) return commonRec;
         throw new MissingRecordException(formKey, type);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return Resolve(formLink.FormKey, formLink.Type, target);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId, Type type)
     {
         if (TryResolve(editorId, type, out var commonRec)) return commonRec;
         throw new MissingRecordException(editorId, type);
     }
 
-    /// <inheritdoc />
+
     public TMajor Resolve<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -1288,14 +1288,14 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(formKey, typeof(TMajor));
     }
 
-    /// <inheritdoc />
+
     public TMajor Resolve<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return Resolve<TMajor>(record.FormKey, target);
     }
-    
-    /// <inheritdoc />
+
+
     public TMajor Resolve<TMajor>(string editorId)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -1303,37 +1303,37 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(editorId, typeof(TMajor));
     }
 
-    /// <summary>
-    /// Adds a mutable mod to the end of the load order
-    /// </summary>
-    /// <param name="mod">Mod that is safe to mutate to add to end of load order</param>
+
+
+
+
     public void Add(TMod mod)
     {
         CheckDisposal();
         _mutableMods.Add(mod.ToMutableLinkCache<TMod, TModGetter>());
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolveContext(FormKey formKey, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveContext(formKey, typeof(IMajorRecordGetter), out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolveContext(string editorId, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec)
     {
         return TryResolveContext(editorId, typeof(IMajorRecordGetter), out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveContext<TMajor, TMajorGetter>(FormKey formKey, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, TMajor, TMajorGetter> majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryable, TMajorGetter
         where TMajorGetter : class, IMajorRecordQueryableGetter
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             majorRec = default;
@@ -1361,13 +1361,13 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveContext<TMajor, TMajorGetter>(string editorId, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, TMajor, TMajorGetter> majorRec)
         where TMajor : class, IMajorRecordQueryable, TMajorGetter
         where TMajorGetter : class, IMajorRecordQueryableGetter
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             majorRec = default;
@@ -1380,11 +1380,11 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return WrappedImmutableCache.TryResolveContext<TMajor, TMajorGetter>(editorId, out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveContext(FormKey formKey, Type type, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             majorRec = default;
@@ -1412,17 +1412,17 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveContext(IFormLinkIdentifier formLink, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveContext(formLink.FormKey, formLink.Type, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveContext(string editorId, Type type, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> majorRec)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             majorRec = default;
@@ -1435,7 +1435,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return WrappedImmutableCache.TryResolveContext(editorId, type, out majorRec);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> ResolveContext(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
@@ -1443,7 +1443,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> ResolveContext(string editorId)
     {
@@ -1451,27 +1451,27 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> ResolveContext(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolveContext(formKey, type, out var commonRec, target)) return commonRec;
         throw new MissingRecordException(formKey, type);
     }
 
-    /// <inheritdoc />
+
     public IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> ResolveContext(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveContext(formLink.FormKey, formLink.Type, target);
     }
 
-    /// <inheritdoc />
+
     public IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter> ResolveContext(string editorId, Type type)
     {
         if (TryResolveContext(editorId, type, out var commonRec)) return commonRec;
         throw new MissingRecordException(editorId, type);
     }
 
-    /// <inheritdoc />
+
     public IModContext<TMod, TModGetter, TMajor, TMajorGetter> ResolveContext<TMajor, TMajorGetter>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryable, TMajorGetter
         where TMajorGetter : class, IMajorRecordQueryableGetter
@@ -1480,15 +1480,15 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(formKey, typeof(TMajorGetter));
     }
 
-    /// <inheritdoc />
-    public IModContext<TMod, TModGetter, TMajor, TMajorGetter> ResolveContext<TMajor, TMajorGetter>(TMajor record, ResolveTarget target = ResolveTarget.Winner) 
-        where TMajor : class, IMajorRecord, TMajorGetter 
+
+    public IModContext<TMod, TModGetter, TMajor, TMajorGetter> ResolveContext<TMajor, TMajorGetter>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
+        where TMajor : class, IMajorRecord, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
     {
         return ResolveContext<TMajor, TMajorGetter>(record.FormKey, target);
     }
-    
-    /// <inheritdoc />
+
+
     public IModContext<TMod, TModGetter, TMajor, TMajorGetter> ResolveContext<TMajor, TMajorGetter>(string editorId)
         where TMajor : class, IMajorRecordQueryable, TMajorGetter
         where TMajorGetter : class, IMajorRecordQueryableGetter
@@ -1497,25 +1497,25 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(editorId, typeof(TMajorGetter));
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<TMajor> ResolveAll<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return ResolveAll(formKey, typeof(TMajor), target).Cast<TMajor>();
     }
-    
-    /// <inheritdoc />
+
+
     public IEnumerable<TMajor> ResolveAll<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return ResolveAll<TMajor>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordGetter> ResolveAll(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -1552,20 +1552,20 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordGetter> ResolveAll(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAll(formLink.FormKey, formLink.Type, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IEnumerable<IMajorRecordGetter> ResolveAll(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAll(formKey, typeof(IMajorRecordGetter), target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolveSimpleContext(FormKey formKey, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
@@ -1579,7 +1579,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public bool TryResolveSimpleContext(string editorId, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec)
     {
@@ -1593,11 +1593,11 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext<TMajor>(
-        FormKey formKey, 
+        FormKey formKey,
         [MaybeNullWhen(false)] out IModContext<TMajor> majorRec,
-        ResolveTarget target = ResolveTarget.Winner) 
+        ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         if (TryResolveContext(formKey, typeof(TMajor), out var resolve, target))
@@ -1610,7 +1610,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext<TMajor>(string editorId, [MaybeNullWhen(false)] out IModContext<TMajor> majorRec)
         where TMajor : class, IMajorRecordQueryableGetter
     {
@@ -1624,7 +1624,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext(FormKey formKey, Type type, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec,
         ResolveTarget target = ResolveTarget.Winner)
     {
@@ -1638,14 +1638,14 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext(IFormLinkIdentifier formLink, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec,
         ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveSimpleContext(formLink.FormKey, formLink.Type, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext(string editorId, Type type, [MaybeNullWhen(false)] out IModContext<IMajorRecordGetter> majorRec)
     {
         if (TryResolveContext(editorId, type, out var resolve))
@@ -1658,7 +1658,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
@@ -1666,7 +1666,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(string editorId)
     {
@@ -1674,89 +1674,89 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolveSimpleContext(formKey, type, out var rec, target)) return rec;
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
+
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveSimpleContext(formLink.FormKey, formLink.Type, target);
     }
-    
-    /// <inheritdoc />
+
+
     public IModContext<TMajor> ResolveSimpleContext<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return ResolveSimpleContext<TMajor>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     public IModContext<IMajorRecordGetter> ResolveSimpleContext(string editorId, Type type)
     {
         if (TryResolveSimpleContext(editorId, type, out var rec)) return rec;
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
-    public IModContext<TMajor> ResolveSimpleContext<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner) 
+
+    public IModContext<TMajor> ResolveSimpleContext<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         if (TryResolveSimpleContext<TMajor>(formKey, out var rec, target)) return rec;
         throw new MissingRecordException(formKey, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
-    public IModContext<TMajor> ResolveSimpleContext<TMajor>(string editorId) 
+
+    public IModContext<TMajor> ResolveSimpleContext<TMajor>(string editorId)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         if (TryResolveSimpleContext<TMajor>(editorId, out var rec)) return rec;
         throw new MissingRecordException(editorId, typeof(IMajorRecordGetter));
     }
 
-    /// <inheritdoc />
-    public IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner) 
+
+    public IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return ResolveAllContexts(formKey, typeof(TMajor), target).Select(x => x.AsType<IMajorRecordQueryableGetter, TMajor>());
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IModContext<IMajorRecordGetter>> ResolveAllSimpleContexts(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAllContexts(formKey, type, target);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IModContext<IMajorRecordGetter>> ResolveAllSimpleContexts(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAllContexts(formLink.FormKey, formLink.Type, target);
     }
-    
-    /// <inheritdoc />
+
+
     public IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return ResolveAllSimpleContexts<TMajor>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IEnumerable<IModContext<IMajorRecordGetter>> ResolveAllSimpleContexts(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAllContexts(formKey, target);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> ResolveAllContexts<TMajor, TMajorGetter>(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryable, TMajorGetter
         where TMajorGetter : class, IMajorRecordQueryableGetter
     {
         CheckDisposal();
-            
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -1775,7 +1775,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
 
                 break;
             case ResolveTarget.Winner:
-                    
+
                 for (int i = _mutableMods.Count - 1; i >= 0; i--)
                 {
                     if (_mutableMods[i].TryResolveContext<TMajor, TMajorGetter>(formKey, out var majorRec))
@@ -1794,11 +1794,11 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> ResolveAllContexts(FormKey formKey, Type type, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         switch (target)
         {
             case ResolveTarget.Origin:
@@ -1817,7 +1817,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
 
                 break;
             case ResolveTarget.Winner:
-                    
+
                 for (int i = _mutableMods.Count - 1; i >= 0; i--)
                 {
                     if (_mutableMods[i].TryResolveContext(formKey, type, out var majorRec))
@@ -1836,48 +1836,48 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> ResolveAllContexts(IFormLinkIdentifier formLink, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAllContexts(formLink.FormKey, formLink.Type, target);
     }
-    
-    /// <inheritdoc />
+
+
     public IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> ResolveAllContexts<TMajor, TMajorGetter>(TMajor record, ResolveTarget target = ResolveTarget.Winner)
-        where TMajor : class, IMajorRecord, TMajorGetter 
-        where TMajorGetter : class, IMajorRecordGetter
-    {
-        return ResolveAllContexts<TMajor, TMajorGetter>(record.FormKey, target);
-    }
-    
-    /// <inheritdoc />
-    public IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> ResolveAllContexts<TMajor, TMajorGetter>(TMajorGetter record, ResolveTarget target = ResolveTarget.Winner)
-        where TMajor : class, IMajorRecord, TMajorGetter 
+        where TMajor : class, IMajorRecord, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
     {
         return ResolveAllContexts<TMajor, TMajorGetter>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
+    public IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> ResolveAllContexts<TMajor, TMajorGetter>(TMajorGetter record, ResolveTarget target = ResolveTarget.Winner)
+        where TMajor : class, IMajorRecord, TMajorGetter
+        where TMajorGetter : class, IMajorRecordGetter
+    {
+        return ResolveAllContexts<TMajor, TMajorGetter>(record.FormKey, target);
+    }
+
+
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> ResolveAllContexts(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         return ResolveAllContexts(formKey, typeof(IMajorRecordGetter), target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(FormKey formKey, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, params Type[] types)
     {
         return TryResolve(formKey, (IEnumerable<Type>)types, out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(string editorId, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, params Type[] types)
     {
         return TryResolve(editorId, (IEnumerable<Type>)types, out majorRec);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(FormKey formKey, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec, ResolveTarget target = ResolveTarget.Winner)
     {
         foreach (var type in types)
@@ -1907,7 +1907,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve(string editorId, IEnumerable<Type> types, [MaybeNullWhen(false)] out IMajorRecordGetter majorRec)
     {
         foreach (var type in types)
@@ -1921,43 +1921,43 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, params Type[] types)
     {
         return Resolve(formKey, (IEnumerable<Type>)types);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId, params Type[] types)
     {
         return Resolve(editorId, (IEnumerable<Type>)types);
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(FormKey formKey, IEnumerable<Type> types, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolve(formKey, types, out var commonRec, target)) return commonRec;
         throw new MissingRecordException(formKey, types.ToArray());
     }
 
-    /// <inheritdoc />
+
     public IMajorRecordGetter Resolve(string editorId, IEnumerable<Type> types)
     {
         if (TryResolve(editorId, types, out var commonRec)) return commonRec;
         throw new MissingRecordException(editorId, types.ToArray());
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveIdentifier(formKey, typeof(IMajorRecordGetter), out editorId, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, [MaybeNullWhen(false)] out FormKey formKey)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             formKey = default;
@@ -1970,11 +1970,11 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return WrappedImmutableCache.TryResolveIdentifier(editorId, out formKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, Type type, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         CheckDisposal();
-            
+
         if (formKey.IsNull)
         {
             editorId = default;
@@ -2001,17 +2001,17 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         }
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(IFormLinkIdentifier formLink, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         return TryResolveIdentifier(formLink.FormKey, formLink.Type, out editorId, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, Type type, [MaybeNullWhen(false)] out FormKey formKey)
     {
         CheckDisposal();
-            
+
         if (editorId.IsNullOrWhitespace())
         {
             formKey = default;
@@ -2024,33 +2024,33 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return WrappedImmutableCache.TryResolveIdentifier(editorId, type, out formKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier<TMajor>(FormKey formKey, out string? editorId, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return TryResolveIdentifier(formKey, typeof(TMajor), out editorId);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier<TMajor>(string editorId, out FormKey formKey)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return TryResolveIdentifier(editorId, typeof(TMajor), out formKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, [MaybeNullWhen(false)] out string? editorId, params Type[] types)
     {
         return TryResolveIdentifier(formKey, (IEnumerable<Type>)types, out editorId);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, [MaybeNullWhen(false)] out FormKey formKey, params Type[] types)
     {
         return TryResolveIdentifier(editorId, (IEnumerable<Type>)types, out formKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(FormKey formKey, IEnumerable<Type> types, [MaybeNullWhen(false)] out string? editorId, ResolveTarget target = ResolveTarget.Winner)
     {
         foreach (var type in types)
@@ -2080,7 +2080,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveIdentifier(string editorId, IEnumerable<Type> types, [MaybeNullWhen(false)] out FormKey formKey)
     {
         foreach (var type in types)
@@ -2109,7 +2109,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return false;
     }
 
-    /// <inheritdoc />
+
     public string? ResolveIdentifier(FormKey formKey, ResolveTarget target = ResolveTarget.Winner)
     {
         if (TryResolveIdentifier(formKey, out var edid, target)) return edid;
@@ -2179,67 +2179,67 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
     private IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiersNoUniqueness(Type type, CancellationToken? cancel)
     {
         CheckDisposal();
-            
+
         return _mutableMods.SelectMany(x => x.AllIdentifiersNoUniqueness(type, cancel))
             .Concat(WrappedImmutableCache.AllIdentifiers(type, cancel));
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers(Type type, CancellationToken? cancel = null)
     {
         return AllIdentifiersNoUniqueness(type, cancel)
             .Distinct(x => x.FormKey);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers<TMajor>(CancellationToken? cancel = null)
         where TMajor : class, IMajorRecordQueryableGetter
     {
         return AllIdentifiers(typeof(TMajor), cancel);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers(params Type[] types)
     {
         return AllIdentifiers((IEnumerable<Type>)types, CancellationToken.None);
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<IMajorRecordIdentifierGetter> AllIdentifiers(IEnumerable<Type> types, CancellationToken? cancel = null)
     {
         return types.SelectMany(type => AllIdentifiersNoUniqueness(type, cancel))
             .Distinct(x => x.FormKey);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolve<TMajor>(IFormLinkGetter<TMajor> formLink, [MaybeNullWhen(false)] out TMajor majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return TryResolve<TMajor>(formLink.FormKey, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public TMajor Resolve<TMajor>(IFormLinkGetter<TMajor> formLink, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return Resolve<TMajor>(formLink.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveSimpleContext<TMajor>(IFormLinkGetter<TMajor> formLink, [MaybeNullWhen(false)] out IModContext<TMajor> majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return TryResolveSimpleContext<TMajor>(formLink.FormKey, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public IModContext<TMajor> ResolveSimpleContext<TMajor>(IFormLinkGetter<TMajor> formLink, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecordGetter
     {
         return ResolveContext(formLink.FormKey, typeof(TMajor), target).AsType<IMajorRecordQueryableGetter, TMajor>();
     }
 
-    /// <inheritdoc />
+
     public bool TryResolveContext<TMajor, TMajorGetter>(IFormLinkGetter<TMajorGetter> formLink, [MaybeNullWhen(false)] out IModContext<TMod, TModGetter, TMajor, TMajorGetter> majorRec, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecord, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
@@ -2247,15 +2247,15 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return TryResolveContext<TMajor, TMajorGetter>(formLink.FormKey, out majorRec, target);
     }
 
-    /// <inheritdoc />
+
     public IModContext<TMod, TModGetter, TMajor, TMajorGetter> ResolveContext<TMajor, TMajorGetter>(IFormLinkGetter<TMajorGetter> formLink, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecord, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
     {
         return ResolveContext<TMajor, TMajorGetter>(formLink.FormKey, target);
     }
-    
-    /// <inheritdoc />
+
+
     public IModContext<TMod, TModGetter, TMajor, TMajorGetter> ResolveContext<TMajor, TMajorGetter>(TMajorGetter record, ResolveTarget target = ResolveTarget.Winner)
         where TMajor : class, IMajorRecord, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
@@ -2263,7 +2263,7 @@ public sealed class MutableLoadOrderLinkCache<TMod, TModGetter> : ILinkCache<TMo
         return ResolveContext<TMajor, TMajorGetter>(record.FormKey, target);
     }
 
-    /// <inheritdoc />
+
     public void Dispose()
     {
         _disposed = true;

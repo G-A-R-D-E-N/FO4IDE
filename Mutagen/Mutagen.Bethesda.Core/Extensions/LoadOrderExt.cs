@@ -9,22 +9,22 @@ namespace Mutagen.Bethesda;
 
 public static class LoadOrderExt
 {
-    /// <summary>
-    /// Filters listings to only include ones that are enabled
-    /// </summary>
-    /// <param name="loadOrder">Listings to filter</param>
-    /// <returns>Listings that are enabled</returns>
+
+
+
+
+
     public static IEnumerable<TListing> OnlyEnabled<TListing>(this IEnumerable<TListing> loadOrder)
         where TListing : ILoadOrderListingGetter
     {
         return loadOrder.Where(x => x.Enabled);
     }
 
-    /// <summary>
-    /// Filters listings to only include ones where the mod objects exist
-    /// </summary>
-    /// <param name="loadOrder">Listings to filter</param>
-    /// <returns>Listings that have mods that exist</returns>
+
+
+
+
+
     public static IEnumerable<TListing> OnlyExisting<TListing, TMod>(this IEnumerable<TListing> loadOrder)
         where TListing : IModListingGetter
         where TMod : class, IModGetter
@@ -33,11 +33,11 @@ public static class LoadOrderExt
             .Where(x => x.ModExists);
     }
 
-    /// <summary>
-    /// Filters listings to only include ones that are enabled and mods exist
-    /// </summary>
-    /// <param name="loadOrder">Listings to filter</param>
-    /// <returns>Listings that are enabled and have mods that exist</returns>
+
+
+
+
+
     public static IEnumerable<TListing> OnlyEnabledAndExisting<TListing>(this IEnumerable<TListing> loadOrder)
         where TListing : IModListingGetter
     {
@@ -45,12 +45,12 @@ public static class LoadOrderExt
             .Where(x => x.Enabled && x.ModExists);
     }
 
-    /// <summary>
-    /// Converts listings to Mods.  Will throw if any mods do not exist
-    /// </summary>
-    /// <param name="loadOrder">Listings to convert</param>
-    /// <exception cref="MissingModException">Thrown if a listing is missing its mod</exception>
-    /// <returns>Mods contained in the listings</returns>
+
+
+
+
+
+
     [Obsolete("Use ResolveAllModsExist instead")]
     public static IEnumerable<TMod> Resolve<TMod>(this IEnumerable<IModListingGetter<TMod>> loadOrder)
         where TMod : class, IModGetter
@@ -58,12 +58,12 @@ public static class LoadOrderExt
         return ResolveAllModsExist(loadOrder);
     }
 
-    /// <summary>
-    /// Converts listings to Mods.  Will throw if any mods do not exist
-    /// </summary>
-    /// <param name="loadOrder">Listings to convert</param>
-    /// <exception cref="MissingModException">Thrown if a listing is missing its mod</exception>
-    /// <returns>Mods contained in the listings</returns>
+
+
+
+
+
+
     public static IEnumerable<TModItem> ResolveAllModsExist<TModItem>(this IEnumerable<IModListingGetter<TModItem>> loadOrder)
         where TModItem : class, IModKeyed
     {
@@ -79,14 +79,14 @@ public static class LoadOrderExt
         return loadOrder.Select(x => x.Mod!);
     }
 
-    /// <summary>
-    /// Locates and returns a mod from a given set of listings.  Will throw if mod does not exist
-    /// </summary>
-    /// <param name="loadOrder">Listings to resolve from</param>
-    /// <param name="modKey">ModKey to resolve</param>
-    /// <exception cref="MissingModException">Thrown if listing is missing</exception>
-    /// <returns>Mod contained in the listings</returns>
-    public static TModItem ResolveMod<TModItem>( 
+
+
+
+
+
+
+
+    public static TModItem ResolveMod<TModItem>(
         this ILoadOrderGetter<IModListingGetter<TModItem>> loadOrder,
         ModKey modKey)
         where TModItem : class, IModKeyed
@@ -100,11 +100,11 @@ public static class LoadOrderExt
         return listing.Mod;
     }
 
-    /// <summary>
-    /// Converts any listings that have mods into Mods.  Will not throw
-    /// </summary>
-    /// <param name="loadOrder">Listings to convert</param>
-    /// <returns>Mods contained in the listings that exist</returns>
+
+
+
+
+
     public static IEnumerable<TModItem> ResolveExistingMods<TModItem>(this IEnumerable<IModListingGetter<TModItem>> loadOrder)
         where TModItem : class, IModKeyed
     {
@@ -113,12 +113,12 @@ public static class LoadOrderExt
             .WhereNotNull();
     }
 
-    /// <summary>
-    /// Converts listings to Mods.  Will throw if any mods do not exist
-    /// </summary>
-    /// <param name="loadOrder">Listings to convert</param>
-    /// <exception cref="MissingModException">Thrown if a listing is missing its mod</exception>
-    /// <returns>Mods contained in the listings</returns>
+
+
+
+
+
+
     public static LoadOrder<TModItem> ResolveAllModsExist<TModItem>(
         this ILoadOrderGetter<IModListingGetter<TModItem>> loadOrder,
         bool? disposeItems = null)
@@ -127,11 +127,11 @@ public static class LoadOrderExt
         return new LoadOrder<TModItem>(ResolveAllModsExist<TModItem>(loadOrder.ListedOrder), disposeItems: disposeItems ?? loadOrder.DisposingItems);
     }
 
-    /// <summary>
-    /// Converts any listings that have mods into Mods.  Will not throw
-    /// </summary>
-    /// <param name="loadOrder">Listings to convert</param>
-    /// <returns>Mods contained in the listings that exist</returns>
+
+
+
+
+
     public static LoadOrder<TModItem> ResolveExistingMods<TModItem>(
         this ILoadOrderGetter<IModListingGetter<TModItem>> loadOrder,
         bool? disposeItems = null)
@@ -140,24 +140,24 @@ public static class LoadOrderExt
         return new LoadOrder<TModItem>(ResolveExistingMods<TModItem>(loadOrder.ListedOrder), disposeItems: disposeItems ?? loadOrder.DisposingItems);
     }
 
-    /// <summary>
-    /// Converts ModKeys to LoadOrderListing objects
-    /// </summary>
-    /// <param name="loadOrder">ModKeys to convert</param>
-    /// <param name="markEnabled">Whether to mark the listings as enabled</param>
-    /// <returns>ModKeys as LoadOrderListing objects</returns>
+
+
+
+
+
+
     public static IEnumerable<ILoadOrderListingGetter> ToLoadOrderListings(this IEnumerable<ModKey> loadOrder, bool markEnabled = true)
     {
         return loadOrder.Select(x => new LoadOrderListing(x, markEnabled));
     }
 
-    /// <summary>
-    /// Converts ModKeys to LoadOrderListing objects
-    /// </summary>
-    /// <param name="loadOrder">ModKeys to convert</param>
-    /// <param name="modExists">Whether to mark the ModListings as existing on disk</param>
-    /// <param name="markEnabled">Whether to mark the listings as enabled</param>
-    /// <returns>ModKeys as LoadOrderListing objects</returns>
+
+
+
+
+
+
+
     public static IEnumerable<IModListingGetter> ToModListings(this IEnumerable<ModKey> loadOrder, bool modExists, bool markEnabled = true)
     {
         return loadOrder.Select(x => new ModListing(x, enabled: markEnabled, modExists: modExists));

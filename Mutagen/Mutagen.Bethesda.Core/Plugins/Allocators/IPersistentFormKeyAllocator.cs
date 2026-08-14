@@ -15,14 +15,14 @@ public abstract class BasePersistentFormKeyAllocator : BaseFormKeyAllocator, IPe
         _saveLocation = Path.GetFullPath(saveLocation);
     }
 
-    /// <summary>
-    /// Writes state to disk.
-    /// </summary>
+
+
+
     public abstract void Commit();
 
-    /// <summary>
-    /// Reloads last committed state from disk.
-    /// </summary>
+
+
+
     public abstract void Rollback();
 
     protected virtual void Dispose(bool disposing)
@@ -38,9 +38,9 @@ public abstract class BasePersistentFormKeyAllocator : BaseFormKeyAllocator, IPe
     public void Dispose() => Dispose(true);
 }
 
-/// <summary>
-/// An interface for something that can allocate new FormKeys when requested shared between multiple programs
-/// </summary>
+
+
+
 public interface IPersistentFormKeyAllocator : IFormKeyAllocator, IDisposable
 {
     public void Commit();

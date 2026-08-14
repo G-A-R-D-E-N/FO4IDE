@@ -57,15 +57,15 @@ internal sealed class ModHeaderWriteLogic
             mod: mod);
         modHeaderWriter.AddProcessors(mod, modHeader);
         modHeaderWriter.RunProcessors(mod);
-        modHeaderWriter.PostProcessAdjustments(writer, mod, modHeader, 
+        modHeaderWriter.PostProcessAdjustments(writer, mod, modHeader,
             modHeaderWriter._constants.SeparateMasterLoadOrders
-                ? param.MasterFlagsLookup 
+                ? param.MasterFlagsLookup
                 : null);
         modHeader.WriteToBinary(writer);
     }
 
     private void AddProcessors(
-        IModGetter mod, 
+        IModGetter mod,
         IModHeaderCommon modHeader)
     {
         AddMasterCollectionActions(mod);
@@ -80,7 +80,7 @@ internal sealed class ModHeaderWriteLogic
 
     private void RunProcessors(IModGetter mod)
     {
-        // Do any major record iteration work
+
         if (_recordIterationActions.Count > 0
             || _formLinkIterationActions.Count > 0
             || _recordContextIterationActions.Count > 0)
@@ -156,13 +156,13 @@ internal sealed class ModHeaderWriteLogic
         IModHeaderCommon modHeader,
         IReadOnlyCache<IModMasterStyledGetter, ModKey>? masterFlagLookup)
     {
-        HandleDisallowedLowerFormIDs(); 
+        HandleDisallowedLowerFormIDs();
         SetOutgoingMasters(writer, mod, modHeader, masterFlagLookup);
         SetNumRecords(mod, modHeader);
         SetNextFormID(mod, modHeader);
         SetOverriddenForms(modHeader);
     }
-    
+
     private void SetOutgoingMasters(MutagenWriter writer, IModGetter mod, IModHeaderCommon modHeader,
         IReadOnlyCache<IModMasterStyledGetter, ModKey>? masterFlagLookup)
     {
@@ -173,7 +173,7 @@ internal sealed class ModHeaderWriteLogic
             mod.GetMasterStyle(),
             writer.MetaData.MasterReferences,
             masterFlagLookup);
-        
+
         modHeader.MasterReferences.SetTo(writer.MetaData.MasterReferences!.Masters.Select(m => m.DeepCopy()));
     }
 
@@ -194,7 +194,7 @@ internal sealed class ModHeaderWriteLogic
     {
         if (_params.RecordCount != RecordCountOption.NoCheck)
         {
-            // Can't use raw count, as more gets considered in this tally
+
             modHeader.NumRecords = mod.GetRecordCount();
         }
     }

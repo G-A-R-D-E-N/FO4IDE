@@ -1,8 +1,8 @@
 namespace Mutagen.Bethesda.Plugins.Exceptions;
 
-/// <summary>
-/// Exception thrown when a LinkCache is required to resolve a cross-mod record type but is not available
-/// </summary>
+
+
+
 public class LinkCacheMissingException : Exception
 {
     public FormKey FormKey { get; }

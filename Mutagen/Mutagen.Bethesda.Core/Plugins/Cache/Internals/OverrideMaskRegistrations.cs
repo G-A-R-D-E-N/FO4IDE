@@ -8,7 +8,7 @@ internal interface IOverrideMaskRegistration
 {
     IEnumerable<(ILoquiRegistration, object)> Masks { get; }
 }
-    
+
 internal static class OverrideMaskRegistrations
 {
     private static readonly Dictionary<Type, object> AddAsOverrideMasks = new();
@@ -45,6 +45,6 @@ internal static class OverrideMaskRegistrations
 
     public static void Warmup()
     {
-        // Nothing to do
+
     }
 }

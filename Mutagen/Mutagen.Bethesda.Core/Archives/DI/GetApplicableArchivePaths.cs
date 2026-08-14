@@ -7,18 +7,18 @@ namespace Mutagen.Bethesda.Archives.DI;
 
 public interface IGetApplicableArchivePaths
 {
-    /// <summary>
-    /// Enumerates all Archives
-    /// </summary>
+
+
+
     IEnumerable<FilePath> Get();
 
-    /// <summary>
-    /// Enumerates all applicable Archives for a given ModKey<br/>
-    /// This call is intended to return Archives related to one specific mod.<br/>
-    /// NOTE:  It is currently a bit experimental
-    /// </summary>
-    /// <param name="modKey">ModKey to query about</param>
-    /// <returns></returns>
+
+
+
+
+
+
+
     IEnumerable<FilePath> Get(ModKey modKey);
 }
 
@@ -43,19 +43,19 @@ public sealed class GetApplicableArchivePaths : IGetApplicableArchivePaths
         _archiveExtension = archiveExtension;
         _archiveListingDetailsProvider = archiveListingDetailsProvider;
     }
-        
-    /// <inheritdoc />
+
+
     public IEnumerable<FilePath> Get()
     {
         return GetInternal(default(ModKey?));
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<FilePath> Get(ModKey modKey)
     {
         return GetInternal(modKey);
     }
-        
+
     private IEnumerable<FilePath> GetInternal(ModKey? modKey)
     {
         if (modKey.HasValue && modKey.Value.IsNull)
@@ -67,7 +67,7 @@ public sealed class GetApplicableArchivePaths : IGetApplicableArchivePaths
         {
             return [];
         }
-            
+
         var ret = _fileSystem.Directory
             .EnumerateFilePaths(_dataDirectoryProvider.Path, searchPattern: $"*{_archiveExtension.Get()}");
         if (modKey != null && !modKey.Value.IsNull)

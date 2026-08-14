@@ -17,10 +17,10 @@ using Mutagen.Bethesda.Plugins.Aspects;
 
 namespace Mutagen.Bethesda.Fallout4;
 
-/// <summary>
-/// Multi-mod overlay that presents multiple Fallout4 mods as a single unified mod.
-/// Typically used for reading split mods that were written due to exceeding master limits
-/// </summary>
+
+
+
+
 internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
 {
     private readonly IReadOnlyList<IFallout4ModGetter> _sourceMods;
@@ -156,9 +156,9 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
     private MergedGroup<IGodRaysGetter>? _godRays;
     private MergedGroup<IObjectVisibilityManagerGetter>? _objectVisibilityManagers;
 
-    /// <summary>
-    /// Creates a new Fallout4MultiModOverlay from multiple source mod files.
-    /// </summary>
+
+
+
     public Fallout4MultiModOverlay(
         ModKey modKey,
         IEnumerable<IFallout4ModGetter> sourceMods,
@@ -169,7 +169,7 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
         _sourceMods = sourceList;
         _masters = mergedMasters;
 
-        // Track disposable mods for cleanup
+
         var disposables = sourceList.OfType<IModDisposeGetter>().ToList();
         _disposeSourceMods = disposables.Count > 0 ? disposables : null;
 
@@ -717,7 +717,7 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
     public IMask<bool> GetEqualsMask(object rhs, EqualsMaskHelper.Include include)
         => Fallout4ModCommon.Instance.GetEqualsMask(this, (IFallout4ModGetter)rhs, include);
 
-    // IModFlagsGetter members
+
     public bool CanUseLocalization => _sourceMods[0].CanUseLocalization;
     public bool UsingLocalization => _sourceMods[0].UsingLocalization;
     public bool CanBeSmallMaster => _sourceMods[0].CanBeSmallMaster;
@@ -727,10 +727,10 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
     public bool IsMaster => _sourceMods[0].IsMaster;
     public bool ListsOverriddenForms => _sourceMods[0].ListsOverriddenForms;
 
-    // IModMasterStyledGetter
+
     public MasterStyle MasterStyle => _sourceMods[0].MasterStyle;
 
-    // IDisposable
+
     public void Dispose()
     {
         if (_disposeSourceMods == null) return;
@@ -741,10 +741,10 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
         }
     }
 }
-/// <summary>
-/// Merged ModStats. NextFormID is the max across sources; NumRecords is zeroed.
-/// Throws InvalidDataException if must-match fields disagree between sources.
-/// </summary>
+
+
+
+
 internal class MergedModStats : IModStatsGetter
 {
     private readonly IReadOnlyList<IModStatsGetter> _sources;
@@ -788,10 +788,10 @@ internal class MergedModStats : IModStatsGetter
         => ((ModStatsBinaryWriteTranslation)((IBinaryItem)this).BinaryWriteTranslator).Write(item: this, writer: writer, translationParams: translationParams);
 }
 
-/// <summary>
-/// Merged ModHeader that projects aggregate state (masters, overridden forms) across all source mods.
-/// Throws InvalidDataException if must-match fields (Version, Flags, Author, etc.) disagree between sources.
-/// </summary>
+
+
+
+
 internal class MergedFallout4ModHeader : IFallout4ModHeaderGetter
 {
     private readonly IReadOnlyList<IFallout4ModHeaderGetter> _sources;
@@ -869,11 +869,11 @@ internal class MergedFallout4ModHeader : IFallout4ModHeaderGetter
     public IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => Fallout4ModHeaderCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
 }
 
-/// <summary>
-/// Merged group that combines multiple groups into a single unified view.
-/// Validates no duplicate FormKeys exist and caches results.
-/// When allowDuplicateOverrides is true, duplicate FormKeys are allowed and the later copy wins.
-/// </summary>
+
+
+
+
+
 internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCache<TGetter, FormKey>
     where TGetter : class, IFallout4MajorRecordGetter, IBinaryItem
 {
@@ -1023,7 +1023,7 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
         }
     }
 
-    // IFallout4GroupGetter members
+
     public object CommonInstance(Type type) => GenericCommonInstanceGetter.Get(Fallout4GroupCommon<TGetter>.Instance, typeof(ICellBlockGetter), type);
     public object? CommonSetterInstance(Type type) => null;
     public object CommonSetterTranslationInstance() => Fallout4GroupSetterTranslationCommon.Instance;
@@ -1035,7 +1035,7 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
     IReadOnlyCache<TGetter, FormKey> IFallout4GroupGetter<TGetter>.RecordCache => this;
     IReadOnlyCache<TGetter, FormKey> IGroupGetter<TGetter>.RecordCache => this;
 
-    // IReadOnlyCache explicit implementations
+
     IEnumerable<FormKey> IReadOnlyCache<TGetter, FormKey>.Keys => Cache.Keys;
     IEnumerable<TGetter> IReadOnlyCache<TGetter, FormKey>.Items => Cache.Values;
 
@@ -1049,7 +1049,7 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
         return Cache.Select(kvp => (IKeyValue<FormKey, TGetter>)new KeyValue<FormKey, TGetter>(kvp.Key, kvp.Value)).GetEnumerator();
     }
 
-    // Wrapper to cast TGetter to IMajorRecordGetter for IGroupGetter.RecordCache
+
     private class MajorRecordCacheWrapper : IReadOnlyCache<IMajorRecordGetter, FormKey>
     {
         private readonly MergedGroup<TGetter> _source;
@@ -1074,7 +1074,7 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    // ILoquiObject
+
     ILoquiRegistration ILoquiObject.Registration => null!;
 
     public void Print(StructuredStringBuilder sb, string? name = null)
@@ -1086,10 +1086,10 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
     }
 }
 
-/// <summary>
-/// Merged list group that combines multiple list groups (like Cells) into a single unified view.
-/// CellBlocks from different mods are merged by BlockNumber.
-/// </summary>
+
+
+
+
 internal class MergedListGroup : IFallout4ListGroupGetter<ICellBlockGetter>
 {
     private readonly IEnumerable<IFallout4ListGroupGetter<ICellBlockGetter>> _sourceGroups;
@@ -1140,7 +1140,7 @@ internal class MergedListGroup : IFallout4ListGroupGetter<ICellBlockGetter>
             name: name);
     }
 
-    // IFallout4ListGroupGetter properties
+
     public GroupTypeEnum Type => _sourceGroups.FirstOrDefault()?.Type ?? GroupTypeEnum.InteriorCellBlock;
     public int LastModified => _sourceGroups.Max(g => g.LastModified);
     public int Unknown => 0;
@@ -1169,9 +1169,9 @@ internal class MergedListGroup : IFallout4ListGroupGetter<ICellBlockGetter>
         => Fallout4ListGroupCommon<ICellBlockGetter>.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
 
-/// <summary>
-/// Merged cell block that combines multiple cell blocks with the same BlockNumber.
-/// </summary>
+
+
+
 internal class MergedCellBlock : ICellBlockGetter
 {
     private readonly int _blockNumber;
@@ -1219,9 +1219,9 @@ internal class MergedCellBlock : ICellBlockGetter
         => CellBlockCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
 
-/// <summary>
-/// Merged worldspace that combines SubCells from multiple worldspace copies with the same FormKey.
-/// </summary>
+
+
+
 internal class MergedWorldspace : IWorldspaceGetter
 {
     private readonly IWorldspaceGetter _primary;
@@ -1351,9 +1351,9 @@ internal class MergedWorldspace : IWorldspaceGetter
         => WorldspaceCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
 
-/// <summary>
-/// Merged worldspace block that combines multiple blocks with the same (BlockNumberX, BlockNumberY).
-/// </summary>
+
+
+
 internal class MergedWorldspaceBlock : IWorldspaceBlockGetter
 {
     private readonly List<IWorldspaceBlockGetter> _sourceBlocks;
@@ -1418,9 +1418,9 @@ internal class MergedWorldspaceBlock : IWorldspaceBlockGetter
         => WorldspaceBlockCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
 
-/// <summary>
-/// Merged worldspace sub-block that deduplicates cells by FormKey and merges their placed objects.
-/// </summary>
+
+
+
 internal class MergedWorldspaceSubBlock : IWorldspaceSubBlockGetter
 {
     private readonly List<IWorldspaceSubBlockGetter> _sourceSubBlocks;
@@ -1484,9 +1484,9 @@ internal class MergedWorldspaceSubBlock : IWorldspaceSubBlockGetter
         => WorldspaceSubBlockCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
 
-/// <summary>
-/// Merged cell that combines Persistent and Temporary placed objects from multiple cells with the same FormKey.
-/// </summary>
+
+
+
 internal class MergedWorldspaceCell : ICellGetter
 {
     private readonly ICellGetter _primary;

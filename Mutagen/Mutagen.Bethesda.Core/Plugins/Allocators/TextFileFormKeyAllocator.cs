@@ -9,11 +9,11 @@ using FileMode = System.IO.FileMode;
 
 namespace Mutagen.Bethesda.Plugins.Allocators;
 
-/// <summary>
-/// A FormKey allocator that utilizes a folder of text files to persist and sync.
-/// 
-/// This class is made thread safe by locking internally on the Mod object.
-/// </summary>
+
+
+
+
+
 public sealed class TextFileFormKeyAllocator : BasePersistentFormKeyAllocator
 {
     private readonly object _lock = new();
@@ -29,7 +29,7 @@ public sealed class TextFileFormKeyAllocator : BasePersistentFormKeyAllocator
         public readonly HashSet<uint> FormIDSet = new();
     }
 
-    public TextFileFormKeyAllocator(IMod mod, string saveLocation, bool preload = false, IFileSystem? fileSystem = null) 
+    public TextFileFormKeyAllocator(IMod mod, string saveLocation, bool preload = false, IFileSystem? fileSystem = null)
         : base(mod, saveLocation)
     {
         _fileSystem = fileSystem ?? IFileSystemExt.DefaultFilesystem;
@@ -76,13 +76,13 @@ public sealed class TextFileFormKeyAllocator : BasePersistentFormKeyAllocator
         return ret;
     }
 
-    /// <summary>
-    /// Returns a FormKey with the next listed ID in the Mod's header.
-    /// No checks will be done that this is truly a unique key; It is assumed the header is in a correct state.
-    ///
-    /// The Mod's header will be incremented to mark the allocated key as "used".
-    /// </summary>
-    /// <returns>The next FormKey from the Mod</returns>
+
+
+
+
+
+
+
     public override FormKey GetNextFormKey()
     {
         lock (_lock)

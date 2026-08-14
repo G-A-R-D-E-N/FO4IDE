@@ -1,10 +1,10 @@
 namespace Mutagen.Bethesda.Fallout4;
 
-/// <summary>
-/// An abstract class representing a Perk entry point effect.
-/// Implemented by: [PerkEntryPointModifyValue, PerkEntryPointAddRangeToValue, PerkEntryPointModifyActorValue, PerkEntryPointAbsoluteValue
-/// PerkEntryPointAddLeveledItem, PerkEntryPointAddActivateChoice, PerkEntryPointSelectSpell, PerkEntryPointSelectText, PerkEntryPointSetText]
-/// </summary>
+
+
+
+
+
 partial class APerkEntryPointEffect
 {
     public enum EntryType

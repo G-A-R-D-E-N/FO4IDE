@@ -19,7 +19,7 @@ public static class BooleanBinaryTranslationExt
             if (!item) return;
             using (HeaderExport.Header(writer, header, ObjectType.Subrecord))
             {
-                // Presence of marker signifies true
+
             }
         }
         catch (Exception ex)

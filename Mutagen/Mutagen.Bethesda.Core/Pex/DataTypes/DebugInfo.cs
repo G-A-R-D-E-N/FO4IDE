@@ -22,7 +22,7 @@ public partial class DebugInfo
             ret.Functions.Add(function);
         }
 
-        //F04 only
+
         if (ret._gameCategory != GameCategory.Fallout4) return ret;
 
         var propertyGroupsCount = parse.Reader.ReadUInt16();
@@ -51,7 +51,7 @@ public partial class DebugInfo
             debugFunction.Write(bw);
         }
 
-        //F04 only
+
         if (_gameCategory != GameCategory.Fallout4) return;
 
         bw.Writer.Write((ushort)PropertyGroups.Count);

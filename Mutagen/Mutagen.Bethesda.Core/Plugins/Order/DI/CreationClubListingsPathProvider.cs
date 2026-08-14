@@ -5,10 +5,10 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 
 public interface ICreationClubListingsPathProvider
 {
-    /// <summary>
-    /// Returns expected location of the creation club load order file
-    /// </summary>
-    /// <returns>Expected path to creation club load order file</returns>
+
+
+
+
     FilePath? Path { get; }
 }
 
@@ -28,7 +28,7 @@ public sealed class CreationClubListingsPathProvider : ICreationClubListingsPath
         DirectoryProvider = gameDirectoryProvider;
     }
 
-    /// <inheritdoc />
+
     public FilePath? Path
     {
         get

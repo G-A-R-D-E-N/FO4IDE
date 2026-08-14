@@ -6,18 +6,18 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 
 public interface IPluginListingsPathContext
 {
-    /// <summary>
-    /// Returns expected location of the plugin load order file.
-    /// Throws if the path cannot be determined.
-    /// </summary>
-    /// <returns>Expected path to load order file</returns>
-    /// <exception cref="InvalidOperationException">If path cannot be determined (e.g., on non-Windows platforms)</exception>
+
+
+
+
+
+
     FilePath Path { get; }
 
-    /// <summary>
-    /// Attempts to get the expected location of the plugin load order file.
-    /// </summary>
-    /// <returns>The path if it could be determined, otherwise null</returns>
+
+
+
+
     FilePath? TryGetPath();
 }
 
@@ -34,7 +34,7 @@ public sealed class PluginListingsPathContext : IPluginListingsPathContext
         _gameReleaseContext = gameReleaseContext;
     }
 
-    /// <inheritdoc />
+
     public FilePath Path
     {
         get
@@ -50,7 +50,7 @@ public sealed class PluginListingsPathContext : IPluginListingsPathContext
         }
     }
 
-    /// <inheritdoc />
+
     public FilePath? TryGetPath()
     {
         var result = _provider.Get(_gameReleaseContext.Release);

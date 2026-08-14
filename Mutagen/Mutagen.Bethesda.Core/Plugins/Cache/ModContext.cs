@@ -47,7 +47,7 @@ namespace Mutagen.Bethesda.Plugins.Cache
             Record = record;
         }
 
-        public bool TryGetParentSimpleContext<TScopedTargetGetter>([MaybeNullWhen(false)] out IModContext<TScopedTargetGetter> parent) 
+        public bool TryGetParentSimpleContext<TScopedTargetGetter>([MaybeNullWhen(false)] out IModContext<TScopedTargetGetter> parent)
         {
             var targetContext = Parent;
             while (targetContext != null)
@@ -64,17 +64,17 @@ namespace Mutagen.Bethesda.Plugins.Cache
         }
     }
 
-    /// <summary>
-    /// A pairing of a record as well as the logic and knowledge of where it came from in its parent mod.
-    /// This allows a context to insert the record into a new mod, using the knowledge to properly insert and find the appropriate
-    /// location within the new mod. <br />
-    /// <br />
-    /// This is typically only useful for deeper nested records such as Cell/PlacedObjects/Navmeshes/etc
-    /// </summary>
-    /// <typeparam name="TMod">The setter interface of the mod type to target</typeparam>
-    /// <typeparam name="TModGetter">The getter interface of the mod type to target</typeparam>
-    /// <typeparam name="TTarget">The setter interface of the contained record</typeparam>
-    /// <typeparam name="TTargetGetter">The getter interface of the contained record</typeparam>
+
+
+
+
+
+
+
+
+
+
+
     public sealed class ModContext<TMod, TModGetter, TTarget, TTargetGetter> : IModContext<TMod, TModGetter, TTarget, TTargetGetter>
         where TModGetter : IModGetter
         where TMod : TModGetter, IMod
@@ -84,30 +84,30 @@ namespace Mutagen.Bethesda.Plugins.Cache
         private readonly Func<TMod, TTargetGetter, TTarget> _getOrAddAsOverride;
         private readonly Func<TMod, TTargetGetter, string?, FormKey?, TTarget> _duplicateInto;
 
-        /// <summary>
-        /// The contained record
-        /// </summary>
+
+
+
         public TTargetGetter Record { get; }
         object IModContext.Record => Record;
 
-        /// <summary>
-        /// The source ModKey the record originated from
-        /// </summary>
+
+
+
         public ModKey ModKey { get; }
 
-        /// <summary>
-        /// Parent context, if any
-        /// </summary>
+
+
+
         public IModContext? Parent { get; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="modKey">ModKey the record is originating from</param>
-        /// <param name="record">The record to wrap</param>
-        /// <param name="getOrAddAsOverride">Logic for how to navigate a mod and insert a copy of the wrapped record</param>
-        /// <param name="duplicateInto">Logic for how to navigate a mod and insert a duplicate of the wrapped record</param>
-        /// <param name="parent">Optional parent context</param>
+
+
+
+
+
+
+
+
         public ModContext(
             ModKey modKey,
             TTargetGetter record,
@@ -127,13 +127,13 @@ namespace Mutagen.Bethesda.Plugins.Cache
             return context.Record;
         }
 
-        /// <summary>
-        /// Searches a mod for an existing override of the record wrapped by this context. <br/>
-        /// If one is found, it is returned. <br/>
-        /// Otherwise, this contexts knowledge is used to insert a copy into the target mod, which is then returned.
-        /// </summary>
-        /// <param name="mod">Mod to search/insert into</param>
-        /// <returns>An override of the wrapped record, which is sourced from the target mod</returns>
+
+
+
+
+
+
+
         public TTarget GetOrAddAsOverride(TMod mod)
         {
             try

@@ -4,16 +4,16 @@ using Path = System.IO.Path;
 
 namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-/// <summary>
-/// Provides listings added by the Creation Club systems
-/// </summary>
+
+
+
 public interface ICreationClubListingsProvider : IListingsProvider
 {
-    /// <summary>
-    /// Parses the typical plugins file to retrieve all ModKeys in expected plugin file format,
-    /// </summary>
-    /// <returns>Enumerable of ModKeys representing a load order</returns>
-    /// <exception cref="InvalidDataException">Line in plugin file is unexpected</exception>
+
+
+
+
+
     public IEnumerable<IModListingGetter> Get(bool throwIfMissing);
 }
 
@@ -51,7 +51,7 @@ public sealed class CreationClubListingsProvider : ICreationClubListingsProvider
         {
             if (throwIfMissing)
             {
-                throw new FileNotFoundException("Could not locate ccc plugin file", path.Value.Path);   
+                throw new FileNotFoundException("Could not locate ccc plugin file", path.Value.Path);
             }
             else
             {

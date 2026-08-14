@@ -7,7 +7,7 @@ partial class QuestFragmentAliasBinaryCreateTranslation
 {
     public static partial void FillBinaryPropertyCustom(MutagenFrame frame, IQuestFragmentAlias item)
     {
-        // Preparse object format
+
         var pos = frame.Position;
         frame.Position += 10;
         var format = frame.ReadUInt16();

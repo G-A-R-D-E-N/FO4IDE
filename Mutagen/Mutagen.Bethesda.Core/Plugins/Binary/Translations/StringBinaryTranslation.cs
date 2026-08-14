@@ -126,12 +126,12 @@ public sealed class StringBinaryTranslation
             if (key == 0) return new TranslatedString(reader.MetaData.TranslatedTargetLanguage, directString: null);
             if (eager)
             {
-                // Default lookup is eager
+
                 return reader.MetaData.StringsLookup.CreateString(source, key, reader.MetaData.TranslatedTargetLanguage);
             }
             else
             {
-                // This is lazy, as it's missing the followup Resolve call
+
                 return new TranslatedString(reader.MetaData.TranslatedTargetLanguage)
                 {
                     StringsLookup = reader.MetaData.StringsLookup,
@@ -177,12 +177,12 @@ public sealed class StringBinaryTranslation
             if (key == 0) return new TranslatedString(parsingBundle.TranslatedTargetLanguage, directString: null);
             if (eager)
             {
-                // Default lookup is eager
+
                 return parsingBundle.StringsLookup.CreateString(source, key, parsingBundle.TranslatedTargetLanguage);
             }
             else
             {
-                // This is lazy, as it's missing the followup Resolve call
+
                 return new TranslatedString(parsingBundle.TranslatedTargetLanguage)
                 {
                     StringsLookup = parsingBundle.StringsLookup,

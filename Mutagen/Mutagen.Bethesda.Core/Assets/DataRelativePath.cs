@@ -3,7 +3,7 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Assets;
 
-public readonly struct DataRelativePath : IEquatable<DataRelativePath>, IComparable<DataRelativePath> 
+public readonly struct DataRelativePath : IEquatable<DataRelativePath>, IComparable<DataRelativePath>
 {
     public static readonly string NullPath = string.Empty;
     public static readonly StringComparison PathComparison = StringComparison.OrdinalIgnoreCase;
@@ -15,9 +15,9 @@ public readonly struct DataRelativePath : IEquatable<DataRelativePath>, ICompara
 
     public string Path { get; }
 
-    /// <summary>
-    /// Extension of the asset
-    /// </summary>
+
+
+
     public string Extension => System.IO.Path.GetExtension(Path);
 
     public bool IsNull => Path == NullPath;
@@ -60,10 +60,10 @@ public readonly struct DataRelativePath : IEquatable<DataRelativePath>, ICompara
         Span<char> mySpan = stackalloc char[inputPath.Length];
         inputPath.CopyTo(mySpan);
         IFileSystemExt.CleanDirectorySeparators(mySpan);
-        
+
         ReadOnlySpan<char> path = mySpan;
-        
-        // Reduce all absolute paths to the path under data directory
+
+
         if (path.Contains(System.IO.Path.VolumeSeparatorChar))
         {
             var dataDirectoryIndex = path.IndexOf(DataInfix, PathComparison);
@@ -126,7 +126,7 @@ public readonly struct DataRelativePath : IEquatable<DataRelativePath>, ICompara
                 return false;
             }
         }
-        
+
         if (index < path.Length - 1)
         {
             var charAfter = path[index + DataDirectory.Length];

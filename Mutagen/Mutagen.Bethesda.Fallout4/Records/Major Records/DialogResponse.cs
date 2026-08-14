@@ -14,7 +14,7 @@ partial class DialogResponseBinaryCreateTranslation
         PreviousParse lastParsed)
     {
         var tnam = frame.ReadSubrecord(RecordTypes.TNAM);
-        // TNAM outranks TRDA
+
         item.InterruptPercentage = tnam.AsUInt16();
         return (int)DialogResponse_FieldIndex.ListenerIdleAnimation;
     }
@@ -36,7 +36,7 @@ partial class DialogResponseBinaryWriteTranslation
 partial class DialogResponseBinaryOverlay
 {
     public partial UInt16 GetInterruptPercentageCustom()
-    { 
+    {
         return _tnamOverride ?? (_InterruptPercentage_IsSet? BinaryPrimitives.ReadUInt16LittleEndian(_recordData.Slice(_InterruptPercentageLocation, 2)) : default);
     }
 
@@ -51,7 +51,7 @@ partial class DialogResponseBinaryOverlay
         PreviousParse lastParsed)
     {
         var tnam = stream.ReadSubrecord(RecordTypes.TNAM);
-        // TNAM outranks TRDA
+
         _tnamOverride = tnam.AsUInt16();
         return (int)DialogResponse_FieldIndex.ListenerIdleAnimation;
     }

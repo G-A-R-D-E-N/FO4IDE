@@ -7,24 +7,24 @@ namespace Mutagen.Bethesda;
 
 public static class DuplicateFromMixIn
 {
-    /// <summary>
-    /// Duplicates records into a given mod 'modToDuplicateInto', which originated from target ModKey 'modKeyToDuplicateFrom'.<br />
-    /// Only considers records that are currently within the target modToDuplicateInto, which are then duplicated. <br/>
-    /// Records from the modKeyToDuplicateFrom that are not within or referenced by records in the target mod are skipped.<br />
-    /// <br />
-    /// End result will be that all records that the given modToDuplicateInto contains or references that originate from the target modKeyToDuplicateFrom will be duplicated in
-    /// and replace the records they duplicated.  No references to the modKeyToDuplicateFrom will remain.
-    /// </summary>
-    /// <typeparam name="TMod"></typeparam>
-    /// <typeparam name="TModGetter"></typeparam>
-    /// <param name="modToDuplicateInto">Mod to duplicate into and originate new records from</param>
-    /// <param name="linkCache">LinkCache for lookup</param>
-    /// <param name="modKeyToDuplicateFrom">ModKey to search modToDuplicateInto for, and duplicate records that originate from modKeyToDuplicateFrom</param>
-    /// <param name="typesToInspect">
-    /// Types to iterate and look at within modToDuplicateInto for references to modKeyToDuplicateFrom<br />
-    /// Only use if you know specifically the types that can reference modKeyToDuplicateFrom, and want a little bit of speed
-    /// by not checking uninteresting records.
-    /// </param>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void DuplicateFromOnlyReferenced<TMod, TModGetter>(
         this TMod modToDuplicateInto,
         ILinkCache<TMod, TModGetter> linkCache,
@@ -41,28 +41,28 @@ public static class DuplicateFromMixIn
             typesToInspect);
     }
 
-    /// <summary>
-    /// Duplicates records into a given mod 'modToDuplicateInto', which originated from target ModKey 'modKeyToDuplicateFrom'.<br />
-    /// Only considers records that are currently within the target modToDuplicateInto, which are then duplicated. <br/>
-    /// Records from the modKeyToDuplicateFrom that are not within or referenced by records in the target mod are skipped.<br />
-    /// <br />
-    /// End result will be that all records that the given modToDuplicateInto contains or references that originate from the target modKeyToDuplicateFrom will be duplicated in
-    /// and replace the records they duplicated.  No references to the modKeyToDuplicateFrom will remain.
-    /// </summary>
-    /// <typeparam name="TMod"></typeparam>
-    /// <typeparam name="TModGetter"></typeparam>
-    /// <param name="modToDuplicateInto">Mod to duplicate into and originate new records from</param>
-    /// <param name="linkCache">LinkCache for lookup</param>
-    /// <param name="modKeyToDuplicateFrom">ModKey to search modToDuplicateInto for, and duplicate records that originate from modKeyToDuplicateFrom</param>
-    /// <param name="mapping">Out parameter to store the resulting duplication mappings that were made</param>
-    /// <param name="typesToInspect">
-    /// Types to iterate and look at within modToDuplicateInto for references to modKeyToDuplicateFrom<br />
-    /// Only use if you know specifically the types that can reference modKeyToDuplicateFrom, and want a little bit of speed
-    /// by not checking uninteresting records.
-    /// </param>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void DuplicateFromOnlyReferenced<TMod, TModGetter>(
         this TMod modToDuplicateInto,
-        ILinkCache<TMod, TModGetter> linkCache, 
+        ILinkCache<TMod, TModGetter> linkCache,
         ModKey modKeyToDuplicateFrom,
         out Dictionary<FormKey, FormKey> mapping,
         params Type[] typesToInspect)
@@ -74,7 +74,7 @@ public static class DuplicateFromMixIn
             throw new ArgumentException("Cannot pass the target mod's Key as the one to extract and self contain");
         }
 
-        // Compile list of things to duplicate
+
         HashSet<IFormLinkGetter> identifiedLinks = new();
         HashSet<FormKey> passedLinks = new();
         var implicits = Implicits.Get(modToDuplicateInto.GameRelease);
@@ -110,7 +110,7 @@ public static class DuplicateFromMixIn
             AddAllLinks(new FormLinkInformation(rec.FormKey, rec.Registration.GetterType));
         }
 
-        // Duplicate in the records
+
         mapping = new();
         foreach (var identifiedRec in identifiedLinks)
         {
@@ -122,12 +122,12 @@ public static class DuplicateFromMixIn
             var dup = rec.DuplicateIntoAsNewRecord(modToDuplicateInto, rec.Record.EditorID);
             mapping[rec.Record.FormKey] = dup.FormKey;
 
-            // ToDo
-            // Move this out of loop, and remove off a new IEnumerable<IFormLinkGetter> call
+
+
             modToDuplicateInto.Remove(identifiedRec.FormKey, identifiedRec.Type);
         }
 
-        // Remap links
+
         modToDuplicateInto.RemapLinks(mapping);
     }
 }

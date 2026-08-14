@@ -12,17 +12,17 @@ using Mutagen.Bethesda.Strings;
 
 namespace Mutagen.Bethesda;
 
-/// <summary>
-/// Extension class to mix in convenience methods to header structs
-/// </summary>
+
+
+
 public static class HeaderExt
 {
-    /// <summary>
-    /// Asserts that a subrecord's content is exactly a certain length
-    /// </summary>
-    /// <param name="frame">Frame to check</param>
-    /// <param name="len">Length to assert on the content</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length does not match parameter</exception>
+
+
+
+
+
+
     public static void AssertLength(this SubrecordFrame frame, int len)
     {
         if (frame.Content.Length != len)
@@ -32,232 +32,232 @@ public static class HeaderExt
     }
 
     #region Primitive Extraction
-    /// <summary>
-    /// Interprets a subrecord's content as a byte.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 1</exception>
-    /// <returns>Subrecord's content as a byte</returns>
+
+
+
+
+
+
     public static byte AsUInt8(this SubrecordFrame frame)
     {
         frame.AssertLength(1);
         return frame.Content[0];
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a sbyte.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 1</exception>
-    /// <returns>Subrecord's content as a sbyte</returns>
+
+
+
+
+
+
     public static sbyte AsInt8(this SubrecordFrame frame)
     {
         frame.AssertLength(1);
         return (sbyte)frame.Content[0];
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a ushort.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 2</exception>
-    /// <returns>Subrecord's content as a ushort</returns>
+
+
+
+
+
+
     public static ushort AsUInt16(this SubrecordFrame frame)
     {
         frame.AssertLength(2);
         return BinaryPrimitives.ReadUInt16LittleEndian(frame.Content);
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a short.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 2</exception>
-    /// <returns>Subrecord's content as a short</returns>
+
+
+
+
+
+
     public static short AsInt16(this SubrecordFrame frame)
     {
         frame.AssertLength(2);
         return BinaryPrimitives.ReadInt16LittleEndian(frame.Content);
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a uint.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 4</exception>
-    /// <returns>Subrecord's content as a uint</returns>
+
+
+
+
+
+
     public static uint AsUInt32(this SubrecordFrame frame)
     {
         frame.AssertLength(4);
         return BinaryPrimitives.ReadUInt32LittleEndian(frame.Content);
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a int.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 4</exception>
-    /// <returns>Subrecord's content as a int</returns>
+
+
+
+
+
+
     public static int AsInt32(this SubrecordFrame frame)
     {
         frame.AssertLength(4);
         return BinaryPrimitives.ReadInt32LittleEndian(frame.Content);
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a ulong.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 8</exception>
-    /// <returns>Subrecord's content as a ulong</returns>
+
+
+
+
+
+
     public static ulong AsUInt64(this SubrecordFrame frame)
     {
         frame.AssertLength(8);
         return BinaryPrimitives.ReadUInt64LittleEndian(frame.Content);
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a long.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 8</exception>
-    /// <returns>Subrecord's content as a long</returns>
+
+
+
+
+
+
     public static long AsInt64(this SubrecordFrame frame)
     {
         frame.AssertLength(8);
         return BinaryPrimitives.ReadInt64LittleEndian(frame.Content);
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a float.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 4</exception>
-    /// <returns>Subrecord's content as a float</returns>
+
+
+
+
+
+
     public static float AsFloat(this SubrecordFrame frame)
     {
         frame.AssertLength(4);
         return frame.Content.Float();
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a double.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 8</exception>
-    /// <returns>Subrecord's content as a double</returns>
+
+
+
+
+
+
     public static double AsDouble(this SubrecordFrame frame)
     {
         frame.AssertLength(8);
         return frame.Content.Double();
     }
 
-    /// <summary>
-    /// Interprets a subrecord's content as a string.
-    /// </summary>
-    /// <param name="frame">Frame to read from</param>
-    /// <param name="encoding">Encoding to use</param>
-    /// <returns>Subrecord's content as a string, null trimmed if applicable</returns>
+
+
+
+
+
+
     public static string AsString(this SubrecordFrame frame, IMutagenEncoding encoding)
     {
         return BinaryStringUtility.ProcessWholeToZString(frame.Content, encoding);
     }
 
     #region Pin Forwarding
-    /// <summary>
-    /// Interprets a subrecord's content as a byte.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 1</exception>
-    /// <returns>Subrecord's content as a byte</returns>
+
+
+
+
+
+
     public static byte AsUInt8(this SubrecordPinFrame pin) => pin.Frame.AsUInt8();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a sbyte.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 1</exception>
-    /// <returns>Subrecord's content as a sbyte</returns>
+
+
+
+
+
+
     public static sbyte AsInt8(this SubrecordPinFrame pin) => pin.Frame.AsInt8();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a ushort.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 2</exception>
-    /// <returns>Subrecord's content as a ushort</returns>
+
+
+
+
+
+
     public static ushort AsUInt16(this SubrecordPinFrame pin) => pin.Frame.AsUInt16();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a short.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 2</exception>
-    /// <returns>Subrecord's content as a short</returns>
+
+
+
+
+
+
     public static short AsInt16(this SubrecordPinFrame pin) => pin.Frame.AsInt16();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a uint.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 4</exception>
-    /// <returns>Subrecord's content as a uint</returns>
+
+
+
+
+
+
     public static uint AsUInt32(this SubrecordPinFrame pin) => pin.Frame.AsUInt32();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a int.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 4</exception>
-    /// <returns>Subrecord's content as a int</returns>
+
+
+
+
+
+
     public static int AsInt32(this SubrecordPinFrame pin) => pin.Frame.AsInt32();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a ulong.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 8</exception>
-    /// <returns>Subrecord's content as a ulong</returns>
+
+
+
+
+
+
     public static ulong AsUInt64(this SubrecordPinFrame pin) => pin.Frame.AsUInt64();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a long.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 8</exception>
-    /// <returns>Subrecord's content as a long</returns>
+
+
+
+
+
+
     public static long AsInt64(this SubrecordPinFrame pin) => pin.Frame.AsInt64();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a float.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 4</exception>
-    /// <returns>Subrecord's content as a float</returns>
+
+
+
+
+
+
     public static float AsFloat(this SubrecordPinFrame pin) => pin.Frame.AsFloat();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a double.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 8</exception>
-    /// <returns>Subrecord's content as a double</returns>
+
+
+
+
+
+
     public static double AsDouble(this SubrecordPinFrame pin) => pin.Frame.AsDouble();
 
-    /// <summary>
-    /// Interprets a subrecord's content as a string.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <param name="encoding">Encoding to use</param>
-    /// <returns>Subrecord's content as a string, null trimmed if applicable</returns>
+
+
+
+
+
+
     public static string AsString(this SubrecordPinFrame pin, IMutagenEncoding encoding) => pin.Frame.AsString(encoding);
 
-    /// <summary>
-    /// Interprets a subrecord's content as a FormID.
-    /// </summary>
-    /// <param name="pin">Frame to read from</param>
-    /// <exception cref="System.ArgumentException">Thrown if frame's content length is not exactly 4</exception>
-    /// <returns>Subrecord's content as a FormID</returns>
+
+
+
+
+
+
     public static FormID AsFormID(this SubrecordPinFrame pin)
     {
         return new FormID(pin.AsUInt32());
@@ -266,13 +266,13 @@ public static class HeaderExt
     #endregion
 
     #region Find
-    /// <summary>
-    /// Iterates a MajorRecordFrame's contents and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="header">SubrecordHeader if found</param>
-    /// <returns>True if matching subrecord is found</returns>
+
+
+
+
+
+
+
     public static bool TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, out SubrecordPinHeader header)
     {
         var find = RecordSpanExtensions.TryFindSubrecord(majorFrame.Content, majorFrame.Meta, type);
@@ -285,12 +285,12 @@ public static class HeaderExt
         return true;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's contents and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <returns>SubrecordHeader if found, otherwise null</returns>
+
+
+
+
+
+
     public static SubrecordPinHeader? TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (majorFrame.TryFindSubrecordHeader(type, out var header))
@@ -301,14 +301,14 @@ public static class HeaderExt
         return default;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="offset">Offset within the Major Record's contents to start searching</param>
-    /// <param name="header">SubrecordHeader if found</param>
-    /// <returns>True if matching subrecord is found</returns>
+
+
+
+
+
+
+
+
     public static bool TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, int offset, out SubrecordPinHeader header)
     {
         var find = RecordSpanExtensions.TryFindSubrecord(majorFrame.Content.Slice(offset - majorFrame.HeaderLength), majorFrame.Meta, type);
@@ -321,13 +321,13 @@ public static class HeaderExt
         return true;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="offset">Offset within the Major Record's contents to start searching</param>
-    /// <returns>SubrecordHeader if found, otherwise null</returns>
+
+
+
+
+
+
+
     public static SubrecordPinHeader? TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
         if (TryFindSubrecordHeader(majorFrame, type, offset, out var header))
@@ -338,13 +338,13 @@ public static class HeaderExt
         return default;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="pin">SubrecordPinFrame if found</param>
-    /// <returns>True if matching subrecord is found</returns>
+
+
+
+
+
+
+
     public static bool TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type, out SubrecordPinFrame pin)
     {
         var find = RecordSpanExtensions.TryFindSubrecord(majorFrame.Content, majorFrame.Meta, type);
@@ -357,12 +357,12 @@ public static class HeaderExt
         return true;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <returns>SubrecordHeader if found, otherwise null</returns>
+
+
+
+
+
+
     public static SubrecordPinFrame? TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (TryFindSubrecord(majorFrame, type, out var frame))
@@ -373,12 +373,12 @@ public static class HeaderExt
         return default;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <returns>SubrecordHeader if found, otherwise null</returns>
+
+
+
+
+
+
     public static SubrecordPinFrame? TryFindSubrecord(this MajorRecordFrame majorFrame, params RecordType[] type)
     {
         var find = RecordSpanExtensions.TryFindSubrecord(majorFrame.Content, majorFrame.Meta, type);
@@ -389,13 +389,13 @@ public static class HeaderExt
         return find.Value.Frame.Pin(find.Value.Location + majorFrame.HeaderLength);
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="afterSubrecord">Subrecord to start searching after</param>
-    /// <param name="type">Type to search for</param>
-    /// <returns>SubrecordHeader if found, otherwise null</returns>
+
+
+
+
+
+
+
     public static SubrecordPinFrame? TryFindSubrecordAfter(this MajorRecordFrame majorFrame, SubrecordPinFrame afterSubrecord, params RecordType[] type)
     {
         var spanToSearch = majorFrame.HeaderAndContentData.Slice(afterSubrecord.EndLocation);
@@ -407,14 +407,14 @@ public static class HeaderExt
         return find.Value.Frame.Pin(find.Value.Location + afterSubrecord.EndLocation);
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="offset">Offset within the Major Record's contents to start searching</param>
-    /// <param name="pin">SubrecordPinFrame if found</param>
-    /// <returns>True if matching subrecord is found</returns>
+
+
+
+
+
+
+
+
     public static bool TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type, int offset, out SubrecordPinFrame pin)
     {
         var find = RecordSpanExtensions.TryFindSubrecord(majorFrame.Content.Slice(offset - majorFrame.HeaderLength), majorFrame.Meta, type);
@@ -427,13 +427,13 @@ public static class HeaderExt
         return true;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="offset">Offset within the Major Record's contents to start searching</param>
-    /// <returns>SubrecordHeader if found, otherwise null</returns>
+
+
+
+
+
+
+
     public static SubrecordPinFrame? TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
         if (TryFindSubrecord(majorFrame, type, offset, out var frame))
@@ -444,13 +444,13 @@ public static class HeaderExt
         return default;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <exception cref="System.ArgumentException">Thrown if target type cannot be found.</exception>
-    /// <returns>First encountered SubrecordHeader with the given type</returns>
+
+
+
+
+
+
+
     public static SubrecordPinHeader FindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (!TryFindSubrecordHeader(majorFrame, type, out var header))
@@ -460,14 +460,14 @@ public static class HeaderExt
         return header;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="offset">Offset within the Major Record's contents to start searching</param>
-    /// <exception cref="System.ArgumentException">Thrown if target type cannot be found.</exception>
-    /// <returns>First encountered SubrecordHeader with the given type</returns>
+
+
+
+
+
+
+
+
     public static SubrecordPinHeader FindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
         if (!TryFindSubrecordHeader(majorFrame, type, offset, out var header))
@@ -477,13 +477,13 @@ public static class HeaderExt
         return header;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <exception cref="System.ArgumentException">Thrown if target type cannot be found.</exception>
-    /// <returns>First encountered SubrecordPin with the given type</returns>
+
+
+
+
+
+
+
     public static SubrecordPinFrame FindSubrecord(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (!TryFindSubrecord(majorFrame, type, out var pin))
@@ -493,14 +493,14 @@ public static class HeaderExt
         return pin;
     }
 
-    /// <summary>
-    /// Iterates a MajorRecordFrame's subrecords and locates the first occurrence of the desired type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="offset">Offset within the Major Record's contents to start searching</param>
-    /// <exception cref="System.ArgumentException">Thrown if target type cannot be found.</exception>
-    /// <returns>First encountered SubrecordPin with the given type</returns>
+
+
+
+
+
+
+
+
     public static SubrecordPinFrame FindSubrecord(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
         if (!TryFindSubrecord(majorFrame, type, offset, out var pin))
@@ -512,16 +512,16 @@ public static class HeaderExt
     #endregion
 
     #region Iterate
-    /// <summary>
-    /// Finds and iterates subrecords of a given type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="onlyFirstSet">
-    /// If true, iteration will stop after finding the first non-applicable record after some applicable ones.<br/>
-    /// If false, records will continue to be searched in their entirety for all matching subrecords.
-    /// </param>
-    /// <returns>Encountered SubrecordFrames with the given type</returns>
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<SubrecordPinFrame> FindEnumerateSubrecords(this MajorRecordFrame majorFrame, RecordType type, bool onlyFirstSet = false)
     {
         bool encountered = false;
@@ -539,17 +539,17 @@ public static class HeaderExt
         }
     }
 
-    /// <summary>
-    /// Finds and iterates subrecords of a given type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="type">Type to search for</param>
-    /// <param name="afterSubrecord">Subrecord to start searching after</param>
-    /// <param name="onlyFirstSet">
-    /// If true, iteration will stop after finding the first non-applicable record after some applicable ones.<br/>
-    /// If false, records will continue to be searched in their entirety for all matching subrecords.
-    /// </param>
-    /// <returns>Encountered SubrecordFrames with the given type</returns>
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<SubrecordPinFrame> FindEnumerateSubrecordsAfter(this MajorRecordFrame majorFrame, RecordType type, SubrecordPinFrame afterSubrecord, bool onlyFirstSet = false)
     {
         bool encountered = false;
@@ -568,12 +568,12 @@ public static class HeaderExt
         }
     }
 
-    /// <summary>
-    /// Finds and iterates subrecords of a given type
-    /// </summary>
-    /// <param name="majorFrame">Frame to read from</param>
-    /// <param name="recordTypes">Types to search for</param>
-    /// <returns>Encountered SubrecordFrames with the given types</returns>
+
+
+
+
+
+
     public static IEnumerable<SubrecordPinFrame> FindEnumerateSubrecords(this MajorRecordFrame majorFrame, IReadOnlyCollection<RecordType> recordTypes)
     {
         foreach (var subrecord in majorFrame)
@@ -585,22 +585,22 @@ public static class HeaderExt
         }
     }
 
-    /// <summary>
-    /// Enumerates locations of the contained subrecords, while considering some specified RecordTypes as special length overflow subrecords.<br/>
-    /// These length overflow subrecords will be skipped, and simply used to parse the next subrecord properly.<br />
-    /// Locations are relative to the RecordType of the MajorRecordFrame.
-    /// </summary>
-    /// <param name="majorFrame">MajorRecordFrame to iterate</param>
+
+
+
+
+
+
     public static IEnumerable<SubrecordPinFrame> EnumerateSubrecords(this MajorRecordFrame majorFrame)
     {
         return RecordSpanExtensions.EnumerateSubrecords(majorFrame.HeaderAndContentData, majorFrame.Meta, majorFrame.HeaderLength);
     }
 
-    /// <summary>
-    /// Enumerates locations of the contained subrecords.<br/>
-    /// Locations are relative to the RecordType of the ModHeaderFrame.
-    /// <param name="modHeader">ModHeaderFrame to iterate</param>
-    /// </summary>
+
+
+
+
+
     public static IEnumerable<SubrecordPinFrame> EnumerateSubrecords(this ModHeaderFrame modHeader)
     {
         return RecordSpanExtensions.EnumerateSubrecords(modHeader.HeaderAndContentData, modHeader.Meta, modHeader.HeaderLength);
@@ -628,7 +628,7 @@ public static class HeaderExt
                 return MasterReferenceBinaryOverlay.MasterReferenceFactory(
                         mastPin.HeaderAndContentData,
                         package)
-                    // In case not read safe
+
                     .DeepCopy();
             });
     }
@@ -638,11 +638,11 @@ public static class HeaderExt
         return MasterReferenceCollection.FromModHeader(modKey, modHeader);
     }
 
-    // Not an extension method, as we don't want it to show up as intellisense, as it's already part of a GroupFrame's enumerator.
-    /// <summary>
-    /// Enumerates locations of the contained subrecords.<br/>
-    /// Locations are relative to the RecordType of the MajorRecordFrame.
-    /// </summary>
+
+
+
+
+
     public static IEnumerable<VariablePinHeader> EnumerateRecords(GroupFrame group)
     {
         int loc = group.HeaderLength;

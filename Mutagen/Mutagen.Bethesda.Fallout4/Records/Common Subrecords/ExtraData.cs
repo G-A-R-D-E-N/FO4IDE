@@ -42,7 +42,7 @@ partial class ExtraDataBinaryCreateTranslation
         }
         catch (Mutagen.Bethesda.Plugins.Exceptions.LinkCacheMissingException)
         {
-            // Cannot determine record type without a LinkCache, fall through to UntypedOwner
+
         }
 
         return new UntypedOwner()
@@ -88,6 +88,6 @@ partial class ExtraDataBinaryOverlay
     public partial IOwnerTargetGetter GetOwnerCustom(int location);
     public IOwnerTargetGetter Owner => GetOwnerCustom(location: 0x0);
     #endregion
-    
+
     public partial IOwnerTargetGetter GetOwnerCustom(int location) => ExtraDataBinaryCreateTranslation.GetBinaryOwner(_structData.Slice(location), _package.MetaData.RecordInfoCache!, _package.MetaData.MasterReferences);
 }

@@ -29,8 +29,8 @@ class BsaFileNameBlock
                         names[i] = data.Slice(0, index + 1);
                         data = data.Slice(index + 1);
                     }
-                    // Data doesn't seem to need to be fully consumed.
-                    // Official BSAs have overflow of zeros
+
+
                     return names;
                 }
                 catch (Exception e)

@@ -33,7 +33,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
             return new MemoryPair(structData: ReadOnlyMemorySlice<byte>.Empty, recordData: mem);
         }
     }
-    
+
     public delegate ParseResult RecordTypeFillWrapper(
         OverlayStream stream,
         int finalPos,
@@ -181,7 +181,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
             var parsed = fill(
                 stream: subStream,
                 finalPos: subStream.Length,
-                offset: 0, // unused 
+                offset: 0,
                 recordParseCount: recordParseCount,
                 type: groupMeta.RecordType,
                 lastParsed: lastParsed,
@@ -341,7 +341,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
         RecordHeaderConstants constants,
         bool skipHeader,
         TypedParseParams translationParams = default,
-        // Not needed, just for generation simplification
+
         bool triggersAlwaysAreNewRecords = false)
     {
         translationParams = translationParams.ShortCircuit();
@@ -476,7 +476,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
         }
         return ret;
     }
-        
+
     private static IReadOnlyList<int> ParseRecordLocationsInternal(
         OverlayStream stream,
         uint? count,
@@ -505,7 +505,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
             {
                 if (trigger.AllRecordTypes.Contains(recType))
                 {
-                    // mark as a new record location
+
                     if (trigger.AllAreTriggers
                         || trigger.TriggeringRecordTypes.Contains(recType))
                     {
@@ -532,8 +532,8 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                 }
                 else
                 {
-                    // Unexpected count
-                    // Analyzer should warn about this, rather than Mutagen breaking
+
+
                     break;
                 }
             }
@@ -542,7 +542,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                 var index = trigger.AllRecordTypes.IndexOf(recType);
                 if (index != -1)
                 {
-                    // If new record isn't before one we've already parsed, just continue
+
                     if (!triggersAlwaysAreNewRecords
                         && !lastWasEnder
                         && lastParsed != null
@@ -553,7 +553,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                         continue;
                     }
 
-                    // Otherwise mark as a new record location
+
                     if (trigger.AllAreTriggers
                         || trigger.TriggeringRecordTypes.Contains(recType))
                     {
@@ -572,8 +572,8 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                     }
                     else if (lastWasEnder)
                     {
-                        // Last was an ender record, and next record isn't a trigger.
-                        // Must be unrelated
+
+
                         break;
                     }
                     else
@@ -590,15 +590,15 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                 }
                 else
                 {
-                    // Unexpected count
-                    // Analyzer should warn about this, rather than Mutagen breaking
+
+
                     break;
                 }
             }
         }
         return ret;
     }
-        
+
     public static IReadOnlyList<int> ParseRecordLocationsEnder(
         OverlayStream stream,
         IReadOnlyRecordCollection startTriggers,
@@ -653,18 +653,18 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
     }
 
 
-    /// <summary>
-    /// Finds locations of a number of records given by count that match a set of record types.
-    /// A new location is marked each time a record type that has already been encountered is seen
-    /// </summary>
-    /// <param name="stream">Stream to read and progress</param>
-    /// <param name="count">Number of expected records</param>
-    /// <param name="trigger">Set of record types expected within one record</param>
-    /// <param name="constants">Metadata for reference</param>
-    /// <param name="skipHeader">Whether to skip the header in the return location values</param>
-    /// <param name="triggersAlwaysAreNewRecords">If false, RecordTypes that are triggers but not before the last parsed
-    /// RecordType in the order type will be considered part of the last section</param>
-    /// <returns>Array of located positions relative to the stream's position at the start</returns>
+
+
+
+
+
+
+
+
+
+
+
+
     public static IReadOnlyList<int> ParseRecordLocationsByCount(
         OverlayStream stream,
         uint count,
@@ -678,15 +678,15 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
         return ParseRecordLocationsInternal(stream, count, trigger, constants, skipHeader, triggersAlwaysAreNewRecords, translationParams, endMarker);
     }
 
-    /// <summary>
-    /// Finds locations of a number of records given by count that match a set of record types.
-    /// A new location is marked each time a record type that has already been encountered is seen
-    /// </summary>
-    /// <param name="stream">Stream to read and progress</param>
-    /// <param name="trigger">Set of record types expected within one record</param>
-    /// <param name="constants">Metadata for reference</param>
-    /// <param name="skipHeader">Whether to skip the header in the return location values</param>
-    /// <returns>Array of located positions relative to the stream's position at the start</returns>
+
+
+
+
+
+
+
+
+
     public static IReadOnlyList<int> ParseRecordLocations(
         OverlayStream stream,
         RecordTriggerSpecs trigger,
@@ -804,12 +804,12 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
             var recType = subMeta.RecordType;
             if (itemStartMarker != recType) break;
             stream.Position += stream.MetaData.Constants.SubConstants.HeaderLength;
-            
+
             subMeta = stream.GetSubrecordHeader();
             recType = subMeta.RecordType;
             var minimumFinalPos = stream.Position + subMeta.TotalLength;
             ret.Add(factory(stream, recType, _package, translationParams));
-            
+
             stream.TryReadSubrecord(itemEndMarker, out _);
             if (stream.Position < minimumFinalPos)
             {
@@ -950,7 +950,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
 
     public static OverlayStream ExtractSubrecordStructMemory(
         OverlayStream stream,
-        GameConstants meta, 
+        GameConstants meta,
         TypedParseParams translationParams,
         int length,
         out MemoryPair memoryPair,
@@ -964,7 +964,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
 
     public static OverlayStream ExtractSubrecordStructMemory(
         OverlayStream stream,
-        GameConstants meta, 
+        GameConstants meta,
         TypedParseParams translationParams,
         out MemoryPair memoryPair,
         out int offset,
@@ -979,7 +979,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
 
     public static OverlayStream ExtractTypelessSubrecordStructMemory(
         OverlayStream stream,
-        GameConstants meta, 
+        GameConstants meta,
         TypedParseParams translationParams,
         out MemoryPair memoryPair,
         out int offset,
@@ -993,7 +993,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
 
     public static OverlayStream ExtractTypelessSubrecordStructMemory(
         OverlayStream stream,
-        GameConstants meta, 
+        GameConstants meta,
         TypedParseParams translationParams,
         int length,
         out MemoryPair memoryPair,
@@ -1006,7 +1006,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
 
     public static OverlayStream ExtractTypelessSubrecordRecordMemory(
         OverlayStream stream,
-        GameConstants meta, 
+        GameConstants meta,
         TypedParseParams translationParams,
         out MemoryPair memoryPair,
         out int offset,
@@ -1019,13 +1019,13 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
     }
 
     public static OverlayStream ExtractRecordMemory(
-        OverlayStream stream, 
-        GameConstants meta, 
+        OverlayStream stream,
+        GameConstants meta,
         out MemoryPair memoryPair,
         out int offset,
         out int finalPos)
     {
-        // stream = Decompression.DecompressStream(stream);
+
         memoryPair = ExtractRecordMemory(stream.RemainingMemory, meta);
         stream.Position += meta.MajorConstants.HeaderLength;
         offset = meta.MajorConstants.HeaderLength;
@@ -1035,7 +1035,7 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
 
     public static OverlayStream ExtractGroupMemory(
         OverlayStream stream,
-        GameConstants meta, 
+        GameConstants meta,
         out MemoryPair memoryPair,
         out int offset,
         out int finalPos)

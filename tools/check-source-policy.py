@@ -7,7 +7,6 @@ import sys
 
 EXCLUDED_PARTS = {
     ".git",
-    "Mutagen",
     "TES5Edit-dev-4.1.6",
     "bin",
     "dist",

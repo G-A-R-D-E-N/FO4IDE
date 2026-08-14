@@ -8,22 +8,22 @@ using Mutagen.Bethesda.Plugins.Cache;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-/// <summary> 
-/// An abstract base class for Mods to inherit from for some common functionality 
-/// </summary> 
+
+
+
 [DebuggerDisplay("{GameRelease} {ModKey.ToString()}")]
 public abstract class AMod : IMod
 {
     private ModKey _modKey;
-    
+
     public ModKey ModKey => _modKey;
 
     internal void SetModKey(ModKey modKey)
     {
         _modKey = modKey;
     }
-    
-    /// <inheritdoc />
+
+
     public abstract GameRelease GameRelease { get; }
 
     private IFormKeyAllocator _allocator;
@@ -34,17 +34,17 @@ public abstract class AMod : IMod
         _allocator = new SimpleFormKeyAllocator(this);
     }
 
-    /// <summary> 
-    /// Constructor 
-    /// </summary> 
-    /// <param name="modKey">Key to assign the mod</param> 
+
+
+
+
     public AMod(ModKey modKey)
     {
         _modKey = modKey;
         _allocator = new SimpleFormKeyAllocator(this);
     }
 
-    #region NonImplemented IMod 
+    #region NonImplemented IMod
     IEnumerable<IFormLinkGetter> IFormLinkContainerGetter.EnumerateFormLinks(bool iterateNestedRecords) => throw new NotImplementedException();
     void IFormLinkContainer.RemapLinks(IReadOnlyDictionary<FormKey, FormKey> mapping) => throw new NotImplementedException();
     IReadOnlyList<IMasterReferenceGetter> IModGetter.MasterReferences => throw new NotImplementedException();
@@ -100,20 +100,20 @@ public abstract class AMod : IMod
 
     public MasterStyle MasterStyle => this.GetMasterStyle();
 
-    /// <inheritdoc />
+
     public FormKey GetNextFormKey()
     {
         return _allocator.GetNextFormKey();
     }
 
-    /// <inheritdoc />
+
     public FormKey GetNextFormKey(string? editorID)
     {
         if (editorID == null) return GetNextFormKey();
         return _allocator.GetNextFormKey(editorID);
     }
 
-    /// <inheritdoc />
+
     public TAlloc SetAllocator<TAlloc>(TAlloc allocator)
         where TAlloc : IFormKeyAllocator
     {
@@ -121,6 +121,6 @@ public abstract class AMod : IMod
         return allocator;
     }
 
-    /// <inheritdoc />
+
     public abstract uint GetDefaultInitialNextFormID(bool? forceUseLowerFormIDRanges = false);
 }

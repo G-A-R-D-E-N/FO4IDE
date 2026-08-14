@@ -11,31 +11,31 @@ namespace Mutagen.Bethesda.Plugins.Records;
 public partial interface IMajorRecord : IFormLinkContainer, IAssetLinkContainer, IMajorRecordQueryable
 {
     new FormKey FormKey { get; }
-        
-    /// <summary>
-    /// Marker of whether the content is compressed
-    /// </summary>
+
+
+
+
     new bool IsCompressed { get; set; }
 
-    /// <summary>
-    /// Marker of whether the content is deleted
-    /// </summary>
+
+
+
     new bool IsDeleted { get; set; }
 
-    /// <summary>
-    /// Disables the record by setting the RecordFlag to Initially Disabled.
-    /// <returns>Returns true if the disable was successful.</returns>
-    /// </summary>
+
+
+
+
     bool Disable();
 }
-    
+
 public partial interface IMajorRecordInternal
 {
     new FormKey FormKey { get; set; }
 }
 
-public partial interface IMajorRecordGetter : 
-    IFormVersionGetter, 
+public partial interface IMajorRecordGetter :
+    IFormVersionGetter,
     IMajorRecordIdentifierGetter,
     IFormLinkContainerGetter,
     IAssetLinkContainerGetter,
@@ -43,19 +43,19 @@ public partial interface IMajorRecordGetter :
     IEquatable<IFormLinkGetter>,
     IMajorRecordQueryableGetter
 {
-    /// <summary>
-    /// Marker of whether the content is compressed
-    /// </summary>
+
+
+
     bool IsCompressed { get; }
 
-    /// <summary>
-    /// Marker of whether the content is deleted
-    /// </summary>
+
+
+
     bool IsDeleted { get; }
 
-    /// <summary>
-    /// Form Version of the record
-    /// </summary>
+
+
+
     new ushort? FormVersion { get; }
 }
 
@@ -68,9 +68,9 @@ public partial class MajorRecord : IFormLinkContainer
     String? IMajorRecordGetter.EditorID => EditorID;
     #endregion
 
-    /// <summary>
-    /// A convenience property to print "EditorID - FormKey"
-    /// </summary>
+
+
+
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public string TitleString => $"{EditorID} - {FormKey}";
 
@@ -132,14 +132,14 @@ public static class IMajorRecordGetterExt
     {
         return FormLinkInformation.Factory(majorRec);
     }
-    
+
     public static bool IsInjected(this IMajorRecordGetter majorRec, ILinkCache linkCache)
     {
         return !linkCache.TryResolveSimpleContext(majorRec, out var context, target: ResolveTarget.Origin)
             || context.ModKey != majorRec.FormKey.ModKey;
     }
 }
-    
+
 [DebuggerDisplay("{GetType().Name} {this.EditorID?.ToString()} {this.FormKey.ToString()}")]
 internal abstract partial class MajorRecordBinaryOverlay : IMajorRecordGetter
 {

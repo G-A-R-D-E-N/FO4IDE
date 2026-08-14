@@ -10,13 +10,13 @@ namespace Mutagen.Bethesda;
 
 public static class GetOrAddAsOverrideMixIns
 {
-    /// <summary>
-    /// Takes in an existing record definition, and either returns the existing override definition
-    /// from the Group, or copies the given record, inserts it, and then returns it as an override.
-    /// </summary>
-    /// <param name="group">Group to retrieve and/or insert from</param>
-    /// <param name="major">Major record to query and potentially copy</param>
-    /// <returns>Existing override record, or a copy of the given record that has already been inserted into the group</returns>
+
+
+
+
+
+
+
     public static TMajor GetOrAddAsOverride<TMajor, TMajorGetter>(this IGroup<TMajor> group, TMajorGetter major)
         where TMajor : IMajorRecordInternal, TMajorGetter
         where TMajorGetter : IMajorRecordGetter
@@ -44,15 +44,15 @@ public static class GetOrAddAsOverrideMixIns
         }
     }
 
-    /// <summary>
-    /// Takes in a FormLink, and either returns the existing override definition
-    /// from the Group, or attempts to link and copy the given record, inserting it, and then returning it as an override.
-    /// </summary>
-    /// <param name="group">Group to retrieve and/or insert from</param>
-    /// <param name="link">Link to query and add</param>
-    /// <param name="cache">Cache to query link against</param>
-    /// <param name="rec">Retrieved record if successful</param>
-    /// <returns>True if a record was retrieved</returns>
+
+
+
+
+
+
+
+
+
     public static bool TryGetOrAddAsOverride<TMajor, TMajorGetter>(this IGroup<TMajor> group, IFormLinkGetter<TMajorGetter> link, ILinkCache cache, [MaybeNullWhen(false)] out TMajor rec)
         where TMajor : class, IMajorRecordInternal, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
@@ -78,14 +78,14 @@ public static class GetOrAddAsOverrideMixIns
         }
     }
 
-    /// <summary>
-    /// Takes in a FormLink, and either returns the existing override definition
-    /// from the Group, or attempts to link and copy the given record, inserting it, and then returning it as an override.
-    /// </summary>
-    /// <param name="group">Group to retrieve and/or insert from</param>
-    /// <param name="link">Link to query and add</param>
-    /// <param name="cache">Cache to query link against</param>
-    /// <returns>Retrieved record if successful</returns>
+
+
+
+
+
+
+
+
     public static TMajor GetOrAddAsOverride<TMajor, TMajorGetter>(this IGroup<TMajor> group, IFormLinkGetter<TMajorGetter> link, ILinkCache cache)
         where TMajor : class, IMajorRecordInternal, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
@@ -97,15 +97,15 @@ public static class GetOrAddAsOverrideMixIns
         throw new MissingRecordException(link.FormKey, link.Type);
     }
 
-    /// <summary>
-    /// Takes in an existing record definition, and either returns the existing override definition
-    /// from the Group, or copies the given record, inserts it, and then returns it as an override.
-    /// Returns false if the record type does not match the group's contained type.
-    /// </summary>
-    /// <param name="group">Group to retrieve and/or insert from</param>
-    /// <param name="major">Major record to query and potentially copy</param>
-    /// <param name="result">The existing or newly created override record</param>
-    /// <returns>True if successful, false if the record type does not match the group</returns>
+
+
+
+
+
+
+
+
+
     public static bool TryGetOrAddAsOverrideUntyped(
         this IGroup group,
         IMajorRecordGetter major,
@@ -113,14 +113,14 @@ public static class GetOrAddAsOverrideMixIns
     {
         try
         {
-            // Check if the record type is assignable to the group's contained type
+
             if (!group.ContainedRecordType.IsAssignableFrom(major.GetType()))
             {
                 result = null;
                 return false;
             }
 
-            // Check if the record already exists in the group
+
             if (group.RecordCache.TryGetValue(major.FormKey, out var existingMajor))
             {
                 if (existingMajor is IMajorRecord existingRecord)
@@ -132,10 +132,10 @@ public static class GetOrAddAsOverrideMixIns
                 return false;
             }
 
-            // Get the override mask for this record type
+
             var mask = OverrideMaskRegistrations.Get(major.GetType());
 
-            // Create a deep copy with the override mask
+
             var copy = major.DeepCopy(mask as MajorRecord.TranslationMask);
             if (copy is not IMajorRecord rhs)
             {
@@ -143,7 +143,7 @@ public static class GetOrAddAsOverrideMixIns
                 return false;
             }
 
-            // Add the copy to the group
+
             group.SetUntyped(rhs);
             result = rhs;
             return true;

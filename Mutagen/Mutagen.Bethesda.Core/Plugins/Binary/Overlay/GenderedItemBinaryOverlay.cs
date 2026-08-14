@@ -240,12 +240,12 @@ internal static class GenderedItemBinaryOverlay
         for (int i = 0; i < 2; i++)
         {
             if (stream.Complete) break;
-            // Skip marker
+
             var markerFrame = stream.GetSubrecord();
             if (markerFrame.RecordType != marker) break;
             stream.Position += markerFrame.TotalLength;
 
-            // Read and skip gender marker
+
             var genderMarkerFrame = stream.GetSubrecord();
             var recType = genderMarkerFrame.RecordType;
             if (recType == male)

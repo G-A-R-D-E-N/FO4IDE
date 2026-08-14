@@ -7,45 +7,45 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 
 public interface ITimestampAligner
 {
-    /// <summary>
-    /// Returns whether given game needs timestamp alignment for its load order
-    /// </summary>
-    /// <param name="game">Game to check</param>
-    /// <returns>True if file located</returns>
+
+
+
+
+
     bool NeedsTimestampAlignment(GameCategory game);
 
-    /// <summary>
-    /// Constructs a load order from a list of mods and a data folder.
-    /// Load Order is sorted to the order the game will load the mod files: by file's date modified timestamp.
-    /// </summary>
-    /// <param name="incomingLoadOrder">Mods to include</param>
-    /// <param name="dataPath">Path to data folder</param>
-    /// <param name="throwOnMissingMods">Whether to throw and exception if mods are missing</param>
-    /// <returns>Enumerable of modkeys in load order, excluding missing mods</returns>
-    /// <exception cref="MissingModException">If throwOnMissingMods true and file is missing</exception>
+
+
+
+
+
+
+
+
+
     IEnumerable<ILoadOrderListingGetter> AlignToTimestamps(
         IEnumerable<ILoadOrderListingGetter> incomingLoadOrder,
         DirectoryPath dataPath,
         bool throwOnMissingMods = true);
 
-    /// <summary>
-    /// Constructs a load order from a list of mods and a data folder.
-    /// Load Order is sorted to the order the game will load the mod files: by file's date modified timestamp.
-    /// </summary>
-    /// <param name="incomingLoadOrder">Mods and their write timestamps</param>
-    /// <returns>Enumerable of modkeys in load order, excluding missing mods</returns>
-    /// <exception cref="MissingModException">If throwOnMissingMods true and file is missing</exception>
+
+
+
+
+
+
+
     IEnumerable<ModKey> AlignToTimestamps(IEnumerable<(ModKey ModKey, DateTime Write)> incomingLoadOrder);
 
-    /// <summary>
-    /// Modifies time stamps of files to match the given ordering
-    /// <param name="loadOrder">Order to conform files to</param>
-    /// <param name="dataPath">Path to data folder</param>
-    /// <param name="throwOnMissingMods">Whether to throw and exception if mods are missing</param>
-    /// <param name="startDate">Date to give the first file</param>
-    /// <param name="interval">Time interval to space between each file's date</param>
-    /// <exception cref="MissingModException">If throwOnMissingMods true and file is missing</exception>
-    /// </summary>
+
+
+
+
+
+
+
+
+
     void AlignTimestamps(
         IEnumerable<ModKey> loadOrder,
         DirectoryPath dataPath,
@@ -62,8 +62,8 @@ public sealed class TimestampAligner : ITimestampAligner
     {
         _FileSystem = fileSystem;
     }
-        
-    /// <inheritdoc />
+
+
     public bool NeedsTimestampAlignment(GameCategory game)
     {
         switch (game)
@@ -79,7 +79,7 @@ public sealed class TimestampAligner : ITimestampAligner
         }
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<ILoadOrderListingGetter> AlignToTimestamps(
         IEnumerable<ILoadOrderListingGetter> incomingLoadOrder,
         DirectoryPath dataPath,
@@ -102,7 +102,7 @@ public sealed class TimestampAligner : ITimestampAligner
             .Select(i => new LoadOrderListing(i.ModKey, i.Enabled));
     }
 
-    /// <inheritdoc />
+
     public IEnumerable<ModKey> AlignToTimestamps(IEnumerable<(ModKey ModKey, DateTime Write)> incomingLoadOrder)
     {
         return incomingLoadOrder
@@ -110,7 +110,7 @@ public sealed class TimestampAligner : ITimestampAligner
             .Select(i => i.ModKey);
     }
 
-    /// <inheritdoc />
+
     public void AlignTimestamps(
         IEnumerable<ModKey> loadOrder,
         DirectoryPath dataPath,

@@ -260,8 +260,8 @@ internal static class PluginUtilityTranslation
         var lastParsed = new PreviousParse();
         Dictionary<RecordType, int>? recordParseCount = null;
 
-        // Keep going past the frame, as subrecord frames might not contain followup subrecords
-        // when bundled.  Rely on Stop commands to break accordingly
+
+
         while (!frame.Reader.Complete)
         {
             var subMeta = frame.GetSubrecordHeader();
@@ -535,7 +535,7 @@ internal static class PluginUtilityTranslation
         {
             var overflowHeader = constants.Subrecord(data.Slice(existingLoc.Value));
             var len = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(overflowHeader.Content));
-            // Need to skip the data record, which doesn't have a proper length
+
             stream.Position += constants.SubConstants.HeaderLength + len;
             return existingLoc.Value;
         }

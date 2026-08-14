@@ -5,59 +5,59 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Order;
 
-/// <summary>
-/// A Mod Listing on a load order.  Can be enabled or disabled.  Can also be "ghosted" which means
-/// the listing does not end with a typical ModKey suffix
-/// </summary>
+
+
+
+
 public interface ILoadOrderListingGetter : IModKeyed
 {
-    /// <summary>
-    /// Whether the listing is enabled in the load order
-    /// </summary>
+
+
+
     bool Enabled { get; }
 
-    /// <summary>
-    /// Whether the listing is "ghosted".  This is done by modifying the file type to be anything abnormal.<br/>
-    /// This is the same as disabling a mod as far as the game is concerned, but also is a hint to modmanagers to treat 
-    /// the mods differently depending on the context
-    /// </summary>
+
+
+
+
+
     bool Ghosted { get; }
 
-    /// <summary>
-    /// What file suffix is used if ghosted.  This is done by modifying the file type to be anything abnormal.<br/>
-    /// This is the same as disabling a mod as far as the game is concerned, but also is a hint to modmanagers to treat 
-    /// the mods differently depending on the context
-    /// </summary>
+
+
+
+
+
     string GhostSuffix { get; }
-    
-    /// <summary>
-    /// File name with ghost concepts included.
-    /// </summary>
+
+
+
+
     string FileName { get; }
-        
+
     public static string ToString(ILoadOrderListingGetter getter)
     {
         return $"[{(getter.Enabled ? "X" : "_")}] {getter.ModKey}{(getter.Ghosted ? " (ghosted)" : null)}";
     }
 }
 
-/// <inheritdoc cref="ILoadOrderListingGetter" />
+
 [DebuggerDisplay("{ToString()}")]
 public sealed record LoadOrderListing : ILoadOrderListingGetter
 {
-    /// <inheritdoc />
+
     public ModKey ModKey { get; init; }
 
-    /// <inheritdoc />
+
     public bool Enabled { get; init; }
 
-    /// <inheritdoc />
+
     public bool Ghosted => !string.IsNullOrWhiteSpace(GhostSuffix);
 
-    /// <inheritdoc />
+
     public string GhostSuffix { get; init; } = string.Empty;
 
-    /// <inheritdoc />
+
     public string FileName => OrderUtility.GetListingFilename(ModKey, GhostSuffix);
 
     public LoadOrderListing()
@@ -96,7 +96,7 @@ public sealed record LoadOrderListing : ILoadOrderListingGetter
         return new LoadOrderListing(modKey, enabled: true);
     }
 
-    /// <inheritdoc cref="ILoadOrderListingParser" />
+
     public static bool TryFromString(ReadOnlySpan<char> str, bool enabledMarkerProcessing, [MaybeNullWhen(false)] out LoadOrderListing listing)
     {
         str = str.Trim();
@@ -137,13 +137,13 @@ public sealed record LoadOrderListing : ILoadOrderListingGetter
         return false;
     }
 
-    /// <inheritdoc cref="ILoadOrderListingParser" />
+
     public static bool TryFromFileName(FileName fileName, bool enabledMarkerProcessing, [MaybeNullWhen(false)] out LoadOrderListing listing)
     {
         return TryFromString(fileName.String, enabledMarkerProcessing, out listing);
     }
 
-    /// <inheritdoc cref="ILoadOrderListingParser" />
+
     public static LoadOrderListing FromString(ReadOnlySpan<char> str, bool enabledMarkerProcessing)
     {
         if (!TryFromString(str, enabledMarkerProcessing, out var listing))
@@ -153,7 +153,7 @@ public sealed record LoadOrderListing : ILoadOrderListingGetter
         return listing;
     }
 
-    /// <inheritdoc cref="ILoadOrderListingParser" />
+
     public static LoadOrderListing FromFileName(FileName name, bool enabledMarkerProcessing)
     {
         if (!TryFromFileName(name, enabledMarkerProcessing, out var listing))

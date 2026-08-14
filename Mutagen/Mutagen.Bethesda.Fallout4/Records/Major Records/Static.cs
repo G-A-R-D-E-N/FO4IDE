@@ -25,9 +25,9 @@ public partial class Static
         Obstacle = 0x0200_0000,
         NavMeshGenerationFilter = 0x0400_0000,
         NavMeshGenerationBoundingBox = 0x0800_0000,
-        /// <summary>
-        /// Sky cell only
-        /// </summary>
+
+
+
         ShowInWorldMap = 0x1000_0000,
         NavMeshGenerationGround = 0x4000_0000,
     }
@@ -54,12 +54,12 @@ partial class StaticBinaryOverlay
         return (int)Static_FieldIndex.DistantLods;
     }
 }
-    
+
 partial class StaticBinaryCreateTranslation
 {
     public static partial ParseResult FillBinaryDistantLodParsingCustom(
         MutagenFrame frame,
-        IStaticInternal item, 
+        IStaticInternal item,
         PreviousParse lastParsed)
     {
         var amount = StaticBinaryCreateTranslation.ReadHeader(frame);
@@ -116,7 +116,7 @@ partial class StaticBinaryWriteTranslation
     {
         var lods = item.DistantLods;
         if (lods.Count == 0) return;
-                
+
         using var header = HeaderExport.Subrecord(writer, RecordTypes.MNAM);
         if (lods.Count > 4)
         {

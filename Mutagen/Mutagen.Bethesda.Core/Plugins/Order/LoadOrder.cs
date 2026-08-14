@@ -17,32 +17,32 @@ using StrongInject;
 
 namespace Mutagen.Bethesda.Plugins.Order;
 
-/// <summary>
-/// A static class with LoadOrder related utility functions
-/// </summary>
+
+
+
 public static partial class LoadOrder
 {
     private static TimestampAligner Aligner = new(IFileSystemExt.DefaultFilesystem);
     private static OrderListings Orderer = new();
-    
+
     #region Timestamps
 
-    /// <summary>
-    /// Returns whether given game needs timestamp alignment for its load order
-    /// </summary>
-    /// <param name="game">Game to check</param>
-    /// <returns>True if file located</returns>
+
+
+
+
+
     public static bool NeedsTimestampAlignment(GameCategory game) => Aligner.NeedsTimestampAlignment(game);
 
-    /// <summary>
-    /// Constructs a load order from a list of mods and a data folder.
-    /// Load Order is sorted to the order the game will load the mod files: by file's date modified timestamp.
-    /// </summary>
-    /// <param name="incomingLoadOrder">Mods to include</param>
-    /// <param name="dataPath">Path to data folder</param>
-    /// <param name="throwOnMissingMods">Whether to throw and exception if mods are missing</param>
-    /// <returns>Enumerable of modkeys in load order, excluding missing mods</returns>
-    /// <exception cref="MissingModException">If throwOnMissingMods true and file is missing</exception>
+
+
+
+
+
+
+
+
+
     public static IEnumerable<ILoadOrderListingGetter> AlignToTimestamps(
         IEnumerable<ILoadOrderListingGetter> incomingLoadOrder,
         DirectoryPath dataPath,
@@ -51,26 +51,26 @@ public static partial class LoadOrder
         return Aligner.AlignToTimestamps(incomingLoadOrder, dataPath, throwOnMissingMods: throwOnMissingMods);
     }
 
-    /// <summary>
-    /// Constructs a load order from a list of mods and a data folder.
-    /// Load Order is sorted to the order the game will load the mod files: by file's date modified timestamp.
-    /// </summary>
-    /// <param name="incomingLoadOrder">Mods and their write timestamps</param>
-    /// <returns>Enumerable of modkeys in load order, excluding missing mods</returns>
+
+
+
+
+
+
     public static IEnumerable<ModKey> AlignToTimestamps(IEnumerable<(ModKey ModKey, DateTime Write)> incomingLoadOrder)
     {
         return Aligner.AlignToTimestamps(incomingLoadOrder);
     }
 
-    /// <summary>
-    /// Modifies time stamps of files to match the given ordering
-    /// <param name="loadOrder">Order to conform files to</param>
-    /// <param name="dataPath">Path to data folder</param>
-    /// <param name="throwOnMissingMods">Whether to throw and exception if mods are missing</param>
-    /// <param name="startDate">Date to give the first file</param>
-    /// <param name="interval">Time interval to space between each file's date</param>
-    /// <exception cref="MissingModException">If throwOnMissingMods true and file is missing</exception>
-    /// </summary>
+
+
+
+
+
+
+
+
+
     public static void AlignTimestamps(
         IEnumerable<ModKey> loadOrder,
         DirectoryPath dataPath,
@@ -95,7 +95,7 @@ public static partial class LoadOrder
         [Instance] private readonly IFileSystem _fileSystem;
         [Instance] private readonly IDataDirectoryProvider _dataDirectory;
         [Instance] private readonly ITimestampedPluginListingsPreferences _timestampedPrefs;
-        
+
         public GetLoadOrderListingsModule(
             GameRelease release,
             DirectoryPath dataPath,
@@ -112,17 +112,17 @@ public static partial class LoadOrder
         }
     }
 
-    /// <summary>
-    /// Returns a load order listing from the usual sources
-    /// </summary>
-    /// <param name="game">Game type</param>
-    /// <param name="dataPath">Path to game's data folder</param>
-    /// <param name="throwOnMissingMods">Whether to throw and exception if mods are missing</param>
-    /// <param name="fileSystem">Filesystem to use</param>
-    /// <returns>Enumerable of modkeys representing a load order</returns>
-    /// <exception cref="ArgumentException">Line in plugin file is unexpected</exception>
-    /// <exception cref="FileNotFoundException">If plugin file not located</exception>
-    /// <exception cref="MissingModException">If throwOnMissingMods true and file is missing</exception>
+
+
+
+
+
+
+
+
+
+
+
     public static IEnumerable<ILoadOrderListingGetter> GetLoadOrderListings(
         GameRelease game,
         DirectoryPath dataPath,
@@ -143,7 +143,7 @@ public static partial class LoadOrder
         [Instance] private readonly ITimestampedPluginListingsPreferences _timestampedPrefs;
         [Instance] private readonly ICreationClubListingsPathProvider _creationClubListingsPathProvider;
         [Instance] private readonly IPluginListingsPathContext _pluginListingsPathContext;
-        
+
         public GetLoadOrderListingsPluginsOverrideModule(
             GameRelease release,
             FilePath pluginsFilePath,
@@ -163,7 +163,7 @@ public static partial class LoadOrder
             };
         }
     }
-    
+
     public static IEnumerable<ILoadOrderListingGetter> GetLoadOrderListings(
         GameRelease game,
         FilePath pluginsFilePath,
@@ -173,7 +173,7 @@ public static partial class LoadOrder
         IFileSystem? fileSystem = null)
     {
         var prov = new GetLoadOrderListingsPluginsOverrideModule(
-                game, pluginsFilePath, creationClubFilePath, 
+                game, pluginsFilePath, creationClubFilePath,
                 dataPath, throwOnMissingMods, fileSystem)
             .Resolve().Value;
         return prov.Get();
@@ -297,7 +297,7 @@ public static partial class LoadOrder
             };
         }
     }
-    
+
     public static IObservable<IChangeSet<ILoadOrderListingGetter>> GetLiveLoadOrderListings(
         GameRelease game,
         FilePath loadOrderFilePath,
@@ -347,7 +347,7 @@ public static partial class LoadOrder
         return obs.Select(x => x.LoadOrder)
             .Switch();
     }
-    
+
     [RegisterModule(typeof(MutagenStrongInjectModule))]
     internal partial class ImportDataFolderModule<TMod> : IContainer<ILoadOrderImporter<TMod>>
         where TMod : class, IModGetter
@@ -370,15 +370,15 @@ public static partial class LoadOrder
         }
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed
-    /// </summary>
-    /// <param name="dataFolder">Path data folder containing mods</param>
-    /// <param name="loadOrder">Unique list of listings to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         IEnumerable<ILoadOrderListingGetter> loadOrder,
@@ -390,15 +390,15 @@ public static partial class LoadOrder
             .Resolve().Value.Import();
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed
-    /// </summary>
-    /// <param name="dataFolder">Path data folder containing mods</param>
-    /// <param name="loadOrder">Unique list of mod keys to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         IEnumerable<ModKey> loadOrder,
@@ -412,7 +412,7 @@ public static partial class LoadOrder
             gameRelease,
             fileSystem);
     }
-    
+
     [RegisterModule(typeof(MutagenStrongInjectModule))]
     internal partial class ImportDataFolderModFactoryModule<TMod> : IContainer<ILoadOrderImporter<TMod>>
         where TMod : class, IModKeyed
@@ -438,14 +438,14 @@ public static partial class LoadOrder
         }
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed by given importer func
-    /// </summary>
-    /// <param name="dataFolder">Path data folder containing mods</param>
-    /// <param name="loadOrder">Unique list of mod keys to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create</param>
-    /// <param name="factory">Func to use to create a new mod from a path</param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         IEnumerable<ModKey> loadOrder,
@@ -458,14 +458,14 @@ public static partial class LoadOrder
             .Resolve().Value.Import();
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed by given importer func
-    /// </summary>
-    /// <param name="dataFolder">Path data folder containing mods</param>
-    /// <param name="loadOrder">Unique list of listings to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create</param>
-    /// <param name="factory">Func to use to create a new mod from a path</param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         IEnumerable<ILoadOrderListingGetter> loadOrder,
@@ -477,7 +477,7 @@ public static partial class LoadOrder
         return new ImportDataFolderModFactoryModule<TMod>(gameRelease, dataFolder, loadOrder, factory, fileSystem)
             .Resolve().Value.Import();
     }
-    
+
     [RegisterModule(typeof(MutagenStrongInjectModule))]
     internal partial class ImportModule<TMod> : IContainer<ILoadOrderImporter<TMod>>
         where TMod : class, IModGetter
@@ -496,15 +496,15 @@ public static partial class LoadOrder
             _loadOrder = new LoadOrderListingsInjection(loadOrder);
         }
     }
-    
-    /// <summary>
-    /// Constructs a load order filled with mods constructed
-    /// </summary>
-    /// <param name="loadOrder">Unique list of listings to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ILoadOrderListingGetter> loadOrder,
         GameRelease gameRelease,
@@ -515,14 +515,14 @@ public static partial class LoadOrder
             .Resolve().Value.Import();
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed
-    /// </summary>
-    /// <param name="loadOrder">Unique list of mod keys to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ModKey> loadOrder,
         GameRelease gameRelease,
@@ -534,7 +534,7 @@ public static partial class LoadOrder
             gameRelease,
             fileSystem);
     }
-    
+
     [RegisterModule(typeof(MutagenStrongInjectModule))]
     internal partial class ImportModFactoryModule<TMod> : IContainer<ILoadOrderImporter<TMod>>
         where TMod : class, IModKeyed
@@ -556,16 +556,16 @@ public static partial class LoadOrder
             _loadOrder = new LoadOrderListingsInjection(loadOrder);
         }
     }
-    
-    /// <summary>
-    /// Constructs a load order filled with mods constructed by given importer func
-    /// </summary>
-    /// <param name="loadOrder">Unique list of mod keys to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="factory">Func to use to create a new mod from a path</param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ModKey> loadOrder,
         GameRelease gameRelease,
@@ -573,21 +573,21 @@ public static partial class LoadOrder
         IFileSystem? fileSystem = null)
         where TMod : class, IModKeyed
     {
-        return new ImportModFactoryModule<TMod>(gameRelease, 
+        return new ImportModFactoryModule<TMod>(gameRelease,
                 loadOrder.Select(x => new LoadOrderListing(x, true)),
                 factory, fileSystem)
             .Resolve().Value.Import();
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed by given importer func
-    /// </summary>
-    /// <param name="loadOrder">Unique list of listings to import</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="factory">Func to use to create a new mod from a path</param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ILoadOrderListingGetter> loadOrder,
         GameRelease gameRelease,
@@ -617,13 +617,13 @@ public static partial class LoadOrder
         }
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed
-    /// </summary>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         GameRelease gameRelease,
         IFileSystem? fileSystem = null)
@@ -651,14 +651,14 @@ public static partial class LoadOrder
         }
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed by given importer func
-    /// </summary>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="factory">Func to use to create a new mod from a path</param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         GameRelease gameRelease,
         Func<ModPath, TMod> factory,
@@ -687,14 +687,14 @@ public static partial class LoadOrder
         }
     }
 
-    /// <summary>
-    /// Constructs a load order filled with mods constructed
-    /// </summary>
-    /// <param name="dataFolder">Path data folder containing mods</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         GameRelease gameRelease,
@@ -725,16 +725,16 @@ public static partial class LoadOrder
             _modImporter = new ModImporterWrapper<TMod>(factory);
         }
     }
-    
-    /// <summary>
-    /// Constructs a load order filled with mods constructed by given importer func
-    /// </summary>
-    /// <param name="dataFolder">Path data folder containing mods</param>
-    /// <param name="gameRelease">GameRelease associated with the mods to create<br/>
-    /// This may be unapplicable to some games with only one release, but should still be passed in.
-    /// </param>
-    /// <param name="factory">Func to use to create a new mod from a path</param>
-    /// <param name="fileSystem">Filesystem to use</param>
+
+
+
+
+
+
+
+
+
+
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         GameRelease gameRelease,
@@ -784,35 +784,35 @@ public static partial class LoadOrder
 
 public interface ILoadOrderGetter : IDisposable
 {
-    /// <summary>
-    /// Number of listings on the Load Order
-    /// </summary>
+
+
+
     int Count { get; }
-    
-    /// <summary>
-    /// Whether the contained items will be disposed with the load order
-    /// </summary>
+
+
+
+
     bool DisposingItems { get; }
 
-    /// <summary>
-    /// Listings in the order they were listed
-    /// </summary>
+
+
+
     IEnumerable<ModKey> ListedOrder { get; }
 
-    /// <summary>
-    /// Listings in priority order, where the mod with the highest priority comes first.  (Reverse of ListedOrder)
-    /// </summary>
+
+
+
     IEnumerable<ModKey> PriorityOrder { get; }
 
-    /// <summary>
-    /// Whether the load order contains a listing with the given key
-    /// </summary>
+
+
+
     bool ContainsKey(ModKey key);
 }
 
-public interface ILoadOrderGetter<out TListing> : 
+public interface ILoadOrderGetter<out TListing> :
     ILoadOrderGetter,
-    IReadOnlyList<Noggog.IKeyValue<ModKey, TListing>>, 
+    IReadOnlyList<Noggog.IKeyValue<ModKey, TListing>>,
     IReadOnlyCache<TListing, ModKey>
     where TListing : IModKeyed
 {
@@ -820,62 +820,62 @@ public interface ILoadOrderGetter<out TListing> :
 
     TListing? TryGetAtIndex(int index);
 
-    /// <summary>
-    /// Listings in the order they were listed
-    /// </summary>
+
+
+
     new IEnumerable<TListing> ListedOrder { get; }
 
-    /// <summary>
-    /// Listings in priority order, where the mod with the highest priority comes first.  (Reverse of ListedOrder)
-    /// </summary>
+
+
+
     new IEnumerable<TListing> PriorityOrder { get; }
 
-    /// <summary>
-    /// Number of listings on the Load Order
-    /// </summary>
+
+
+
     new int Count { get; }
 
-    /// <summary>
-    /// Whether the load order contains a listing with the given key
-    /// </summary>
+
+
+
     new bool ContainsKey(ModKey key);
 
-    /// <summary>
-    /// Locates index of an item with given key
-    /// </summary>
-    /// <param name="key">Key to query</param>
-    /// <returns>Index of item on list with key. -1 if not located</returns>
+
+
+
+
+
     int IndexOf(ModKey key);
 }
 
 public interface ILoadOrder<TListing> : ILoadOrderGetter<TListing>
     where TListing : IModKeyed
 {
-    /// <summary>
-    /// Adds an item to the end of the load order
-    /// </summary>
-    /// <param name="item">Item to put at end of load order</param>
-    /// <exception cref="ArgumentException">If an item with same ModKey exists already</exception>
+
+
+
+
+
     void Add(TListing item);
 
-    /// <summary>
-    /// Adds items to the end of the load order
-    /// </summary>
-    /// <param name="items">Items to put at end of load order</param>
-    /// <exception cref="ArgumentException">If an item with same ModKey exists already</exception>
+
+
+
+
+
     void Add(IEnumerable<TListing> items);
 
-    /// <summary>
-    /// Adds an item at the given index in load order, with the given ModKey
-    /// </summary>
-    /// <param name="item">Item to put at end of load order</param>
-    /// <param name="index">Index to insert at</param>
-    /// <exception cref="ArgumentException">If an item with same ModKey exists already</exception>
+
+
+
+
+
+
     void Add(TListing item, int index);
 
-    /// <summary>
-    /// Clears load order of all items
-    /// </summary>
+
+
+
     void Clear();
 
     bool RemoveKey(ModKey modKey);
@@ -887,33 +887,33 @@ public interface ILoadOrder<TListing> : ILoadOrderGetter<TListing>
     void Set(IEnumerable<TListing> items);
 }
 
-/// <summary>
-/// A container for objects with in a specific load order, that are associated with ModKeys.
-/// LoadOrder does not need to be disposed for proper use, but rather can optionally be disposed of which will dispose any contained items that implement IDisposable
-/// </summary>
+
+
+
+
 public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
     where TListing : IModKeyed
 {
     private readonly List<ItemContainer> _byLoadOrder = new();
     private readonly Dictionary<ModKey, ItemContainer> _byModKey = new();
 
-    /// <inheritdoc />
+
     public int Count => _byLoadOrder.Count;
 
     public bool DisposingItems { get; }
 
-    /// <inheritdoc />
+
     public TListing this[int index] => _byLoadOrder[index].Item;
 
     IEnumerable<TListing> IReadOnlyCache<TListing, ModKey>.Items => ListedOrder;
 
-    /// <inheritdoc />
+
     public IEnumerable<ModKey> Keys => _byModKey.Keys;
 
-    /// <inheritdoc />
+
     public IEnumerable<TListing> ListedOrder => _byLoadOrder.Select(i => i.Item);
 
-    /// <inheritdoc />
+
     public IEnumerable<TListing> PriorityOrder =>
         ((IEnumerable<ItemContainer>)_byLoadOrder).Reverse().Select(i => i.Item);
 
@@ -930,7 +930,7 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         }
     }
 
-    /// <inheritdoc />
+
     public TListing this[ModKey key]
     {
         get
@@ -969,12 +969,12 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         }
     }
 
-    /// <summary>
-    /// Attempts to retrieve an item given a ModKey
-    /// </summary>
-    /// <param name="key">ModKey to query for</param>
-    /// <param name="value">Result reference to the item</param>
-    /// <returns>True if matching key located</returns>
+
+
+
+
+
+
     public bool TryGetValue(ModKey key, [MaybeNullWhen(false)] out TListing value)
     {
         if (_byModKey.TryGetValue(key, out var container))
@@ -987,11 +987,11 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         return false;
     }
 
-    /// <summary>
-    /// Attempts to retrieve an item given a ModKey
-    /// </summary>
-    /// <param name="key">ModKey to query for</param>
-    /// <returns>Result reference to the item, or null if not found</returns>
+
+
+
+
+
     public TListing? TryGetValue(ModKey key)
     {
         if (_byModKey.TryGetValue(key, out var container))
@@ -1002,11 +1002,11 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         return default;
     }
 
-    /// <summary>
-    /// Attempts to retrieve an item given an index
-    /// </summary>
-    /// <param name="index">Index to retrieve</param>
-    /// <returns>TryGet result of the item</returns>
+
+
+
+
+
     public TListing? TryGetAtIndex(int index)
     {
         if (!_byLoadOrder.InRange(index))
@@ -1017,7 +1017,7 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         return _byLoadOrder[index].Item;
     }
 
-    /// <inheritdoc />
+
     public void Add(TListing item)
     {
         var index = _byLoadOrder.Count;
@@ -1034,7 +1034,7 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         _byLoadOrder.Add(container);
     }
 
-    /// <inheritdoc />
+
     public void Add(IEnumerable<TListing> items)
     {
         foreach (var item in items)
@@ -1043,7 +1043,7 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         }
     }
 
-    /// <inheritdoc />
+
     public void Add(TListing item, int index)
     {
         if (!_byLoadOrder.InRange(index))
@@ -1068,13 +1068,13 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         }
     }
 
-    /// <inheritdoc />
+
     public bool ContainsKey(ModKey key)
     {
         return IndexOf(key) != -1;
     }
 
-    /// <inheritdoc />
+
     public int IndexOf(ModKey key)
     {
         if (!_byModKey.TryGetValue(key, out var container))
@@ -1085,7 +1085,7 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         return container.Index;
     }
 
-    /// <inheritdoc />
+
     public void Clear()
     {
         Dispose();
@@ -1155,9 +1155,9 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    /// <summary>
-    /// Disposes all contained items that implement IDisposable
-    /// </summary>
+
+
+
     public void Dispose()
     {
         if (!DisposingItems) return;
