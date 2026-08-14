@@ -23,7 +23,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clone the wiki
-        run: git clone --depth 1 https://github.com/G-A-R-D-E-N/FO4-IDE.wiki.git "$RUNNER_TEMP/wiki"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: git clone --depth 1 "https://x-access-token:${GITHUB_TOKEN}@github.com/G-A-R-D-E-N/FO4-IDE.wiki.git" "$RUNNER_TEMP/wiki"
 
       - name: Run the wiki link check
         run: python3 .github/scripts/check-wiki-links.py "$RUNNER_TEMP/wiki" "$GITHUB_WORKSPACE"
