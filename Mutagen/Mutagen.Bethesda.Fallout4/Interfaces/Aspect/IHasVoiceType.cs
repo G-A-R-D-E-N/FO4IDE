@@ -7,9 +7,6 @@ public interface IHasVoiceType : IHasVoiceTypeGetter, IFallout4MajorRecordIntern
     IFormLinkNullable<IVoiceTypeGetter> Voice { get; }
 }
 
-
-
-
 public interface IHasVoiceTypeGetter : IFallout4MajorRecordGetter
 {
     IFormLinkNullableGetter<IVoiceTypeGetter> Voice { get; }

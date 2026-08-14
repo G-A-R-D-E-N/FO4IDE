@@ -17,10 +17,6 @@ using Mutagen.Bethesda.Plugins.Aspects;
 
 namespace Mutagen.Bethesda.Fallout4;
 
-
-
-
-
 internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
 {
     private readonly IReadOnlyList<IFallout4ModGetter> _sourceMods;
@@ -156,9 +152,6 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
     private MergedGroup<IGodRaysGetter>? _godRays;
     private MergedGroup<IObjectVisibilityManagerGetter>? _objectVisibilityManagers;
 
-
-
-
     public Fallout4MultiModOverlay(
         ModKey modKey,
         IEnumerable<IFallout4ModGetter> sourceMods,
@@ -168,7 +161,6 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
         var sourceList = sourceMods.ToList();
         _sourceMods = sourceList;
         _masters = mergedMasters;
-
 
         var disposables = sourceList.OfType<IModDisposeGetter>().ToList();
         _disposeSourceMods = disposables.Count > 0 ? disposables : null;
@@ -190,7 +182,6 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
     public object CommonInstance() => Fallout4ModCommon.Instance;
     public object? CommonSetterInstance() => Fallout4ModSetterCommon.Instance;
     public object CommonSetterTranslationInstance() => Fallout4ModSetterTranslationCommon.Instance;
-
 
     public IFallout4GroupGetter<IGameSettingGetter> GameSettings =>
         _gameSettings ??= new MergedGroup<IGameSettingGetter>(
@@ -717,7 +708,6 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
     public IMask<bool> GetEqualsMask(object rhs, EqualsMaskHelper.Include include)
         => Fallout4ModCommon.Instance.GetEqualsMask(this, (IFallout4ModGetter)rhs, include);
 
-
     public bool CanUseLocalization => _sourceMods[0].CanUseLocalization;
     public bool UsingLocalization => _sourceMods[0].UsingLocalization;
     public bool CanBeSmallMaster => _sourceMods[0].CanBeSmallMaster;
@@ -727,9 +717,7 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
     public bool IsMaster => _sourceMods[0].IsMaster;
     public bool ListsOverriddenForms => _sourceMods[0].ListsOverriddenForms;
 
-
     public MasterStyle MasterStyle => _sourceMods[0].MasterStyle;
-
 
     public void Dispose()
     {
@@ -741,9 +729,6 @@ internal class Fallout4MultiModOverlay : IFallout4ModDisposableGetter
         }
     }
 }
-
-
-
 
 internal class MergedModStats : IModStatsGetter
 {
@@ -787,10 +772,6 @@ internal class MergedModStats : IModStatsGetter
     void IBinaryItem.WriteToBinary(MutagenWriter writer, TypedWriteParams translationParams)
         => ((ModStatsBinaryWriteTranslation)((IBinaryItem)this).BinaryWriteTranslator).Write(item: this, writer: writer, translationParams: translationParams);
 }
-
-
-
-
 
 internal class MergedFallout4ModHeader : IFallout4ModHeaderGetter
 {
@@ -868,11 +849,6 @@ internal class MergedFallout4ModHeader : IFallout4ModHeaderGetter
         => ((Fallout4ModHeaderBinaryWriteTranslation)((IBinaryItem)this).BinaryWriteTranslator).Write(item: this, writer: writer, translationParams: translationParams);
     public IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => Fallout4ModHeaderCommon.Instance.EnumerateFormLinks(this, iterateNestedRecords);
 }
-
-
-
-
-
 
 internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCache<TGetter, FormKey>
     where TGetter : class, IFallout4MajorRecordGetter, IBinaryItem
@@ -1023,7 +999,6 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
         }
     }
 
-
     public object CommonInstance(Type type) => GenericCommonInstanceGetter.Get(Fallout4GroupCommon<TGetter>.Instance, typeof(ICellBlockGetter), type);
     public object? CommonSetterInstance(Type type) => null;
     public object CommonSetterTranslationInstance() => Fallout4GroupSetterTranslationCommon.Instance;
@@ -1034,7 +1009,6 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
 
     IReadOnlyCache<TGetter, FormKey> IFallout4GroupGetter<TGetter>.RecordCache => this;
     IReadOnlyCache<TGetter, FormKey> IGroupGetter<TGetter>.RecordCache => this;
-
 
     IEnumerable<FormKey> IReadOnlyCache<TGetter, FormKey>.Keys => Cache.Keys;
     IEnumerable<TGetter> IReadOnlyCache<TGetter, FormKey>.Items => Cache.Values;
@@ -1048,7 +1022,6 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
     {
         return Cache.Select(kvp => (IKeyValue<FormKey, TGetter>)new KeyValue<FormKey, TGetter>(kvp.Key, kvp.Value)).GetEnumerator();
     }
-
 
     private class MajorRecordCacheWrapper : IReadOnlyCache<IMajorRecordGetter, FormKey>
     {
@@ -1074,7 +1047,6 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-
     ILoquiRegistration ILoquiObject.Registration => null!;
 
     public void Print(StructuredStringBuilder sb, string? name = null)
@@ -1085,10 +1057,6 @@ internal class MergedGroup<TGetter> : IFallout4GroupGetter<TGetter>, IReadOnlyCa
             name: name);
     }
 }
-
-
-
-
 
 internal class MergedListGroup : IFallout4ListGroupGetter<ICellBlockGetter>
 {
@@ -1140,7 +1108,6 @@ internal class MergedListGroup : IFallout4ListGroupGetter<ICellBlockGetter>
             name: name);
     }
 
-
     public GroupTypeEnum Type => _sourceGroups.FirstOrDefault()?.Type ?? GroupTypeEnum.InteriorCellBlock;
     public int LastModified => _sourceGroups.Max(g => g.LastModified);
     public int Unknown => 0;
@@ -1168,9 +1135,6 @@ internal class MergedListGroup : IFallout4ListGroupGetter<ICellBlockGetter>
     public IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(Type type, bool throwIfUnknown = true)
         => Fallout4ListGroupCommon<ICellBlockGetter>.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
-
-
-
 
 internal class MergedCellBlock : ICellBlockGetter
 {
@@ -1218,9 +1182,6 @@ internal class MergedCellBlock : ICellBlockGetter
     public IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(Type type, bool throwIfUnknown = true)
         => CellBlockCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
-
-
-
 
 internal class MergedWorldspace : IWorldspaceGetter
 {
@@ -1351,9 +1312,6 @@ internal class MergedWorldspace : IWorldspaceGetter
         => WorldspaceCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
 
-
-
-
 internal class MergedWorldspaceBlock : IWorldspaceBlockGetter
 {
     private readonly List<IWorldspaceBlockGetter> _sourceBlocks;
@@ -1418,9 +1376,6 @@ internal class MergedWorldspaceBlock : IWorldspaceBlockGetter
         => WorldspaceBlockCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
 
-
-
-
 internal class MergedWorldspaceSubBlock : IWorldspaceSubBlockGetter
 {
     private readonly List<IWorldspaceSubBlockGetter> _sourceSubBlocks;
@@ -1483,9 +1438,6 @@ internal class MergedWorldspaceSubBlock : IWorldspaceSubBlockGetter
     public IEnumerable<IMajorRecordGetter> EnumerateMajorRecords(Type type, bool throwIfUnknown = true)
         => WorldspaceSubBlockCommon.Instance.EnumerateMajorRecords(this, type, throwIfUnknown);
 }
-
-
-
 
 internal class MergedWorldspaceCell : ICellGetter
 {

@@ -23,7 +23,6 @@ partial class APerkEffectBinaryOverlay
     public IReadOnlyList<IPerkConditionGetter> Conditions => throw new NotImplementedException();
 }
 
-
 partial class APerkEffectBinaryCreateTranslation
 {
     public static partial ParseResult FillBinaryFunctionParametersCustom(MutagenFrame frame, IAPerkEffect item, PreviousParse lastParsed)

@@ -6,10 +6,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
 public class AiGuidanceTests
 {
     private readonly ITestOutputHelper _out;
@@ -32,20 +28,16 @@ public class AiGuidanceTests
             "its tool schemas, and an omitted tool reads as one that does not exist");
     }
 
-
-
     [Fact]
     public void GuidanceDoesNotReferToToolsThatNoLongerExist()
     {
         var known = ToolNames().ToHashSet(StringComparer.Ordinal);
-
 
         var referenced = System.Text.RegularExpressions.Regex
             .Matches(AiGuidance.System, @"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
             .Select(m => m.Value)
             .Distinct()
             .ToList();
-
 
         var notTools = new[]
         {

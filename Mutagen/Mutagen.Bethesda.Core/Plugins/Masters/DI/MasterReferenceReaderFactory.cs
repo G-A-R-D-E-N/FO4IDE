@@ -23,7 +23,7 @@ public sealed class MasterReferenceReaderFactory : IMasterReferenceReaderFactory
         _fileSystem = fileSystem;
         _gameReleaseContext = gameReleaseContext;
     }
-        
+
     public IReadOnlyMasterReferenceCollection FromPath(ModPath path)
     {
         return MasterReferenceCollection.FromPath(path, _gameReleaseContext.Release, fileSystem: _fileSystem);

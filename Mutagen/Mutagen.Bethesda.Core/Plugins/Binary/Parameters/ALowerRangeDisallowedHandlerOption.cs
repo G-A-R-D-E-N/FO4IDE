@@ -2,14 +2,6 @@ using Mutagen.Bethesda.Plugins.Order;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Parameters;
 
-
-
-
-
-
-
-
-
 public abstract class ALowerRangeDisallowedHandlerOption
 {
     public static NoCheckIfLowerRangeDisallowed NoCheck { get; } = new NoCheckIfLowerRangeDisallowed();
@@ -69,30 +61,13 @@ public abstract class ALowerRangeDisallowedHandlerOption
     }
 }
 
-
-
-
-
-
 public class NoCheckIfLowerRangeDisallowed : ALowerRangeDisallowedHandlerOption
 {
 }
 
-
-
-
-
-
-
 public class ThrowIfLowerRangeDisallowed : ALowerRangeDisallowedHandlerOption
 {
 }
-
-
-
-
-
-
 
 public class AddPlaceholderMasterIfLowerRangeDisallowed : ALowerRangeDisallowedHandlerOption
 {

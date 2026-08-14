@@ -5,15 +5,12 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
 public sealed class GraphValidation
 {
     public IReadOnlyList<GraphDiagnostic> Diagnostics { get; init; } = Array.Empty<GraphDiagnostic>();
 
-
     public IReadOnlyDictionary<string, NodeDefinition> Definitions { get; init; } =
         new Dictionary<string, NodeDefinition>();
-
 
     public IReadOnlyDictionary<string, GenericBinding> Generics { get; init; } =
         new Dictionary<string, GenericBinding>();
@@ -25,18 +22,6 @@ public sealed class GraphValidation
 
     public bool Ok => !Errors.Any();
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class GraphValidator
 {
@@ -78,14 +63,6 @@ public sealed class GraphValidator
             SourcesComplete = types.SourcesComplete,
         };
     }
-
-
-
-
-
-
-
-
 
     private PapyrusScript? OwnerScriptFor(GraphDocument document)
     {
@@ -153,7 +130,6 @@ public sealed class GraphValidator
             if (definition == null)
             {
 
-
                 problems.Add(GraphDiagnostic.Error(
                     GraphDiagnosticCodes.UnknownNodeDefinition,
                     $"'{node.Definition}' is not on this palette. The script it comes from may not "
@@ -170,7 +146,6 @@ public sealed class GraphValidator
         IReadOnlyDictionary<string, NodeDefinition> definitions,
         List<GraphDiagnostic> problems)
     {
-
 
         var dataInputs = new Dictionary<string, (PinRef Pin, List<GraphWire> Wires)>(StringComparer.OrdinalIgnoreCase);
         var execOutputs = new Dictionary<string, (PinRef Pin, List<GraphWire> Wires)>(StringComparer.OrdinalIgnoreCase);
@@ -205,7 +180,6 @@ public sealed class GraphValidator
 
             if (fromPin == null || toPin == null)
             {
-
 
                 var missing = fromPin == null ? wire.From : wire.To;
                 problems.Add(new GraphDiagnostic
@@ -322,8 +296,6 @@ public sealed class GraphValidator
 
         return solved;
 
-
-
         (string TypeName, bool IsArray)? SourceTypeOf(PinRef pin)
         {
             var wire = document.Into(pin).FirstOrDefault() ?? document.OutOf(pin).FirstOrDefault();
@@ -429,9 +401,6 @@ public sealed class GraphValidator
                 if (node.PinValues.ContainsKey(pin.Id)) continue;
                 if (pin.DeclaredDefault != null) continue;
 
-
-
-
                 if (string.Equals(pin.Id, PinIds.Self, StringComparison.OrdinalIgnoreCase)) continue;
 
                 problems.Add(new GraphDiagnostic
@@ -463,9 +432,6 @@ public sealed class GraphValidator
                 "This graph has no event or function to start from, so nothing would run."));
         }
 
-
-
-
         foreach (var duplicate in entries
             .GroupBy(n => (definitions[n.Id].IsRemoteEvent ? definitions[n.Id].OwnerScript + "." : "")
                           + EntryNameOf(n, definitions[n.Id]) + "/" + (n.ConfigString("state") ?? ""),
@@ -486,7 +452,6 @@ public sealed class GraphValidator
         ValidateStates(document, definitions, entries, problems);
         ValidateCustomEvents(document, problems);
     }
-
 
     private static void ValidateCustomEvents(GraphDocument document, List<GraphDiagnostic> problems)
     {
@@ -510,15 +475,6 @@ public sealed class GraphValidator
             }
         }
     }
-
-
-
-
-
-
-
-
-
 
     private static void ValidateStates(
         GraphDocument document,
@@ -562,7 +518,6 @@ public sealed class GraphValidator
                 $"The script starts in state '{auto}', but no event or function declares that state."));
         }
     }
-
 
     public static string EntryNameOf(GraphNode node, NodeDefinition definition) =>
         definition.Kind == GraphNodeKind.FunctionEntry

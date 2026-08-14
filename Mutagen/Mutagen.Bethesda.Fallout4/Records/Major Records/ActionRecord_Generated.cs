@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -82,8 +78,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IAttractionRuleGetter> IActionRecordGetter.AttractionRule => this.AttractionRule;
         #endregion
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -653,8 +647,6 @@ namespace Mutagen.Bethesda.Fallout4
         new ActionRecord.TypeEnum? Type { get; set; }
         new IFormLinkNullable<IAttractionRuleGetter> AttractionRule { get; set; }
 
-
-
         new String? Name { get; set; }
         #region Mutagen
         new ActionRecord.MajorFlag MajorFlags { get; set; }
@@ -686,8 +678,6 @@ namespace Mutagen.Bethesda.Fallout4
         ActionRecord.TypeEnum? Type { get; }
         IFormLinkNullableGetter<IAttractionRuleGetter> AttractionRule { get; }
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -1269,7 +1259,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return ActionRecord.GetNew();
@@ -1700,7 +1689,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

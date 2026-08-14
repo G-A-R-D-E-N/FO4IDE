@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -39,8 +35,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public partial class ScriptFragments :
         IEquatable<IScriptFragmentsGetter>,
@@ -553,8 +547,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IScriptFragments :
         IFormLinkContainer,
         ILoquiObjectSetter<IScriptFragments>,
@@ -565,9 +557,6 @@ namespace Mutagen.Bethesda.Fallout4
         new ScriptFragment? OnBegin { get; set; }
         new ScriptFragment? OnEnd { get; set; }
     }
-
-
-
 
     public partial interface IScriptFragmentsGetter :
         ILoquiObject,
@@ -1023,7 +1012,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return ScriptFragments.GetNew();
@@ -1301,7 +1289,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

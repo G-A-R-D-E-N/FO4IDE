@@ -17,15 +17,6 @@ public static class RecordSpanExtensions
         return SubrecordPinFrame.FactoryWithOverrideLength(subHeader, nextSpan, loc, overflow.Location);
     }
 
-
-
-
-
-
-
-
-
-
     public static IEnumerable<SubrecordPinFrame> EnumerateSubrecords(
         ReadOnlyMemorySlice<byte> span,
         GameConstants meta,
@@ -46,15 +37,6 @@ public static class RecordSpanExtensions
             loc += subFrame.TotalLength;
         }
     }
-
-
-
-
-
-
-
-
-
 
     public static void EnumerateSubrecords(
         ReadOnlyMemorySlice<byte> span,
@@ -78,16 +60,6 @@ public static class RecordSpanExtensions
         }
     }
 
-
-
-
-
-
-
-
-
-
-
     public static IReadOnlyList<SubrecordPinFrame> ParseRepeatingSubrecord(
         ReadOnlyMemorySlice<byte> span,
         GameConstants meta,
@@ -106,17 +78,6 @@ public static class RecordSpanExtensions
 
         return list;
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static IReadOnlyList<SubrecordPinFrame> ParseRepeatingSubrecord(
         ReadOnlyMemorySlice<byte> span,
@@ -140,18 +101,6 @@ public static class RecordSpanExtensions
         return list;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static IReadOnlyList<SubrecordPinFrame?> TryFindNextSubrecords(ReadOnlyMemorySlice<byte> data, GameConstants meta, out int lenParsed,
         params RecordType[] recordTypes)
     {
@@ -163,17 +112,6 @@ public static class RecordSpanExtensions
             recordTypes: recordTypes);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static IReadOnlyList<SubrecordPinFrame?> TryFindNextSubrecords(ReadOnlyMemorySlice<byte> data, GameConstants meta,
         params RecordType[] recordTypes)
     {
@@ -184,19 +122,6 @@ public static class RecordSpanExtensions
             stopOnAlreadyEncounteredRecord: false,
             recordTypes: recordTypes);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static IReadOnlyList<SubrecordPinFrame?> TryFindNextSubrecords(
         ReadOnlyMemorySlice<byte> data,

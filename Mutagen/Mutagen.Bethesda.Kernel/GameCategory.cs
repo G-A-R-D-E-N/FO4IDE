@@ -2,9 +2,6 @@
 
 namespace Mutagen.Bethesda;
 
-
-
-
 public enum GameCategory
 {
     [Description("Oblivion")]

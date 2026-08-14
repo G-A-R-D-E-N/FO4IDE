@@ -15,7 +15,7 @@ public partial class NavmeshGeometry
         Parent = new CellNavmeshParent();
     }
 }
-    
+
 partial class NavmeshGeometryBinaryCreateTranslation
 {
     public static partial void FillBinaryParentCustom(MutagenFrame frame, INavmeshGeometry item)

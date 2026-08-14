@@ -3,19 +3,6 @@ using System.Collections.Generic;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public readonly struct PapyrusSpan : IEquatable<PapyrusSpan>
 {
     public PapyrusSpan(int start, int length, int line, int column)
@@ -26,28 +13,17 @@ public readonly struct PapyrusSpan : IEquatable<PapyrusSpan>
         Column = column;
     }
 
-
     public int Start { get; }
-
 
     public int Length { get; }
 
-
     public int Line { get; }
-
 
     public int Column { get; }
 
-
     public int End => Start + Length;
 
-
-
-
-
-
     public bool Contains(int offset) => offset >= Start && offset <= End;
-
 
     public PapyrusSpan To(PapyrusSpan other)
     {
@@ -75,18 +51,6 @@ public enum PapyrusSeverity
     Error,
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class PapyrusDiagnostic
 {
     public PapyrusDiagnostic(string code, PapyrusSeverity severity, string message, PapyrusSpan span, string? file = null)
@@ -106,7 +70,6 @@ public sealed class PapyrusDiagnostic
 
     public PapyrusSpan Span { get; }
 
-
     public string? File { get; internal set; }
 
     public override string ToString()
@@ -117,7 +80,6 @@ public sealed class PapyrusDiagnostic
     }
 }
 
-
 public static class PapyrusDiagnosticCodes
 {
 
@@ -126,7 +88,6 @@ public static class PapyrusDiagnosticCodes
     public const string UnterminatedDocComment = "PAP0003";
     public const string UnexpectedCharacter = "PAP0004";
     public const string MalformedNumber = "PAP0005";
-
 
     public const string ExpectedToken = "PAP0010";
     public const string ExpectedScriptName = "PAP0011";
@@ -139,15 +100,10 @@ public static class PapyrusDiagnosticCodes
     public const string StructNeedsMember = "PAP0018";
     public const string TooManyErrors = "PAP0019";
 
-
-
     public const string DuplicateDeclaration = "PAP0020";
-
-
 
     public const string UnresolvedName = "PAP0030";
     public const string UnknownMember = "PAP0031";
-
 
     public const string TypeMismatch = "PAP0040";
     public const string ArgumentCount = "PAP0041";
@@ -156,21 +112,13 @@ public static class PapyrusDiagnosticCodes
     public const string OverrideMismatch = "PAP0044";
     public const string ParameterOrder = "PAP0045";
 
-
-
-
     public const string CannotEmit = "PAP0050";
     public const string UnknownCallTarget = "PAP0051";
     public const string NonConstantInitializer = "PAP0052";
 }
 
-
 internal sealed class DiagnosticBag
 {
-
-
-
-
 
     internal const int MaxDiagnostics = 200;
 
@@ -206,12 +154,6 @@ internal sealed class DiagnosticBag
         }
         _items.Add(new PapyrusDiagnostic(code, severity, message, span));
     }
-
-
-
-
-
-
 
     public void TruncateTo(int count)
     {

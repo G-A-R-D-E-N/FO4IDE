@@ -9,24 +9,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class DdsCodecTests
 {
     private readonly ITestOutputHelper _out;
@@ -69,8 +51,6 @@ public class DdsCodecTests
         var act = () => DdsCodec.Parse(BuildDds("ZZZZ", 64, 64, 1));
         act.Should().Throw<InvalidDataException>().WithMessage("*FourCC*");
     }
-
-
 
     [Theory]
     [InlineData(256, 256, 9, "0-8")]
@@ -123,7 +103,6 @@ public class DdsCodecTests
         got.Path.Should().Be(@"Textures\test\thing_d.dds");
         got.Texture.Should().Be(entry.Texture);
 
-
         var rebuilt = got.Chunks.SelectMany(Ba2Codec.Decompress).ToArray();
         rebuilt.Should().Equal(dds.Skip(128).ToArray());
     }
@@ -154,11 +133,6 @@ public class DdsCodecTests
         act.Should().Throw<InvalidDataException>().WithMessage("*only*bytes follow*");
     }
 
-
-
-
-
-
     [Fact]
     public void VanillaChunkLayoutIsReproduced()
     {
@@ -179,12 +153,6 @@ public class DdsCodecTests
         report.LayoutMismatches.Should().BeEmpty();
         report.UnknownFormats.Should().BeEmpty();
     }
-
-
-
-
-
-
 
     [Fact]
     public void VanillaEntriesRebuildThroughTheWriter()
@@ -223,7 +191,6 @@ public class DdsCodecTests
 
     private static string Describe(IEnumerable<(int First, int Last)> ranges)
         => string.Join(",", ranges.Select(r => $"{r.First}-{r.Last}"));
-
 
     private static byte[] BuildDds(string fourCc, int width, int height, int mips, byte dxgi = 0, bool withPayload = false)
     {

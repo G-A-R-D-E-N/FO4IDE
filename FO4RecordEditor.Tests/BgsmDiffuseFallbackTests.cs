@@ -8,16 +8,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
 public class BgsmDiffuseFallbackTests
 {
     private static readonly string[] DataRootCandidates =
@@ -40,7 +30,6 @@ public class BgsmDiffuseFallbackTests
         try
         {
 
-
             var url = TextureService.GetTexturePngDataUrl(
                 nifPath: Path.Combine(dataRoot, "nonexistent.nif"),
                 relTexPath: @"Architecture\Buildings\WoodPlanks01.BGSM");
@@ -62,8 +51,6 @@ public class BgsmDiffuseFallbackTests
         TextureService.SetSessionRoots(new[] { dataRoot });
         try
         {
-
-
 
             var url = TextureService.GetTexturePngDataUrl(
                 nifPath: Path.Combine(dataRoot, "nonexistent.nif"),

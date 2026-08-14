@@ -3,9 +3,6 @@ using System.Runtime.ExceptionServices;
 
 namespace Mutagen.Bethesda.Plugins.Exceptions;
 
-
-
-
 public class SubrecordException : RecordException
 {
     public RecordType Subrecord { get; internal set; }
@@ -34,9 +31,6 @@ public class SubrecordException : RecordException
         Subrecord = subRecord;
     }
 
-
-
-
     public static SubrecordException Enrich(Exception ex, RecordType subRecord)
     {
         if (ex is SubrecordException sub)
@@ -45,9 +39,6 @@ public class SubrecordException : RecordException
         }
         return new SubrecordException(subRecord, formKey: null, majorRecordType: null, modKey: null, edid: null, innerException: ex);
     }
-
-
-
 
     [DoesNotReturn]
     public static void EnrichAndThrow(Exception ex, RecordType subRecord)
@@ -59,26 +50,17 @@ public class SubrecordException : RecordException
         throw new SubrecordException(subRecord, formKey: null, majorRecordType: null, modKey: null, edid: null, innerException: ex);
     }
 
-
-
-
     [Obsolete("Use Create instead")]
     public static SubrecordException Factory(Exception ex, RecordType subRecord)
     {
         return Enrich(ex, subRecord);
     }
 
-
-
-
     [Obsolete("Use Enrich instead")]
     public static SubrecordException FactoryPassthroughExisting(Exception ex, RecordType subRecord)
     {
         return Enrich(ex, subRecord);
     }
-
-
-
 
     public static SubrecordException Create(string message, RecordType recordType)
     {

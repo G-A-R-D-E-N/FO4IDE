@@ -8,9 +8,6 @@ using Mutagen.Bethesda.Plugins.Cache;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-
-
-
 [DebuggerDisplay("{GameRelease} {ModKey.ToString()}")]
 public abstract class AMod : IMod
 {
@@ -23,7 +20,6 @@ public abstract class AMod : IMod
         _modKey = modKey;
     }
 
-
     public abstract GameRelease GameRelease { get; }
 
     private IFormKeyAllocator _allocator;
@@ -33,10 +29,6 @@ public abstract class AMod : IMod
         _modKey = ModKey.Null;
         _allocator = new SimpleFormKeyAllocator(this);
     }
-
-
-
-
 
     public AMod(ModKey modKey)
     {
@@ -100,12 +92,10 @@ public abstract class AMod : IMod
 
     public MasterStyle MasterStyle => this.GetMasterStyle();
 
-
     public FormKey GetNextFormKey()
     {
         return _allocator.GetNextFormKey();
     }
-
 
     public FormKey GetNextFormKey(string? editorID)
     {
@@ -113,14 +103,12 @@ public abstract class AMod : IMod
         return _allocator.GetNextFormKey(editorID);
     }
 
-
     public TAlloc SetAllocator<TAlloc>(TAlloc allocator)
         where TAlloc : IFormKeyAllocator
     {
         _allocator = allocator;
         return allocator;
     }
-
 
     public abstract uint GetDefaultInitialNextFormID(bool? forceUseLowerFormIDRanges = false);
 }

@@ -44,8 +44,6 @@ public static class InstructionOpCodeArguments
         "SSII",
         "SSII",
 
-
-
         "SSS",
         "S",
         "SS",

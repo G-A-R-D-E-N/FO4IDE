@@ -17,7 +17,7 @@ public partial class Subgraph
         Pipboy
     }
 }
-    
+
 partial class SubgraphBinaryCreateTranslation
 {
     public static partial void FillBinaryRoleCustom(MutagenFrame frame, ISubgraph item, PreviousParse lastParsed)

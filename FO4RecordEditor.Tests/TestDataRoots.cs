@@ -4,21 +4,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class TestDataRoots
 {
     private static readonly string[] Candidates =
@@ -29,12 +14,9 @@ public static class TestDataRoots
         "/media/ricky/D Drive/Fallout4Backup/Fallout 4/Data",
         "/media/ricky/D Drive/InstallTest/Stock Folder/Data",
 
-
-
         "/run/media/ricky/Games-Storage/Modlists/Fallen World Alpha 2/Stock Folder/Data",
         "/run/media/ricky/Games-Storage/SteamLibrary/steamapps/common/Fallout 4/Data",
     };
-
 
     public static string? DataRoot
     {
@@ -47,7 +29,6 @@ public static class TestDataRoots
         }
     }
 
-
     public static string? Archive(string fileName)
     {
         var root = DataRoot;
@@ -55,7 +36,6 @@ public static class TestDataRoots
         var full = Path.Combine(root, fileName);
         return File.Exists(full) ? full : null;
     }
-
 
     public static bool FixturesRequired =>
         Environment.GetEnvironmentVariable("FO4RE_REQUIRE_FIXTURES") == "1";

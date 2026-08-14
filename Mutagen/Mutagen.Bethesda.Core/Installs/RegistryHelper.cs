@@ -11,13 +11,13 @@ internal static class RegistryHelper
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             var value = key.GetValue(valueName);
-            return value == null 
-                ? GetResponse<object>.Fail($"RegistryKey {key} does not have value {valueName}!") 
+            return value == null
+                ? GetResponse<object>.Fail($"RegistryKey {key} does not have value {valueName}!")
                 : GetResponse<object>.Succeed(value);
         }
         throw new NotImplementedException();
     }
-        
+
     internal static GetResponse<string> GetStringValueFromRegistry(RegistryKey key, string valueName)
     {
         var objectRes = GetObjectFromRegistry(key, valueName);
@@ -25,11 +25,11 @@ internal static class RegistryHelper
         {
             return objectRes.BubbleFailure<string>();
         }
-            
+
         var sValue = objectRes.Value.ToString() ?? string.Empty;
-            
-        return string.IsNullOrEmpty(sValue) 
-            ? GetResponse<string>.Fail($"Value {valueName} in RegistryKey {key} is null or empty!") 
+
+        return string.IsNullOrEmpty(sValue)
+            ? GetResponse<string>.Fail($"Value {valueName} in RegistryKey {key} is null or empty!")
             : GetResponse<string>.Succeed(sValue);
     }
 }

@@ -2,13 +2,6 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Materials;
 
-
-
-
-
-
-
-
 internal sealed class MatReader
 {
     private readonly byte[] _data;
@@ -38,7 +31,6 @@ internal sealed class MatReader
     public float[] ReadColor3() => new[] { ReadF32(), ReadF32(), ReadF32() };
 }
 
-
 internal sealed class MatWriter
 {
     private readonly List<byte> _data = new();
@@ -47,8 +39,6 @@ internal sealed class MatWriter
     public void WriteU32(uint v) => _data.AddRange(BitConverter.GetBytes(v));
     public void WriteF32(float v) => _data.AddRange(BitConverter.GetBytes(v));
 
-
-
     public void WriteString(string value)
     {
         if (string.IsNullOrEmpty(value)) { WriteU32(0); return; }
@@ -56,12 +46,6 @@ internal sealed class MatWriter
         WriteU32((uint)bytes.Length);
         _data.AddRange(bytes);
     }
-
-
-
-
-
-
 
     public void WriteBgsmString(string? value)
     {
@@ -75,19 +59,11 @@ internal sealed class MatWriter
     public byte[] ToArray() => _data.ToArray();
 }
 
-
-
-
-
-
-
 public static class BgsmCodec
 {
     public const uint Signature = 0x4D534742;
 
     internal static MaterialHeader ParseHeader(MatReader r) => ParseHeader(r, Signature, "BGSM");
-
-
 
     internal static MaterialHeader ParseHeader(MatReader r, uint expectedSignature, string formatName)
     {

@@ -1,22 +1,9 @@
 
-
-
-
-
-
-
-
-
-
-
-
 import * as THREE from 'three';
-
 
 export function isRotateAboutUp(mode: number | undefined): boolean {
   return mode === 1 || mode === 8 || mode === 9;
 }
-
 
 export function vertsCentroid(verts: number[], out = new THREE.Vector3()): THREE.Vector3 {
   if (verts.length < 3) return out.set(0, 0, 0);
@@ -36,15 +23,6 @@ const _quat = new THREE.Quaternion();
 const _scaleV = new THREE.Vector3();
 const _pivot = new THREE.Matrix4();
 const _camPos = new THREE.Vector3();
-
-
-
-
-
-
-
-
-
 
 export function billboardMatrix(
   out: THREE.Matrix4,

@@ -9,10 +9,6 @@ namespace Mutagen.Bethesda.Archives.DI;
 public interface IArchiveReaderProvider
 {
 
-
-
-
-
     IArchiveReader Create(FilePath path);
 }
 
@@ -28,7 +24,6 @@ public sealed class ArchiveReaderProvider : IArchiveReaderProvider
         _fileSystem = fileSystem;
         _gameRelease = gameRelease;
     }
-
 
     public IArchiveReader Create(FilePath path)
     {

@@ -5,16 +5,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
 public class BgemCodecTests
 {
     private readonly Xunit.Abstractions.ITestOutputHelper _out;
@@ -33,7 +23,6 @@ public class BgemCodecTests
         var ms = new MemoryStream();
         using var bw = new BinaryWriter(ms);
 
-
         bw.Write((uint)0x4D454742);
         bw.Write((uint)2);
         bw.Write((uint)3);
@@ -47,8 +36,6 @@ public class BgemCodecTests
         bw.Write((byte)0); bw.Write((byte)0); bw.Write(0f);
         bw.Write((byte)0); bw.Write(1f);
         bw.Write((byte)0);
-
-
 
         WriteMatStr(bw, @"Textures\Effects\Glow_d.dds");
         WriteMatStr(bw, "");
@@ -100,8 +87,6 @@ public class BgemCodecTests
         d.EnvmapMinLOD.Should().Be((byte)3);
         d.SoftDepth.Should().Be(15f);
 
-
-
         d.SpecularTexture.Should().BeNull();
         d.GlassEnabled.Should().BeNull();
         d.EnvironmentMapping.Should().BeNull();
@@ -117,16 +102,12 @@ public class BgemCodecTests
         BgemCodec.Write(BgemCodec.Parse(original)).Should().Equal(original);
     }
 
-
-
     [Fact]
     public void EmptyTextureSlotIsNullTerminatedNotZeroLength()
     {
         var d = BgemCodec.Parse(BuildV2Reference());
         d.GrayscaleTexture = "";
         var bytes = BgemCodec.Write(d);
-
-
 
         BgemCodec.Parse(bytes).GrayscaleTexture.Should().Be("\0");
     }
@@ -143,8 +124,6 @@ public class BgemCodecTests
         act.Should().Throw<InvalidDataException>().WithMessage("*BGSM or BGEM*");
     }
 
-
-
     [Fact]
     public void WriteForcesTheSignatureTheConcreteTypeDemands()
     {
@@ -155,9 +134,6 @@ public class BgemCodecTests
         MaterialCodec.Parse(bytes).Should().BeOfType<BgemData>();
         BitConverter.ToUInt32(bytes, 0).Should().Be(BgemCodec.Signature);
     }
-
-
-
 
     [Fact]
     public void RealMaterialsRoundTripByteForByte()

@@ -8,20 +8,11 @@ using Noggog.StructuredStrings;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-
-
-
 public interface IMergeableBlock : ILoquiObject, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
 {
 
-
-
     int BlockNumber { get; }
 }
-
-
-
-
 
 public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGetter<TBlock>, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
     where TBlock : class, ILoquiObject, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
@@ -32,13 +23,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
     private readonly Func<int, List<TBlock>, TBlock> _mergeBlocksFunc;
     private List<TBlock>? _cache;
     private readonly object _cacheLock = new object();
-
-
-
-
-
-
-
 
     public MergedListGroup(
         IEnumerable<TListGroup> sourceGroups,
@@ -60,7 +44,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
             {
                 if (_cache != null) return _cache;
 
-
                 var blocksByNumber = new Dictionary<int, List<TBlock>>();
 
                 foreach (var group in _sourceGroups)
@@ -75,7 +58,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
                         blocksByNumber[blockNumber].Add(block);
                     }
                 }
-
 
                 var result = new List<TBlock>();
                 foreach (var blockNumber in blocksByNumber.Keys.OrderBy(k => k))
@@ -112,7 +94,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
 
     IEnumerable<TBlock> IListGroupGetter<TBlock>.GetEnumerator() => Cache;
 
-
     ILoquiRegistration ILoquiObject.Registration => null!;
 
     public void Print(StructuredStringBuilder sb, string? name = null)
@@ -128,7 +109,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
         }
     }
 
-
     public IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(AssetLinkQuery queryCategories = AssetLinkQuery.Listed, IAssetLinkCache? linkCache = null, Type? assetType = null)
     {
         foreach (var block in Cache)
@@ -140,7 +120,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
         }
     }
 
-
     void IBinaryItem.WriteToBinary(MutagenWriter writer, TypedWriteParams translationParams)
     {
         foreach (var block in Cache)
@@ -150,7 +129,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
     }
 
     object IBinaryItem.BinaryWriteTranslator => this;
-
 
     public IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true)
     {
@@ -162,7 +140,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
             }
         }
     }
-
 
     public ILoquiRegistration ContainedRecordRegistration
     {
@@ -177,7 +154,6 @@ public class MergedListGroup<TBlock, TListGroup> : ILoquiObject, IListGroupGette
         }
     }
     public Type ContainedRecordType => typeof(TBlock);
-
 
     public IEnumerable<IMajorRecordGetter> EnumerateMajorRecords()
     {

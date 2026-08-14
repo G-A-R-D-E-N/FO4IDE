@@ -10,10 +10,6 @@ using Mutagen.Bethesda.Environments;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 public static partial class MutagenLoader
 {
 
@@ -22,7 +18,6 @@ public static partial class MutagenLoader
         "Registration", "IsCompressed", "IsDeleted", "FormVersion",
         "VersionControl", "StaticRegistration", "ProtocolDefinition",
         "CustomData", "BinaryWriteTranslator", "RecordType", "ContainedFormLinks",
-
 
         "Fallout4MajorRecordFlags", "MajorRecordFlags", "MajorRecordFlagsRaw",
         "Version2", "MajorFlags", "IsNull", "FormVersion2",
@@ -35,45 +30,20 @@ public static partial class MutagenLoader
         typeof(long), typeof(ulong), typeof(float), typeof(double),
     };
 
-
-
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> LooseMods = new(StringComparer.OrdinalIgnoreCase);
-
 
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> LooseModPaths = new(StringComparer.OrdinalIgnoreCase);
 
-
-
-
-
-
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> PluginSourcePaths = new(StringComparer.OrdinalIgnoreCase);
-
-
-
 
     public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> EditableMods = new(StringComparer.OrdinalIgnoreCase);
 
-
-
-
     public static Mutagen.Bethesda.Plugins.Cache.ILinkCache? LinkCache;
-
-
-
 
     public static readonly System.Collections.Generic.Dictionary<string, bool> MasterIsEsl =
         new(System.StringComparer.OrdinalIgnoreCase);
 
-
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, PropertyInfo?> _nameProp = new();
-
-
-
-
-
-
-
 
     public static string DescribeFormKey(object? envObj, string formKeyStr)
     {
@@ -124,9 +94,6 @@ public static partial class MutagenLoader
         catch { return fkStr; }
     }
 
-
-
-
     private static readonly Lazy<List<(string Name, Type Type)>> _fo4Records = new(() =>
     {
         var list = new List<(string, Type)>();
@@ -145,9 +112,6 @@ public static partial class MutagenLoader
     });
 
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, string> _refTypesCache = new();
-
-
-
 
     private static (string? Display, string? Csv) FormLinkInfo(Type t)
     {
@@ -173,12 +137,6 @@ public static partial class MutagenLoader
         return (null, null);
     }
 
-
-
-
-
-
-
     private static readonly Lazy<Dictionary<string, Type>> _getterIfaceBySig = new(() =>
     {
         var map = new Dictionary<string, Type>(StringComparer.Ordinal);
@@ -196,37 +154,17 @@ public static partial class MutagenLoader
         return map;
     });
 
-
-
-
-
-
-
-
     internal sealed class ModIndex
     {
 
-
-
         public Dictionary<string, int> Counts = new(StringComparer.Ordinal);
-
 
         public readonly System.Collections.Concurrent.ConcurrentDictionary<string, List<Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter>> BySig =
             new(StringComparer.Ordinal);
 
-
-
-
         public Dictionary<FormKey, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter>? ByFormKey;
 
-
         public long RetainedRecords;
-
-
-
-
-
-
 
         public object? Source;
 
@@ -237,24 +175,9 @@ public static partial class MutagenLoader
     private static long _modIndexAccessTick;
     private static readonly object _modIndexEvictLock = new();
 
-
-
-
-
-
-
-
     public static int MaxCachedModIndexes = 64;
 
-
-
-
-
-
-
     public static long MaxCachedIndexRecords = 500_000;
-
-
 
     private static object? ResolveMod(string modName, object? envObj)
     {
@@ -272,7 +195,6 @@ public static partial class MutagenLoader
         }
         return LooseMods.TryGetValue(modName, out var loose) ? loose : null;
     }
-
 
     private static IEnumerable<(string name, object mod)> AllLoadedMods(object? envObj)
     {
@@ -294,11 +216,8 @@ public static partial class MutagenLoader
             if (seen.Add(kv.Key)) yield return (kv.Key, kv.Value);
     }
 
-
     private static ModIndex GetModIndex(object mod, string modName, Action<string>? progress = null)
     {
-
-
 
         if (_modIndexCache.TryGetValue(modName, out var cached) && ReferenceEquals(cached.Source, mod))
         {
@@ -310,16 +229,12 @@ public static partial class MutagenLoader
         if (mod is Mutagen.Bethesda.Fallout4.IFallout4ModGetter f4mod)
         {
 
-
-
             var cacheKey = CountsCacheKeyFor(modName);
             if (cacheKey != null && RecordCountCache.TryGet(cacheKey, out var persisted))
             {
                 idx.Counts = persisted;
                 return StoreModIndex(modName, idx);
             }
-
-
 
             int count = 0;
             foreach (var rec in f4mod.EnumerateMajorRecords())
@@ -334,9 +249,6 @@ public static partial class MutagenLoader
         return StoreModIndex(modName, idx);
     }
 
-
-
-
     private static void RegisterPluginSourcePath(string modName, string dataFolder)
     {
         try
@@ -347,38 +259,12 @@ public static partial class MutagenLoader
         catch { }
     }
 
-
-
-
-
-
-
-
-
-
-
     public static string? CountsCacheKeyFor(string modName)
     {
         if (EditableMods.ContainsKey(modName)) return null;
         if (LooseModPaths.TryGetValue(modName, out var loose)) return loose;
         return PluginSourcePaths.TryGetValue(modName, out var path) ? path : null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static List<Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter> RecordsOfSig(ModIndex idx, string sig)
     {
@@ -403,15 +289,6 @@ public static partial class MutagenLoader
         return stored;
     }
 
-
-
-
-
-
-
-
-
-
     private static Dictionary<FormKey, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter> RecordsByFormKey(ModIndex idx)
     {
         if (idx.ByFormKey is { } built) return built;
@@ -427,25 +304,9 @@ public static partial class MutagenLoader
         return map;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static IEnumerable<(string sig, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)> StreamRecords(ModIndex idx)
     {
         if (idx.Source is not Mutagen.Bethesda.Fallout4.IFallout4ModGetter f4mod) yield break;
-
-
-
 
         var alreadyServed = new HashSet<string>(idx.BySig.Keys, StringComparer.Ordinal);
 
@@ -462,11 +323,6 @@ public static partial class MutagenLoader
         }
     }
 
-
-
-
-
-
     private static Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter? LookupByFormKey(
         ModIndex idx, FormKey formKey, string? sigHint)
     {
@@ -479,7 +335,6 @@ public static partial class MutagenLoader
         return RecordsByFormKey(idx).TryGetValue(formKey, out var r) ? r : null;
     }
 
-
     private static ModIndex StoreModIndex(string modName, ModIndex idx)
     {
         idx.LastAccess = System.Threading.Interlocked.Increment(ref _modIndexAccessTick);
@@ -487,13 +342,6 @@ public static partial class MutagenLoader
         EvictModIndexLru();
         return idx;
     }
-
-
-
-
-
-
-
 
     private static void EvictModIndexLru()
     {
@@ -520,28 +368,6 @@ public static partial class MutagenLoader
 
     public static void InvalidateModIndex(string modName) => _modIndexCache.TryRemove(modName, out _);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static void ReleaseLooseMod(string modName)
     {
         InvalidateModIndex(modName);
@@ -549,11 +375,6 @@ public static partial class MutagenLoader
         if (EditableMods.TryGetValue(modName, out var editable) && ReferenceEquals(editable, mod)) return;
         (mod as IDisposable)?.Dispose();
     }
-
-
-
-
-
 
     public static void ReplaceLooseMod(string modName, object mod)
     {
@@ -563,12 +384,9 @@ public static partial class MutagenLoader
         InvalidateModIndex(modName);
     }
 
-
     public static int ModIndexCacheCount => _modIndexCache.Count;
     public static bool ModIndexCacheContains(string modName) => _modIndexCache.ContainsKey(modName);
     public static void ClearModIndexCacheForTest() => _modIndexCache.Clear();
-
-
 
     public static void SeedModIndexForTest(string modName, object source, long retainedRecords = 0)
         => StoreModIndex(modName, new ModIndex { Source = source, RetainedRecords = retainedRecords });
@@ -585,9 +403,6 @@ public static partial class MutagenLoader
         var modPath = ModPath.FromPath(espPath);
         var mod = Fallout4Mod.CreateFromBinaryOverlay(modPath, Fallout4Release.Fallout4);
 
-
-
-
         ReplaceLooseMod(fileName, mod);
         LooseModPaths[fileName] = espPath;
 
@@ -599,8 +414,6 @@ public static partial class MutagenLoader
         return root;
     }
 
-
-
     public static RecordNode MakeLazyNode(string pluginName, string? filePath = null)
     {
         var root = new RecordNode { Key = pluginName, FilePath = filePath };
@@ -609,8 +422,6 @@ public static partial class MutagenLoader
         root.Children.Add(dummy);
         return root;
     }
-
-
 
     public static (object env, List<string> plugins) BuildEnvironment(
         IProgress<(string message, double? percent)>? progress = null,
@@ -632,7 +443,6 @@ public static partial class MutagenLoader
         catch (System.Exception ex)
         {
 
-
             throw TranslateEnvironmentError(ex);
         }
         LinkCache = env.LinkCache;
@@ -647,8 +457,6 @@ public static partial class MutagenLoader
                 MasterIsEsl[l.ModKey.FileName.String] = l.Mod.IsSmallMaster;
                 RegisterPluginSourcePath(l.ModKey.FileName.String, env.DataFolderPath.Path);
             }
-
-
 
         try { TextureService.SetSessionRoots(new[] { env.DataFolderPath.Path }); } catch { }
         try { AssetResolver.SetSessionDataRoots(new[] { env.DataFolderPath.Path }); } catch { }
@@ -700,7 +508,6 @@ public static partial class MutagenLoader
         var idx = GetModIndex(mod, modName, progress);
 
         var result = new List<RecordNode>();
-
 
         foreach (var sig in idx.Counts.Keys.OrderBy(g => g))
         {
@@ -758,24 +565,15 @@ public static partial class MutagenLoader
         var fkStr = node.GetValue("FormKey");
         if (fkStr == null || !FormKey.TryFactory(fkStr, out var formKey)) return;
 
-
         if (string.IsNullOrEmpty(modName)) modName = formKey.ModKey.FileName.String;
 
         var mod = ResolveMod(modName, envObj);
         if (mod == null) return;
 
-
-
-
-
         var idx = GetModIndex(mod, modName);
         var rec = LookupByFormKey(idx, formKey, node.GetValue("Type"));
         if (rec != null) WalkObject(rec, node, 0, 4, modName);
     }
-
-
-
-
 
     public static List<string> PopulateNodeAllVersions(RecordNode node, object? envObj)
     {
@@ -802,16 +600,6 @@ public static partial class MutagenLoader
         return versions.Select(v => v.plugin).ToList();
     }
 
-
-
-
-
-
-
-
-
-
-
     public static List<RecordNode> BuildPopulatedFields(string formKeyStr, object? envObj, string modName, string? sig = null)
     {
         var temp = new RecordNode { Key = "temp" };
@@ -829,11 +617,6 @@ public static partial class MutagenLoader
         return temp.Children.ToList();
     }
 
-
-
-
-
-
     public static Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter? GetRecordVersion(
         object? envObj, string plugin, FormKey fk)
     {
@@ -842,13 +625,10 @@ public static partial class MutagenLoader
         return null;
     }
 
-
     public static List<string> GetConflictingPlugins(object? envObj, FormKey fk) =>
         GetRecordContexts(envObj, fk).Select(c => c.plugin).ToList();
 
     public sealed record RefByDto(string Plugin, string FormKey, string EditorID, string Type);
-
-
 
     public static List<RefByDto> GetReferencedBy(object? envObj, string formKeyStr, int cap = 500)
     {
@@ -859,10 +639,6 @@ public static partial class MutagenLoader
         foreach (var (name, mod) in AllLoadedMods(envObj))
         {
             if (mod is not Mutagen.Bethesda.Fallout4.IFallout4ModGetter f4) continue;
-
-
-
-
 
             try
             {
@@ -993,8 +769,6 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-
-
     public static List<ProblemDto> GetRecordProblems(object? envObj, string formKeyStr)
     {
         var result = new List<ProblemDto>();
@@ -1028,14 +802,6 @@ public static partial class MutagenLoader
         if (rec.IsDeleted)
             result.Add(new ProblemDto("Error", "Record is flagged DELETED -- prefer a disable/override; deletions can crash the game."));
 
-
-
-
-
-
-
-
-
         var loaded = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (name, _) in AllLoadedMods(envObj)) loaded.Add(name);
 
@@ -1051,16 +817,11 @@ public static partial class MutagenLoader
         return result;
     }
 
-
     private static readonly Dictionary<string, string> _sigToClass = new(StringComparer.OrdinalIgnoreCase)
     {
         ["COBJ"] = "ConstructibleObject", ["WEAP"] = "Weapon", ["ARMO"] = "Armor", ["ALCH"] = "Ingestible",
         ["MISC"] = "MiscItem", ["FLST"] = "FormList", ["LVLI"] = "LeveledItem", ["AMMO"] = "Ammunition",
     };
-
-
-
-
 
     public static List<(FormKey fk, string editorId, string sig)> EnumerateOverrides(
         object? envObj, string plugin, string? sig = null)
@@ -1081,8 +842,6 @@ public static partial class MutagenLoader
         return result;
     }
 
-
-
     public static bool CobjUsesComponent(Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec, FormKey component)
     {
         if (rec is not Mutagen.Bethesda.Fallout4.IConstructibleObjectGetter cobj || cobj.Components == null) return false;
@@ -1091,17 +850,10 @@ public static partial class MutagenLoader
         return false;
     }
 
-
-
-
-
-
     public static List<(string plugin, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)>
         GetRecordContexts(object? envObj, FormKey fk)
     {
         var ordered = new List<(string plugin, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)>();
-
-
 
         if (envObj != null)
         {
@@ -1117,18 +869,9 @@ public static partial class MutagenLoader
             catch (Exception ex)
             {
 
-
-
-
-
                 DebugLog.Exception($"GetRecordContexts({fk})", ex);
             }
         }
-
-
-
-
-
 
         foreach (var kv in EditableMods)
         {
@@ -1145,10 +888,6 @@ public static partial class MutagenLoader
         return ordered;
     }
 
-
-
-
-
     public static ConflictMatrix? BuildConflictMatrix(object? envObj, string formKeyStr)
     {
         if (envObj == null || !FormKey.TryFactory(formKeyStr, out var fk)) return null;
@@ -1164,13 +903,11 @@ public static partial class MutagenLoader
         var rows = new List<ConflictFieldRow>();
         FlattenConflictRows(root, "", 0, plugins, rows);
 
-
         var identityKeys = new[] { "EditorID", "TitleString", "FormKey", "Description", "Type", "_HasData" };
         var orderedRows = rows.OrderBy(r => {
             int idx = Array.IndexOf(identityKeys, r.Field);
             return idx == -1 ? 999 : idx;
         }).ToList();
-
 
         string level;
         if (plugins.Count <= 1) level = "onlyone";
@@ -1192,17 +929,12 @@ public static partial class MutagenLoader
         };
     }
 
-
-
-
     private static string MakeDisplayLabel(string key, string parentKey)
     {
         if (key.Length > 1 && key[0] == '[' && parentKey != "root")
             return $"{Rendering.FriendlyNames.Singular(parentKey)} {key}";
         return Rendering.FriendlyNames.Label(key);
     }
-
-
 
     private static string GroupOf(string path)
     {
@@ -1211,12 +943,6 @@ public static partial class MutagenLoader
         int cut = dot < 0 ? brk : brk < 0 ? dot : Math.Min(dot, brk);
         return cut <= 0 ? "" : path[..cut];
     }
-
-
-
-
-
-
 
     private static string ClassifyKind(string editKind, string key, IReadOnlyList<string> values)
     {
@@ -1237,14 +963,11 @@ public static partial class MutagenLoader
             string p = path + sep + child.Key;
             bool hasKids = child.Children.Count > 0;
 
-
             if (child.Values.Count > 0 || hasKids)
             {
                 var vals = plugins.Select(pl => child.Values.TryGetValue(pl, out var v) ? v : "").ToList();
                 var present = vals.Where(v => v.Length > 0).ToList();
                 bool anyMissing = present.Count < plugins.Count;
-
-
 
                 bool differs = present.Select(CanonValue).Distinct().Count() > 1 || (present.Count > 0 && anyMissing);
                 var editKindString = child.EditKind.ToString();
@@ -1262,13 +985,9 @@ public static partial class MutagenLoader
                 });
             }
 
-
-
             FlattenConflictRows(child, p, depth + 1, plugins, rows);
         }
     }
-
-
 
     public static string CanonValue(string v)
     {
@@ -1277,8 +996,6 @@ public static partial class MutagenLoader
             return d.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         return v;
     }
-
-
 
     public static (string[] statuses, string severity) ClassifyRow(IReadOnlyList<string> vals, string editKind)
     {
@@ -1295,7 +1012,6 @@ public static partial class MutagenLoader
         string Canon(int i) => CanonValue(vals[i]);
         bool Eq(int a, int b) => string.Equals(Canon(a), Canon(b), StringComparison.Ordinal);
 
-
         var distinct = new HashSet<string>(StringComparer.Ordinal);
         foreach (var i in present) distinct.Add(Canon(i));
         bool anyMissing = present.Count < n;
@@ -1311,12 +1027,10 @@ public static partial class MutagenLoader
             statuses[i] = Eq(i, winnerIdx) ? "override" : "lose";
         }
 
-
         string severity;
         if (!differs) severity = "none";
         else
         {
-
 
             bool refBrokenWinner = string.Equals(editKind, "Ref", StringComparison.OrdinalIgnoreCase)
                 && LooksNullRef(vals[winnerIdx]) && present.Any(i => !LooksNullRef(vals[i]));
@@ -1330,12 +1044,6 @@ public static partial class MutagenLoader
     private static bool LooksNullRef(string v) =>
         string.IsNullOrEmpty(v) || v.Equals("Null", StringComparison.OrdinalIgnoreCase)
         || v.Equals("None", StringComparison.OrdinalIgnoreCase) || v.StartsWith("000000:", StringComparison.OrdinalIgnoreCase);
-
-
-
-
-
-
 
     public static IReadOnlyList<string> QueryLoadedPlugins(object? envObj)
     {
@@ -1372,7 +1080,6 @@ public static partial class MutagenLoader
         return recs.Skip(Math.Max(0, offset)).Take(limit).Select(r => (r.FormKey.ToString(), r.EditorID ?? "")).ToList();
     }
 
-
     public static int CountRecordsOfType(object? envObj, string plugin, string sig)
     {
         var mod = ResolveMod(plugin, envObj);
@@ -1380,11 +1087,6 @@ public static partial class MutagenLoader
         var idx = GetModIndex(mod, plugin);
         return idx.Counts.TryGetValue(sig, out var n) ? n : 0;
     }
-
-
-
-
-
 
     public static string QueryRecordSummaries(object? envObj, string plugin, string sig, int limit, int offset = 0)
     {
@@ -1398,18 +1100,12 @@ public static partial class MutagenLoader
         var take = recs.Skip(Math.Max(0, offset)).Take(limit).ToList();
         if (take.Count == 0) return $"No records of type '{sig}' in {plugin} at offset {offset}.";
 
-
-
         var rec0 = take[0];
         var colProps = DiscoverGridColumns(rec0, 8);
-
-
-
 
         const int EW = 36, VW = 26, Budget = 6800;
         var sb = new System.Text.StringBuilder();
         sb.AppendLine($"{sig} in {plugin}: {recs.Count} total record(s).");
-
 
         var head = "  " + "EditorID [FormKey]".PadRight(EW);
         foreach (var p in colProps) head += " | " + SumTrunc(p.Name, VW).PadRight(VW);
@@ -1451,14 +1147,8 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-
-
-
     private static List<PropertyInfo> DiscoverGridColumns(object rec0, int max)
     {
-
-
-
 
         var scalars = new List<PropertyInfo>();
         var collections = new List<PropertyInfo>();
@@ -1488,10 +1178,6 @@ public static partial class MutagenLoader
         if (ie is ICollection c) return c.Count;
         int n = 0; foreach (var _ in ie) n++; return n;
     }
-
-
-
-
 
     public static IReadOnlyList<Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter> GetRecordsForBatch(
         object? envObj, string plugin, string sig)
@@ -1526,20 +1212,10 @@ public static partial class MutagenLoader
 
     public sealed record SearchHit(string FormKey, string EditorID, string Type, string Plugin, string Name = "");
 
-
-
-
     public static List<SearchHit> SearchAllRecords(object? envObj, string query, string? typeFilter = null, int limit = 200)
     {
         if (envObj == null) return new List<SearchHit>();
         query ??= "";
-
-
-
-
-
-
-
 
         var hits = new Dictionary<FormKey, SearchHit>();
 
@@ -1549,16 +1225,10 @@ public static partial class MutagenLoader
                 typeFilter.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
                 StringComparer.OrdinalIgnoreCase);
 
-
-
-
         const int AccumulationCap = 5000;
 
         foreach (var (name, mod) in AllLoadedMods(envObj))
         {
-
-
-
 
             try
             {
@@ -1569,7 +1239,6 @@ public static partial class MutagenLoader
                     {
                         var eid = r.EditorID ?? "";
                         string dispName = "";
-
 
                         try { dispName = r is Mutagen.Bethesda.Plugins.Aspects.INamedGetter nm ? (nm.Name ?? "") : ""; }
                         catch { }
@@ -1591,28 +1260,12 @@ public static partial class MutagenLoader
         return hits.Values.Take(limit).ToList();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static object? ResolveModPublic(string plugin, object? envObj) => ResolveMod(plugin, envObj);
 
     public static List<SearchHit> SearchCellRecords(object? envObj, string query, int limit = 25)
     {
         if (envObj == null) return new List<SearchHit>();
         query ??= "";
-
-
-
-
 
         var hits = new Dictionary<FormKey, SearchHit>();
 
@@ -1632,12 +1285,6 @@ public static partial class MutagenLoader
         }
         return hits.Values.Take(limit).ToList();
     }
-
-
-
-
-
-
 
     public static List<SearchHit> SearchWorldspaceRecords(object? envObj, string query, int limit = 100)
     {
@@ -1664,7 +1311,6 @@ public static partial class MutagenLoader
 
     public static string QueryRecordFields(object? envObj, string plugin, string formKeyOrEditorId)
     {
-
 
         var candidates = new List<(string name, object mod)>();
         var named = ResolveMod(plugin, envObj);
@@ -1709,8 +1355,6 @@ public static partial class MutagenLoader
                $"Try search_records first, or use the exact plugin name from list_plugins.)";
     }
 
-
-
     public static string CheckPlugin(object? envObj, string plugin)
     {
         var mod = ResolveMod(plugin, envObj);
@@ -1719,7 +1363,6 @@ public static partial class MutagenLoader
 
         var declared = new HashSet<ModKey> { f4.ModKey };
         foreach (var m in f4.MasterReferences) declared.Add(m.Master);
-
 
         var liveCache = envObj != null ? LinkCache : null;
 
@@ -1740,12 +1383,6 @@ public static partial class MutagenLoader
                 broken++;
                 if (samples.Count < 50) samples.Add($"REF TO UNDECLARED MASTER  {CheckLabel(rec)} -> {link.FormKey}");
             }
-
-
-
-
-
-
 
             if (envObj != null && !f4.ModKey.Equals(rec.FormKey.ModKey))
             {
@@ -1794,9 +1431,6 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-
-
-
     public static bool RemoveFromEditableMod(string plugin, Mutagen.Bethesda.Plugins.FormKey fk)
     {
         if (!EditableMods.TryGetValue(plugin, out var modObj)) return false;
@@ -1807,17 +1441,10 @@ public static partial class MutagenLoader
     private static string CheckLabel(Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter r) =>
         $"{(string.IsNullOrEmpty(r.EditorID) ? r.FormKey.ToString() : r.EditorID)} [{r.FormKey}] ({r.Registration.Name})";
 
-
-
-
     private static readonly IReadOnlySet<string> VanillaMasters = ProtectedPlugins.VanillaMasters;
 
     private static bool IsVanillaRef(Mutagen.Bethesda.Plugins.FormKey fk) =>
         VanillaMasters.Contains(fk.ModKey.FileName.String);
-
-
-
-
 
     public static string ScanErrorsDeep(object? envObj, string plugin)
     {
@@ -1852,7 +1479,6 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-
     public static string ScanBrokenRefs(object? envObj, string plugin)
     {
         if (envObj == null) return "scan_broken_refs needs the loaded game environment. Use 'Load Env' first.";
@@ -1870,10 +1496,6 @@ public static partial class MutagenLoader
         return brokenRefs.TrimEnd() + "\n\n" + duplicates;
     }
 
-
-
-
-
     private static HashSet<string> BuildLoadedPluginSet(object? envObj)
     {
         var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1887,15 +1509,6 @@ public static partial class MutagenLoader
         }
         return set;
     }
-
-
-
-
-
-
-
-
-
 
     private static string? ScanBrokenRefsInMod(
         Mutagen.Bethesda.Plugins.Cache.ILinkCache cache, string pluginName,
@@ -1913,8 +1526,6 @@ public static partial class MutagenLoader
             {
                 var fk = link.FormKey;
                 if (fk.IsNull || IsVanillaRef(fk)) continue;
-
-
 
                 if (!loadedPlugins.Contains(fk.ModKey.FileName.String)) continue;
                 if (!cache.TryResolveIdentifier<IMajorRecordGetter>(fk, out _))
@@ -1940,8 +1551,6 @@ public static partial class MutagenLoader
         if (dangling > samples.Count) sb.AppendLine($"  ... and {dangling - samples.Count} more");
         return sb.ToString();
     }
-
-
 
     public static string ScanAllPluginsForBrokenRefs(object? envObj)
     {
@@ -1972,12 +1581,10 @@ public static partial class MutagenLoader
                results.ToString();
     }
 
-
     public static string ScanConflicts(object? envObj, string plugin)
     {
         if (envObj == null) return "Conflict scan needs the loaded game environment. Use 'Load Env' first.";
         dynamic env = envObj;
-
 
         var owners = new Dictionary<FormKey, List<string>>();
         foreach (var l in (IEnumerable)env.LoadOrder.ListedOrder)
@@ -2016,8 +1623,6 @@ public static partial class MutagenLoader
         return sb.ToString();
     }
 
-
-
     public static FormKey ResolveEditorIdToFormKey(object? envObj, string editorId)
     {
         foreach (var (name, mod) in AllLoadedMods(envObj))
@@ -2030,12 +1635,6 @@ public static partial class MutagenLoader
         }
         return FormKey.Null;
     }
-
-
-
-
-
-
 
     public static FormKey ResolveId(object? envObj, string id)
     {
@@ -2052,13 +1651,10 @@ public static partial class MutagenLoader
         {
             var indent = new string(' ', depth * 2);
 
-
             if (c.IsLeaf || c.IsSummary) sb.AppendLine($"{indent}{c.Key}: {c.Value}");
             else { sb.AppendLine($"{indent}{c.Key}:"); FlattenToText(c, depth + 1, sb); }
         }
     }
-
-
 
     [ThreadStatic]
     private static HashSet<object>? _visiting;
@@ -2066,9 +1662,6 @@ public static partial class MutagenLoader
     private static HashSet<object> Visiting => _visiting ??= new HashSet<object>();
 
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, PropertyInfo[]> _propCache = new();
-
-
-
 
     [ThreadStatic] private static int _walkNodeCount;
     private const int MaxWalkNodes = 5000;
@@ -2082,19 +1675,11 @@ public static partial class MutagenLoader
 
         var type = obj.GetType();
 
-
         if (_leafTypes.Contains(type) || type.IsEnum)
         {
             if (parent.IsLeaf) parent.Values[pluginName] = obj.ToString()!;
             return;
         }
-
-
-
-
-
-
-
 
         if (obj is not Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter
             && obj is Mutagen.Bethesda.Plugins.IFormLinkIdentifier topLink)
@@ -2102,7 +1687,6 @@ public static partial class MutagenLoader
             if (parent.IsLeaf)
             {
                 parent.Values[pluginName] = FormatFormLink(topLink);
-
 
                 if (parent.EditKind != Models.FieldEditKind.Ref)
                 {
@@ -2113,21 +1697,17 @@ public static partial class MutagenLoader
             return;
         }
 
-
         if (obj is Mutagen.Bethesda.Strings.ITranslatedStringGetter ts)
         {
             if (parent.IsLeaf) parent.Values[pluginName] = ts.String ?? ts.ToString() ?? "";
             return;
         }
 
-
-
         if (obj is FormKey || obj is ModKey)
         {
             if (parent.IsLeaf) parent.Values[pluginName] = obj.ToString() ?? "";
             return;
         }
-
 
         if (obj is Type || obj is System.Reflection.MemberInfo || obj is System.Reflection.Assembly
             || obj is System.Reflection.Module || obj is System.Reflection.ParameterInfo
@@ -2136,7 +1716,6 @@ public static partial class MutagenLoader
             if (parent.IsLeaf) parent.Values[pluginName] = obj.ToString() ?? "";
             return;
         }
-
 
         if (!Visiting.Add(obj)) return;
         try
@@ -2154,7 +1733,6 @@ public static partial class MutagenLoader
                 if (val == null) continue;
 
                 var valType = val.GetType();
-
 
                 if (val is Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter) continue;
 
@@ -2191,7 +1769,6 @@ public static partial class MutagenLoader
                         (child.RefType, child.RefTypes) = FormLinkInfo(prop.PropertyType);
                 }
 
-
                 else if (val is Mutagen.Bethesda.Strings.ITranslatedStringGetter tstr)
                 {
                     child.Values[pluginName] = tstr.String ?? tstr.ToString() ?? "";
@@ -2207,11 +1784,6 @@ public static partial class MutagenLoader
                     {
                         var items = new List<object>();
                         foreach (var it in enumerable) if (it != null) items.Add(it);
-
-
-
-
-
 
                         if (items.Count > 1 && items.All(x =>
                                 x is Mutagen.Bethesda.Plugins.IFormLinkIdentifier
@@ -2235,7 +1807,6 @@ public static partial class MutagenLoader
                             if (Services.Rendering.ElementRenderer.TryRenderLine(item, out var friendly))
                             {
 
-
                                 entry.Values[pluginName] = friendly;
                                 entry.IsSummary = true;
                             }
@@ -2248,7 +1819,6 @@ public static partial class MutagenLoader
                         }
                     }
                 }
-
 
                 else if (Services.Rendering.ElementRenderer.TryRenderLine(val, out var friendlyVal))
                 {
@@ -2278,7 +1848,6 @@ public static partial class MutagenLoader
             Mutagen.Bethesda.Fallout4.CompareOperator.LessThanOrEqualTo => "<=",
             _ => cond.CompareOperator.ToString(),
         };
-
 
         string rhs = cond switch
         {
@@ -2356,8 +1925,6 @@ public static partial class MutagenLoader
 
         return "";
     }
-
-
 
     private static void AddLeafInit(RecordNode parent, string key, string value, string pluginName = "")
     {

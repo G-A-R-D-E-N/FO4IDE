@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -41,8 +37,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public abstract partial class ADamageType :
         Fallout4MajorRecord,
         IADamageTypeInternal,
@@ -56,7 +50,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
         partial void CustomCtor();
         #endregion
-
 
         #region To String
 
@@ -401,8 +394,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IADamageType :
         IADamageTypeGetter,
         IFallout4MajorRecordInternal,
@@ -417,9 +408,6 @@ namespace Mutagen.Bethesda.Fallout4
         IADamageTypeGetter
     {
     }
-
-
-
 
     public partial interface IADamageTypeGetter :
         IFallout4MajorRecordGetter,
@@ -916,7 +904,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return ADamageType.GetNew();
@@ -1261,7 +1248,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1316,7 +1302,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

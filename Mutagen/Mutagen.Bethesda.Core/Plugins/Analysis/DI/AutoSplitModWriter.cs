@@ -9,10 +9,6 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Analysis.DI;
 
-
-
-
-
 public class AutoSplitModWriter : IAutoSplitModWriter
 {
     private readonly IMultiModFileSplitter _splitter;
@@ -21,14 +17,6 @@ public class AutoSplitModWriter : IAutoSplitModWriter
     {
         _splitter = splitter;
     }
-
-
-
-
-
-
-
-
 
     public void Write<TMod, TModGetter>(
         TModGetter mod,
@@ -66,20 +54,15 @@ public class AutoSplitModWriter : IAutoSplitModWriter
                 $"Mod must be of mutable type {typeof(TMod).Name} to support auto-splitting, but was {mod.GetType().Name}");
         }
 
-
         var splitMods = _splitter.Split<TMod, TModGetter>(mutableMod, Constants.PluginMasterLimit);
-
 
         CleanupOldSplitFiles(path, splitMods.Count, fileSystem);
 
-
         var splitParam = AugmentParamsWithSplitModKeys(param, splitMods);
-
 
         foreach (var splitMod in splitMods)
         {
             var splitPath = Path.Combine(Path.GetDirectoryName(path)!, splitMod.ModKey.FileName);
-
 
             splitMod.WriteToBinary(splitPath, splitParam);
         }
@@ -97,12 +80,10 @@ public class AutoSplitModWriter : IAutoSplitModWriter
 
         ValidateSplitKeyOrder(loadOrderOrdering.LoadOrder, splitModKeys);
 
-
         var existingKeys = loadOrderOrdering.LoadOrder.ToHashSet();
         var missingKeys = splitModKeys.Where(k => !existingKeys.Contains(k)).ToList();
         if (missingKeys.Count == 0)
             return param;
-
 
         var augmentedOrder = loadOrderOrdering.LoadOrder.Concat(missingKeys);
         return param with
@@ -118,7 +99,6 @@ public class AutoSplitModWriter : IAutoSplitModWriter
         var loadOrder = new LoadOrder<LoadOrderListing>(
             loadOrderKeys.Select(k => new LoadOrderListing(k, enabled: true)));
 
-
         var presentSplitKeys = new List<(int splitIndex, int loadOrderIndex, ModKey key)>();
         for (int i = 0; i < splitModKeys.Count; i++)
         {
@@ -129,10 +109,8 @@ public class AutoSplitModWriter : IAutoSplitModWriter
             }
         }
 
-
         if (presentSplitKeys.Count < 2)
             return;
-
 
         for (int i = 1; i < presentSplitKeys.Count; i++)
         {
@@ -161,7 +139,6 @@ public class AutoSplitModWriter : IAutoSplitModWriter
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(originalPath.Path);
         var extension = Path.GetExtension(originalPath.Path);
 
-
         var splitFileName = $"{fileNameWithoutExtension}_{index + 1}{extension}";
         return Path.Combine(directory, splitFileName);
     }
@@ -177,14 +154,11 @@ public class AutoSplitModWriter : IAutoSplitModWriter
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(originalPath.Path);
         var extension = Path.GetExtension(originalPath.Path);
 
-
         var searchPattern = $"{fileNameWithoutExtension}_*{extension}";
 
         foreach (var filePath in fileSystem.Directory.EnumerateFiles(directory, searchPattern))
         {
             var fileName = Path.GetFileNameWithoutExtension(filePath);
-
-
 
             if (MultiModFileAnalysis.IsSplitFileName(fileName, fileNameWithoutExtension, out var splitNumber)
                 && splitNumber > currentSplitCount)
@@ -195,7 +169,6 @@ public class AutoSplitModWriter : IAutoSplitModWriter
                 }
                 catch
                 {
-
 
                 }
             }

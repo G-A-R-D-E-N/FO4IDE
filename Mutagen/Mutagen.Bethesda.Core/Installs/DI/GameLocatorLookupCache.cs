@@ -8,10 +8,10 @@ namespace Mutagen.Bethesda.Installs.DI;
 public class GameLocatorLookupCache : IGameDirectoryLookup, IDataDirectoryLookup
 {
     internal static readonly GameLocatorLookupCache Instance = new();
-    
+
     private readonly Dictionary<GameRelease, DirectoryPath?> _gameDirCache = new();
     private readonly Dictionary<GameRelease, IReadOnlyList<DirectoryPath>> _gameDirsCache = new();
-    
+
     private IEnumerable<DirectoryPath> GetAllGameDirectories(GameRelease release)
     {
         lock (_gameDirsCache)
@@ -76,7 +76,7 @@ public class GameLocatorLookupCache : IGameDirectoryLookup, IDataDirectoryLookup
         }
         throw new DirectoryNotFoundException($"Data folder for {release} cannot be found automatically");
     }
-    
+
     #region Interface Implementations
 
     IEnumerable<DirectoryPath> IDataDirectoryLookup.GetAll(GameRelease release)

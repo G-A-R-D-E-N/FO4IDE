@@ -16,7 +16,7 @@ public sealed class ModListingToStringConverter : IModListingToStringConverter
     {
         return IModListingGetter.ToString(getter);
     }
-        
+
     public string Convert<TMod>(IModListingGetter<TMod> getter)
         where TMod : class, IModGetter
     {

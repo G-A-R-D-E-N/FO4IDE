@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -38,8 +34,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class AObjectModProperty<T> :
         IAObjectModProperty<T>,
@@ -130,8 +124,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAObjectModProperty<T> :
         IAObjectModPropertyGetter<T>,
         IFormLinkContainer,
@@ -141,9 +133,6 @@ namespace Mutagen.Bethesda.Fallout4
         new T Property { get; set; }
         new Single Step { get; set; }
     }
-
-
-
 
     public partial interface IAObjectModPropertyGetter<out T> :
         ILoquiObject,
@@ -578,7 +567,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew<T_Setter>()
             where T_Setter : struct, Enum
         {
@@ -796,7 +784,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -856,7 +843,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

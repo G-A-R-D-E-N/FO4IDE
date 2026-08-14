@@ -6,37 +6,13 @@ public interface IAssetLinkGetter
 {
     IAssetType AssetTypeInstance { get; }
 
-
-
-
     string GivenPath { get; }
-
-
-
-
-
-
-
-
-
-
-
-
 
     DataRelativePath DataRelativePath { get; }
 
-
-
-
     string Extension { get; }
 
-
-
-
     IAssetType Type { get; }
-
-
-
 
     public bool IsNull { get; }
 }
@@ -51,9 +27,6 @@ public interface IAssetLink<out TAssetType> : IAssetLink<IAssetLink<TAssetType>,
 {
     new TAssetType AssetTypeInstance { get; }
 
-
-
-
     new string GivenPath { get; set; }
 }
 
@@ -64,8 +37,6 @@ public interface IAssetLink<out TLinkType, out TAssetType> :
     where TLinkType : IAssetLink<TLinkType, TAssetType>
 {
 
-
-
     new string GivenPath { get; set; }
 
     void SetToNull();
@@ -74,21 +45,9 @@ public interface IAssetLink<out TLinkType, out TAssetType> :
 public interface IAssetLink : IAssetLinkGetter
 {
 
-
-
-
-
     bool TrySetPath(DataRelativePath? path);
 
-
-
-
-
-
     bool TrySetPath(string? path);
-
-
-
 
     new string GivenPath { get; set; }
 }

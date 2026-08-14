@@ -74,18 +74,9 @@ public interface IGameEnvironment : IDisposable
     FilePath? LoadOrderFilePath { get; }
     FilePath? CreationClubListingsFilePath { get; }
 
-
-
-
     ILoadOrderGetter<IModListingGetter<IModGetter>> LoadOrder { get; }
 
-
-
-
     ILinkCache LinkCache { get; }
-
-
-
 
     IAssetProvider AssetProvider { get; }
 }
@@ -93,8 +84,6 @@ public interface IGameEnvironment : IDisposable
 public interface IGameEnvironment<TMod> : IGameEnvironment
     where TMod : class, IModGetter
 {
-
-
 
     new ILoadOrderGetter<IModListingGetter<TMod>> LoadOrder { get; }
 }
@@ -104,12 +93,7 @@ public interface IGameEnvironment<TModSetter, TModGetter> : IGameEnvironment<TMo
     where TModGetter : class, IContextGetterMod<TModSetter, TModGetter>
 {
 
-
-
     new ILoadOrderGetter<IModListingGetter<TModGetter>> LoadOrder { get; }
-
-
-
 
     new ILinkCache<TModSetter, TModGetter> LinkCache { get; }
 }
@@ -136,9 +120,6 @@ partial class GameEnvironmentProviderContainer<TMod> : IContainer<GameEnvironmen
         _gameDirectoryLookup = new GameDirectoryLookupInjection(_release.Release, gameDir.Path);
     }
 }
-
-
-
 
 public sealed class GameEnvironmentState :
     IDataDirectoryProvider,
@@ -219,9 +200,6 @@ public sealed class GameEnvironmentState :
 
     FilePath? ICreationClubListingsPathProvider.Path => CreationClubListingsFilePath;
 }
-
-
-
 
 public sealed class GameEnvironmentState<TMod> :
     IDataDirectoryProvider,
@@ -320,9 +298,6 @@ partial class GameEnvironmentProviderGenericContainer<TModSetter, TModGetter> : 
     }
 }
 
-
-
-
 public sealed class GameEnvironmentState<TModSetter, TModGetter> :
     IDataDirectoryProvider,
     IPluginListingsPathContext,
@@ -343,18 +318,9 @@ public sealed class GameEnvironmentState<TModSetter, TModGetter> :
     public FilePath? CreationClubListingsFilePath => _creationClubListingsFilePathProvider.Path;
     private readonly ICreationClubListingsPathProvider _creationClubListingsFilePathProvider;
 
-
-
-
     public ILoadOrderGetter<IModListingGetter<TModGetter>> LoadOrder { get; }
 
-
-
-
     public ILinkCache<TModSetter, TModGetter> LinkCache { get; }
-
-
-
 
     public IAssetProvider AssetProvider { get; }
 

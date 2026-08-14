@@ -1,8 +1,4 @@
 
-
-
-
-
 using System;
 using System.Collections.Generic;
 using Mutagen.Bethesda.Plugins.Records.Mapping;

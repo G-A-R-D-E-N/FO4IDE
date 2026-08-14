@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -59,8 +55,6 @@ namespace Mutagen.Bethesda.Fallout4
         IASceneActionTypeGetter ISceneActionGetter.Type => Type;
         #endregion
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -2311,8 +2305,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new ASceneActionType Type { get; set; }
 
-
-
         new String? Name { get; set; }
         new Int32? AliasID { get; set; }
         new UInt32? Index { get; set; }
@@ -2373,8 +2365,6 @@ namespace Mutagen.Bethesda.Fallout4
         static ILoquiRegistration StaticRegistration => SceneAction_Registration.Instance;
         IASceneActionTypeGetter Type { get; }
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -3505,7 +3495,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public object GetNew()
         {
@@ -4758,7 +4747,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

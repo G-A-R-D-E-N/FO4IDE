@@ -150,7 +150,6 @@ partial class NpcBinaryCreateTranslation
             };
         }
 
-
         uint rawFlags = (uint)item.Flags;
         rawFlags &= ~PcLevelMultFlag;
         item.Flags = (Npc.Flag)rawFlags;

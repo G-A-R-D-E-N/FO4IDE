@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -56,8 +52,6 @@ namespace Mutagen.Bethesda.Fallout4
         public PlacedObjectMapMarker.Flag Flags { get; set; } = default(PlacedObjectMapMarker.Flag);
         #endregion
         #region Name
-
-
 
         public TranslatedString Name { get; set; } = string.Empty;
         ITranslatedStringGetter IPlacedObjectMapMarkerGetter.Name => this.Name;
@@ -540,8 +534,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new PlacedObjectMapMarker.Flag Flags { get; set; }
 
-
-
         new TranslatedString Name { get; set; }
         new PlacedObjectMapMarker.Types Type { get; set; }
         new Byte Unknown { get; set; }
@@ -563,8 +555,6 @@ namespace Mutagen.Bethesda.Fallout4
         static ILoquiRegistration StaticRegistration => PlacedObjectMapMarker_Registration.Instance;
         PlacedObjectMapMarker.Flag Flags { get; }
         #region Name
-
-
 
         ITranslatedStringGetter Name { get; }
         #endregion
@@ -991,7 +981,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return PlacedObjectMapMarker.GetNew();
@@ -1262,7 +1251,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

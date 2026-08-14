@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #region ObjectBounds
 
-
-
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IObjectBoundsGetter IIngestibleGetter.ObjectBounds => ObjectBounds;
@@ -87,8 +81,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<ITransformGetter> IIngestibleGetter.PreviewTransform => this.PreviewTransform;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -126,8 +118,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
 
-
-
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
             get => this._Keywords;
@@ -147,8 +137,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
 
-
-
         public Model? Model
         {
             get => _Model;
@@ -164,8 +152,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Icons
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Icons? _Icons;
-
-
 
         public Icons? Icons
         {
@@ -222,8 +208,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Destructible
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Destructible? _Destructible;
-
-
 
         public Destructible? Destructible
         {
@@ -1462,32 +1446,20 @@ namespace Mutagen.Bethesda.Fallout4
         IWeightValue
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
         new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
 
-
-
         new Model? Model { get; set; }
-
-
 
         new Icons? Icons { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> PickUpSound { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> PutDownSound { get; set; }
         new IFormLinkNullable<IEquipTypeGetter> EquipmentType { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> CraftingSound { get; set; }
-
-
 
         new Destructible? Destructible { get; set; }
         new TranslatedString? Description { get; set; }
@@ -1543,32 +1515,22 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Ingestible_Registration.Instance;
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         IFormLinkNullableGetter<ITransformGetter> PreviewTransform { get; }
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
         #region Model
 
-
-
         IModelGetter? Model { get; }
         #endregion
         #region Icons
-
-
 
         IIconsGetter? Icons { get; }
         #endregion
@@ -1577,8 +1539,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IEquipTypeGetter> EquipmentType { get; }
         IFormLinkNullableGetter<ISoundDescriptorGetter> CraftingSound { get; }
         #region Destructible
-
-
 
         IDestructibleGetter? Destructible { get; }
         #endregion
@@ -2444,7 +2404,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Ingestible.GetNew();
@@ -3296,7 +3255,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

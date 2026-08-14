@@ -1,11 +1,6 @@
 import type { BpDocument, BpNode, BpNodeDef, BpWire } from './graphModel';
 import { newId } from './graphModel';
 
-
-
-
-
-
 export interface BpSelection {
   nodes: string[];
   wires: string[];
@@ -81,7 +76,6 @@ export function graphReducer(state: GraphState, action: GraphAction): GraphState
 
     case 'MOVE_NODES': {
 
-
       const moving = new Set(action.ids);
       return pushHistory(state, {
         ...state.doc,
@@ -118,7 +112,6 @@ export function graphReducer(state: GraphState, action: GraphAction): GraphState
       });
 
     case 'ADD_WIRE': {
-
 
       const { wire, defs } = action;
       const fromDef = defs[wire.from.node];
@@ -159,7 +152,6 @@ export function graphReducer(state: GraphState, action: GraphAction): GraphState
     }
 
     case 'SET_POSITIONS': {
-
 
       const moved = action.positions;
       return pushHistory(state, {

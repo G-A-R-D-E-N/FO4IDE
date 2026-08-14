@@ -7,19 +7,6 @@ namespace Mutagen.Bethesda.Plugins.IO;
 public static class PluginUtilityIO
 {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static void MoveModTo(
         ModPath pathToPlugin,
         DirectoryPath newDirectory,
@@ -31,16 +18,6 @@ public static class PluginUtilityIO
         var mover = new ModFilesMover(fileSystem.GetOrDefault(), loc);
         mover.MoveModTo(pathToPlugin, newDirectory, overwrite, categories);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<FilePath> GetAssociatedFiles(
         ModPath modPath,

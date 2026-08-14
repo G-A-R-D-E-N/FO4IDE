@@ -5,15 +5,6 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class F4SERegionMergeTests
 {
     private static string Generated(string name, string stub = "\t\tSTUB;") =>

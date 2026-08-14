@@ -4,21 +4,7 @@ using Mutagen.Bethesda.Archives;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
-
-
 internal sealed record ArchiveExtractionPlanItem(IArchiveFile Entry, string DestinationPath);
-
-
-
-
-
-
-
-
-
 
 internal static class ArchiveExtraction
 {
@@ -41,11 +27,6 @@ internal static class ArchiveExtraction
         string RawPath,
         string[] Segments,
         string LogicalPath);
-
-
-
-
-
 
     internal static bool TryCreatePlan(
         IReadOnlyList<IArchiveFile> entries,
@@ -207,10 +188,6 @@ internal static class ArchiveExtraction
         return true;
     }
 
-
-
-
-
     internal static bool TryWritePlannedEntry(
         ArchiveExtractionPlanItem item,
         string outputRoot,
@@ -231,8 +208,6 @@ internal static class ArchiveExtraction
             EnsureSafeDirectoryTree(outputRoot, destinationDirectory);
             EnsureSafeDestinationFile(destination);
 
-
-
             var bytes = item.Entry.GetBytes();
             tempPath = CreateTemporaryPath(destinationDirectory);
 
@@ -247,9 +222,6 @@ internal static class ArchiveExtraction
                 stream.Write(bytes, 0, bytes.Length);
                 stream.Flush(flushToDisk: true);
             }
-
-
-
 
             EnsureSafeDirectoryTree(outputRoot, destinationDirectory);
             EnsureSafeDestinationFile(destination);
@@ -272,7 +244,6 @@ internal static class ArchiveExtraction
             }
         }
     }
-
 
     internal static bool TryWriteExplicitFile(string destinationPath, byte[] bytes, out string error)
     {
@@ -381,9 +352,6 @@ internal static class ArchiveExtraction
                 return false;
             }
 
-
-
-
             if (segment.Length > 255 || Encoding.UTF8.GetByteCount(segment) > 255)
             {
                 error = $"entry segment '{DisplayPath(segment)}' exceeds the portable 255-unit filename limit.";
@@ -411,9 +379,6 @@ internal static class ArchiveExtraction
     private static string ChooseCanonicalDirectorySpelling(IReadOnlyCollection<string> spellings)
     {
         if (spellings.Count == 1) return spellings.First();
-
-
-
 
         var lowercase = spellings
             .Where(value => string.Equals(value, value.ToLowerInvariant(), StringComparison.Ordinal))
@@ -546,9 +511,6 @@ internal static class ArchiveExtraction
         if (OperatingSystem.IsWindows() && File.Exists(destination))
         {
 
-
-
-
             File.Replace(temporaryPath, destination, destinationBackupFileName: null);
             return;
         }
@@ -580,8 +542,6 @@ internal static class ArchiveExtraction
             current = Path.Combine(current, segment);
             if (IsReparsePoint(current))
                 throw new IOException($"Path ancestor '{current}' is a symbolic link or reparse point.");
-
-
 
             if (!File.Exists(current) && !Directory.Exists(current)) break;
         }

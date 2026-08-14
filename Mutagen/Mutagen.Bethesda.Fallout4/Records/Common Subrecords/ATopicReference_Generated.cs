@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -39,8 +35,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public abstract partial class ATopicReference :
         IATopicReference,
         IEquatable<IATopicReferenceGetter>,
@@ -53,7 +47,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
         partial void CustomCtor();
         #endregion
-
 
         #region To String
 
@@ -94,7 +87,6 @@ namespace Mutagen.Bethesda.Fallout4
             public Mask(TItem initialValue)
             {
             }
-
 
             #pragma warning disable CS8618
             protected Mask()
@@ -354,17 +346,12 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IATopicReference :
         IATopicReferenceGetter,
         IFormLinkContainer,
         ILoquiObjectSetter<IATopicReference>
     {
     }
-
-
-
 
     public partial interface IATopicReferenceGetter :
         ILoquiObject,
@@ -745,7 +732,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return ATopicReference.GetNew();
@@ -929,7 +915,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -986,7 +971,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

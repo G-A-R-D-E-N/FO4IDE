@@ -2,15 +2,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
-
-
-
-
-
-
 public static class Ba2Text
 {
     private static readonly UTF8Encoding StrictUtf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);

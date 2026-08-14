@@ -83,7 +83,7 @@ partial class RegionDataBinaryOverlay
 {
     public abstract float? LodDisplayDistanceMultiplier { get; }
     public abstract float? OcclusionAccuracyDist { get; }
-    
+
     public abstract RegionData.RegionDataType DataType { get; }
     public RegionData.RegionDataFlag Flags => (RegionData.RegionDataFlag)HeaderTranslation.ExtractSubrecordMemory(_recordData, _rdatLocation, _package.MetaData.Constants).Slice(0x4, 0x1)[0];
     public Byte Priority => HeaderTranslation.ExtractSubrecordMemory(_recordData, _rdatLocation, _package.MetaData.Constants).Span[0x5];

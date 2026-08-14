@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #region Name
 
-
-
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ITranslatedStringGetter? IHeadPartGetter.Name => this.Name;
@@ -95,8 +89,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -1094,11 +1086,7 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new TranslatedString? Name { get; set; }
-
-
 
         new Model? Model { get; set; }
         new HeadPart.Flag Flags { get; set; }
@@ -1138,13 +1126,9 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => HeadPart_Registration.Instance;
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1853,7 +1837,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return HeadPart.GetNew();
@@ -2496,7 +2479,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

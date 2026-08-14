@@ -1,9 +1,5 @@
 name: wiki-link-check
 
-
-
-
-
 on:
   gollum:
   schedule:

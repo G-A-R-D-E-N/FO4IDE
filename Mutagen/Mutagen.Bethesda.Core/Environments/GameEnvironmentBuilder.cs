@@ -74,30 +74,15 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         return new(release);
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder<TMod, TModGetter> TransformLoadOrderListings(Func<IEnumerable<ILoadOrderListingGetter>, IEnumerable<ILoadOrderListingGetter>> transformer)
     {
         return this with { LoadOrderListingProcessors = LoadOrderListingProcessors.Add((_, l) => transformer(l)) };
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder<TMod, TModGetter> WithLoadOrder(params ModKey[] modKeys)
     {
         return WithLoadOrder(modKeys.Select(x => (ILoadOrderListingGetter)new LoadOrderListing(x, enabled: true)).ToArray());
     }
-
-
-
-
-
 
     public GameEnvironmentBuilder<TMod, TModGetter> WithLoadOrder<T>(params T[] listings)
         where T : ILoadOrderListingGetter
@@ -109,32 +94,15 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         };
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder<TMod, TModGetter> WithLoadOrder(ILoadOrderGetter loadOrder)
     {
         return TransformLoadOrderListings(_ => loadOrder.ListedOrder.Select(x => (ILoadOrderListingGetter)new LoadOrderListing(x, enabled: true)).ToArray());
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder<TMod, TModGetter> TransformModListings(Func<IEnumerable<IModListingGetter<TModGetter>>, IEnumerable<IModListingGetter<TModGetter>>> transformer)
     {
         return this with { ModListingProcessors = ModListingProcessors.Add((_, l) => transformer(l)) };
     }
-
-
-
-
-
-
-
 
     public GameEnvironmentBuilder<TMod, TModGetter> WithOutputMod(TMod mod, OutputModTrimming trimming = OutputModTrimming.SelfAndPast, bool considerModSplittingForTrimming = true)
     {
@@ -181,11 +149,6 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
         return this with { FileSystem = fileSystem };
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder<TMod, TModGetter> WithStringParameters(StringsReadParameters stringParameters)
     {
         return this with
@@ -193,12 +156,6 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
             StringsReadParameters = stringParameters
         };
     }
-
-
-
-
-
-
 
     public GameEnvironmentBuilder<TMod, TModGetter> WithUtf8Encoding(bool on = true)
     {
@@ -234,10 +191,6 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
 
         return fallback();
     }
-
-
-
-
 
     public IGameEnvironment<TMod, TModGetter> Build()
     {
@@ -344,7 +297,6 @@ public sealed record GameEnvironmentBuilder<TMod, TModGetter>
                 Release,
                 fs,
                 dataDirectory));
-
 
         var lightweightMods = new List<IModGetter>();
         var modImporter = new ModImporter(fs, Release);
@@ -477,30 +429,15 @@ public sealed record GameEnvironmentBuilder
         return new(release);
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder TransformLoadOrderListings(Func<IEnumerable<ILoadOrderListingGetter>, IEnumerable<ILoadOrderListingGetter>> transformer)
     {
         return this with { LoadOrderListingProcessors = LoadOrderListingProcessors.Add((_, l) => transformer(l)) };
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder WithLoadOrder(params ModKey[] modKeys)
     {
         return WithLoadOrder(modKeys.Select(x => (ILoadOrderListingGetter)new LoadOrderListing(x, enabled: true)).ToArray());
     }
-
-
-
-
-
 
     public GameEnvironmentBuilder WithLoadOrder<T>(params T[] listings)
         where T : ILoadOrderListingGetter
@@ -512,22 +449,10 @@ public sealed record GameEnvironmentBuilder
         };
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder TransformModListings(Func<IEnumerable<IModListingGetter<IModGetter>>, IEnumerable<IModListingGetter<IModGetter>>> transformer)
     {
         return this with { ModListingProcessors = ModListingProcessors.Add((_, l) => transformer(l)) };
     }
-
-
-
-
-
-
-
 
     public GameEnvironmentBuilder WithOutputMod(IMod mod, OutputModTrimming trimming = OutputModTrimming.SelfAndPast, bool considerModSplittingForTrimming = true)
     {
@@ -574,11 +499,6 @@ public sealed record GameEnvironmentBuilder
         return this with { FileSystem = fileSystem };
     }
 
-
-
-
-
-
     public GameEnvironmentBuilder WithStringParameters(StringsReadParameters stringParameters)
     {
         return this with
@@ -586,12 +506,6 @@ public sealed record GameEnvironmentBuilder
             StringsReadParameters = stringParameters
         };
     }
-
-
-
-
-
-
 
     public GameEnvironmentBuilder WithUtf8Encoding(bool on = true)
     {
@@ -627,10 +541,6 @@ public sealed record GameEnvironmentBuilder
 
         return fallback();
     }
-
-
-
-
 
     public IGameEnvironment Build()
     {
@@ -737,7 +647,6 @@ public sealed record GameEnvironmentBuilder
             new ModImporter(
                 fs,
                 Release));
-
 
         var lightweightMods = new List<IModGetter>();
         var modImporter = new ModImporter(fs, Release);

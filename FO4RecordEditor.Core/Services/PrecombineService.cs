@@ -5,29 +5,11 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class PrecombineService
 {
 
-
     private const int FlagDeleted = 0x0000_0020;
     private const int FlagInitiallyDisabled = 0x0000_0800;
-
-
 
     private const int InstanceCap = 25;
 
@@ -36,11 +18,6 @@ public static class PrecombineService
     public sealed record ModelGroup(string ModelPath, int InstanceCount, List<Instance> Instances);
 
     public sealed record Skipped(string Reason, int Count, List<string> Examples);
-
-
-
-
-
 
     private enum Skip
     {
@@ -77,17 +54,6 @@ public static class PrecombineService
         _ => r.ToString(),
     };
 
-
-
-
-
-
-
-
-
-
-
-
     public static string BuildPlanJson(object? env, string plugin, string cellId, int minInstances = 2,
                                        string? worldspace = null, int? gridX = null, int? gridY = null,
                                        bool includeInstances = false, int groupLimit = 40)
@@ -109,9 +75,6 @@ public static class PrecombineService
         var cellFk = MutagenLoader.ResolveId(env, resolvedId);
         if (cellFk.IsNull || !cache.TryResolve<ICellGetter>(cellFk, out var cell))
             return JsonConvert.SerializeObject(new { error = $"Could not resolve '{cellId}' to a CELL." });
-
-
-
 
         var interior = (cell.Flags & Cell.Flag.IsInteriorCell) != 0;
         if (!interior)
@@ -147,9 +110,6 @@ public static class PrecombineService
             if (p.ActivateParents != null) { Drop(Skip.HasActivateParent, p); continue; }
             if (p.LinkedReferences.Count > 0) { Drop(Skip.HasLinkedReference, p); continue; }
 
-
-
-
             if (p.FormKey.ModKey != ownModKey) { Drop(Skip.NotOwnedByThisPlugin, p); continue; }
 
             if (p.Base.FormKey.IsNull || !cache.TryResolve<IMajorRecordGetter>(p.Base.FormKey, out var baseRec))
@@ -161,11 +121,8 @@ public static class PrecombineService
             var model = stat.Model?.File?.Trim();
             if (string.IsNullOrEmpty(model)) { Drop(Skip.BaseHasNoModel, p); continue; }
 
-
-
             var key = model!.Replace('/', '\\').ToLowerInvariant();
             if (!groups.TryGetValue(key, out var list)) groups[key] = list = new List<Instance>();
-
 
             var posRot = (Mutagen.Bethesda.Fallout4.IPositionRotationGetter)p;
             list.Add(new Instance(
@@ -184,9 +141,6 @@ public static class PrecombineService
 
         var belowThreshold = groups.Count - kept.Count;
 
-
-
-
         if (groupLimit < 1) groupLimit = 1;
         var groupsOmitted = Math.Max(0, kept.Count - groupLimit);
         var shown = kept.OrderByDescending(g => g.InstanceCount).Take(groupLimit)
@@ -200,7 +154,6 @@ public static class PrecombineService
             interior = true,
             temporaryReferences = considered,
             eligibleReferences = kept.Sum(g => g.InstanceCount),
-
 
             groups = shown.Select(g => new
             {

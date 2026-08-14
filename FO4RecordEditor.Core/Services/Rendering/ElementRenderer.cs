@@ -6,12 +6,6 @@ using Mutagen.Bethesda.Plugins;
 
 namespace FO4RecordEditor.Services.Rendering;
 
-
-
-
-
-
-
 public static class ElementRenderer
 {
     private static Func<IFormLinkIdentifier, string> _formatFormLink = MutagenLoader.FormatFormLink;

@@ -20,7 +20,7 @@ public sealed class PluginRawListingsReader : IPluginRawListingsReader
         _fileSystem = fileSystem;
         Parser = parser;
     }
-        
+
     public IEnumerable<ILoadOrderListingGetter> Read(FilePath pluginPath)
     {
         if (!_fileSystem.File.Exists(pluginPath))

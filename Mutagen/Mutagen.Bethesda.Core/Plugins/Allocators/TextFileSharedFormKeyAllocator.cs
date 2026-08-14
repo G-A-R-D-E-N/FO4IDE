@@ -10,11 +10,6 @@ using InvalidDataException = System.IO.InvalidDataException;
 
 namespace Mutagen.Bethesda.Plugins.Allocators;
 
-
-
-
-
-
 public sealed class TextFileSharedFormKeyAllocator : BaseSharedFormKeyAllocator
 {
     private readonly object _lock = new();

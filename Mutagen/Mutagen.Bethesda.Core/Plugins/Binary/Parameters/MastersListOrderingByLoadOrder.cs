@@ -2,17 +2,11 @@ using Mutagen.Bethesda.Plugins.Order;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Parameters;
 
-
-
-
 public class MastersListOrderingByLoadOrder : AMastersListOrderingOption
 {
     private readonly List<ModKey> _modKeys;
 
     public IReadOnlyList<ModKey> LoadOrder => _modKeys;
-
-
-
 
     public bool Strict { get; set; }
 

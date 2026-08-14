@@ -2,8 +2,6 @@ import { useMemo, useState } from 'react';
 import { Save, RotateCcw, ChevronDown, ChevronRight, Undo2 } from 'lucide-react';
 import type { MaterialHost, MaterialField } from './backend';
 
-
-
 const toHex = (v: number[]) =>
   '#' + v.slice(0, 3).map(c => Math.round(Math.min(1, Math.max(0, c)) * 255).toString(16).padStart(2, '0')).join('');
 const fromHex = (h: string): number[] => {
@@ -15,13 +13,6 @@ const parseColor = (s: string): number[] => {
   return parts.length === 3 && parts.every(n => !Number.isNaN(n)) ? parts : [0, 0, 0];
 };
 const formatColor = (arr: number[]) => arr.map(n => Number(n.toFixed(3))).join(', ');
-
-
-
-
-
-
-
 
 export default function MaterialEditor(
   { fields, path, material, onSaved, appendLog }: {

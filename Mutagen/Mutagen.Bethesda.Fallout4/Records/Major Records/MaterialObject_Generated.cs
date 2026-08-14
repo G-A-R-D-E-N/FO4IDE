@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -59,8 +55,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -948,8 +942,6 @@ namespace Mutagen.Bethesda.Fallout4
         IModeled
     {
 
-
-
         new Model? Model { get; set; }
         new SliceList<byte> DNAMs { get; }
         new Single FalloffScale { get; set; }
@@ -981,8 +973,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => MaterialObject_Registration.Instance;
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1652,7 +1642,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return MaterialObject.GetNew();
@@ -2202,7 +2191,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2236,7 +2224,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IMaterialObjectGetter);
-
 
         public IModelGetter? Model { get; private set; }
         public IReadOnlyList<ReadOnlyMemorySlice<Byte>> DNAMs { get; private set; } = [];

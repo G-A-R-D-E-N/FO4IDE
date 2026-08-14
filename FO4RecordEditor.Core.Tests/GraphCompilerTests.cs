@@ -6,15 +6,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class GraphCompilerTests
 {
     private readonly ITestOutputHelper _output;
@@ -29,8 +20,6 @@ public class GraphCompilerTests
         result.Success.Should().BeTrue("the graph should reach a compiled object");
         return result;
     }
-
-
 
     [Fact]
     public void An_event_calling_a_global_compiles_to_pex()
@@ -67,8 +56,6 @@ public class GraphCompilerTests
 
         result.Source.Should().Contain("GetDistance(akActionRef)");
     }
-
-
 
     [Fact]
     public void A_branch_emits_an_if_and_rejoins_once_after_the_merge()
@@ -153,8 +140,6 @@ public class GraphCompilerTests
         result.Source.Should().Contain("\"tick\"").And.Contain("\"done\"");
     }
 
-
-
     [Fact]
     public void A_trailing_optional_that_is_not_supplied_disappears()
     {
@@ -194,12 +179,9 @@ public class GraphCompilerTests
         result.Source.Should().NotContain("AddItem(None, true)");
     }
 
-
-
     [Fact]
     public void An_impure_call_used_twice_binds_one_local_rather_than_calling_twice()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
@@ -302,8 +284,6 @@ public class GraphCompilerTests
         result.Source.Should().Contain("ObjectReference Property Target Auto");
     }
 
-
-
     [Fact]
     public void A_call_on_this_scripts_own_chain_needs_no_receiver()
     {
@@ -342,8 +322,6 @@ public class GraphCompilerTests
         result.Source.Should().Contain(".GetLevel()");
     }
 
-
-
     [Fact]
     public void Stopping_after_source_yields_source_and_no_compiled_object()
     {
@@ -361,7 +339,6 @@ public class GraphCompilerTests
     [Fact]
     public void The_generated_source_always_reparses_cleanly()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
@@ -403,7 +380,6 @@ public class GraphCompilerTests
     [Fact]
     public void Validation_and_compilation_never_disagree()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");

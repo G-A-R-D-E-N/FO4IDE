@@ -9,29 +9,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class PapyrusCorpusTests
 {
     private readonly ITestOutputHelper _output;
@@ -77,7 +54,6 @@ public class PapyrusCorpusTests
             }
             catch (Exception ex) when (ex is not IOException and not UnauthorizedAccessException)
             {
-
 
                 throw new Xunit.Sdk.XunitException($"Parsing threw on {file}: {ex}");
             }
@@ -138,8 +114,6 @@ public class PapyrusCorpusTests
 
             symbols += PapyrusSymbols.DocumentSymbols(script).Count;
 
-
-
             var length = Math.Max(1, script.Span.End);
             for (var offset = 0; offset < length; offset += Math.Max(1, length / 25))
             {
@@ -150,22 +124,6 @@ public class PapyrusCorpusTests
         _output.WriteLine($"{files.Count} files, {symbols} symbols");
         symbols.Should().BeGreaterThan(0);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     [Fact]
     public void Every_script_on_disk_resolves_without_crashing()
@@ -203,7 +161,6 @@ public class PapyrusCorpusTests
             catch (Exception ex)
             {
 
-
                 throw new Xunit.Sdk.XunitException($"Resolving threw on {file}: {ex}");
             }
 
@@ -231,15 +188,6 @@ public class PapyrusCorpusTests
 
         resolved.Should().BeGreaterThan(0);
     }
-
-
-
-
-
-
-
-
-
 
     [Fact]
     public void Every_script_on_disk_type_checks_without_crashing()

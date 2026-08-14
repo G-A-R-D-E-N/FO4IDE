@@ -16,7 +16,7 @@ partial class EffectShader
         DestInverseColor = 10,
         SourceAlphaSat = 11,
     }
-        
+
     public enum BlendOperation
     {
         Add = 1,

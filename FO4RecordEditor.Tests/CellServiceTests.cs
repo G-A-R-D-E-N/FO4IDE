@@ -9,14 +9,10 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
 public class CellServiceTests : IDisposable
 {
     private readonly ITestOutputHelper _out;
     public CellServiceTests(ITestOutputHelper o) => _out = o;
-
-
 
     private readonly GlobalStateIsolation _state = new();
     public void Dispose() => _state.Dispose();
@@ -42,11 +38,6 @@ public class CellServiceTests : IDisposable
             .OrderByDescending(c => c.Persistent.Count + c.Temporary.Count)
             .FirstOrDefault();
         if (cell == null) return;
-
-
-
-
-
 
         var namingLowerBound = cell.Persistent.Count + cell.Temporary.Count;
 
@@ -78,10 +69,6 @@ public class CellServiceTests : IDisposable
         parsed["error"].Should().NotBeNull();
     }
 
-
-
-
-
     [Fact]
     public void GetPlacedReferences_ATextureSetBase_ReportsDecalFields_NotAModelPath()
     {
@@ -106,9 +93,6 @@ public class CellServiceTests : IDisposable
         ((float?)decalRef["decalWidth"]).Should().BeApproximately(15f, 0.5f, "ObjectBounds X-extent (7 - -8)");
         ((float?)decalRef["decalHeight"]).Should().BeApproximately(60f, 0.5f, "ObjectBounds Y-extent (30 - -30)");
     }
-
-
-
 
     [Fact]
     public void GetPlacedReferences_SwitchboardScol_FallsBackToMemberStatics()

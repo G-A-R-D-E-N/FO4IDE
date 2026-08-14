@@ -2,9 +2,6 @@
 
 namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-
-
-
 public interface IPluginListingsProvider : IListingsProvider
 {
 }

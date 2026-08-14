@@ -2,16 +2,6 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
 public static class ConditionFunctions
 {
     private static readonly string[] Table =
@@ -251,15 +241,8 @@ public static class ConditionFunctions
         return d;
     }
 
-
     public static string[] ParamsOf(string function) =>
         ByName.TryGetValue(function ?? "", out var p) ? p : Array.Empty<string>();
-
-
-
-
-
-
 
     public static (string kind, string types) EditorFor(string paramType) => paramType switch
     {
@@ -300,8 +283,6 @@ public static class ConditionFunctions
         _ => ("number", ""),
     };
 
-
-
     public static string AsJson() => JsonSerializer.Serialize(
         ByName.ToDictionary(
             kv => kv.Key,
@@ -310,7 +291,6 @@ public static class ConditionFunctions
                 var (kind, types) = EditorFor(p);
                 return new { label = Spaced(p), kind, types };
             }).ToArray()));
-
 
     private static string Spaced(string pascal)
     {

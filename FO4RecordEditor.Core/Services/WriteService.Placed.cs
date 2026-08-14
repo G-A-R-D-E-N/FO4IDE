@@ -5,23 +5,8 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
 public static partial class WriteService
 {
-
-
-
-
 
     public static string CreateCell(string plugin, string editorId, string? name, object? env)
     {
@@ -50,11 +35,6 @@ public static partial class WriteService
                $"Add references to it with create_placed_object, then save_plugin.";
     }
 
-
-
-
-
-
     public static string CreatePlacedObject(
         string plugin, string cellId, string baseId, string? editorId,
         float x, float y, float z, float rotZ,
@@ -66,14 +46,6 @@ public static partial class WriteService
         if (mod == null) return openMsg;
 
         ICell? cell = FindCellInMod(mod, cellId);
-
-
-
-
-
-
-
-
 
         if (cell == null)
         {
@@ -127,8 +99,6 @@ public static partial class WriteService
         if (initiallyDisabled) flags |= (int)PlacedObject.DefaultMajorFlag.InitiallyDisabled;
         refr.MajorRecordFlagsRaw = flags;
 
-
-
         if (persistent) cell.Persistent.Add(refr);
         else cell.Temporary.Add(refr);
 
@@ -158,11 +128,6 @@ public static partial class WriteService
                 }
         return null;
     }
-
-
-
-
-
 
     private static void AttachCellToBlocks(IFallout4Mod mod, Cell cell)
     {

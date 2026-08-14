@@ -8,19 +8,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class Ba2Version7Tests
 {
     private static readonly string[] Candidates =
@@ -29,11 +16,6 @@ public class Ba2Version7Tests
         @"E:\SteamLibrary\steamapps\common\Fallout 4\Data\DLCRobot - Voices_en.ba2",
     };
     private static string? Archive => Candidates.FirstOrDefault(File.Exists);
-
-
-
-
-
 
     private static readonly string[] TexCandidates =
     {

@@ -301,7 +301,6 @@ partial class FaceFxPhonemesBinaryCreateTranslation
             throw new ArgumentException($"Unexpected header: {meta.RecordType}");
         }
 
-
         int? expectedSize = null;
         ReadOnlyMemorySlice<byte>[] slots = new ReadOnlyMemorySlice<byte>[SlotSize];
         for (int i = 0; i < SlotSize; i++)
@@ -318,7 +317,6 @@ partial class FaceFxPhonemesBinaryCreateTranslation
             }
             slots[i] = subMetaFrame.Content;
         }
-
 
         var expectedTargets = expectedSize / 4;
         for (int i = 0; i < expectedTargets; i++)

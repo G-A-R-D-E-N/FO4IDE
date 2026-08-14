@@ -18,7 +18,7 @@ public class PluginListingCommentTrimmer : IPluginListingCommentTrimmer
         if (highest == -1) return -1;
         return highest + 4;
     }
-    
+
     public ReadOnlySpan<char> Trim(ReadOnlySpan<char> str)
     {
         int startIndex = 0;

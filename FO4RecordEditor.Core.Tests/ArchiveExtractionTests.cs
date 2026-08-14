@@ -7,9 +7,6 @@ using Noggog;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
 public sealed class ArchiveExtractionTests : IDisposable
 {
     private readonly string _temp = Path.Combine(

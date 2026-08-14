@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -82,8 +78,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -915,8 +909,6 @@ namespace Mutagen.Bethesda.Fallout4
         new String? SunTexture { get; set; }
         new String? SunGlareTexture { get; set; }
 
-
-
         new Model? Model { get; set; }
         new TimeOnly SunriseBegin { get; set; }
         new TimeOnly SunriseEnd { get; set; }
@@ -948,8 +940,6 @@ namespace Mutagen.Bethesda.Fallout4
         String? SunTexture { get; }
         String? SunGlareTexture { get; }
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1628,7 +1618,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Climate.GetNew();
@@ -2277,7 +2266,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2311,7 +2299,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IClimateGetter);
-
 
         public IReadOnlyList<IWeatherTypeGetter>? Weathers { get; private set; }
         #region SunTexture

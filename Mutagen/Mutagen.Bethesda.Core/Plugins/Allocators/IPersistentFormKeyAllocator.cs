@@ -15,13 +15,7 @@ public abstract class BasePersistentFormKeyAllocator : BaseFormKeyAllocator, IPe
         _saveLocation = Path.GetFullPath(saveLocation);
     }
 
-
-
-
     public abstract void Commit();
-
-
-
 
     public abstract void Rollback();
 
@@ -37,9 +31,6 @@ public abstract class BasePersistentFormKeyAllocator : BaseFormKeyAllocator, IPe
 
     public void Dispose() => Dispose(true);
 }
-
-
-
 
 public interface IPersistentFormKeyAllocator : IFormKeyAllocator, IDisposable
 {

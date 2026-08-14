@@ -130,7 +130,6 @@ public partial class PexFile
     {
         using var br = new BinaryReadStream(stream, isLittleEndian: !gameCategory.IsBigEndian());
 
-
         var pexFile = new PexFile(gameCategory);
         Read(pexFile, br);
 

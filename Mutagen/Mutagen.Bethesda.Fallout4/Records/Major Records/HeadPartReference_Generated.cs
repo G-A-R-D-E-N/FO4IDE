@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -878,7 +874,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return HeadPartReference.GetNew();
@@ -1116,7 +1111,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

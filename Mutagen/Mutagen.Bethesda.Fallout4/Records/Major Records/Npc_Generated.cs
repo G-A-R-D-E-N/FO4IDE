@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -61,8 +57,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private VirtualMachineAdapter? _VirtualMachineAdapter;
 
-
-
         public VirtualMachineAdapter? VirtualMachineAdapter
         {
             get => _VirtualMachineAdapter;
@@ -78,8 +72,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #endregion
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -243,8 +235,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Destructible
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Destructible? _Destructible;
-
-
 
         public Destructible? Destructible
         {
@@ -475,8 +465,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
 
-
-
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
             get => this._Keywords;
@@ -531,8 +519,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IClassGetter> INpcGetter.Class => this.Class;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -4914,11 +4900,7 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new VirtualMachineAdapter? VirtualMachineAdapter { get; set; }
-
-
 
         new ObjectBounds ObjectBounds { get; set; }
         new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
@@ -4941,8 +4923,6 @@ namespace Mutagen.Bethesda.Fallout4
         new TemplateActors? TemplateActors { get; set; }
         new IFormLink<IRaceGetter> Race { get; set; }
         new ExtendedList<IFormLinkGetter<ISpellRecordGetter>>? ActorEffect { get; set; }
-
-
 
         new Destructible? Destructible { get; set; }
         new IFormLinkNullable<IArmorGetter> Skin { get; set; }
@@ -4973,14 +4953,10 @@ namespace Mutagen.Bethesda.Fallout4
         new Boolean NoSlowApproach { get; set; }
         new ExtendedList<IFormLinkGetter<IPackageGetter>> Packages { get; }
 
-
-
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? AttachParentSlots { get; set; }
         new ExtendedList<ObjectTemplate<Npc.Property>>? ObjectTemplates { get; set; }
         new IFormLinkNullable<IClassGetter> Class { get; set; }
-
-
 
         new TranslatedString? Name { get; set; }
         new TranslatedString? ShortName { get; set; }
@@ -5058,13 +5034,9 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Npc_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         IVirtualMachineAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
@@ -5089,8 +5061,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkGetter<IRaceGetter> Race { get; }
         IReadOnlyList<IFormLinkGetter<ISpellRecordGetter>>? ActorEffect { get; }
         #region Destructible
-
-
 
         IDestructibleGetter? Destructible { get; }
         #endregion
@@ -5123,16 +5093,12 @@ namespace Mutagen.Bethesda.Fallout4
         IReadOnlyList<IFormLinkGetter<IPackageGetter>> Packages { get; }
         #region Keywords
 
-
-
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? AttachParentSlots { get; }
         IReadOnlyList<IObjectTemplateGetter<Npc.Property>>? ObjectTemplates { get; }
         IFormLinkNullableGetter<IClassGetter> Class { get; }
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -7157,7 +7123,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public override object GetNew()
         {
@@ -9663,7 +9628,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

@@ -4,36 +4,22 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Streams;
 
-
-
-
 public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
 {
     private readonly bool dispose = true;
     private const byte Zero = 0;
 
-
-
-
     public BinaryWriter Writer;
-
-
-
 
     public Stream BaseStream { get; }
 
-
-
-
     public WritingBundle MetaData { get; }
-
 
     public long Position
     {
         get => BaseStream.Position;
         set => BaseStream.Position = value;
     }
-
 
     public long Length
     {
@@ -93,7 +79,6 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         MetaData = new WritingBundle(constants);
     }
 
-
     public void Write(bool b)
     {
         Writer.Write(b);
@@ -117,26 +102,22 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         }
     }
 
-
     public void Write(bool? b)
     {
         if (!b.HasValue) return;
         Writer.Write(b.Value);
     }
 
-
     public void Write(byte b)
     {
         Writer.Write(b);
     }
-
 
     public void Write(byte? b)
     {
         if (!b.HasValue) return;
         Writer.Write(b.Value);
     }
-
 
     public void Write(byte[]? b)
     {
@@ -149,18 +130,15 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(b.Span);
     }
 
-
     public void Write(ReadOnlySpan<byte> b)
     {
         Writer.Write(b);
     }
 
-
     public void Write(ushort b)
     {
         Writer.Write(b);
     }
-
 
     public void Write(ushort? b)
     {
@@ -168,12 +146,10 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(b.Value);
     }
 
-
     public void Write(uint b)
     {
         Writer.Write(b);
     }
-
 
     public void Write(uint? b)
     {
@@ -181,12 +157,10 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(b.Value);
     }
 
-
     public void Write(ulong b)
     {
         Writer.Write(b);
     }
-
 
     public void Write(ulong? b)
     {
@@ -199,19 +173,16 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(s);
     }
 
-
     public void Write(sbyte? s)
     {
         if (!s.HasValue) return;
         Writer.Write(s.Value);
     }
 
-
     public void Write(short s)
     {
         Writer.Write(s);
     }
-
 
     public void Write(short? s)
     {
@@ -219,16 +190,10 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(s.Value);
     }
 
-
     public void Write(int i)
     {
         Writer.Write(i);
     }
-
-
-
-
-
 
     public void Write(int i, byte length)
     {
@@ -248,19 +213,16 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         }
     }
 
-
     public void Write(int? i)
     {
         if (!i.HasValue) return;
         Writer.Write(i.Value);
     }
 
-
     public void Write(long i)
     {
         Writer.Write(i);
     }
-
 
     public void Write(long? i)
     {
@@ -268,12 +230,10 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(i.Value);
     }
 
-
     public void Write(float i)
     {
         Writer.Write(i);
     }
-
 
     public void Write(float? i)
     {
@@ -281,12 +241,10 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(i.Value);
     }
 
-
     public void Write(double i)
     {
         Writer.Write(i);
     }
-
 
     public void Write(double? i)
     {
@@ -294,19 +252,16 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
         Writer.Write(i.Value);
     }
 
-
     public void Write(char c)
     {
         Writer.Write(c);
     }
-
 
     public void Write(char? c)
     {
         if (!c.HasValue) return;
         Writer.Write(c.Value);
     }
-
 
     public void WriteZeros(uint num)
     {
@@ -315,9 +270,6 @@ public sealed class MutagenWriter : IBinaryWriteStream, IDisposable
             Write(Zero);
         }
     }
-
-
-
 
     public void Dispose()
     {

@@ -15,7 +15,7 @@ public interface IGetterTypeMapper
 public class GetterTypeMapper : IGetterTypeMapper
 {
     private readonly IMetaInterfaceMapGetter _meta;
-    
+
     public GetterTypeMapper(IMetaInterfaceMapGetter meta)
     {
         Warmup.Init();

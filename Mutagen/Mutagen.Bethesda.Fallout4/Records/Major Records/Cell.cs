@@ -79,7 +79,7 @@ partial class CellBinaryCreateTranslation
             if (frame.Reader.Complete) return;
             if (!frame.TryGetGroupHeader(out var groupMeta)) return;
             var formKey = FormKey.Factory(
-                frame.MetaData.MasterReferences, 
+                frame.MetaData.MasterReferences,
                 new FormID(BinaryPrimitives.ReadUInt32LittleEndian(groupMeta.ContainedRecordTypeData)),
                 reference: true);
             if (groupMeta.GroupType == (int)GroupTypeEnum.CellChildren)
@@ -136,7 +136,7 @@ partial class CellBinaryCreateTranslation
     {
         var groupMeta = frame.ReadGroupHeader();
         var formKey = FormKey.Factory(
-            frame.MetaData.MasterReferences, 
+            frame.MetaData.MasterReferences,
             new FormID(BinaryPrimitives.ReadUInt32LittleEndian(groupMeta.ContainedRecordTypeData)),
             reference: true);
         if (formKey != obj.FormKey)
@@ -192,7 +192,7 @@ partial class CellBinaryCreateTranslation
     {
         var groupMeta = frame.ReadGroupHeader();
         var formKey = FormKey.Factory(
-            frame.MetaData.MasterReferences, 
+            frame.MetaData.MasterReferences,
             new FormID(BinaryPrimitives.ReadUInt32LittleEndian(groupMeta.ContainedRecordTypeData)),
             reference: true);
         if (formKey != obj.FormKey)
@@ -512,7 +512,7 @@ partial class CellBinaryOverlay
         var startPos = stream.Position;
         if (!stream.TryGetGroupHeader(out var groupMeta)) return;
         var formKey = FormKey.Factory(
-            _package.MetaData.MasterReferences, 
+            _package.MetaData.MasterReferences,
             new FormID(BinaryPrimitives.ReadUInt32LittleEndian(groupMeta.ContainedRecordTypeData)),
             reference: true);
         if (groupMeta.GroupType == (int)GroupTypeEnum.CellChildren)

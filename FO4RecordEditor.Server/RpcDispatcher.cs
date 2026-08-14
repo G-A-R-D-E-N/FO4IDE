@@ -4,15 +4,6 @@ using Newtonsoft.Json.Linq;
 
 namespace FO4RecordEditor.Server;
 
-
-
-
-
-
-
-
-
-
 public sealed class RpcDispatcher
 {
     private readonly Dictionary<string, object> _targets = new(StringComparer.OrdinalIgnoreCase);
@@ -46,8 +37,6 @@ public sealed class RpcDispatcher
 
         var result = method.Invoke(target, call);
 
-
-
         if (result is Task task)
         {
             await task.ConfigureAwait(false);
@@ -57,8 +46,6 @@ public sealed class RpcDispatcher
         }
         return result;
     }
-
-
 
     private static MethodInfo? Resolve(Type type, string name, int argc)
     {

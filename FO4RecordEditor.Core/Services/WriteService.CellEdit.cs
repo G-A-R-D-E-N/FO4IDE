@@ -6,27 +6,6 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static partial class WriteService
 {
     public static string SetPlacedReferenceTransform(

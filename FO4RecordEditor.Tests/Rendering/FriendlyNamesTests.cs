@@ -12,11 +12,7 @@ public class FriendlyNamesTests
         FriendlyNames.Label("EditorID").Should().Be("Editor ID");
         FriendlyNames.Label("CreatedObject").Should().Be("Created Object");
 
-
-
         FriendlyNames.Label("WorkbenchKeyword").Should().Be("Workbench");
-
-
 
         FriendlyNames.Label("SomeUnmappedField").Should().Be("Some Unmapped Field");
         FriendlyNames.Label("[0]").Should().Be("[0]");

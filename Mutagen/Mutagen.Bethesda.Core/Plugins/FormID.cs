@@ -5,18 +5,8 @@ using Mutagen.Bethesda.Plugins.Masters;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
-
-
-
-
 public readonly struct FormID : IEquatable<FormID>
 {
-
-
 
     public static readonly FormID Null = new(0);
 
@@ -29,26 +19,11 @@ public readonly struct FormID : IEquatable<FormID>
     public const uint MediumIdMask = 0x0000FFFF;
     public const uint SmallIdMask =  0x00000FFF;
 
-
-
-
     public readonly uint Raw;
-
-
-
-
 
     public uint FullId => Raw & FullIdMask;
 
-
-
-
-
     public uint MediumId => Raw & MediumIdMask;
-
-
-
-
 
     public uint LightId => Raw & SmallIdMask;
 
@@ -59,36 +34,16 @@ public readonly struct FormID : IEquatable<FormID>
     public const byte MediumMasterIndexShift = 16;
     public const byte LightMasterIndexShift = 12;
 
-
-
-
     public uint FullMasterIndex => (Raw & FullMasterIndexMask) >> FullMasterIndexShift;
-
-
-
 
     public uint MediumMasterIndex => (Raw & MediumMasterIndexMask) >> MediumMasterIndexShift;
 
-
-
-
     public uint LightMasterIndex => (Raw & LightMasterIndexMask) >> LightMasterIndexShift;
-
-
-
-
-
 
     public FormID(uint idWithModIndex)
     {
         Raw = idWithModIndex;
     }
-
-
-
-
-
-
 
     public static FormID Factory(ReadOnlySpan<char> hexStr)
     {
@@ -98,13 +53,6 @@ public readonly struct FormID : IEquatable<FormID>
         }
         return result;
     }
-
-
-
-
-
-
-
 
     public static bool TryFactory(ReadOnlySpan<char> hexStr, [MaybeNullWhen(false)] out FormID id, bool strictLength = true)
     {
@@ -128,12 +76,6 @@ public readonly struct FormID : IEquatable<FormID>
         return true;
     }
 
-
-
-
-
-
-
     public static FormID? TryFactory(ReadOnlySpan<char> hexStr, bool strictLength = true)
     {
         if (TryFactory(hexStr, out var id, strictLength: strictLength))
@@ -143,21 +85,10 @@ public readonly struct FormID : IEquatable<FormID>
         return default;
     }
 
-
-
-
-
-
-
     public static FormID Factory(ReadOnlySpan<byte> bytes)
     {
         return Factory(BinaryPrimitives.ReadUInt32LittleEndian(bytes));
     }
-
-
-
-
-
 
     public static FormID Factory(uint idWithModIndex)
     {
@@ -198,27 +129,15 @@ public readonly struct FormID : IEquatable<FormID>
         return new FormID(raw);
     }
 
-
-
-
-
     public byte[] ToBytes()
     {
         return BitConverter.GetBytes(Raw);
     }
 
-
-
-
-
     public override string ToString()
     {
         return Raw.ToString("X");
     }
-
-
-
-
 
     public string IdString(MasterStyle style)
     {
@@ -235,11 +154,6 @@ public readonly struct FormID : IEquatable<FormID>
         }
     }
 
-
-
-
-
-
     public uint Id(MasterStyle style)
     {
         switch (style)
@@ -255,11 +169,6 @@ public readonly struct FormID : IEquatable<FormID>
         }
     }
 
-
-
-
-
-
     public static uint IdMask(MasterStyle style) => style switch
     {
         MasterStyle.Small => SmallIdMask,
@@ -267,11 +176,6 @@ public readonly struct FormID : IEquatable<FormID>
         MasterStyle.Full => FullIdMask,
         _ => throw new NotImplementedException()
     };
-
-
-
-
-
 
     public static uint MasterIndexShift(MasterStyle style) => style switch
     {
@@ -281,11 +185,6 @@ public readonly struct FormID : IEquatable<FormID>
         _ => throw new NotImplementedException()
     };
 
-
-
-
-
-
     public uint MasterIndex(MasterStyle style) => style switch
     {
         MasterStyle.Small => LightMasterIndex,
@@ -294,30 +193,16 @@ public readonly struct FormID : IEquatable<FormID>
         _ => throw new NotImplementedException()
     };
 
-
-
-
-
-
     public override bool Equals(object? obj)
     {
         if (obj is not FormID formID) return false;
         return Equals(formID);
     }
 
-
-
-
-
-
     public bool Equals(FormID other)
     {
         return Raw == other.Raw;
     }
-
-
-
-
 
     public override int GetHashCode()
     {

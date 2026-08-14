@@ -9,20 +9,9 @@ using FO4RecordEditor.Services.Materials;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
 public static class TextureService
 {
     private static string? ResolveTexconv() => ToolPaths.Texconv();
-
-
-
 
     public static string GetTexturePngDataUrl(string nifPath, string relTexPath, string textureRoot = "")
     {
@@ -36,9 +25,6 @@ public static class TextureService
         catch (Exception ex) { DebugLog.Exception("Texture.GetPng", ex); return ""; }
     }
 
-
-
-
     public static string? GetTexturePngPath(string nifPath, string relTexPath, string textureRoot = "")
     {
         try
@@ -47,11 +33,6 @@ public static class TextureService
             relTexPath = (relTexPath ?? "").Trim().Trim('"');
             textureRoot = (textureRoot ?? "").Trim().Trim('"');
             if (string.IsNullOrWhiteSpace(relTexPath)) return null;
-
-
-
-
-
 
             if (relTexPath.EndsWith(".bgsm", StringComparison.OrdinalIgnoreCase))
             {
@@ -71,9 +52,6 @@ public static class TextureService
         catch (Exception ex) { DebugLog.Exception("Texture.GetPngPath", ex); return null; }
     }
 
-
-
-
     public static BgsmData? ResolveBgsm(string nifPath, string bgsmRelPath, string textureRoot = "")
         => ResolveAndParseBgsm((nifPath ?? "").Trim().Trim('"'), (bgsmRelPath ?? "").Trim().Trim('"'),
             (textureRoot ?? "").Trim().Trim('"'));
@@ -86,8 +64,6 @@ public static class TextureService
         catch (Exception ex) { DebugLog.Exception("Texture.BgsmParse", ex); return null; }
     }
 
-
-
     private static string? ResolveDds(string nifPath, string rel, string textureRoot = "")
     {
         rel = rel.Replace('/', '\\').TrimStart('\\');
@@ -97,8 +73,6 @@ public static class TextureService
         try { nifDir = Path.GetDirectoryName(Path.GetFullPath(nifPath)); } catch { }
 
         var candidates = new List<string>();
-
-
 
         if (!string.IsNullOrWhiteSpace(textureRoot) && Directory.Exists(textureRoot))
         {
@@ -121,14 +95,8 @@ public static class TextureService
         foreach (var c in candidates)
             if (File.Exists(c)) return c;
 
-
         return ResolveFromArchives(rel, nifDir, textureRoot);
     }
-
-
-
-
-
 
     private static string? ResolveMaterialFile(string nifPath, string rel, string textureRoot = "")
     {
@@ -161,26 +129,12 @@ public static class TextureService
         return ResolveFromArchives(rel, nifDir, textureRoot, "materials");
     }
 
-
-
-
-
-
-
-
     private static readonly object _lock = new();
     private static readonly Dictionary<string, string> _index = new(StringComparer.OrdinalIgnoreCase);
     private static readonly HashSet<string> _scannedArchives = new(StringComparer.OrdinalIgnoreCase);
     private static readonly HashSet<string> _scannedRoots = new(StringComparer.OrdinalIgnoreCase);
 
-
-
-
     public static readonly string TexCacheDir = Path.Combine(Path.GetTempPath(), "FO4RE_Tex");
-
-
-
-
 
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> _keyLocks = new(StringComparer.Ordinal);
     private static object LockFor(string key) => _keyLocks.GetOrAdd(key, static _ => new object());
@@ -191,21 +145,17 @@ public static class TextureService
     private static string? ResolveFromArchives(string rel, string? nifDir, string textureRoot)
         => ResolveFromArchives(rel, nifDir, textureRoot, "textures");
 
-
-
     private static string? ResolveFromArchives(string rel, string? nifDir, string textureRoot, string topFolder)
     {
         try
         {
             var keys = LookupKeys(rel, topFolder);
 
-
             var cheap = new List<string>();
             AddDataRoots(cheap, nifDir);
             if (!string.IsNullOrWhiteSpace(textureRoot)) AddDataRoots(cheap, textureRoot);
             var hit = ScanAndLookup(cheap, keys);
             if (hit != null) return hit;
-
 
             var hit2 = ScanAndLookup(GlobalRoots(), keys);
             if (hit2 != null) return hit2;
@@ -214,10 +164,7 @@ public static class TextureService
         return null;
     }
 
-
-
     private static List<string> LookupKeys(string rel) => LookupKeys(rel, "textures");
-
 
     private static List<string> LookupKeys(string rel, string topFolder)
     {
@@ -240,24 +187,9 @@ public static class TextureService
         return null;
     }
 
-
-
-
-
     public static void AddDataRoots(List<string> roots, string? path)
     {
         var dir = path;
-
-
-
-
-
-
-
-
-
-
-
 
         if (dir != null && dir.StartsWith(TexCacheDir, StringComparison.OrdinalIgnoreCase)) return;
         for (int guard = 0; dir != null && guard < 24; guard++)
@@ -267,13 +199,6 @@ public static class TextureService
             dir = Path.GetDirectoryName(dir);
         }
     }
-
-
-
-
-
-
-
 
     private static string[]? _sessionRoots;
 
@@ -309,7 +234,6 @@ public static class TextureService
         return _globalRoots = roots.ToArray();
     }
 
-
     private static void EnsureRootScanned(string root)
     {
         root = (root ?? "").Trim();
@@ -322,13 +246,6 @@ public static class TextureService
         int added = 0;
         var sw = Stopwatch.StartNew();
 
-
-
-
-
-
-
-
         try
         {
             foreach (var archive in archives)
@@ -340,10 +257,6 @@ public static class TextureService
                     foreach (var f in reader.Files)
                     {
                         var p = f.Path?.ToString();
-
-
-
-
 
                         if (string.IsNullOrEmpty(p) ||
                             !(p.EndsWith(".dds", StringComparison.OrdinalIgnoreCase) ||
@@ -361,10 +274,6 @@ public static class TextureService
             DebugLog.Info("Texture.Index", $"Indexed {added} DDS/NIF entries from BA2s under {root} in {sw.ElapsedMilliseconds}ms");
     }
 
-
-
-
-
     private static string? ExtractFromArchive(string archivePath, string innerKey)
     {
         try
@@ -377,11 +286,6 @@ public static class TextureService
             Directory.CreateDirectory(TexCacheDir);
             var outPath = Path.Combine(TexCacheDir, "ba2_" + key + ext);
             if (File.Exists(outPath)) return outPath;
-
-
-
-
-
 
             lock (LockFor(key))
             {
@@ -402,14 +306,6 @@ public static class TextureService
         catch (Exception ex) { DebugLog.Exception("Texture.Extract", ex); }
         return null;
     }
-
-
-
-
-
-
-
-
 
     public static string? ResolveNif(string relPath)
     {
@@ -443,7 +339,6 @@ public static class TextureService
     {
         var stamp = File.GetLastWriteTimeUtc(ddsPath).Ticks;
 
-
         var key = Hash(ddsPath.ToLowerInvariant() + "|" + stamp + "|v3");
         Directory.CreateDirectory(TexCacheDir);
         var pngPath = Path.Combine(TexCacheDir, key + ".png");
@@ -455,13 +350,6 @@ public static class TextureService
         var texconv = ResolveTexconv();
         if (texconv == null) return null;
 
-
-
-
-
-
-
-
         lock (LockFor(key))
         {
             if (File.Exists(pngPath)) return pngPath;
@@ -471,8 +359,6 @@ public static class TextureService
             try
             {
 
-
-
                 var produced = RunTexconv(texconv, ddsPath, work, IsBc5(ddsPath));
                 if (produced == null) return null;
                 File.Copy(produced, pngPath, true);
@@ -481,19 +367,6 @@ public static class TextureService
             finally { try { Directory.Delete(work, true); } catch { } }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static string? DecodeInProcess(string ddsPath, string pngPath, string key)
     {
@@ -509,7 +382,6 @@ public static class TextureService
             {
                 if (File.Exists(pngPath)) return pngPath;
 
-
                 var temp = pngPath + "." + Environment.CurrentManagedThreadId + ".part";
                 File.WriteAllBytes(temp, png);
                 File.Move(temp, pngPath, overwrite: true);
@@ -522,8 +394,6 @@ public static class TextureService
             return null;
         }
     }
-
-
 
     private static string? RunTexconv(string texconv, string ddsPath, string work, bool reconstructZ)
     {
@@ -540,9 +410,6 @@ public static class TextureService
         };
         foreach (var a in args) psi.ArgumentList.Add(a);
 
-
-
-
         var run = ProcessRunner.Run(psi, TimeSpan.FromSeconds(30));
         if (!run.Started || run.TimedOut) return null;
 
@@ -550,8 +417,6 @@ public static class TextureService
         if (reconstructZ) { try { File.Delete(produced); } catch { } return RunTexconv(texconv, ddsPath, work, false); }
         return null;
     }
-
-
 
     private static bool IsBc5(string ddsPath)
     {

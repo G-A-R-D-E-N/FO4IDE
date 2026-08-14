@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -56,8 +52,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -125,8 +119,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -918,8 +910,6 @@ namespace Mutagen.Bethesda.Fallout4
         IReferenceableObject
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
         new Percent ChanceNone { get; set; }
         new Byte MaxCount { get; set; }
@@ -927,8 +917,6 @@ namespace Mutagen.Bethesda.Fallout4
         new IFormLinkNullable<IGlobalGetter> Global { get; set; }
         new ExtendedList<LeveledNpcEntry>? Entries { get; set; }
         new ExtendedList<FilterKeywordChance>? FilterKeywordChances { get; set; }
-
-
 
         new Model? Model { get; set; }
     }
@@ -957,8 +945,6 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => LeveledNpc_Registration.Instance;
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         Percent ChanceNone { get; }
@@ -968,8 +954,6 @@ namespace Mutagen.Bethesda.Fallout4
         IReadOnlyList<ILeveledNpcEntryGetter>? Entries { get; }
         IReadOnlyList<IFilterKeywordChanceGetter>? FilterKeywordChances { get; }
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1622,7 +1606,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return LeveledNpc.GetNew();
@@ -2246,7 +2229,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2280,7 +2262,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ILeveledNpcGetter);
-
 
         #region ObjectBounds
         private RangeInt32? _ObjectBoundsLocation;

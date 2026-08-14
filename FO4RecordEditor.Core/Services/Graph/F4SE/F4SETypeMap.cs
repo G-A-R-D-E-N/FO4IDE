@@ -5,12 +5,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
-
-
-
-
-
 public sealed record CppTypeRef(string Name, bool IsPointer = false, CppTypeRef? ElementType = null)
 {
 
@@ -24,13 +18,6 @@ public sealed record CppTypeRef(string Name, bool IsPointer = false, CppTypeRef?
         IsArray ? $"{ArrayTemplate}<{ElementType!.Format()}>" : Name + (IsPointer ? "*" : "");
 
     public override string ToString() => Format();
-
-
-
-
-
-
-
 
     public static bool TryParse(string? text, out CppTypeRef? type)
     {
@@ -68,28 +55,10 @@ public sealed record CppTypeRef(string Name, bool IsPointer = false, CppTypeRef?
         TryParse(text, out var type) ? type! : throw new FormatException($"Not a signature type: '{text}'.");
 }
 
-
 public readonly record struct PapyrusTypeText(string Name, bool IsArray = false)
 {
     public override string ToString() => IsArray ? Name + "[]" : Name;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class F4SETypeMap
 {
@@ -128,10 +97,8 @@ public sealed class F4SETypeMap
         ("WaterType", "TESWaterForm", true),
         ("Weapon", "TESObjectWEAP", true),
 
-
         ("ScriptObject", "VMObject", false),
     };
-
 
     private static readonly (string Cpp, string Papyrus)[] ReverseOnlyRows =
     {
@@ -148,20 +115,13 @@ public sealed class F4SETypeMap
 
     private readonly HashSet<string> _structNames;
 
-
-
-
-
     public F4SETypeMap(IEnumerable<string>? structNames = null) =>
         _structNames = new HashSet<string>(structNames ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
 
-
     public const string StaticFunctionTag = "StaticFunctionTag";
-
 
     public static IReadOnlyDictionary<string, string> FormTypes =>
         FormTypeRows.ToDictionary(r => r.Papyrus, r => r.Cpp, StringComparer.OrdinalIgnoreCase);
-
 
     public IReadOnlyCollection<string> StructNames => _structNames;
 
@@ -194,15 +154,6 @@ public sealed class F4SETypeMap
         foreach (var (cpp, papyrus) in ReverseOnlyRows) map[cpp] = papyrus;
         return map;
     }
-
-
-
-
-
-
-
-
-
 
     public bool TryToCpp(PapyrusTypeText papyrus, bool unsigned, out CppTypeRef? cpp, out string? refusal)
     {
@@ -258,7 +209,6 @@ public sealed class F4SETypeMap
         return false;
     }
 
-
     public bool TryToPapyrus(CppTypeRef? cpp, out PapyrusTypeText papyrus, out string? refusal)
     {
         papyrus = default;
@@ -294,8 +244,6 @@ public sealed class F4SETypeMap
             return true;
         }
 
-
-
         if (cpp.IsPointer)
         {
             refusal = $"'{cpp.Format()}' is a pointer to a type the form table does not name";
@@ -312,23 +260,12 @@ public sealed class F4SETypeMap
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
     public static IReadOnlyList<string> CoreIncludes { get; } = new[]
     {
         "f4se/PapyrusVM.h",
         "f4se/PapyrusNativeFunctions.h",
         "f4se/PapyrusArgs.h",
     };
-
 
     public static IReadOnlyList<string> GameIncludes { get; } = new[]
     {
@@ -338,7 +275,6 @@ public sealed class F4SETypeMap
         "f4se/GameData.h",
         "f4se/GameRTTI.h",
     };
-
 
     public IReadOnlyList<string> RequiredIncludesFor(IEnumerable<CppTypeRef> types)
     {
@@ -355,7 +291,6 @@ public sealed class F4SETypeMap
         bool NeedsGameHeaders(CppTypeRef type) =>
             type.IsArray ? NeedsGameHeaders(type.ElementType!) : type.IsPointer;
     }
-
 
     public static string TemplateInstantiation(
         bool latent, int arity, string cppBaseType, CppTypeRef returnType, IEnumerable<CppTypeRef> parameters)

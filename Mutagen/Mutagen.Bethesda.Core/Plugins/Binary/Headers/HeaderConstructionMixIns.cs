@@ -5,7 +5,7 @@ using Noggog;
 namespace Mutagen.Bethesda.Plugins.Binary.Headers;
 
 public static class HeaderConstructionMixIns
-{ 
+{
     public static ModHeader ModHeader(this GameConstants meta, ReadOnlyMemorySlice<byte> span) => new(meta, span);
 
     public static GroupHeader GroupHeader(this GameConstants meta, ReadOnlyMemorySlice<byte> span) => new(meta, span);
@@ -143,17 +143,17 @@ public static class HeaderConstructionMixIns
     {
         return new(meta, headerConstants, stream.GetMemory(headerConstants.HeaderLength, offset));
     }
-    
+
     public static VariableHeader ReadVariableHeader(this GameConstants meta, IBinaryReadStream stream, ObjectType objectType)
     {
         return ReadVariableHeader(meta, stream, meta.Constants(objectType));
     }
-    
+
     public static VariableHeader ReadVariableHeader(this GameConstants meta, IBinaryReadStream stream, RecordHeaderConstants headerConstants)
     {
         return new(meta, headerConstants, stream.ReadMemory(headerConstants.HeaderLength));
     }
-    
+
     public static bool TryGetAsMajorRecord(this VariableHeader header, out MajorRecordFrame majorFrame)
     {
         if (header.HeaderConstants.ObjectType != ObjectType.Record)
@@ -165,7 +165,7 @@ public static class HeaderConstructionMixIns
         majorFrame = new MajorRecordFrame(header.Constants, header.HeaderAndContentData);
         return true;
     }
-    
+
     public static bool TryGetAsMajorRecord(this VariablePinHeader header, out MajorRecordPinFrame majorFrame)
     {
         if (header.HeaderConstants.ObjectType != ObjectType.Record)

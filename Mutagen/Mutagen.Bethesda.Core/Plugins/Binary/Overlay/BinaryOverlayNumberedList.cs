@@ -8,7 +8,7 @@ internal sealed class BinaryOverlayNumberedList
 {
     public static IReadOnlyList<T> FactoryForEnum<T>(
         ReadOnlyMemorySlice<byte> mem,
-        int amount, 
+        int amount,
         byte enumLength)
         where T : struct, Enum
     {

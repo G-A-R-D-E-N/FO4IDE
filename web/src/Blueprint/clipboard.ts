@@ -7,18 +7,7 @@ export interface GraphClip {
   wires: BpWire[];
 }
 
-
 export const PASTE_OFFSET = 24;
-
-
-
-
-
-
-
-
-
-
 
 export function copySelection(doc: BpDocument, selection: BpSelection): GraphClip {
   const ids = new Set(selection.nodes);
@@ -28,14 +17,6 @@ export function copySelection(doc: BpDocument, selection: BpSelection): GraphCli
     wires: doc.wires.filter((w) => ids.has(w.from.node) && ids.has(w.to.node)),
   });
 }
-
-
-
-
-
-
-
-
 
 export function useGraphClipboard(state: GraphState, dispatch: (action: GraphAction) => void) {
   const clip = useRef<GraphClip | null>(null);
@@ -60,7 +41,6 @@ export function useGraphClipboard(state: GraphState, dispatch: (action: GraphAct
     const pending = clip.current;
     if (!pending || pending.nodes.length === 0) return false;
 
-
     pastes.current += 1;
     const shift = PASTE_OFFSET * pastes.current;
 
@@ -84,7 +64,6 @@ export function useGraphClipboard(state: GraphState, dispatch: (action: GraphAct
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-
 
       const tag = (event.target as HTMLElement | null)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;

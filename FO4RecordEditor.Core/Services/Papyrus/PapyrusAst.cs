@@ -3,20 +3,11 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
 public abstract class PapyrusNode
 {
     public PapyrusSpan Span { get; internal set; }
 
     public virtual IEnumerable<PapyrusNode> Children => System.Array.Empty<PapyrusNode>();
-
 
     public PapyrusNode? FindInnermost(int offset)
     {
@@ -28,7 +19,6 @@ public abstract class PapyrusNode
         }
         return this;
     }
-
 
     public IReadOnlyList<PapyrusNode> PathTo(int offset)
     {
@@ -49,14 +39,6 @@ public abstract class PapyrusNode
     }
 }
 
-
-
-
-
-
-
-
-
 public sealed class PapyrusTypeRef : PapyrusNode
 {
     public PapyrusTypeRef(string name, bool isArray, PapyrusSpan span)
@@ -70,18 +52,14 @@ public sealed class PapyrusTypeRef : PapyrusNode
 
     public bool IsArray { get; }
 
-
     public override string ToString() => IsArray ? Name + "[]" : Name;
 }
-
 
 public abstract class PapyrusDeclaration : PapyrusNode
 {
     public string Name { get; internal set; } = string.Empty;
 
-
     public PapyrusSpan NameSpan { get; internal set; }
-
 
     public List<string> Flags { get; } = new();
 
@@ -89,7 +67,6 @@ public abstract class PapyrusDeclaration : PapyrusNode
 
     public bool HasFlag(string flag) =>
         Flags.Any(f => string.Equals(f, flag, System.StringComparison.OrdinalIgnoreCase));
-
 
     public abstract string Signature { get; }
 }
@@ -140,15 +117,6 @@ public sealed class PapyrusCustomEventDecl : PapyrusDeclaration
     public override string Signature => $"CustomEvent {Name}";
 }
 
-
-
-
-
-
-
-
-
-
 public enum ParameterSemantic
 {
     None,
@@ -161,11 +129,6 @@ public sealed class PapyrusParameter : PapyrusDeclaration
 {
     public PapyrusTypeRef Type { get; internal set; } = null!;
 
-
-
-
-
-
     public ParameterSemantic Semantic => Type?.Name switch
     {
         "scripteventname" => ParameterSemantic.ScriptEventName,
@@ -173,7 +136,6 @@ public sealed class PapyrusParameter : PapyrusDeclaration
         "structvarname" => ParameterSemantic.StructVarName,
         _ => ParameterSemantic.None,
     };
-
 
     public PapyrusExpression? DefaultValue { get; internal set; }
 
@@ -189,7 +151,6 @@ public sealed class PapyrusParameter : PapyrusDeclaration
     public override string Signature => DefaultValue == null ? $"{Type} {Name}" : $"{Type} {Name} = ...";
 }
 
-
 public abstract class PapyrusCallableDecl : PapyrusDeclaration
 {
     public List<PapyrusParameter> Parameters { get; } = new();
@@ -197,7 +158,6 @@ public abstract class PapyrusCallableDecl : PapyrusDeclaration
     public List<PapyrusStatement> Body { get; } = new();
 
     public bool IsNative { get; internal set; }
-
 
     public string? StateName { get; internal set; }
 
@@ -232,9 +192,6 @@ public sealed class PapyrusFunctionDecl : PapyrusCallableDecl
 public sealed class PapyrusEventDecl : PapyrusCallableDecl
 {
 
-
-
-
     public string? RemoteObjectType { get; internal set; }
 
     public override string Signature
@@ -252,9 +209,7 @@ public enum PapyrusPropertyKind
 
     Auto,
 
-
     AutoReadOnly,
-
 
     Full,
 }
@@ -270,7 +225,6 @@ public sealed class PapyrusPropertyDecl : PapyrusDeclaration
     public PapyrusFunctionDecl? Getter { get; internal set; }
 
     public PapyrusFunctionDecl? Setter { get; internal set; }
-
 
     public string? GroupName { get; internal set; }
 
@@ -323,12 +277,10 @@ public sealed class PapyrusStateDecl : PapyrusDeclaration
     public override string Signature => (IsAuto ? "Auto State " : "State ") + Name;
 }
 
-
 public sealed class PapyrusScript : PapyrusDeclaration
 {
 
     public string? FilePath { get; internal set; }
-
 
     public string? Extends { get; internal set; }
 
@@ -342,13 +294,11 @@ public sealed class PapyrusScript : PapyrusDeclaration
 
     public List<PapyrusCustomEventDecl> CustomEvents { get; } = new();
 
-
     public List<PapyrusPropertyDecl> Properties { get; } = new();
 
     public List<PapyrusGroupDecl> Groups { get; } = new();
 
     public List<PapyrusStateDecl> States { get; } = new();
-
 
     public List<PapyrusFunctionDecl> Functions { get; } = new();
 
@@ -376,7 +326,6 @@ public sealed class PapyrusScript : PapyrusDeclaration
             .Concat(Variables)
             .Concat(Groups)
 
-
             .Concat(Properties.Where(p => p.GroupName == null))
             .Concat(Functions)
             .Concat(Events)
@@ -386,14 +335,9 @@ public sealed class PapyrusScript : PapyrusDeclaration
         Extends == null ? $"ScriptName {Name}" : $"ScriptName {Name} extends {Extends}";
 }
 
-
-
-
-
 public abstract class PapyrusStatement : PapyrusNode
 {
 }
-
 
 public sealed class PapyrusDefineStatement : PapyrusStatement
 {
@@ -404,11 +348,6 @@ public sealed class PapyrusDefineStatement : PapyrusStatement
     public PapyrusSpan NameSpan { get; internal set; }
 
     public PapyrusExpression? Initializer { get; internal set; }
-
-
-
-
-
 
     public List<string> Flags { get; } = new();
 
@@ -425,7 +364,6 @@ public sealed class PapyrusDefineStatement : PapyrusStatement
 public sealed class PapyrusAssignStatement : PapyrusStatement
 {
     public PapyrusExpression Target { get; internal set; } = null!;
-
 
     public PapyrusTokenKind Operator { get; internal set; }
 
@@ -464,7 +402,6 @@ public sealed class PapyrusReturnStatement : PapyrusStatement
     }
 }
 
-
 public sealed class PapyrusIfBranch : PapyrusNode
 {
     public PapyrusExpression Condition { get; internal set; } = null!;
@@ -479,7 +416,6 @@ public sealed class PapyrusIfStatement : PapyrusStatement
 {
 
     public List<PapyrusIfBranch> Branches { get; } = new();
-
 
     public List<PapyrusStatement>? ElseBody { get; internal set; }
 
@@ -496,10 +432,6 @@ public sealed class PapyrusWhileStatement : PapyrusStatement
     public override IEnumerable<PapyrusNode> Children =>
         new PapyrusNode[] { Condition }.Concat(Body);
 }
-
-
-
-
 
 public abstract class PapyrusExpression : PapyrusNode
 {
@@ -518,7 +450,6 @@ public sealed class PapyrusLiteralExpression : PapyrusExpression
 {
     public PapyrusLiteralKind Kind { get; internal set; }
 
-
     public string Text { get; internal set; } = string.Empty;
 }
 
@@ -526,7 +457,6 @@ public sealed class PapyrusIdentifierExpression : PapyrusExpression
 {
     public string Name { get; internal set; } = string.Empty;
 }
-
 
 public sealed class PapyrusMemberExpression : PapyrusExpression
 {
@@ -558,7 +488,6 @@ public sealed class PapyrusIndexExpression : PapyrusExpression
     }
 }
 
-
 public sealed class PapyrusArgument : PapyrusNode
 {
     public string? Name { get; internal set; }
@@ -576,14 +505,9 @@ public sealed class PapyrusArgument : PapyrusNode
 public sealed class PapyrusCallExpression : PapyrusExpression
 {
 
-
-
-
-
     public PapyrusExpression Callee { get; internal set; } = null!;
 
     public List<PapyrusArgument> Arguments { get; } = new();
-
 
     public string FunctionName => Callee switch
     {
@@ -627,7 +551,6 @@ public sealed class PapyrusBinaryExpression : PapyrusExpression
     }
 }
 
-
 public sealed class PapyrusCastExpression : PapyrusExpression
 {
     public PapyrusExpression Operand { get; internal set; } = null!;
@@ -643,7 +566,6 @@ public sealed class PapyrusCastExpression : PapyrusExpression
         }
     }
 }
-
 
 public sealed class PapyrusTypeCheckExpression : PapyrusExpression
 {
@@ -661,7 +583,6 @@ public sealed class PapyrusTypeCheckExpression : PapyrusExpression
     }
 }
 
-
 public sealed class PapyrusNewArrayExpression : PapyrusExpression
 {
     public PapyrusTypeRef ElementType { get; internal set; } = null!;
@@ -678,7 +599,6 @@ public sealed class PapyrusNewArrayExpression : PapyrusExpression
     }
 }
 
-
 public sealed class PapyrusNewStructExpression : PapyrusExpression
 {
     public PapyrusTypeRef Type { get; internal set; } = null!;
@@ -688,11 +608,6 @@ public sealed class PapyrusNewStructExpression : PapyrusExpression
         get { yield return Type; }
     }
 }
-
-
-
-
-
 
 public sealed class PapyrusErrorExpression : PapyrusExpression
 {

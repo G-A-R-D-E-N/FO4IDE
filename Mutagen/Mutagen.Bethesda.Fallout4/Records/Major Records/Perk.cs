@@ -493,9 +493,6 @@ partial class PerkBinaryWriteTranslation
                     using (HeaderExport.Subrecord(writer, RecordTypes.EPF3))
                     {
 
-
-
-
                         writer.Write((ushort)choice.Flags.GetValueOrDefault());
                     }
                 }

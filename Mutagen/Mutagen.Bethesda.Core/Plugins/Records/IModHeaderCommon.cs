@@ -10,9 +10,5 @@ public interface IModHeaderCommon : IBinaryItem
     uint NumRecords { get; set; }
     uint NextFormID { get; set; }
 
-
-
-
-
     void SetOverriddenForms(IEnumerable<FormKey>? formKeys);
 }

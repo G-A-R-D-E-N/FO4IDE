@@ -6,33 +6,11 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class RecordCountCache
 {
     private sealed class Entry
     {
         [JsonProperty("size")] public long Size { get; set; }
-
 
         [JsonProperty("mtime")] public long MTimeUtcTicks { get; set; }
         [JsonProperty("counts")] public Dictionary<string, int> Counts { get; set; } = new(StringComparer.Ordinal);
@@ -47,8 +25,6 @@ public static class RecordCountCache
 
     private const int CurrentVersion = 1;
 
-
-
     private const int FlushDelayMs = 1000;
 
     private static readonly object _lock = new();
@@ -57,12 +33,7 @@ public static class RecordCountCache
     private static System.Threading.Timer? _flushTimer;
     private static bool _exitHookInstalled;
 
-
     public static bool Enabled { get; set; } = true;
-
-
-
-
 
     public static string CacheFilePath
     {
@@ -76,15 +47,10 @@ public static class RecordCountCache
         }
     }
 
-
-
-
     public static bool TryGet(string pluginPath, out Dictionary<string, int> counts)
     {
         counts = new Dictionary<string, int>(StringComparer.Ordinal);
         if (!Enabled || string.IsNullOrWhiteSpace(pluginPath)) return false;
-
-
 
         if (!TryStat(pluginPath, out var size, out var mtime)) return false;
 
@@ -97,7 +63,6 @@ public static class RecordCountCache
             return true;
         }
     }
-
 
     public static void Put(string pluginPath, IReadOnlyDictionary<string, int> counts)
     {
@@ -118,15 +83,12 @@ public static class RecordCountCache
         }
     }
 
-
     public static void Flush()
     {
         lock (_lock)
         {
             if (!_dirty || _cache == null) return;
             _dirty = false;
-
-
 
             foreach (var dead in _cache.Entries.Where(kv => !File.Exists(kv.Key)).Select(kv => kv.Key).ToList())
                 _cache.Entries.Remove(dead);
@@ -137,8 +99,6 @@ public static class RecordCountCache
                 var dir = Path.GetDirectoryName(file);
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
 
-
-
                 var tmp = file + ".tmp";
                 File.WriteAllText(tmp, JsonConvert.SerializeObject(_cache, Formatting.Indented));
                 File.Move(tmp, file, overwrite: true);
@@ -146,11 +106,9 @@ public static class RecordCountCache
             catch
             {
 
-
             }
         }
     }
-
 
     public static void ResetForTest()
     {
@@ -162,10 +120,6 @@ public static class RecordCountCache
         }
     }
 
-
-
-
-
     public static void ResetInMemoryForTest()
     {
         lock (_lock)
@@ -174,7 +128,6 @@ public static class RecordCountCache
             _dirty = false;
         }
     }
-
 
     public static int Count
     {
@@ -201,7 +154,6 @@ public static class RecordCountCache
         catch { return false; }
     }
 
-
     private static CacheFile Load()
     {
         if (_cache != null) return _cache;
@@ -226,13 +178,11 @@ public static class RecordCountCache
         return _cache ??= new CacheFile();
     }
 
-
     private static void ScheduleFlush()
     {
         if (!_exitHookInstalled)
         {
             _exitHookInstalled = true;
-
 
             try { AppDomain.CurrentDomain.ProcessExit += (_, _) => Flush(); } catch { }
         }

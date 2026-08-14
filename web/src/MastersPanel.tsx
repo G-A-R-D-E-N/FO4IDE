@@ -7,13 +7,6 @@ import './MastersPanel.css';
 const LS = (k: string, d: string) => localStorage.getItem('masters.' + k) ?? d;
 const setLS = (k: string, v: string) => localStorage.setItem('masters.' + k, v);
 
-
-
-
-
-
-
-
 export default function MastersPanel({ onClose }: { onClose: () => void }) {
   const [plugins, setPlugins] = useState<string[]>([]);
   const [plugin, setPlugin] = useState(() => LS('plugin', ''));

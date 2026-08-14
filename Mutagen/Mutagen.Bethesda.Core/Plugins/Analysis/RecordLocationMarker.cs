@@ -37,7 +37,7 @@ public sealed class GroupLocationMarker
         ContainedRecordType = pinHeader.ContainedRecordType;
         GroupType = pinHeader.GroupType;
     }
-    
+
     protected bool Equals(GroupLocationMarker other)
     {
         return Location.Equals(other.Location) && ContainedRecordType.Equals(other.ContainedRecordType) && GroupType == other.GroupType;

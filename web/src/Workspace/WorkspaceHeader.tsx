@@ -19,7 +19,6 @@ interface WorkspaceHeaderProps {
   onOpenRecord: (formKey: string, plugin: string) => void;
 }
 
-
 export default function WorkspaceHeader({
   matrix, anchors, onAnchorsChange, compareOnly, onCompareOnlyChange, showCompare, actions,
   onOpenRecord,
@@ -28,8 +27,6 @@ export default function WorkspaceHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const [picking, setPicking] = useState<0 | 1 | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-
-
 
   useEffect(() => {
     let cancelled = false;
@@ -135,7 +132,6 @@ export default function WorkspaceHeader({
     </div>
   );
 }
-
 
 function Breadcrumb({ path, matrix, onOpenRecord }: {
   path: BreadcrumbNode[];

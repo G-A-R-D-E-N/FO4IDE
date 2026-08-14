@@ -29,7 +29,7 @@ public partial class Activator
     public enum Flag
     {
         NoDisplacement = 0x01,
-        IgnoredBySandbox = 0x02, 
+        IgnoredBySandbox = 0x02,
         IsARadio = 0x10,
     }
 }

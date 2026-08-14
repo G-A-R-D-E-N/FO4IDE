@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class NifInterop
@@ -23,7 +19,6 @@ public class NifInterop
     {
         return HostServices.PickFolder(title);
     }
-
 
     public string BrowseForSave(string title, string filter)
     {
@@ -67,14 +62,12 @@ public class NifInterop
             catch (Exception ex) { DebugLog.Exception("Nif.Fix", ex); return "Error: " + ex.Message; }
         });
 
-
     public Task<string> Tree(string nifPath) =>
         Task.Run(() =>
         {
             try { return NifService.Tree(nifPath); }
             catch (Exception ex) { DebugLog.Exception("Nif.Tree", ex); return "Error: " + ex.Message; }
         });
-
 
     public Task<string> ApplyEdits(string nifPath, string editsJson, string outNif) =>
         Task.Run(() =>
@@ -83,15 +76,12 @@ public class NifInterop
             catch (Exception ex) { DebugLog.Exception("Nif.ApplyEdits", ex); return "Error: " + ex.Message; }
         });
 
-
-
     public Task<string> GetTexture(string nifPath, string relTexPath, string textureRoot) =>
         Task.Run(() =>
         {
             try { return TextureService.GetTexturePngDataUrl(nifPath, relTexPath, textureRoot); }
             catch (Exception ex) { DebugLog.Exception("Nif.GetTexture", ex); return ""; }
         });
-
 
     public string OpenFolder(string path)
     {
@@ -106,8 +96,6 @@ public class NifInterop
         }
         catch (Exception ex) { return "Error: " + ex.Message; }
     }
-
-
 
     public string StageDroppedFile(string name, string base64)
     {

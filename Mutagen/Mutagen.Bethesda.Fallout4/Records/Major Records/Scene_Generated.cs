@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region VirtualMachineAdapter
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private SceneAdapter? _VirtualMachineAdapter;
-
-
 
         public SceneAdapter? VirtualMachineAdapter
         {
@@ -186,8 +180,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
@@ -1560,8 +1552,6 @@ namespace Mutagen.Bethesda.Fallout4
         ISceneGetter
     {
 
-
-
         new SceneAdapter? VirtualMachineAdapter { get; set; }
         new Scene.Flag? Flags { get; set; }
         new ExtendedList<ScenePhase> Phases { get; }
@@ -1575,8 +1565,6 @@ namespace Mutagen.Bethesda.Fallout4
         new Single? CameraDistanceOverride { get; set; }
         new Single? DialogueDistanceOverride { get; set; }
         new Single? FovOverride { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new ExtendedList<Condition> Conditions { get; }
@@ -1606,8 +1594,6 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Scene_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         ISceneAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
         Scene.Flag? Flags { get; }
@@ -1623,8 +1609,6 @@ namespace Mutagen.Bethesda.Fallout4
         Single? DialogueDistanceOverride { get; }
         Single? FovOverride { get; }
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
@@ -2569,7 +2553,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Scene.GetNew();
@@ -3507,7 +3490,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -3541,7 +3523,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ISceneGetter);
-
 
         #region VirtualMachineAdapter
         private int? _VirtualMachineAdapterLengthOverride;

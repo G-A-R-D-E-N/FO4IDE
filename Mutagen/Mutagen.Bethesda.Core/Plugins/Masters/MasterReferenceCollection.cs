@@ -9,24 +9,12 @@ using Mutagen.Bethesda.Plugins.Internals;
 
 namespace Mutagen.Bethesda.Plugins.Masters;
 
-
-
-
-
 public interface IReadOnlyMasterReferenceCollection
 {
 
-
-
     IReadOnlyList<IMasterReferenceGetter> Masters { get; }
 
-
-
-
     ModKey CurrentMod { get; }
-
-
-
 
     bool TryGetIndex(ModKey modKey, out uint index);
 }
@@ -34,34 +22,18 @@ public interface IReadOnlyMasterReferenceCollection
 public interface IMasterReferenceCollection : IReadOnlyMasterReferenceCollection
 {
 
-
-
-
     void SetTo(IEnumerable<IMasterReferenceGetter> masters);
 }
-
-
-
-
 
 public sealed class MasterReferenceCollection : IMasterReferenceCollection
 {
     private readonly Dictionary<ModKey, uint> _masterIndices = new();
 
-
-
-
     public static IReadOnlyMasterReferenceCollection Empty { get; } = new MasterReferenceCollection(ModKey.Null);
-
 
     public IReadOnlyList<IMasterReferenceGetter> Masters { get; private set; } = [];
 
-
     public ModKey CurrentMod { get; }
-
-
-
-
 
     public MasterReferenceCollection(ModKey modKey)
     {
@@ -69,22 +41,14 @@ public sealed class MasterReferenceCollection : IMasterReferenceCollection
         SetTo([]);
     }
 
-
-
-
-
-
     public MasterReferenceCollection(ModKey modKey, IEnumerable<IMasterReferenceGetter> masters)
     {
         CurrentMod = modKey;
         SetTo(masters);
     }
 
-
     public void SetTo(IEnumerable<IMasterReferenceGetter> masters)
     {
-
-
 
         Masters = masters.ToList();
         _masterIndices.Clear();
@@ -109,19 +73,13 @@ public sealed class MasterReferenceCollection : IMasterReferenceCollection
             index++;
         }
 
-
         _masterIndices[CurrentMod] = index;
     }
-
 
     public bool TryGetIndex(ModKey modKey, out uint index)
     {
         return _masterIndices.TryGetValue(modKey, out index);
     }
-
-
-
-
 
     internal static MasterReferenceCollection CreateUnsafe(
         ModKey modKey,
@@ -140,7 +98,6 @@ public sealed class MasterReferenceCollection : IMasterReferenceCollection
             }
             index++;
         }
-
 
         result._masterIndices[modKey] = index;
         return result;

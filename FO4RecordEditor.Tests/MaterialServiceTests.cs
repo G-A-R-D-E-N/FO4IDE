@@ -112,8 +112,6 @@ public class MaterialServiceTests
         MaterialService.Inspect(@"C:\does\not\exist.bgsm").Should().Contain("not found");
     }
 
-
-
     [Fact]
     public void InspectJson_ReturnsTypedFieldsGroupedBySection()
     {
@@ -176,7 +174,6 @@ public class MaterialServiceTests
             MaterialService.SetFields(path,
                 new Dictionary<string, string> { ["Smoothness"] = "0.99", ["NotReal"] = "1" }, null)
                 .Should().Contain("Unknown BGSM field");
-
 
             var reparsed = BgsmCodec.Parse(File.ReadAllBytes(path));
             reparsed.Smoothness.Should().Be(0.5f, "a batch with one bad field must write nothing at all");

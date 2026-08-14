@@ -5,8 +5,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
 public class PatchScriptTimeoutTests
 {
     private readonly ITestOutputHelper _out;

@@ -20,28 +20,17 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   const [geometry, setGeometry] = useState<CellGeoMap>({});
   const [log, setLog] = useState<string[]>([]);
 
-
-
-
-
-
   const [sidebarTab, setSidebarTab] = useState<'info' | 'log'>('info');
   const [hasUnseenError, setHasUnseenError] = useState(false);
-
 
   const [selected, setSelected] = useState<CellPlacedReference | null>(null);
   const [hiddenTypes, setHiddenTypes] = useState<Set<string>>(new Set());
   const [hiddenRefs, setHiddenRefs] = useState<Set<string>>(new Set());
 
-
-
-
-
   type VisSnapshot = { types: Set<string>; refs: Set<string> };
   const HISTORY_CAP = 50;
   const undoStackRef = useRef<VisSnapshot[]>([]);
   const redoStackRef = useRef<VisSnapshot[]>([]);
-
 
   const [, setHistoryTick] = useState(0);
 
@@ -69,28 +58,13 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   };
   const resetVisibilityHistory = () => { undoStackRef.current = []; redoStackRef.current = []; };
 
-
-
-
   const [pluginCount, setPluginCount] = useState<number | null>(null);
-
-
-
-
-
 
   const [matches, setMatches] = useState<CellSearchHit[] | null>(null);
   const [matchesLoading, setMatchesLoading] = useState(false);
   const searchSeq = useRef(0);
 
-
-
-
   const [geoProgress, setGeoProgress] = useState<{ done: number; total: number } | null>(null);
-
-
-
-
 
   const [texStats, setTexStats] = useState<CellTextureStats | null>(null);
   const texStatsLoggedRef = useRef('');
@@ -108,8 +82,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
     setLog(prev => [`[${new Date().toLocaleTimeString()}] ${line}`, ...prev].slice(0, 200));
     if (line.includes('✗') && sidebarTab !== 'log') setHasUnseenError(true);
   };
-
-
 
   const onTextureStats = useCallback((s: CellTextureStats) => {
     setTexStats(s);
@@ -134,7 +106,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
 
   useEffect(() => { checkPlugins(); }, []);
 
-
   useEffect(() => {
     const onFocus = () => checkPlugins();
     window.addEventListener('focus', onFocus);
@@ -142,9 +113,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   }, []);
 
   const noEnv = pluginCount === 0;
-
-
-
 
   useEffect(() => {
     if (!cell || noEnv) { setMatches(null); return; }
@@ -163,11 +131,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
     }, 250);
     return () => clearTimeout(t);
   }, [cellId, cell, noEnv]);
-
-
-
-
-
 
   const [pickMode, setPickMode] = useState<'cell' | 'grid'>(() => (LS('pickMode', 'cell') === 'grid' ? 'grid' : 'cell'));
   const [worldspace, setWorldspace] = useState(() => LS('worldspace', ''));
@@ -237,8 +200,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
       const refs = parsed.references ?? [];
       appendLog(`• loaded ${parsed.cellEditorId || parsed.cellFormKey} -- ${refs.length} reference(s), ${parsed.withModelCount ?? 0} with a model`);
 
-
-
       const scolModels = refs.flatMap(r => (r.scolParts ?? []).map(p => p.modelPath));
       const uniqueModels = Array.from(new Set(
         [...refs.map(r => r.modelPath).filter((p): p is string => !!p), ...scolModels]));
@@ -291,9 +252,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   const failedModelCount = Object.values(geometry).filter(g => 'error' in g).length;
   const banner = statusBanner(status, busy);
 
-
-
-
   const typeGroups = useMemo(() => {
     const m = new Map<string, number>();
     for (const r of references) {
@@ -313,7 +271,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   };
   const showAllTypes = () => { pushUndo(); setHiddenTypes(new Set()); };
 
-
   const hideSelected = () => {
     if (!selected) return;
     pushUndo();
@@ -321,9 +278,6 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
   };
   const unhideAll = () => { pushUndo(); setHiddenRefs(new Set()); };
   const toggleMarkers = () => toggleType(MARKER_LAYER);
-
-
-
 
   const gizmoPatchRef = useRef<string | null>(null);
   const moveEnd = useCallback(async (ref: CellPlacedReference) => {
@@ -356,15 +310,10 @@ export default function CellPanel({ onClose }: { onClose: () => void }) {
       return;
     }
 
-
-
     setSelected(prev => prev && prev.formKey === ref.formKey
       ? { ...prev, position: { ...ref.position }, rotation: { ...ref.rotation } }
       : prev);
   }, []);
-
-
-
 
   return (
     <div className="papyrus-overlay">

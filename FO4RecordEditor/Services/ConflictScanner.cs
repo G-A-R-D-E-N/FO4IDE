@@ -4,23 +4,15 @@ using Mutagen.Bethesda.Plugins;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 public static class ConflictScanner
 {
 
     private static readonly IReadOnlySet<string> VanillaMasters = ProtectedPlugins.VanillaMasters;
 
-
-
     private static List<ConflictEntry>? _cache;
     private static readonly object _cacheLock = new();
     public static bool HasCache => _cache != null;
     public static void InvalidateCache() { lock (_cacheLock) _cache = null; }
-
-
 
     public static List<ConflictEntry> ScanCached(object env, Action<string>? progress = null)
     {
@@ -42,9 +34,6 @@ public static class ConflictScanner
                 order.Add(((string)ld.ModKey.FileName.String, m));
         }
 
-
-
-
         foreach (var kv in FO4RecordEditor.Services.MutagenLoader.EditableMods)
         {
             if (kv.Value is not Mutagen.Bethesda.Fallout4.IFallout4ModGetter em) continue;
@@ -52,7 +41,6 @@ public static class ConflictScanner
             if (at >= 0) order[at] = (kv.Key, em);
             else order.Add((kv.Key, em));
         }
-
 
         var firstPlugin = new Dictionary<FormKey, string>();
         var multi = new HashSet<FormKey>();
@@ -65,7 +53,6 @@ public static class ConflictScanner
                 else if (!string.Equals(fp, name, StringComparison.OrdinalIgnoreCase)) multi.Add(rec.FormKey);
             }
         }
-
 
         var recs = new Dictionary<FormKey, List<(string plugin, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec)>>();
         foreach (var (name, mod) in order)
@@ -84,7 +71,6 @@ public static class ConflictScanner
         foreach (var kv in recs)
         {
             var entries = kv.Value;
-
 
             var first = entries[0].rec;
             bool differs = entries.Any(en => !RecordsEqual(en.rec, first));

@@ -8,15 +8,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class F4SEEmitterTests
 {
     private static PapyrusTypeText T(string written) =>
@@ -26,7 +17,6 @@ public class F4SEEmitterTests
 
     private static NativeParameter Param(string name, string type, string? def = null, bool unsigned = false) =>
         new(name, T(type), def, unsigned);
-
 
     private static PluginBinding Sample(F4SETarget target = F4SETarget.Og_1_10_163) => new()
     {
@@ -123,8 +113,6 @@ public class F4SEEmitterTests
         return file!.Text;
     }
 
-
-
     [Fact]
     public void Every_expected_file_is_emitted()
     {
@@ -216,8 +204,6 @@ public class F4SEEmitterTests
         source.Should().Contain("return BSFixedString();");
     }
 
-
-
     [Fact]
     public void The_emitted_script_declares_the_natives_with_their_defaults()
     {
@@ -245,7 +231,6 @@ public class F4SEEmitterTests
     public void A_struct_owned_by_another_script_is_written_owner_qualified()
     {
 
-
         var plugin = Sample() with
         {
             Modules = Sample().Modules.Select(m => m.Name != "Util" ? m : m with
@@ -267,7 +252,6 @@ public class F4SEEmitterTests
         TextOf(result, "Data/Scripts/Source/User/SampleUtil.psc")
             .Should().Contain("SampleActor:SampleWornItem Function FirstWorn() native global");
 
-
         TextOf(result, "Data/Scripts/Source/User/SampleActor.psc")
             .Should().Contain("SampleWornItem Function GetSampleWornItem");
     }
@@ -275,7 +259,6 @@ public class F4SEEmitterTests
     [Fact]
     public void The_emitted_scripts_compile_to_pex_with_the_built_in_compiler()
     {
-
 
         var result = EmitSample();
         var directory = System.IO.Directory.CreateTempSubdirectory("fo4re-f4se-emit-");
@@ -305,8 +288,6 @@ public class F4SEEmitterTests
         }
     }
 
-
-
     [Fact]
     public void The_original_target_exports_the_query_entry_point_and_checks_the_runtime()
     {
@@ -320,7 +301,6 @@ public class F4SEEmitterTests
     [Fact]
     public void The_next_generation_target_exports_the_version_data_instead()
     {
-
 
         var main = TextOf(EmitSample(F4SETarget.Ng_0_7_8), "src/main.cpp");
 
@@ -372,8 +352,6 @@ public class F4SEEmitterTests
         cmake.Should().Contain("find_package(f4se REQUIRED CONFIG)");
     }
 
-
-
     [Fact]
     public void Emitted_cpp_read_back_agrees_with_the_emitted_papyrus()
     {
@@ -403,8 +381,6 @@ public class F4SEEmitterTests
         recovered.Should().ContainSingle(n => n.IsLatent).Which.FunctionName.Should().Be("WaitFor");
         recovered.Should().ContainSingle(n => n.NoWait).Which.FunctionName.Should().Be("GetTargets");
     }
-
-
 
     [Fact]
     public void Emitted_cpp_has_balanced_braces()
@@ -466,8 +442,6 @@ public class F4SEEmitterTests
             regions.Count.Should().Be(begins, $"{file.RelativePath} region names should be unique");
         }
     }
-
-
 
     [Fact]
     public void A_duplicate_registration_is_refused_rather_than_emitted()

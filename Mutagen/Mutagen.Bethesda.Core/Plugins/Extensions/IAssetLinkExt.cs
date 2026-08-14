@@ -5,13 +5,8 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace Mutagen.Bethesda;
 
-
-
-
 public static class IAssetLinkExt
 {
-
-
 
     public static IAssetLink<TAssetType> AsSetter<TAssetType>(this IAssetLinkGetter<TAssetType> link)
         where TAssetType : class, IAssetType

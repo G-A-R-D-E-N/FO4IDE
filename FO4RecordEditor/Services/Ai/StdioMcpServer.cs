@@ -4,16 +4,9 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 public static class StdioMcpServer
 {
     private const string ProtocolVersion = "2024-11-05";
-
 
     public static void Run(PluginToolExecutor executor)
     {
@@ -29,10 +22,6 @@ public static class StdioMcpServer
         }
     }
 
-
-
-
-
     public static string? HandleLine(string line, PluginToolExecutor executor)
     {
         JsonElement root;
@@ -40,7 +29,6 @@ public static class StdioMcpServer
         catch { return null; }
 
         var method = root.TryGetProperty("method", out var mEl) ? mEl.GetString() : null;
-
 
         if (!root.TryGetProperty("id", out var idEl)) return null;
         var id = idEl.Clone();

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Internal;
@@ -880,7 +876,6 @@ namespace Mutagen.Bethesda.Pex
         }
 
         #endregion
-
 
         public object GetNew()
         {

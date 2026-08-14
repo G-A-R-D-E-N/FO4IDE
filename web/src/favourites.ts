@@ -1,14 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
 const KEY = 'favouriteRecords';
 
 export interface Favourite {
@@ -40,7 +30,6 @@ export function readFavourites(): Favourite[] {
 function write(list: Favourite[]) {
   localStorage.setItem(KEY, JSON.stringify(list));
 
-
   window.dispatchEvent(new CustomEvent(FAVOURITES_CHANGED));
 }
 
@@ -49,7 +38,6 @@ export const FAVOURITES_CHANGED = 'fo4re:favourites-changed';
 export function isFavourite(formKey: string): boolean {
   return readFavourites().some(f => f.formKey === formKey);
 }
-
 
 export function toggleFavourite(entry: Favourite): boolean {
   const list = readFavourites();

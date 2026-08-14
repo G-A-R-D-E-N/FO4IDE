@@ -4,19 +4,8 @@ using System.Drawing;
 
 namespace Mutagen.Bethesda.Binary;
 
-
-
-
 public static class IBinaryStreamExt
 {
-
-
-
-
-
-
-
-
 
     public static Color ReadColor<TStream>(this TStream stream, ColorBinaryType binaryType)
         where TStream : IBinaryReadStream
@@ -35,14 +24,6 @@ public static class IBinaryStreamExt
                 throw new NotImplementedException();
         }
     }
-
-
-
-
-
-
-
-
 
     public static Color ReadColor(this ReadOnlySpan<byte> span, ColorBinaryType binaryType)
     {
@@ -92,14 +73,6 @@ public static class IBinaryStreamExt
             return (byte)Math.Round(byte.MaxValue * f);
         }
     }
-
-
-
-
-
-
-
-
 
     public static Color ReadColor(this ReadOnlyMemorySlice<byte> span, ColorBinaryType binaryType)
     {

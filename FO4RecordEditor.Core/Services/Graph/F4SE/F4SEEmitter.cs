@@ -4,30 +4,20 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
 public sealed class F4SEEmitOptions
 {
-
-
-
-
-
-
 
     public IReadOnlyDictionary<string, string> Existing { get; set; } =
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-
     public bool EmitDespiteErrors { get; set; }
 }
-
 
 public sealed record F4SEEmitResult
 {
     public IReadOnlyList<EmittedFile> Files { get; init; } = Array.Empty<EmittedFile>();
 
     public IReadOnlyList<GraphDiagnostic> Diagnostics { get; init; } = Array.Empty<GraphDiagnostic>();
-
 
     public IReadOnlyList<string> OrphanedBodies { get; init; } = Array.Empty<string>();
 
@@ -39,18 +29,6 @@ public sealed record F4SEEmitResult
     public EmittedFile? File(string relativePath) =>
         Files.FirstOrDefault(f => string.Equals(f.RelativePath, relativePath, StringComparison.OrdinalIgnoreCase));
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class F4SEEmitter
 {
@@ -101,14 +79,6 @@ public sealed class F4SEEmitter
             files.Add(new EmittedFile(path, text));
         }
     }
-
-
-
-
-
-
-
-
 
     public static CrossCheckResult RoundTrip(PluginBinding plugin, F4SEEmitResult result)
     {

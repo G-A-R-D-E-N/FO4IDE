@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -1065,7 +1061,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return LocationReferenceType.GetNew();
@@ -1447,7 +1442,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1480,7 +1474,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ILocationReferenceTypeGetter);
-
 
         #region Color
         private int? _ColorLocation;

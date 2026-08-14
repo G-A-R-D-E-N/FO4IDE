@@ -5,9 +5,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class ProtectedPluginsTests
 {
     [Theory]
@@ -47,7 +44,6 @@ public class ProtectedPluginsTests
         ProtectedPlugins.ValidateSavePath(Path.Combine(Path.GetTempPath(), "Fallout4.esm"))
             .Should().NotBeNull().And.Contain("write-protected");
 
-
     [Fact]
     public void ValidateSavePath_NormalizesBeforeCheckingTheName() =>
         ProtectedPlugins.ValidateSavePath(@"C:\mods\subdir\..\Fallout4.esm")
@@ -72,7 +68,6 @@ public class ProtectedPluginsTests
         result.IsError.Should().BeTrue();
         result.Text.Should().Contain("write-protected");
     }
-
 
     [Fact]
     public void SavePlugin_RefusesAVanillaMasterDestinationPath()

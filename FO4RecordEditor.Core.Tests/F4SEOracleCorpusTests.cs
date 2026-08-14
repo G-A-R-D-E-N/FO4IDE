@@ -8,20 +8,11 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
 public class F4SEOracleCorpusTests
 {
     private readonly ITestOutputHelper _output;
 
     public F4SEOracleCorpusTests(ITestOutputHelper output) => _output = output;
-
 
     private sealed record Tree(string Label, string CppDirectory, string MergedScripts, string? VanillaScripts);
 
@@ -45,12 +36,10 @@ public class F4SEOracleCorpusTests
                     continue;
                 }
 
-
                 var cpp2 = Path.Combine(directory, "src", "f4se", "f4se");
                 var merged = Path.Combine(directory, "Data", "Scripts", "Source");
                 if (Directory.Exists(cpp2) && Directory.Exists(merged))
                 {
-
 
                     var sibling = Directory.EnumerateDirectories(root)
                         .Select(d => Path.Combine(d, "scripts", "vanilla"))
@@ -130,8 +119,6 @@ public class F4SEOracleCorpusTests
         foreach (var binding in delta.Removed.Take(25))
             _output.WriteLine($"  REMOVED {binding.PapyrusClass}.{binding.FunctionName}/{binding.Arity}");
         foreach (var change in delta.Changed.Take(25)) _output.WriteLine("  CHANGED " + change);
-
-
 
         (newer.Natives.Count - older.Natives.Count)
             .Should().Be(delta.Added.Count - delta.Removed.Count,

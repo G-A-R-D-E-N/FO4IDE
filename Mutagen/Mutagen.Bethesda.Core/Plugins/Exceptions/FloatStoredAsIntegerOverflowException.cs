@@ -7,11 +7,11 @@ public class FloatStoredAsIntegerOverflowException : Exception
     public float? Multiplier { get; }
     public float? Divisor { get; }
     public FloatIntegerType IntegerType { get; }
-    
+
     public FloatStoredAsIntegerOverflowException(
         string? name,
         float? multiplier,
-        float? divisor, 
+        float? divisor,
         FloatIntegerType integerType)
         : base(GetMessage(name, multiplier, divisor, integerType))
     {
@@ -23,7 +23,7 @@ public class FloatStoredAsIntegerOverflowException : Exception
     private static string GetMessage(
         string? name,
         float? multiplier,
-        float? divisor, 
+        float? divisor,
         FloatIntegerType integerType)
     {
         uint max;

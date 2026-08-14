@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -44,8 +40,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public partial class Keyword :
         Fallout4MajorRecord,
         IEquatable<IKeywordGetter>,
@@ -86,8 +80,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IAttractionRuleGetter> IKeywordGetter.AttractionRule => this.AttractionRule;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -697,8 +689,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IKeyword :
         IFallout4MajorRecordInternal,
         IFormLinkContainer,
@@ -716,8 +706,6 @@ namespace Mutagen.Bethesda.Fallout4
         new Keyword.TypeEnum? Type { get; set; }
         new IFormLinkNullable<IAttractionRuleGetter> AttractionRule { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
         new String? DisplayName { get; set; }
         #region Mutagen
@@ -732,9 +720,6 @@ namespace Mutagen.Bethesda.Fallout4
         IKeywordGetter
     {
     }
-
-
-
 
     [AssociatedRecordTypesAttribute(Mutagen.Bethesda.Fallout4.Internals.RecordTypeInts.KYWD)]
     public partial interface IKeywordGetter :
@@ -756,8 +741,6 @@ namespace Mutagen.Bethesda.Fallout4
         Keyword.TypeEnum? Type { get; }
         IFormLinkNullableGetter<IAttractionRuleGetter> AttractionRule { get; }
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -1357,7 +1340,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Keyword.GetNew();
@@ -1809,7 +1791,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

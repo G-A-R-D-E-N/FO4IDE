@@ -4,12 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
-
-
 public class FormLinkNullableGetter<TMajorGetter> :
     IFormLinkNullableGetter<TMajorGetter>,
     IEquatable<FormLink<TMajorGetter>>,
@@ -20,26 +14,13 @@ public class FormLinkNullableGetter<TMajorGetter> :
 {
     protected FormKey? _formKey;
 
-
-
-
     public static readonly IFormLinkNullableGetter<TMajorGetter> Null = new FormLinkNullableGetter<TMajorGetter>();
-
-
-
 
     public FormKey? FormKeyNullable => _formKey;
 
-
-
-
     public FormKey FormKey => _formKey ?? FormKey.Null;
 
-
     public Type Type => typeof(TMajorGetter);
-
-
-
 
     public bool IsNull => _formKey?.IsNull ?? true;
 
@@ -52,53 +33,20 @@ public class FormLinkNullableGetter<TMajorGetter> :
         _formKey = formKey;
     }
 
-
-
-
-
-
     public override bool Equals(object? obj)
     {
         return IFormLinkExt.EqualsWithInheritanceConsideration(this, obj);
     }
 
-
-
-
-
-
     public bool Equals(FormLink<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(_formKey, other?.FormKey);
-
-
-
-
-
 
     public bool Equals(FormLinkNullable<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(_formKey, other?._formKey);
 
-
-
-
-
-
     public bool Equals(IFormLinkGetter<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(_formKey, other?.FormKey);
-
-
-
-
-
 
     public bool Equals(IFormLinkNullableGetter<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(_formKey, other?.FormKeyNullable);
 
-
-
-
-
     public override int GetHashCode() => _formKey?.GetHashCode() ?? 0;
-
-
-
-
 
     public override string ToString() => _formKey?.ToString() ?? "Null";
 
@@ -113,12 +61,6 @@ public class FormLinkNullableGetter<TMajorGetter> :
         return false;
     }
 
-
-
-
-
-
-
     public bool TryResolveFormKey(ILinkCache cache, [MaybeNullWhen(false)] out FormKey formKey)
     {
         if (_formKey == null)
@@ -130,11 +72,6 @@ public class FormLinkNullableGetter<TMajorGetter> :
         return true;
     }
 
-
-
-
-
-
     public bool TryGetModKey(out ModKey modKey)
     {
         if (_formKey is {} formKey)
@@ -145,11 +82,6 @@ public class FormLinkNullableGetter<TMajorGetter> :
         modKey = default!;
         return false;
     }
-
-
-
-
-
 
     public TMajorGetter? TryResolve(ILinkCache cache)
     {
@@ -175,16 +107,11 @@ public sealed class FormLinkNullable<TMajorGetter> : FormLinkNullableGetter<TMaj
     where TMajorGetter : class, IMajorRecordGetter
 {
 
-
-
     public new FormKey? FormKeyNullable
     {
         get => _formKey;
         set => _formKey = value;
     }
-
-
-
 
     public new FormKey FormKey
     {
@@ -197,43 +124,25 @@ public sealed class FormLinkNullable<TMajorGetter> : FormLinkNullableGetter<TMaj
     {
     }
 
-
-
-
     public FormLinkNullable(FormKey? formKey)
         : base(formKey)
     {
     }
-
-
-
 
     public FormLinkNullable(TMajorGetter? record)
         : base(record?.FormKey)
     {
     }
 
-
-
-
-
     public void SetTo(FormKey? formKey)
     {
         _formKey = formKey;
     }
 
-
-
-
-
     public void SetTo(TMajorGetter? record)
     {
         _formKey = record?.FormKey;
     }
-
-
-
-
 
     public void SetTo(IFormLinkNullableGetter<TMajorGetter> link)
     {

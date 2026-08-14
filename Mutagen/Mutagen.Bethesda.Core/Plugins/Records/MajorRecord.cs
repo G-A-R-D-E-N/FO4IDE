@@ -12,19 +12,9 @@ public partial interface IMajorRecord : IFormLinkContainer, IAssetLinkContainer,
 {
     new FormKey FormKey { get; }
 
-
-
-
     new bool IsCompressed { get; set; }
 
-
-
-
     new bool IsDeleted { get; set; }
-
-
-
-
 
     bool Disable();
 }
@@ -44,17 +34,9 @@ public partial interface IMajorRecordGetter :
     IMajorRecordQueryableGetter
 {
 
-
-
     bool IsCompressed { get; }
 
-
-
-
     bool IsDeleted { get; }
-
-
-
 
     new ushort? FormVersion { get; }
 }
@@ -67,9 +49,6 @@ public partial class MajorRecord : IFormLinkContainer
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     String? IMajorRecordGetter.EditorID => EditorID;
     #endregion
-
-
-
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public string TitleString => $"{EditorID} - {FormKey}";

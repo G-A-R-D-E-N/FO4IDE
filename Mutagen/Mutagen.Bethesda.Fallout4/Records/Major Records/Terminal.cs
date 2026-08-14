@@ -45,7 +45,6 @@ partial class TerminalBinaryCreateTranslation
     public static partial void FillBinaryFlagsCustom(MutagenFrame frame, ITerminalInternal item, PreviousParse lastParsed)
     {
 
-
         item.MarkerParameters = null;
         item.Flags = FillBinaryFlags(frame, (i) => GetNthMarker(item, i));
     }
@@ -55,7 +54,6 @@ partial class TerminalBinaryCreateTranslation
         var subFrame = stream.ReadSubrecord();
         uint raw = BinaryPrimitives.ReadUInt32LittleEndian(subFrame.Content);
         var ret = (Terminal.Flag)(raw & UpperFlagsMask);
-
 
         uint markers = raw & 0x003F_FFFF;
         uint indexToCheck = 1;
@@ -139,7 +137,6 @@ partial class TerminalBinaryWriteTranslation
                 indexToCheck <<= 1;
             }
         }
-
 
         using (HeaderExport.Subrecord(writer, RecordTypes.MNAM))
         {

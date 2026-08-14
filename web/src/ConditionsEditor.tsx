@@ -9,20 +9,10 @@ const back = () => window.chrome?.webview?.hostObjects?.backend;
 const OPERATORS = ['==', '!=', '>', '>=', '<', '<='];
 const BLANK: ConditionDto = { function: 'GetItemCount', operator: '==', value: 1, runOn: 'Subject' };
 
-
 interface ParamSlot { label: string; kind: 'record' | 'number' | 'text'; types: string; }
 type ParamTable = Record<string, ParamSlot[]>;
 
 type PickTarget = { index: number; key: 'param1' | 'param2' | 'reference' | 'compareGlobal'; types: string };
-
-
-
-
-
-
-
-
-
 
 export default function ConditionsEditor(
   { plugin, record, path, label, onClose, onSaved }:
@@ -54,8 +44,6 @@ export default function ConditionsEditor(
       try { setParamTable(JSON.parse(await b.GetConditionFunctionParams())); } catch { setParamTable({}); }
     })();
   }, [plugin, record, path]);
-
-
 
   useEffect(() => {
     const b = back();
@@ -97,9 +85,6 @@ export default function ConditionsEditor(
   const save = async () => {
     const b = back();
     if (!b || !rows) return;
-
-
-
 
     const unset = rows.findIndex(r => r.compareGlobal !== undefined && !String(r.compareGlobal).trim());
     if (unset >= 0) {

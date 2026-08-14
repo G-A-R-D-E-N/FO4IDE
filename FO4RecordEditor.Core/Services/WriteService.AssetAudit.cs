@@ -6,9 +6,6 @@ using Mutagen.Bethesda.Archives;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
 public static partial class WriteService
 {
     private static readonly HashSet<string> AssetAuditExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -17,12 +14,6 @@ public static partial class WriteService
     };
 
     private static string NormalizeAssetPath(string p) => p.Replace('/', '\\').TrimStart('\\');
-
-
-
-
-
-
 
     private static void CollectAssetPaths(object? obj, HashSet<string> found, int depth, int maxDepth)
     {
@@ -53,15 +44,6 @@ public static partial class WriteService
         }
     }
 
-
-
-
-
-
-
-
-
-
     public static string AuditAssetUsage(string plugin, object? env, int recordLimit = 3000)
     {
         var mod = EnsureOpen(plugin, env, out var msg); if (mod == null) return msg;
@@ -90,8 +72,6 @@ public static partial class WriteService
             }
         }
         catch (Exception ex) { DebugLog.Exception("AssetAudit.EnumLoose", ex); }
-
-
 
         try
         {
@@ -122,9 +102,6 @@ public static partial class WriteService
         sb.AppendLine($"  Orphaned (shipped, not referenced by this plugin's own records): {orphans.Count}");
         foreach (var o in orphans.Take(30)) sb.AppendLine($"    - {o}");
         if (orphans.Count > 30) sb.AppendLine($"    ... and {orphans.Count - 30} more");
-
-
-
 
         var elsewhere = new List<string>();
         var missing = new List<string>();

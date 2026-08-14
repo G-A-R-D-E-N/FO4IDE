@@ -3,16 +3,6 @@ using FO4RecordEditor.Services;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
 public class EnvironmentLoadTests
 {
     [Fact]
@@ -34,7 +24,6 @@ public class EnvironmentLoadTests
     [Fact]
     public void TranslateEnvironmentError_UnrelatedFailure_IsReturnedUnchanged()
     {
-
 
         var unrelated = new System.IO.IOException("a real disk error");
 

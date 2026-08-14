@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -52,7 +48,6 @@ namespace Mutagen.Bethesda.Fallout4
         partial void CustomCtor();
         #endregion
 
-
         #region To String
 
         public override void Print(
@@ -94,7 +89,6 @@ namespace Mutagen.Bethesda.Fallout4
             : base(initialValue)
             {
             }
-
 
             #pragma warning disable CS8618
             protected Mask()
@@ -739,7 +733,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return SoundDescriptorCompoundData.GetNew();
@@ -937,7 +930,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

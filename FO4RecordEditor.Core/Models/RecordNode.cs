@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 
 namespace FO4RecordEditor.Models;
 
-
-
 public enum FieldEditKind { Text, Bool, Enum, Ref }
 
 public class RecordNode : INotifyPropertyChanged
@@ -20,18 +18,12 @@ public class RecordNode : INotifyPropertyChanged
 
     public Dictionary<string, string> Values { get; } = new();
 
-
-
     public FieldEditKind EditKind { get; set; } = FieldEditKind.Text;
     public string[]? EnumOptions { get; set; }
 
-
     public string? RefType { get; set; }
 
-
     public string? RefTypes { get; set; }
-
-
 
     public bool IsRecordNode { get; set; }
 
@@ -72,15 +64,9 @@ public class RecordNode : INotifyPropertyChanged
 
     public bool IsLeaf => Children.Count == 0;
 
-
-
-
-
     public bool IsSummary { get; set; }
 
     public string DisplayValue => (IsLeaf || IsSummary) ? Value : $"({Children.Count} items)";
-
-
 
     public RecordNode? GetChild(string key) =>
         Children.FirstOrDefault(c => string.Equals(c.Key, key, StringComparison.OrdinalIgnoreCase));
@@ -112,7 +98,6 @@ public class RecordNode : INotifyPropertyChanged
     public IEnumerable<RecordNode> SelfAndDescendants() =>
         Enumerable.Repeat(this, 1).Concat(Descendants());
 
-
     public RecordNode? Navigate(string path)
     {
         RecordNode? cur = this;
@@ -138,8 +123,6 @@ public class RecordNode : INotifyPropertyChanged
     }
 
     public string? GetPath(string path) => Navigate(path)?.Value;
-
-
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Notify([CallerMemberName] string name = "") =>

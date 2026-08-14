@@ -5,16 +5,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
-
-
 public sealed class GraphLinearizer
 {
     private readonly GraphDocument _document;
@@ -37,7 +27,6 @@ public sealed class GraphLinearizer
 
     public IReadOnlyList<GraphDiagnostic> Diagnostics => _problems;
 
-
     private sealed class Frame
     {
         public required GraphNameTable Names { get; init; }
@@ -46,21 +35,12 @@ public sealed class GraphLinearizer
         public List<IrLocal> Locals { get; } = new();
         public HashSet<string> Emitted { get; } = new(StringComparer.Ordinal);
 
-
         public HashSet<string> DeclaredLocals { get; } = new(StringComparer.OrdinalIgnoreCase);
         public string? ReturnTypeName { get; init; }
         public bool ReturnIsArray { get; init; }
 
-
         public List<LoopFrame> Loops { get; } = new();
     }
-
-
-
-
-
-
-
 
     private sealed class LoopFrame
     {
@@ -68,7 +48,6 @@ public sealed class GraphLinearizer
 
         public string? Sentinel { get; set; }
     }
-
 
     public IrScript? Lower(PapyrusScriptIndex index)
     {
@@ -83,8 +62,6 @@ public sealed class GraphLinearizer
             var callable = LowerCallable(node, definition, index, flows);
             if (callable != null) callables.Add(callable);
         }
-
-
 
         _problems.AddRange(GraphExecFlow.CheckReachability(_document, _validation.Definitions, flows));
 
@@ -146,7 +123,6 @@ public sealed class GraphLinearizer
             ReturnIsArray = IsArray(returnType),
         };
 
-
         foreach (var pin in definition.DataOutputs)
         {
             if (!pin.Id.StartsWith(PinIds.ParameterPrefix, StringComparison.OrdinalIgnoreCase)) continue;
@@ -186,7 +162,6 @@ public sealed class GraphLinearizer
             IsEvent = definition.Kind == GraphNodeKind.EventEntry,
             IsGlobal = entry.ConfigString("global") == "true",
 
-
             RemoteObjectType = definition.IsRemoteEvent ? definition.OwnerScript : null,
             StateName = entry.ConfigString("state"),
             ReturnTypeName = frame.ReturnTypeName,
@@ -196,13 +171,6 @@ public sealed class GraphLinearizer
             Body = body,
         };
     }
-
-
-
-
-
-
-
 
     private List<IrStatement> LowerRegion(string? nodeId, string? stopAt, Frame frame)
     {
@@ -265,8 +233,6 @@ public sealed class GraphLinearizer
                 case GraphNodeKind.Return:
                 {
 
-
-
                     IrExpression? value = null;
                     var valuePin = new PinRef(nodeId, PinIds.Value);
                     if (_document.Into(valuePin).Any() || node.PinValues.ContainsKey(PinIds.Value))
@@ -307,8 +273,6 @@ public sealed class GraphLinearizer
                 case GraphNodeKind.Continue:
                 {
 
-
-
                     InLoop(nodeId, "Continue", frame);
                     return statements;
                 }
@@ -326,13 +290,6 @@ public sealed class GraphLinearizer
 
         return statements;
     }
-
-
-
-
-
-
-
 
     private IEnumerable<IrStatement> LowerForEach(GraphNode node, Frame frame, List<IrStatement> into)
     {
@@ -364,8 +321,6 @@ public sealed class GraphLinearizer
         body.AddRange(LowerRegion(frame.Flow.TargetOf(node.Id, PinIds.Body), node.Id, frame));
         frame.Loops.RemoveAt(frame.Loops.Count - 1);
 
-
-
         body.Add(new IrAssign(
             new IrName(indexName),
             new IrBinary("+", new IrName(indexName), new IrLiteral("1")) { TypeName = "int" })
@@ -388,7 +343,6 @@ public sealed class GraphLinearizer
         yield return new IrWhile(bounds, body) { NodeId = node.Id };
     }
 
-
     private IEnumerable<IrStatement> LowerSimple(
         GraphNode node, NodeDefinition definition, Frame frame, List<IrStatement> into)
     {
@@ -404,9 +358,6 @@ public sealed class GraphLinearizer
 
             case GraphNodeKind.LocalDeclare:
             {
-
-
-
 
                 var name = node.ConfigString("name") ?? "";
                 var written = node.ConfigString("type") ?? "var";
@@ -461,7 +412,6 @@ public sealed class GraphLinearizer
                 if (!consumed)
                 {
 
-
                     yield return new IrExpressionStatement(call) { NodeId = node.Id };
                     yield break;
                 }
@@ -478,32 +428,8 @@ public sealed class GraphLinearizer
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static void CollapseTemporaries(List<IrStatement> body, Frame frame) =>
         CollapseIn(body, body, frame);
-
-
-
-
-
-
-
-
-
 
     private static void CollapseIn(List<IrStatement> block, List<IrStatement> whole, Frame frame)
     {
@@ -545,7 +471,6 @@ public sealed class GraphLinearizer
             frame.Locals.Remove(local);
         }
     }
-
 
     private static int CountReads(IEnumerable<IrStatement> body, string name)
     {
@@ -608,24 +533,12 @@ public sealed class GraphLinearizer
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
     private string? Step(string nodeId, string pinId, Frame frame)
     {
         var target = frame.Flow.TargetOf(nodeId, pinId);
         if (target == null) return null;
         return frame.Flow.BackEdges.Contains((nodeId, target)) ? null : target;
     }
-
 
     private bool InLoop(string nodeId, string what, Frame frame)
     {
@@ -638,26 +551,12 @@ public sealed class GraphLinearizer
         return false;
     }
 
-
     private static string DeclareSentinel(Frame frame)
     {
         var name = frame.Names.Allocate("broke");
         frame.Locals.Add(new IrLocal(name, "bool", false));
         return name;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static IrExpression GuardedBy(
         LoopFrame loop, IrExpression condition, Frame frame, List<IrStatement> before)
@@ -689,12 +588,9 @@ public sealed class GraphLinearizer
         return null;
     }
 
-
     private static IrIf Fold(
         IrExpression condition, List<IrStatement> thenBody, List<IrStatement> elseBody, string nodeId)
     {
-
-
 
         if (thenBody.Count == 0 && elseBody.Count > 0
             && !(elseBody.Count == 1 && elseBody[0] is IrIf))
@@ -715,21 +611,10 @@ public sealed class GraphLinearizer
         return new IrIf(branches, elseBody.Count == 0 ? null : elseBody) { NodeId = nodeId };
     }
 
-
     private static IrExpression Negate(IrExpression condition) =>
         condition is IrUnary { Operator: "!" } already
             ? already.Operand
             : new IrUnary("!", condition) { TypeName = "bool", NodeId = condition.NodeId };
-
-
-
-
-
-
-
-
-
-
 
     private IrExpression Pull(PinRef pin, Frame frame, List<IrStatement> into)
     {
@@ -746,7 +631,6 @@ public sealed class GraphLinearizer
 
         if (!definition.IsPure)
         {
-
 
             _problems.Add(new GraphDiagnostic
             {
@@ -847,7 +731,6 @@ public sealed class GraphLinearizer
             if (!supplied && pin.IsOptional)
             {
 
-
                 skipped = true;
                 continue;
             }
@@ -864,7 +747,6 @@ public sealed class GraphLinearizer
             ? definition.MemberName ?? definition.Title
             : definition.MemberName ?? definition.Title;
 
-
         if (definition.Kind == GraphNodeKind.ArrayOp)
             receiver = Pull(new PinRef(node.Id, PinIds.Array), frame, into);
 
@@ -876,14 +758,6 @@ public sealed class GraphLinearizer
             IsArray = isArray,
         };
     }
-
-
-
-
-
-
-
-
 
     private IrExpression? PullReceiver(
         GraphNode node, NodeDefinition definition, Frame frame, List<IrStatement> into)
@@ -911,7 +785,6 @@ public sealed class GraphLinearizer
         });
         return null;
     }
-
 
     private string Bind(
         string nodeId, Frame frame, string hint, string typeName, bool isArray,

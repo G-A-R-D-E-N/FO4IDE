@@ -7,15 +7,6 @@ namespace Mutagen.Bethesda.Plugins.IO.DI;
 public interface IAssociatedFilesLocator
 {
 
-
-
-
-
-
-
-
-
-
     IEnumerable<FilePath> GetAssociatedFiles(ModPath modPath, AssociatedModFileCategory? categories = null);
 }
 

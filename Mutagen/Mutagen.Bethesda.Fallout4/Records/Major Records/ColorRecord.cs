@@ -24,7 +24,6 @@ partial class ColorRecord
     {
         Playable = 0x01,
 
-
         ExtendedLut = 0x04,
     }
 }

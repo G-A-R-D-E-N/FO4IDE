@@ -18,8 +18,6 @@ import {
   type BpWire,
 } from './graphModel';
 
-
-
 const pin = (id: string, kind: 'exec' | 'data', dir: 'in' | 'out'): BpPinDef => ({
   id,
   name: id,
@@ -120,7 +118,6 @@ describe('autoLayout', () => {
   });
 
   it('puts an expression just left of what reads it, not at the far left', () => {
-
 
     const d = doc(
       [node('a', 'step'), node('b', 'step'), node('c', 'branch'), node('lit', 'literal')],
@@ -265,7 +262,6 @@ describe('minimapFit', () => {
 
   it('centres what it fits', () => {
     const fit = minimapFit({ x: 0, y: 0, w: 100, h: 100 }, 200, 100, 0);
-
 
     expect(fit.scale).toBe(1);
     expect(fit.offsetX).toBe(50);

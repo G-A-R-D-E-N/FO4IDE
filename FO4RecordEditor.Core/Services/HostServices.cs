@@ -2,10 +2,7 @@ using System;
 
 namespace FO4RecordEditor.Services;
 
-
 public enum FileDialogKind { OpenFile, OpenFolder, SaveFile }
-
-
 
 public sealed class FileDialogRequest
 {
@@ -15,25 +12,12 @@ public sealed class FileDialogRequest
     public string InitialDirectory { get; init; } = "";
 }
 
-
-
-
-
-
-
-
 public static class HostServices
 {
 
     public static Func<FileDialogRequest, string> ShowFileDialog { get; set; } = _ => "";
 
-
     public static Action<string> ShowMessage { get; set; } = _ => { };
-
-
-
-
-
 
     public static Action<Action> InvokeOnUiThread { get; set; } = a => a();
 

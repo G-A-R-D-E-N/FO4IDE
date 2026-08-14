@@ -5,14 +5,6 @@ using Newtonsoft.Json.Linq;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
 public class GraphDocumentTests
 {
     private static GraphDocument Sample()
@@ -75,8 +67,6 @@ public class GraphDocumentTests
         back.Header.Extends.Should().Be("ObjectReference");
         back.Header.Flags.Should().ContainSingle("Conditional");
 
-
-
         back.Header.Imports.Should().ContainSingle("Debug");
         back.Header.DocComment.Should().Be("A door.");
         back.Header.AutoState.Should().Be("Waiting");
@@ -105,7 +95,6 @@ public class GraphDocumentTests
     [Fact]
     public void Pins_are_not_stored_because_they_are_re_derived_from_the_palette()
     {
-
 
         var json = JObject.Parse(GraphDocumentJson.Serialize(Sample()));
 
@@ -149,7 +138,6 @@ public class GraphDocumentTests
     public void Malformed_json_is_a_diagnostic_rather_than_an_exception()
     {
 
-
         GraphDocumentJson.TryDeserialize("{ this is not json", out var document, out var error)
             .Should().BeFalse();
         document.Should().BeNull();
@@ -166,7 +154,6 @@ public class GraphDocumentTests
     [Fact]
     public void A_wire_naming_a_node_that_does_not_exist_still_loads()
     {
-
 
         const string json = """
             { "schema": 1, "nodes": [], "wires": [ { "id": "w1", "from": { "node": "gone", "pin": "exec" }, "to": { "node": "alsoGone", "pin": "exec" } } ] }

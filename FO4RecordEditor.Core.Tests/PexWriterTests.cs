@@ -6,21 +6,8 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
 public class PexWriterTests
 {
-
-
-
 
     private static PexFile Sample()
     {
@@ -195,8 +182,6 @@ public class PexWriterTests
         back.StructOrders.Single().MemberNames.Should().Equal("X", "Y");
     }
 
-
-
     [Fact]
     public void The_string_table_is_written_in_its_original_order()
     {
@@ -205,8 +190,6 @@ public class PexWriterTests
 
         back.StringTable.Should().Equal(pex.StringTable);
     }
-
-
 
     [Fact]
     public void Bytes_past_the_last_object_survive_the_round_trip()
@@ -238,10 +221,6 @@ public class PexWriterTests
         back.ToBytes().Should().Equal(bytes);
     }
 
-
-
-
-
     [Theory]
     [InlineData(true, 4)]
     [InlineData(false, 0)]
@@ -268,7 +247,6 @@ public class PexWriterTests
 
     private static void ReadObjectSizeField(byte[] bytes, out uint size, out long bodyBytes)
     {
-
 
         using var ms = new MemoryStream(bytes);
         using var r = new BinaryReader(ms, System.Text.Encoding.Latin1);
@@ -308,8 +286,6 @@ public class PexWriterTests
     }
 
     private static void SkipStr(BinaryReader r) => r.ReadBytes(r.ReadUInt16());
-
-
 
     [Fact]
     public void A_string_missing_from_the_table_is_refused_rather_than_written_wrong()

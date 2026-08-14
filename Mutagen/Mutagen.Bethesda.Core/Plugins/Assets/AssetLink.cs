@@ -5,9 +5,6 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Assets;
 
-
-
-
 public class AssetLinkGetter<TAssetType> :
     IEquatable<AssetLinkGetter<TAssetType>>,
     IComparable<AssetLinkGetter<TAssetType>>,
@@ -88,7 +85,6 @@ public class AssetLinkGetter<TAssetType> :
         {
             path = Path.Combine(AssetInstance.BaseFolder, path);
         }
-
 
         return new DataRelativePath(path);
     }
@@ -176,9 +172,6 @@ public class AssetLinkGetter<TAssetType> :
     public static implicit operator AssetLinkGetter<TAssetType>?(DataRelativePath? path) => path == null ? null : new(path.Value);
 }
 
-
-
-
 public class AssetLink<TAssetType> :
     AssetLinkGetter<TAssetType>,
     IEquatable<AssetLink<TAssetType>>,
@@ -246,7 +239,6 @@ public class AssetLink<TAssetType> :
 
         return false;
     }
-
 
     public new string GivenPath
     {

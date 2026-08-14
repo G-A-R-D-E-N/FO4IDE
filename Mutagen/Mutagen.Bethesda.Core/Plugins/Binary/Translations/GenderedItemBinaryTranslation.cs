@@ -14,7 +14,7 @@ internal sealed class GenderedItemBinaryTranslation
         Male = 0,
         Female = 1,
     }
-    
+
     public static GenderedItem<TItem> ParseRequired<TItem>(
         MutagenFrame frame,
         BinarySubParseDelegate<MutagenFrame, TItem> transl)
@@ -29,7 +29,7 @@ internal sealed class GenderedItemBinaryTranslation
         }
         return new GenderedItem<TItem>(male, female);
     }
-    
+
     public static GenderedItem<TItem> ParseRequired<TItem>(
         MutagenFrame frame,
         RecordType genderEnumRecord,
@@ -234,7 +234,6 @@ internal sealed class GenderedItemBinaryTranslation
         return new GenderedItem<TItem>(male, female);
     }
 
-
     public static GenderedItem<TItem?> Parse<TItem>(
         MutagenFrame frame,
         RecordType maleMarker,
@@ -370,7 +369,7 @@ internal sealed class GenderedItemBinaryTranslation
                 break;
             }
             frame.Position += genderedHeader.TotalLength;
-            TypedParseParams p = new TypedParseParams(null, 
+            TypedParseParams p = new TypedParseParams(null,
                 recordTypeConverter: type == maleMarker ? null : femaleRecordConverter,
                 doNotShortCircuit: false);
             if (!transl(frame, out var item, p))
@@ -414,12 +413,12 @@ internal sealed class GenderedItemBinaryTranslation
                 break;
             }
             frame.Position += genderedHeader.TotalLength;
-            
+
             var markerHeader = frame.GetSubrecordHeader();
             if (markerHeader.RecordType != marker) break;
             frame.Position += markerHeader.TotalLength;
-            
-            TypedParseParams p = new TypedParseParams(null, 
+
+            TypedParseParams p = new TypedParseParams(null,
                 recordTypeConverter: type == maleMarker ? null : femaleRecordConverter,
                 doNotShortCircuit: false);
             if (!transl(frame, out var item, p))

@@ -2,7 +2,7 @@ using System.Data;
 using Mutagen.Bethesda.Plugins.Binary.Streams;
 using Mutagen.Bethesda.Plugins.Exceptions;
 using Noggog;
-using static Mutagen.Bethesda.Plugins.Binary.Translations.PluginUtilityTranslation; 
+using static Mutagen.Bethesda.Plugins.Binary.Translations.PluginUtilityTranslation;
 using static Mutagen.Bethesda.Translations.Binary.UtilityTranslation;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Translations;
@@ -88,7 +88,7 @@ internal sealed class Array2dBinaryTranslation<T>
         MutagenWriter writer,
         IReadOnlyArray2d<T>? items,
         RecordType recordType,
-        BinaryMasterWriteDelegate<T> transl, 
+        BinaryMasterWriteDelegate<T> transl,
         TypedWriteParams translationParams = default)
     {
         if (items == null) return;

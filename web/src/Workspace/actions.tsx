@@ -1,6 +1,5 @@
 import { Copy, Eraser, Hash, Minimize2, Trash2 } from 'lucide-react';
 
-
 export interface WorkspaceAction {
   id: string;
   label: string;
@@ -8,8 +7,6 @@ export interface WorkspaceAction {
   danger?: boolean;
   run: () => void;
 }
-
-
 
 export function buildActions(handlers: {
   copyAsOverride: () => void;

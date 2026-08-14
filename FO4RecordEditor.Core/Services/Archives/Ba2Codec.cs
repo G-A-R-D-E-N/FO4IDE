@@ -4,32 +4,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class Ba2Codec
 {
     private const uint Magic = 0x58445442;
@@ -240,10 +214,6 @@ public static class Ba2Codec
             foreach (var e in archive.Entries)
             {
 
-
-
-
-
                 var bytes = e.NameBytes;
                 if (bytes.Length > ushort.MaxValue)
                     throw new InvalidDataException($"'{e.Path}': name too long for the u16-prefixed string table.");
@@ -251,7 +221,6 @@ public static class Ba2Codec
                 w.Write(bytes);
             }
     }
-
 
     public static byte[] Decompress(Ba2Chunk chunk)
     {
@@ -271,19 +240,12 @@ public static class Ba2Codec
         return outBuf;
     }
 
-
-
-
-
-
     public static Ba2Chunk Compress(byte[] data)
     {
         using var output = new MemoryStream();
         using (var zlib = new ZLibStream(output, CompressionLevel.Optimal, leaveOpen: true))
             zlib.Write(data, 0, data.Length);
         var packed = output.ToArray();
-
-
 
         return packed.Length >= data.Length
             ? Ba2Chunk.Stored(data)

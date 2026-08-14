@@ -6,5 +6,5 @@ namespace Mutagen.Bethesda.Inis.DI;
 [Register<IniPathProvider, IIniPathProvider>]
 internal class IniModule
 {
-    
+
 }

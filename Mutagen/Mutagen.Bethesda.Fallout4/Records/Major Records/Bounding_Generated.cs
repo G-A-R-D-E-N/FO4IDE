@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -1083,7 +1079,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return Bounding.GetNew();
@@ -1330,7 +1325,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

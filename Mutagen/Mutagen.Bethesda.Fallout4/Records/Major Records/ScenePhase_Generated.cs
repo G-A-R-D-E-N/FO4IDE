@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -54,8 +50,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -774,8 +768,6 @@ namespace Mutagen.Bethesda.Fallout4
         IScenePhaseGetter
     {
 
-
-
         new String? Name { get; set; }
         new ExtendedList<Condition> StartConditions { get; }
         new ExtendedList<Condition> CompletionConditions { get; }
@@ -800,8 +792,6 @@ namespace Mutagen.Bethesda.Fallout4
         object CommonSetterTranslationInstance();
         static ILoquiRegistration StaticRegistration => ScenePhase_Registration.Instance;
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -1313,7 +1303,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return ScenePhase.GetNew();
@@ -1749,7 +1738,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

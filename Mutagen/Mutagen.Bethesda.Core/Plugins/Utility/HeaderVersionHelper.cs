@@ -34,7 +34,7 @@ internal static class HeaderVersionHelper
         }
         return higherFormIdRange;
     }
-    
+
     public static uint GetInitialFormId(
         GameRelease release,
         HashSet<GameRelease>? allowedReleases,

@@ -62,7 +62,6 @@ partial class MagicEffectBinaryCreateTranslation
         FormKey associatedItemKey = FormKeyBinaryTranslation.Instance.Parse(frame);
         frame.Position = curPos;
 
-
         MagicEffectArchetype.TypeEnum archetypeEnum = (MagicEffectArchetype.TypeEnum)frame.ReadInt32();
         AMagicEffectArchetype archetype;
         switch (archetypeEnum)

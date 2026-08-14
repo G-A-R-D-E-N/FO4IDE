@@ -245,7 +245,6 @@ internal static class GenderedItemBinaryOverlay
             if (markerFrame.RecordType != marker) break;
             stream.Position += markerFrame.TotalLength;
 
-
             var genderMarkerFrame = stream.GetSubrecord();
             var recType = genderMarkerFrame.RecordType;
             if (recType == male)

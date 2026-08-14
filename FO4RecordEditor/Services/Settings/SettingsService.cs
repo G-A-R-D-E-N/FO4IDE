@@ -12,7 +12,6 @@ public sealed class SettingsService
 
     public AppSettings Current { get; private set; } = new();
 
-
     private static readonly Dictionary<string, string> _retiredModels = new(StringComparer.OrdinalIgnoreCase)
     {
         ["claude-3-7-sonnet-20250219"] = "claude-sonnet-4-6",
@@ -24,7 +23,6 @@ public sealed class SettingsService
         ["claude-2.1"]                 = "claude-sonnet-4-6",
         ["claude-2.0"]                 = "claude-sonnet-4-6",
     };
-
 
     internal static string MigrateModel(string? model) =>
         model != null && _retiredModels.TryGetValue(model, out var replacement) ? replacement : (model ?? "");
@@ -38,7 +36,6 @@ public sealed class SettingsService
                           ?? new AppSettings();
         }
         catch { Current = new AppSettings(); }
-
 
         Current.Model = MigrateModel(Current.Model);
     }

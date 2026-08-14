@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -39,8 +35,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class AVirtualMachineAdapter :
         IAVirtualMachineAdapter,
@@ -538,8 +532,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAVirtualMachineAdapter :
         IAVirtualMachineAdapterGetter,
         IFormLinkContainer,
@@ -549,9 +541,6 @@ namespace Mutagen.Bethesda.Fallout4
         new UInt16 ObjectFormat { get; set; }
         new ExtendedList<ScriptEntry> Scripts { get; }
     }
-
-
-
 
     public partial interface IAVirtualMachineAdapterGetter :
         ILoquiObject,
@@ -990,7 +979,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return AVirtualMachineAdapter.GetNew();
@@ -1253,7 +1241,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1323,7 +1310,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             ret.CustomScriptsEndPos();
         }
-
 
         #region To String
 

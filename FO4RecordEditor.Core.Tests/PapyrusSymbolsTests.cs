@@ -79,7 +79,6 @@ EndFunction
     public void A_local_declared_after_the_caret_does_not_capture_the_reference()
     {
 
-
         var (source, offset) = Caret(@"ScriptName S
 int shared
 Function F()
@@ -213,7 +212,6 @@ EndFunction
     [Fact]
     public void An_unresolvable_reference_returns_null_rather_than_a_guess()
     {
-
 
         var (source, offset) = Caret(@"ScriptName S
 Function F()

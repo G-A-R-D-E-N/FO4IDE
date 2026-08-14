@@ -1,10 +1,5 @@
 namespace Mutagen.Bethesda.Fallout4;
 
-
-
-
-
-
 partial class APerkEntryPointEffect
 {
     public enum EntryType

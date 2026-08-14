@@ -3,8 +3,6 @@ namespace Mutagen.Bethesda.Fallout4;
 public partial class Phoneme
 {
 
-
-
     public enum Slot
     {
         IY,

@@ -11,13 +11,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class GraphInterop
@@ -27,13 +20,6 @@ public class GraphInterop
     private string _rootsKey = "";
 
     public GraphInterop(ShellViewModel shell) => _shell = shell;
-
-
-
-
-
-
-
 
     private GraphCompiler Compiler()
     {
@@ -47,31 +33,14 @@ public class GraphInterop
         return _compiler;
     }
 
-
-
-
-
-
-
-
-
     private static IReadOnlyList<string> Roots() =>
         ToolPaths.PapyrusBaseImports().Where(Directory.Exists).ToList();
-
 
     public void Refresh()
     {
         _compiler = null;
         _rootsKey = "";
     }
-
-
-
-
-
-
-
-
 
     public Task<string> GetCorePalette() => Run(() =>
     {
@@ -88,7 +57,6 @@ public class GraphInterop
             },
         }, GraphDocumentJson.Settings);
     });
-
 
     public Task<string> SearchPalette(string kind, string query, string scriptFilter, int limit) => Run(() =>
     {
@@ -113,7 +81,6 @@ public class GraphInterop
         }, GraphDocumentJson.Settings);
     });
 
-
     public Task<string> GetNodeSignature(string nodeType) => Run(() =>
     {
         var definition = Compiler().Palette.Find(nodeType);
@@ -122,7 +89,6 @@ public class GraphInterop
             : JsonConvert.SerializeObject(Describe(definition), GraphDocumentJson.Settings);
     });
 
-
     public Task<string> ValidateGraph(string documentJson) => Run(() =>
     {
         if (!GraphDocumentJson.TryDeserialize(documentJson, out var document, out var error))
@@ -130,7 +96,6 @@ public class GraphInterop
 
         return Diagnostics(Compiler().Validate(document!).Diagnostics);
     });
-
 
     public Task<string> CompileToSource(string documentJson) => Run(() =>
     {
@@ -145,7 +110,6 @@ public class GraphInterop
             ok = !result.Errors.Any(),
         }, GraphDocumentJson.Settings);
     });
-
 
     public Task<string> CompileToPex(string documentJson, string outputDirectory) => Run(() =>
     {
@@ -181,21 +145,6 @@ public class GraphInterop
             : "Error: " + error!.Message;
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public Task<string> LoadScript(string path) => Run(() =>
     {
         var result = GraphScriptLoader.Load(path, Roots());
@@ -208,7 +157,6 @@ public class GraphInterop
             diagnostics = result.Diagnostics.Select(Describe),
         }, GraphDocumentJson.Settings);
     });
-
 
     public string BrowseForScript() =>
         HostServices.PickFile("Open graph or script",

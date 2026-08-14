@@ -22,7 +22,7 @@ public sealed class EnabledPluginListingsProvider : IEnabledPluginListingsProvid
         Reader = reader;
         PluginListingsPath = pluginListingsPath;
     }
-        
+
     public IEnumerable<ILoadOrderListingGetter> Get()
     {
         if (_fileSystem.File.Exists(PluginListingsPath.Path))

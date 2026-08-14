@@ -8,24 +8,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class PexCorpusTests
 {
     private readonly ITestOutputHelper _output;
@@ -38,9 +20,6 @@ public class PexCorpusTests
     {
         var roots = Environment.GetEnvironmentVariable(CorpusVariable);
         if (string.IsNullOrWhiteSpace(roots)) return Array.Empty<string>();
-
-
-
 
         var files = new List<string>();
         foreach (var root in roots.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
@@ -123,20 +102,6 @@ public class PexCorpusTests
     }
 
     private enum Kind { Fallout4, OtherGame, NotPex }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static Kind Classify(byte[] bytes)
     {

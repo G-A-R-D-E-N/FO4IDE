@@ -4,38 +4,12 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class PapyrusResolver
 {
     private readonly PapyrusScriptIndex _index;
 
     public PapyrusResolver(PapyrusScriptIndex index) =>
         _index = index ?? throw new ArgumentNullException(nameof(index));
-
-
 
     private sealed class Context
     {
@@ -47,9 +21,7 @@ public sealed class PapyrusResolver
         public List<PapyrusDiagnostic> Diagnostics = new();
         public bool BaseChainComplete = true;
 
-
         public List<Dictionary<string, PapyrusBinding>> Scopes = new();
-
 
         public PapyrusType? SelfType;
     }
@@ -60,8 +32,6 @@ public sealed class PapyrusResolver
 
         var ctx = new Context { Script = script };
         ctx.Chain = _index.BaseChain(script);
-
-
 
         if (!string.IsNullOrEmpty(script.Extends) && ctx.Chain.Count < 2) ctx.BaseChainComplete = false;
         var last = ctx.Chain[^1];
@@ -79,8 +49,6 @@ public sealed class PapyrusResolver
 
         return new PapyrusResolution(script, ctx.Bindings, ctx.Types, ctx.Diagnostics, ctx.BaseChainComplete);
     }
-
-
 
     private void ResolveDeclarations(Context ctx)
     {
@@ -145,7 +113,6 @@ public sealed class PapyrusResolver
             case PapyrusDefineStatement def:
             {
 
-
                 if (def.Initializer != null) ResolveExpression(ctx, def.Initializer);
                 var type = TypeOfRef(ctx, def.Type);
                 var binding = new PapyrusBinding(PapyrusBindingKind.Local, def.Name, type, null, ctx.Script);
@@ -183,20 +150,6 @@ public sealed class PapyrusResolver
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private PapyrusType ResolveMemberTarget(Context ctx, PapyrusExpression target)
     {
         if (target is not PapyrusIdentifierExpression id) return ResolveExpression(ctx, target);
@@ -213,7 +166,6 @@ public sealed class PapyrusResolver
         ctx.Types[id] = binding.Type;
         return binding.Type;
     }
-
 
     private PapyrusType ResolveCallee(Context ctx, PapyrusExpression callee)
     {
@@ -328,11 +280,6 @@ public sealed class PapyrusResolver
         }
     }
 
-
-
-
-
-
     private static PapyrusType BinaryResult(PapyrusTokenKind op, PapyrusType left, PapyrusType right)
     {
         switch (op)
@@ -355,17 +302,6 @@ public sealed class PapyrusResolver
         return left.Kind == PapyrusTypeKind.Error ? right : left;
     }
 
-
-
-
-
-
-
-
-
-
-
-
     private PapyrusBinding? LookupName(Context ctx, string name, bool inCallPosition = false)
     {
         if (!inCallPosition)
@@ -375,11 +311,6 @@ public sealed class PapyrusResolver
                 if (ctx.Scopes[i].TryGetValue(name, out var local)) return local;
             }
         }
-
-
-
-
-
 
         if (ctx.SelfType != null)
         {
@@ -397,13 +328,11 @@ public sealed class PapyrusResolver
         var member = LookupOnChain(ctx, ctx.Chain, name, globalsOnly: ctx.SelfType == null);
         if (member != null) return member;
 
-
         foreach (var import in ctx.Imports)
         {
             var hit = LookupOnChain(ctx, _index.BaseChain(import), name, globalsOnly: true);
             if (hit != null) return hit;
         }
-
 
         var script = _index.Resolve(name);
         if (script != null)
@@ -424,7 +353,6 @@ public sealed class PapyrusResolver
         }
         return null;
     }
-
 
     private PapyrusBinding? LookupMember(Context ctx, PapyrusExpression target, PapyrusType targetType, string name)
     {
@@ -463,8 +391,6 @@ public sealed class PapyrusResolver
                     PapyrusBindingKind.StructMember, field.Name, TypeOfRef(ctx, field.Type), field, owner);
             }
 
-
-
             case PapyrusTypeKind.Var:
             case PapyrusTypeKind.Error:
             default:
@@ -492,13 +418,6 @@ public sealed class PapyrusResolver
         _ => new PapyrusBinding(PapyrusBindingKind.ScriptVariable, decl.Name, PapyrusType.Error, decl, owner),
     };
 
-
-
-
-
-
-
-
     private static PapyrusBinding? ArrayMember(PapyrusType arrayType, string name)
     {
         var element = arrayType.ElementType!;
@@ -522,9 +441,6 @@ public sealed class PapyrusResolver
         };
     }
 
-
-
-
     private PapyrusType TypeOfRef(Context ctx, PapyrusTypeRef reference, PapyrusScript? relativeTo = null)
     {
         var resolved = ResolveTypeName(ctx, reference.Name, relativeTo ?? ctx.Script);
@@ -541,21 +457,10 @@ public sealed class PapyrusResolver
     private PapyrusType? ResolveTypeName(Context ctx, string name, PapyrusScript relativeTo) =>
         ResolveTypeName(_index, name, relativeTo);
 
-
-
-
-
-
-
-
-
-
-
     public static PapyrusType? ResolveTypeName(PapyrusScriptIndex index, string name, PapyrusScript relativeTo)
     {
         var primitive = PapyrusType.Primitive(name);
         if (primitive != null) return primitive;
-
 
         foreach (var level in index.BaseChain(relativeTo))
         {
@@ -580,8 +485,6 @@ public sealed class PapyrusResolver
         var script = index.Resolve(name);
         if (script != null) return PapyrusType.Object(script.Name);
 
-
-
         return null;
     }
 
@@ -590,8 +493,6 @@ public sealed class PapyrusResolver
         int split = qualified.LastIndexOf(':');
         return split <= 0 ? (string.Empty, qualified) : (qualified[..split], qualified[(split + 1)..]);
     }
-
-
 
     private static void ReportUnresolved(Context ctx, string name, PapyrusSpan span)
     {

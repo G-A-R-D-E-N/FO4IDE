@@ -23,7 +23,6 @@ public sealed class LoadOrderListingsProvider : ILoadOrderListingsProvider
         _cccListingsProvider = cccListingsProvider;
     }
 
-
     public IEnumerable<ILoadOrderListingGetter> Get()
     {
         var implicitListings = _implicitListingsProvider.Get().ToArray();

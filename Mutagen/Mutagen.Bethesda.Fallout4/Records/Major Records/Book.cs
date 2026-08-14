@@ -131,7 +131,7 @@ partial class BookBinaryWriteTranslation
         }
         writer.Write(flags);
     }
-    
+
     public static partial void WriteBinaryTeachesCustom(MutagenWriter writer, IBookGetter item)
     {
         switch (item.Teaches)
@@ -162,7 +162,7 @@ partial class BookBinaryOverlay
         if (!_DATALocation.HasValue) return default;
         return (Book.Flag)_recordData[_FlagsLocation];
     }
-    
+
     public partial IBookTeachTargetGetter? GetTeachesCustom()
     {
         if (!_DATALocation.HasValue) return default;

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -59,8 +55,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region VirtualMachineAdapter
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private DialogResponsesAdapter? _VirtualMachineAdapter;
-
-
 
         public DialogResponsesAdapter? VirtualMachineAdapter
         {
@@ -1423,8 +1417,6 @@ namespace Mutagen.Bethesda.Fallout4
         ILoquiObjectSetter<IDialogResponsesInternal>
     {
 
-
-
         new DialogResponsesAdapter? VirtualMachineAdapter { get; set; }
         new DialogResponseFlags? Flags { get; set; }
         new IFormLinkNullable<IDialogTopicGetter> Topic { get; set; }
@@ -1470,8 +1462,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => DialogResponses_Registration.Instance;
         #region VirtualMachineAdapter
-
-
 
         IDialogResponsesAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
@@ -2382,7 +2372,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return DialogResponses.GetNew();
@@ -3239,7 +3228,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

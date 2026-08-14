@@ -4,28 +4,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class PapyrusTypeChecker
 {
     private readonly PapyrusScriptIndex _index;
@@ -37,7 +15,6 @@ public sealed class PapyrusTypeChecker
     public IReadOnlyList<PapyrusDiagnostic> Check(PapyrusResolution resolution)
     {
         if (resolution == null) throw new ArgumentNullException(nameof(resolution));
-
 
         if (!resolution.BaseChainComplete) return Array.Empty<PapyrusDiagnostic>();
 
@@ -79,21 +56,17 @@ public sealed class PapyrusTypeChecker
         public string? File { get; }
         public List<PapyrusDiagnostic> Diagnostics { get; } = new();
 
-
         public PapyrusType? ReturnType;
 
         public void Report(string code, string message, PapyrusSpan span) =>
             Diagnostics.Add(new PapyrusDiagnostic(code, PapyrusSeverity.Error, message, span, File));
     }
 
-
-
     private void CheckCallable(State state, PapyrusCallableDecl callable)
     {
         state.ReturnType = callable is PapyrusFunctionDecl { ReturnType: not null } fn
             ? state.Resolution.TypeOf(fn.ReturnType)
             : null;
-
 
         var seenDefault = false;
         foreach (var p in callable.Parameters)
@@ -113,10 +86,6 @@ public sealed class PapyrusTypeChecker
         CheckStatements(state, callable.Body);
         state.ReturnType = null;
     }
-
-
-
-
 
     private void CheckOverride(State state, PapyrusFunctionDecl fn)
     {
@@ -141,8 +110,6 @@ public sealed class PapyrusTypeChecker
         }
     }
 
-
-
     private void CheckStatements(State state, IEnumerable<PapyrusStatement> body)
     {
         foreach (var stmt in body) CheckStatement(state, stmt);
@@ -166,9 +133,6 @@ public sealed class PapyrusTypeChecker
             {
                 CheckExpression(state, assign.Target);
                 CheckExpression(state, assign.Value);
-
-
-
 
                 if (assign.Operator == PapyrusTokenKind.Assign)
                 {
@@ -225,8 +189,6 @@ public sealed class PapyrusTypeChecker
             initializer.Span, "initialise");
     }
 
-
-
     private void CheckExpression(State state, PapyrusExpression? expr)
     {
         switch (expr)
@@ -268,13 +230,9 @@ public sealed class PapyrusTypeChecker
         }
     }
 
-
     private void CheckCall(State state, PapyrusCallExpression call)
     {
         var binding = state.Resolution.BindingFor(call);
-
-
-
 
         if (binding?.Declaration is not PapyrusCallableDecl declaration) return;
 
@@ -291,8 +249,6 @@ public sealed class PapyrusTypeChecker
                 call.Span);
             return;
         }
-
-
 
         if (positional < required && call.Arguments.Count < required)
         {
@@ -327,15 +283,12 @@ public sealed class PapyrusTypeChecker
                 }
             }
 
-
-
             var expected = ParameterType(parameter, binding.Owner);
             CheckAssignable(
                 state, expected, state.Resolution.TypeOf(arg.Value), arg.Value.Span,
                 $"pass to '{parameter.Name}'");
         }
     }
-
 
     private PapyrusType ParameterType(PapyrusParameter parameter, PapyrusScript? owner)
     {
@@ -365,8 +318,6 @@ public sealed class PapyrusTypeChecker
         return parameter.Type.IsArray ? PapyrusType.ArrayOf(resolved) : resolved;
     }
 
-
-
     private void CheckAssignable(State state, PapyrusType target, PapyrusType value, PapyrusSpan span, string what)
     {
         if (target.Kind == PapyrusTypeKind.Error || value.Kind == PapyrusTypeKind.Error) return;
@@ -377,7 +328,6 @@ public sealed class PapyrusTypeChecker
             $"Cannot {what}: '{value}' is not compatible with '{target}'.",
             span);
     }
-
 
     private bool Inherits(string child, string ancestor)
     {

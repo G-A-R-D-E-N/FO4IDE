@@ -18,11 +18,11 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
             new Lazy<ILinkUsageResults<IMajorRecordGetter>>(() => Results<IMajorRecordGetter>.Empty),
             null);
     }
-    
+
     private readonly ILinkCache _linkCache;
     private readonly int? _threadLimit;
     private readonly Dictionary<Type, Lazy<Dictionary<CacheKey, CacheItem>>> _cache = new();
-    
+
     public ImmutableLoadOrderLinkUsageCache(
         ILinkCache linkCache,
         int? threadLimit = null)
@@ -30,14 +30,14 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
         _linkCache = linkCache;
         _threadLimit = threadLimit;
     }
-    
+
     public ILinkUsageResults<TUserRecordScope> GetUsagesOf<TUserRecordScope>(
-        IMajorRecordGetter majorRecord) 
+        IMajorRecordGetter majorRecord)
         where TUserRecordScope : class, IMajorRecordGetter
     {
         return GetUsagesOf<TUserRecordScope>(majorRecord.ToStandardizedIdentifier());
     }
-    
+
     public ILinkUsageResults<IMajorRecordGetter> GetUsagesOf(IMajorRecordGetter majorRecord)
     {
         return GetUsagesOf(majorRecord.ToStandardizedIdentifier());
@@ -47,12 +47,12 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
     {
         return GetUsagesOfGeneric<IMajorRecordGetter>(identifier).Untyped.Value;
     }
-    
+
     public ILinkUsageResults<IMajorRecordGetter> GetUsagesOf(FormKey formKey)
     {
         return GetUsagesOf(new FormLinkInformation(formKey, typeof(IMajorRecordGetter)));
     }
-    
+
     public ILinkUsageResults<TUserRecordScope> GetUsagesOf<TUserRecordScope>(
         IFormLinkIdentifier identifier)
         where TUserRecordScope : class, IMajorRecordGetter
@@ -95,7 +95,7 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
                     item.Value.Select<IFormLinkGetter<TUserRecordScope>, IFormLinkGetter<IMajorRecordGetter>>(x => x)
                         .ToHashSet());
             });
-        
+
             var cacheItem = new CacheItem(
                 Untyped: untyped,
                 Typed: new Results<TUserRecordScope>(item.Value.ToHashSet()));
@@ -113,7 +113,7 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
 
         return ret;
     }
-    
+
     private CacheItem GetUsagesOfGeneric<TUserRecordScope>(
         IFormLinkIdentifier identifier)
         where TUserRecordScope : class, IMajorRecordGetter
@@ -137,7 +137,7 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
         {
             return cache;
         }
-        
+
         return CacheItem.Empty;
     }
 
@@ -145,7 +145,7 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
         where TScope : class, IMajorRecordGetter
     {
         public static Results<TScope> Empty { get; } = new(new HashSet<IFormLinkGetter<TScope>>());
-        
+
         private readonly Lazy<IReadOnlyCollection<IFormLinkIdentifier>> _identifiers;
 
         public IReadOnlySet<IFormLinkGetter<TScope>> UsageLinks { get; }
@@ -160,22 +160,22 @@ public sealed class ImmutableLoadOrderLinkUsageCache : ILinkUsageCache
                     .ToHashSet(IFormLinkExt.FormLinkInformationEqualityComparerWithDualInheritanceConsideration);
             });
         }
-        
+
         public bool Contains(FormKey formKey)
         {
             return _identifiers.Value.Contains(new FormLinkInformation(formKey, typeof(IMajorRecordGetter)));
         }
-        
+
         public bool Contains(IFormLinkIdentifier identifier)
         {
             return _identifiers.Value.Contains(identifier);
         }
-        
+
         public bool Contains(IFormLinkGetter<TScope> link)
         {
             return UsageLinks.Contains(link);
         }
-        
+
         public bool Contains(TScope record)
         {
             return UsageLinks.Contains(record.ToLinkGetter<TScope>());

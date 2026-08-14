@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -67,8 +63,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IMaterialTypeGetter> IMaterialTypeGetter.Parent => this.Parent;
         #endregion
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -760,8 +754,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new IFormLinkNullable<IMaterialTypeGetter> Parent { get; set; }
 
-
-
         new String? Name { get; set; }
         new Color? HavokDisplayColor { get; set; }
         new Single? Buoyancy { get; set; }
@@ -791,8 +783,6 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => MaterialType_Registration.Instance;
         IFormLinkNullableGetter<IMaterialTypeGetter> Parent { get; }
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -1424,7 +1414,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return MaterialType.GetNew();
@@ -1910,7 +1899,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1944,7 +1932,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IMaterialTypeGetter);
-
 
         #region Parent
         private int? _ParentLocation;

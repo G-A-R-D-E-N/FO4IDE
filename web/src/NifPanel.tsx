@@ -15,7 +15,6 @@ const setLS = (k: string, v: string | boolean) => localStorage.setItem('nif.' + 
 export default function NifPanel({ onClose }: { onClose: () => void }) {
   const [mode, setMode] = useState<Mode>(() => (LS('mode', 'view') as Mode));
 
-
   const [geo, setGeo] = useState<NifGeo | null>(null);
   const [wireframe, setWireframe] = useState(() => LSB('wireframe', false));
   const [textured, setTextured] = useState(() => LSB('textured', true));
@@ -23,9 +22,7 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
   const [geoInfo, setGeoInfo] = useState('');
   const [geoPath, setGeoPath] = useState('');
 
-
   const [tree, setTree] = useState<NifTree | null>(null);
-
 
   const [objPath, setObjPath] = useState(() => LS('objPath', ''));
   const [outNif, setOutNif] = useState(() => LS('outNif', ''));
@@ -35,10 +32,8 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
   const [collision, setCollision] = useState(() => LSB('collision', false));
   const [fromBlender, setFromBlender] = useState(() => LSB('fromBlender', false));
 
-
   const [nifPath, setNifPath] = useState(() => LS('nifPath', ''));
   const [fixOut, setFixOut] = useState(() => LS('fixOut', ''));
-
 
   const [matPath, setMatPath] = useState(() => LS('matPath', ''));
   const [matFields, setMatFields] = useState<MaterialField[] | null>(null);
@@ -85,7 +80,6 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
   const browseTexRoot = async () => { if (nif) { const p = await nif.BrowseForFolder('Select a texture root (Data or Textures folder)'); if (p) setTexRoot(p); } };
   const browseMat = async () => { const m = getMaterial(); if (m) { const p = await m.BrowseForFile('Select a material', 'FO4 material (*.bgsm;*.bgem)|*.bgsm;*.bgem|BGSM lighting material (*.bgsm)|*.bgsm|BGEM effect material (*.bgem)|*.bgem|All files|*.*'); if (p) setMatPath(p); } };
 
-
   const onDrop = useCallback(async (e: DragEvent) => {
     e.preventDefault(); setDragOver(false);
     if (!nif) return;
@@ -126,7 +120,6 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
     } finally { setBusy(false); }
   };
 
-
   const loadTree = async (path?: string) => {
     const p = (path ?? nifPath).trim();
     if (!nif || !p) return;
@@ -146,7 +139,6 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
     } finally { setBusy(false); }
   };
 
-
   const loadMaterial = async (path?: string) => {
     const p = (path ?? matPath).trim();
     const m = getMaterial();
@@ -165,7 +157,6 @@ export default function NifPanel({ onClose }: { onClose: () => void }) {
       setMatError('Could not load material: ' + (e instanceof Error ? e.message : String(e)));
     } finally { setBusy(false); }
   };
-
 
   const onEditorSaved = () => { loadTree(nifPath); };
 

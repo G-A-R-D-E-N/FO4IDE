@@ -8,16 +8,7 @@ namespace Mutagen.Bethesda.Archives.DI;
 public interface IGetApplicableArchivePaths
 {
 
-
-
     IEnumerable<FilePath> Get();
-
-
-
-
-
-
-
 
     IEnumerable<FilePath> Get(ModKey modKey);
 }
@@ -44,12 +35,10 @@ public sealed class GetApplicableArchivePaths : IGetApplicableArchivePaths
         _archiveListingDetailsProvider = archiveListingDetailsProvider;
     }
 
-
     public IEnumerable<FilePath> Get()
     {
         return GetInternal(default(ModKey?));
     }
-
 
     public IEnumerable<FilePath> Get(ModKey modKey)
     {

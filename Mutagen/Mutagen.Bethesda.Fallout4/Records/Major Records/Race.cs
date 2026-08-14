@@ -188,7 +188,6 @@ partial class RaceBinaryCreateTranslation
 
         item.Flags &= ((Race.Flag)0x00000000FFFFFFFF);
 
-
         ulong flags2 = frame.ReadUInt32();
         flags2 <<= 32;
         item.Flags |= ((Race.Flag)flags2);
@@ -239,9 +238,7 @@ partial class RaceBinaryOverlay
         if (!_DATALocation.HasValue) return default;
         var flag = (Race.Flag)BinaryPrimitives.ReadInt32LittleEndian(_recordData.Span.Slice(_FlagsLocation, 4));
 
-
         flag &= ((Race.Flag)0x00000000FFFFFFFF);
-
 
         ulong flags2 = BinaryPrimitives.ReadUInt32LittleEndian(_recordData.Span.Slice(_Flags2Location, 4));
         flags2 <<= 32;

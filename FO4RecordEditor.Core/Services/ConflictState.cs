@@ -3,10 +3,6 @@ using Mutagen.Bethesda.Plugins;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 public static class ConflictState
 {
     private static Dictionary<FormKey, string> _winners = new();
@@ -22,7 +18,6 @@ public static class ConflictState
         foreach (var c in conflicts)
         {
             if (FormKey.TryFactory(c.FormKey, out var fk)) d[fk] = c.Winner;
-
 
             foreach (var p in c.Plugins)
             {

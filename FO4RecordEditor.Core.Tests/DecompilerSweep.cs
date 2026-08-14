@@ -9,27 +9,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class DecompilerSweep
 {
     private readonly ITestOutputHelper _output;
@@ -73,8 +52,6 @@ public class DecompilerSweep
                     if (parsed.HasErrors) continue;
 
                     var first = new PapyrusCompiler(index).Compile(parsed, sourceFileName: name);
-
-
 
                     if (!first.Success || first.Pex == null) continue;
 

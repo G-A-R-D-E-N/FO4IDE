@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region ObjectBounds
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ObjectBounds? _ObjectBounds;
-
-
 
         public ObjectBounds? ObjectBounds
         {
@@ -616,8 +610,6 @@ namespace Mutagen.Bethesda.Fallout4
         IPackInGetter
     {
 
-
-
         new ObjectBounds? ObjectBounds { get; set; }
         new String? Filter { get; set; }
         new IFormLinkNullable<ICellGetter> Cell { get; set; }
@@ -646,8 +638,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => PackIn_Registration.Instance;
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter? ObjectBounds { get; }
         #endregion
@@ -1223,7 +1213,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return PackIn.GetNew();
@@ -1657,7 +1646,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

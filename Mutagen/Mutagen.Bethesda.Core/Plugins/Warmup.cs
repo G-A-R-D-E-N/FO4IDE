@@ -5,19 +5,12 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
 public static class Warmup
 {
     private static object _lock = new();
     private static bool _warmedUp = false;
 
     private static List<GameCategory> _registrations = new();
-
-
-
-
 
     public static IReadOnlyList<GameCategory> Init()
     {

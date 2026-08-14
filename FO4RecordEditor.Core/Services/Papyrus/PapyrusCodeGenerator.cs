@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
 public sealed class PapyrusCodeGenOptions
 {
 
@@ -14,89 +13,18 @@ public sealed class PapyrusCodeGenOptions
 
     public string ComputerName { get; set; } = "";
 
-
     public long CompilationTime { get; set; }
 
     public long ModificationTime { get; set; }
 
-
-
-
-
     public bool EmitDebugInfo { get; set; } = true;
-
 
     public PapyrusUserFlagTable? UserFlags { get; set; }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public bool EmitDebugOnlyCode { get; set; } = true;
-
 
     public bool EmitBetaOnlyCode { get; set; } = true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class PapyrusCodeGenerator
 {
@@ -104,8 +32,6 @@ public sealed class PapyrusCodeGenerator
 
     public PapyrusCodeGenerator(PapyrusScriptIndex index) =>
         _index = index ?? throw new ArgumentNullException(nameof(index));
-
-
 
     private static readonly Dictionary<string, byte> OpByName = BuildOpTable();
 
@@ -116,27 +42,18 @@ public sealed class PapyrusCodeGenerator
         return map;
     }
 
-
-
     private PapyrusScript _script = null!;
     private PapyrusResolution _resolution = null!;
     private PapyrusUserFlagTable _userFlags = null!;
     private List<PapyrusDiagnostic> _diagnostics = null!;
     private List<PexDebugFunction> _debug = null!;
 
-
-
-
-
-
     private int _tempCounter;
-
 
     private Dictionary<string, PapyrusPropertyDecl> _ownAutoProperties = null!;
 
     private bool _emitDebugOnly = true;
     private bool _emitBetaOnly = true;
-
 
     private string? ExcludedBy(PapyrusBinding binding)
     {
@@ -200,8 +117,6 @@ public sealed class PapyrusCodeGenerator
         return _diagnostics.Any(d => d.Severity == PapyrusSeverity.Error) ? null : pex;
     }
 
-
-
     private PexObject BuildObject()
     {
         var obj = new PexObject
@@ -232,9 +147,6 @@ public sealed class PapyrusCodeGenerator
             obj.Structs.Add(pexStruct);
         }
 
-
-
-
         foreach (var p in _script.Properties)
         {
             if (p.Kind != PapyrusPropertyKind.Auto) continue;
@@ -242,7 +154,6 @@ public sealed class PapyrusCodeGenerator
             {
                 Name = BackingVarName(p.Name),
                 Type = PexTypeName(TypeOf(p.Type), p.Type),
-
 
                 UserFlags = _userFlags.MaskFor(p.Flags) & ConditionalMask,
                 DefaultValue = ConstantOrDefault(p.Initializer, TypeOf(p.Type)),
@@ -264,8 +175,6 @@ public sealed class PapyrusCodeGenerator
 
         foreach (var p in _script.Properties) obj.Properties.Add(BuildProperty(p));
 
-
-
         var emptyState = new PexState { Name = "" };
         foreach (var fn in _script.Functions) emptyState.Functions.Add(BuildFunction(fn, "", fn.Name, 0));
         foreach (var ev in _script.Events) emptyState.Functions.Add(BuildEvent(ev, ""));
@@ -281,17 +190,6 @@ public sealed class PapyrusCodeGenerator
 
         return obj;
     }
-
-
-
-
-
-
-
-
-
-
-
 
     private uint ConditionalMask => _userFlags.MaskFor("conditional");
 
@@ -314,10 +212,6 @@ public sealed class PapyrusCodeGenerator
                 prop.AutoVarName = BackingVarName(p.Name);
                 break;
 
-
-
-
-
             case PapyrusPropertyKind.AutoReadOnly:
                 prop.Flags = 0x01;
                 prop.ReadHandler = ConstantGetter(p, type);
@@ -332,7 +226,6 @@ public sealed class PapyrusCodeGenerator
 
         return prop;
     }
-
 
     private PexFunction ConstantGetter(PapyrusPropertyDecl property, string pexType)
     {
@@ -361,16 +254,6 @@ public sealed class PapyrusCodeGenerator
 
     private static string BackingVarName(string propertyName) => "::" + propertyName + "_var";
 
-
-
-
-
-
-
-
-
-
-
     private string ParentClassName()
     {
         if (!string.IsNullOrEmpty(_script.Extends))
@@ -381,8 +264,6 @@ public sealed class PapyrusCodeGenerator
 
     private IEnumerable<PexPropertyGroup> BuildPropertyGroups()
     {
-
-
 
         var ungrouped = _script.Properties.Where(p => p.GroupName == null).Select(p => p.Name).ToList();
         if (ungrouped.Count > 0)
@@ -416,8 +297,6 @@ public sealed class PapyrusCodeGenerator
         }
     }
 
-
-
     private PexFunction BuildFunction(PapyrusFunctionDecl decl, string stateName, string debugName, byte debugType)
     {
         var returnType = decl.ReturnType == null
@@ -440,7 +319,6 @@ public sealed class PapyrusCodeGenerator
 
     private PexFunction BuildEvent(PapyrusEventDecl decl, string stateName)
     {
-
 
         var name = decl.RemoteObjectType == null
             ? decl.Name
@@ -487,47 +365,12 @@ public sealed class PapyrusCodeGenerator
         });
     }
 
-
-
     private PapyrusType TypeOf(PapyrusNode node) => _resolution.TypeOf(node);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     internal PexValue? QualifyCustomEvent(
         PapyrusExpression argument, PapyrusExpression?[] slots, int index, string? receiverScript)
     {
         if (argument is not PapyrusLiteralExpression { Kind: PapyrusLiteralKind.String } literal) return null;
-
-
 
         string? target = receiverScript;
         for (int i = index - 1; i >= 0; i--)
@@ -548,13 +391,10 @@ public sealed class PapyrusCodeGenerator
             };
     }
 
-
     private string? DeclaringScriptOf(string scriptName, string eventName)
     {
         var script = _index.Resolve(scriptName);
         if (script == null) return null;
-
-
 
         foreach (var ancestor in _index.BaseChain(script))
         {
@@ -575,15 +415,6 @@ public sealed class PapyrusCodeGenerator
         return reference.IsArray ? PapyrusType.ArrayOf(resolved) : resolved;
     }
 
-
-
-
-
-
-
-
-
-
     private void Report(string code, string message, PapyrusSpan span)
     {
         foreach (var existing in _diagnostics)
@@ -592,15 +423,6 @@ public sealed class PapyrusCodeGenerator
         }
         _diagnostics.Add(new PapyrusDiagnostic(code, PapyrusSeverity.Error, message, span, _script.FilePath));
     }
-
-
-
-
-
-
-
-
-
 
     internal string PexTypeName(PapyrusType type, PapyrusNode? at = null)
     {
@@ -633,7 +455,6 @@ public sealed class PapyrusCodeGenerator
         }
     }
 
-
     private PexValue ConstantOrDefault(PapyrusExpression? initializer, PapyrusType declared)
     {
         if (initializer == null) return ZeroValue(declared);
@@ -648,7 +469,6 @@ public sealed class PapyrusCodeGenerator
         return ZeroValue(declared);
     }
 
-
     internal static PexValue ZeroValue(PapyrusType type) => type.Kind switch
     {
         PapyrusTypeKind.Bool => new PexValue { Type = PexValueType.Bool, Bool = false },
@@ -657,15 +477,6 @@ public sealed class PapyrusCodeGenerator
         PapyrusTypeKind.String => new PexValue { Type = PexValueType.String, Str = "" },
         _ => new PexValue { Type = PexValueType.None },
     };
-
-
-
-
-
-
-
-
-
 
     internal static PexValue? TryConstant(PapyrusExpression expression, PapyrusType? want = null)
     {
@@ -702,7 +513,6 @@ public sealed class PapyrusCodeGenerator
             {
                 if (!TryParseInt(literal.Text, out int i)) return null;
 
-
                 if (want?.Kind == PapyrusTypeKind.Float) return new PexValue { Type = PexValueType.Float, Float = i };
                 if (want?.Kind == PapyrusTypeKind.Bool) return new PexValue { Type = PexValueType.Bool, Bool = i != 0 };
                 return new PexValue { Type = PexValueType.Integer, Int = i };
@@ -711,7 +521,6 @@ public sealed class PapyrusCodeGenerator
             case PapyrusLiteralKind.Float:
             {
                 var text = literal.Text;
-
 
                 if (text.EndsWith("f", StringComparison.OrdinalIgnoreCase)) text = text[..^1];
                 if (!float.TryParse(text, System.Globalization.NumberStyles.Float,
@@ -737,10 +546,6 @@ public sealed class PapyrusCodeGenerator
             System.Globalization.CultureInfo.InvariantCulture, out value);
     }
 
-
-
-
-
     private sealed class BodyEmitter
     {
         private readonly PapyrusCodeGenerator _gen;
@@ -748,12 +553,9 @@ public sealed class PapyrusCodeGenerator
         private readonly PapyrusCallableDecl _decl;
         private readonly PapyrusType _returnType;
 
-
         private readonly List<Dictionary<string, Local>> _scopes = new();
 
-
         private readonly Dictionary<string, Stack<string>> _freeTemps = new(StringComparer.OrdinalIgnoreCase);
-
 
         private readonly List<(string name, string type)> _liveTemps = new();
 
@@ -786,8 +588,6 @@ public sealed class PapyrusCodeGenerator
             _scopes.Clear();
         }
 
-
-
         private int Add(string mnemonic, params PexValue[] args)
         {
             if (!OpByName.TryGetValue(mnemonic, out var op))
@@ -808,7 +608,6 @@ public sealed class PapyrusCodeGenerator
 
         private int Here => _fn.Instructions.Count;
 
-
         private void PatchJump(int jumpIndex, int target)
         {
             var instruction = _fn.Instructions[jumpIndex];
@@ -823,13 +622,8 @@ public sealed class PapyrusCodeGenerator
 
         private static PexValue NoneValue() => new() { Type = PexValueType.None };
 
-
-
         private string DeclareLocal(string sourceName, PapyrusType type)
         {
-
-
-
 
             var emitted = sourceName;
             if (!_usedLocalNames.Add(emitted))
@@ -877,15 +671,6 @@ public sealed class PapyrusCodeGenerator
             return name;
         }
 
-
-
-
-
-
-
-
-
-
         private void ReleaseTemps(int mark)
         {
             for (int i = _liveTemps.Count - 1; i >= mark; i--)
@@ -896,8 +681,6 @@ public sealed class PapyrusCodeGenerator
             }
             if (mark < _liveTemps.Count) _liveTemps.RemoveRange(mark, _liveTemps.Count - mark);
         }
-
-
 
         private void EmitBlock(IEnumerable<PapyrusStatement> body)
         {
@@ -917,8 +700,6 @@ public sealed class PapyrusCodeGenerator
                 {
                     var type = _gen.TypeOf(define.Type);
                     var name = DeclareLocal(define.Name, type);
-
-
 
                     if (define.Initializer != null) EmitInto(define.Initializer, name, type);
                     else Add("assign", Id(name), ZeroValue(type));
@@ -962,12 +743,9 @@ public sealed class PapyrusCodeGenerator
 
                 EmitBlock(branch.Body);
 
-
-
                 toEnd.Add(Add("jmp", Int(0)));
                 PatchJump(jumpPastBranch, Here);
             }
-
 
             if (iff.ElseBody != null) EmitBlock(iff.ElseBody);
 
@@ -989,7 +767,6 @@ public sealed class PapyrusCodeGenerator
         private void EmitAssign(PapyrusAssignStatement assign)
         {
             var targetType = _gen.TypeOf(assign.Target);
-
 
             PapyrusExpression value = assign.Value;
             var op = CompoundOperator(assign.Operator);
@@ -1076,7 +853,6 @@ public sealed class PapyrusCodeGenerator
                     if (op == null)
                     {
 
-
                         var (stored, target) = StoreOrder(
                             () => ValueAs(value, targetType),
                             () => (Array: Value(index.Target), Subscript: ValueAs(index.Index, PapyrusType.Int)));
@@ -1100,49 +876,12 @@ public sealed class PapyrusCodeGenerator
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private static (PexValue Value, TTarget Target) StoreOrder<TTarget>(
             Func<PexValue> value, Func<TTarget> target)
         {
             var stored = value();
             return (stored, target());
         }
-
-
-
-
-
-
-
-
 
         private PexValue Materialise(PexValue value, PapyrusType type)
         {
@@ -1172,16 +911,9 @@ public sealed class PapyrusCodeGenerator
             _ => null,
         };
 
-
-
-
-
-
-
         private void EmitDiscarded(PapyrusExpression expression)
         {
             if (expression is not PapyrusCallExpression call) { Value(expression); return; }
-
 
             var callBinding = _gen._resolution.BindingFor(call) ?? _gen._resolution.BindingFor(call.Callee);
             if (callBinding != null && _gen.ExcludedBy(callBinding) != null) return;
@@ -1190,9 +922,6 @@ public sealed class PapyrusCodeGenerator
             if (type.Kind == PapyrusTypeKind.None) { EmitCall(call, NoneVar()); return; }
             EmitCall(call, AllocTemp(type));
         }
-
-
-
 
         private PexValue Value(PapyrusExpression expression)
         {
@@ -1207,25 +936,16 @@ public sealed class PapyrusCodeGenerator
             return Id(temp);
         }
 
-
         private PexValue ValueAs(PapyrusExpression expression, PapyrusType want)
         {
             var natural = _gen.TypeOf(expression);
             if (natural.Equals(want) || NeedsNoCast(natural, want)) return Value(expression);
-
-
-
 
             if (natural.Kind == PapyrusTypeKind.Int && want.Kind == PapyrusTypeKind.Float)
             {
                 var folded = TryConstant(expression, want);
                 if (folded is { Type: PexValueType.Float }) return folded;
             }
-
-
-
-
-
 
             if (want.Kind == PapyrusTypeKind.Bool
                 && natural.Kind is PapyrusTypeKind.Int or PapyrusTypeKind.Float)
@@ -1240,21 +960,10 @@ public sealed class PapyrusCodeGenerator
             return Id(temp);
         }
 
-
-
-
-
-
-
-
-
-
-
         private static bool NeedsNoCast(PapyrusType from, PapyrusType to) =>
             from.Kind == PapyrusTypeKind.None && to.IsReference
             || from.Kind == PapyrusTypeKind.Error
             || to.Kind == PapyrusTypeKind.Error;
-
 
         private void EmitInto(PapyrusExpression expression, string destination, PapyrusType destinationType)
         {
@@ -1274,20 +983,14 @@ public sealed class PapyrusCodeGenerator
                 return;
             }
 
-
-
             if (natural.Kind == PapyrusTypeKind.Int && destinationType.Kind == PapyrusTypeKind.Float)
             {
                 var folded = TryConstant(expression, destinationType);
                 if (folded is { Type: PexValueType.Float }) { Add("assign", Id(destination), folded); return; }
             }
 
-
-
-
             Add("cast", Id(destination), Value(expression));
         }
-
 
         private PexValue? TryDirectValue(PapyrusExpression expression)
         {
@@ -1308,7 +1011,6 @@ public sealed class PapyrusCodeGenerator
         }
 
         private readonly record struct Storage(string Name, bool IsProperty, PexValue? Receiver);
-
 
         private Storage? StorageFor(PapyrusIdentifierExpression id)
         {
@@ -1334,8 +1036,6 @@ public sealed class PapyrusCodeGenerator
                 case PapyrusBindingKind.Property:
                 {
 
-
-
                     if (binding.Owner == _gen._script
                         && _gen._ownAutoProperties.ContainsKey(binding.Name))
                     {
@@ -1356,7 +1056,6 @@ public sealed class PapyrusCodeGenerator
             Add("propget", Id(storage.Name), storage.Receiver!, Id(temp));
             return Id(temp);
         }
-
 
         private void EmitComputation(PapyrusExpression expression, string destination, PapyrusType destinationType)
         {
@@ -1466,7 +1165,6 @@ public sealed class PapyrusCodeGenerator
             }
         }
 
-
         private bool IsOwnBackingProperty(PapyrusMemberExpression member, PapyrusBinding binding)
         {
             if (binding.Owner != _gen._script || !_gen._ownAutoProperties.ContainsKey(binding.Name)) return false;
@@ -1513,10 +1211,6 @@ public sealed class PapyrusCodeGenerator
             var right = ValueAs(binary.Right, result);
             BinaryInto(destination, result, binary.Operator, left, right, binary.Span);
         }
-
-
-
-
 
         private PexValue BinaryInto(
             string? destination, PapyrusType type, PapyrusTokenKind op,
@@ -1569,8 +1263,6 @@ public sealed class PapyrusCodeGenerator
             var left = ValueAs(binary.Left, common);
             var right = ValueAs(binary.Right, common);
 
-
-
             var mnemonic = binary.Operator switch
             {
                 PapyrusTokenKind.Equal or PapyrusTokenKind.NotEqual => "cmp_eq",
@@ -1583,14 +1275,6 @@ public sealed class PapyrusCodeGenerator
             Add(mnemonic, Id(destination), left, right);
             if (binary.Operator == PapyrusTokenKind.NotEqual) Add("not", Id(destination), Id(destination));
         }
-
-
-
-
-
-
-
-
 
         private PapyrusType CommonComparisonType(PapyrusType left, PapyrusType right)
         {
@@ -1619,22 +1303,14 @@ public sealed class PapyrusCodeGenerator
                 .Any(s => string.Equals(s.Name, ancestor, StringComparison.OrdinalIgnoreCase));
         }
 
-
-
-
         private void EmitShortCircuit(PapyrusBinaryExpression binary, string destination)
         {
-
-
-
 
             Add("cast", Id(destination), Value(binary.Left));
             int skip = Add(binary.Operator == PapyrusTokenKind.And ? "jmpf" : "jmpt", Id(destination), Int(0));
             Add("cast", Id(destination), Value(binary.Right));
             PatchJump(skip, Here);
         }
-
-
 
         private void EmitCall(PapyrusCallExpression call, string destination)
         {
@@ -1693,9 +1369,6 @@ public sealed class PapyrusCodeGenerator
                         return;
                     }
 
-
-
-
                     var receiver = Value(member.Target);
                     var methodArgs = BuildArguments(call, callee, binding.Owner);
                     if (methodArgs == null) return;
@@ -1707,8 +1380,6 @@ public sealed class PapyrusCodeGenerator
                 {
                     var arguments = BuildArguments(call, callee, binding.Owner);
                     if (arguments == null) return;
-
-
 
                     if (callee is PapyrusFunctionDecl { IsGlobal: true })
                     {
@@ -1732,14 +1403,6 @@ public sealed class PapyrusCodeGenerator
             }
             Add(mnemonic, args.ToArray());
         }
-
-
-
-
-
-
-
-
 
         private List<PexValue>? BuildArguments(
             PapyrusCallExpression call, PapyrusCallableDecl callee, PapyrusScript? calleeOwner)
@@ -1795,7 +1458,6 @@ public sealed class PapyrusCodeGenerator
                 if (slots[i] != null)
                 {
 
-
                     if (parameter.Semantic == ParameterSemantic.CustomEventName
                         && _gen.QualifyCustomEvent(slots[i]!, slots, i, ReceiverScript()) is { } qualified)
                     {
@@ -1831,8 +1493,6 @@ public sealed class PapyrusCodeGenerator
 
             return operands;
 
-
-
             string? ReceiverScript()
             {
                 if (call.Callee is PapyrusMemberExpression member)
@@ -1843,25 +1503,6 @@ public sealed class PapyrusCodeGenerator
                 return _gen._script?.Name;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         private static readonly Dictionary<string, (int Min, int Max)> ArrayBuiltinArity =
             new(StringComparer.OrdinalIgnoreCase)
@@ -1956,7 +1597,6 @@ public sealed class PapyrusCodeGenerator
                     return;
 
                 default:
-
 
                     CannotEmit(call);
                     return;

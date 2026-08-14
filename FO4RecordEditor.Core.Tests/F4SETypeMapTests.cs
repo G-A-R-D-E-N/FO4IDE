@@ -4,22 +4,11 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class F4SETypeMapTests
 {
     private static readonly F4SETypeMap Map = new(new[] { "WornItem", "Owner", "PluginInfo" });
 
     private static PapyrusTypeText P(string name, bool array = false) => new(name, array);
-
-
 
     [Theory]
     [InlineData("bool", "bool")]
@@ -45,8 +34,6 @@ public class F4SETypeMapTests
     {
         CppTypeRef.TryParse(text, out _).Should().BeFalse();
     }
-
-
 
     [Theory]
     [InlineData("bool", "bool")]
@@ -127,8 +114,6 @@ public class F4SETypeMapTests
         refusal.Should().Contain("None");
     }
 
-
-
     [Theory]
     [InlineData("bool", "bool")]
     [InlineData("float", "float")]
@@ -166,7 +151,6 @@ public class F4SETypeMapTests
     public void An_unnamed_form_pointer_is_refused_rather_than_guessed_from_its_spelling()
     {
 
-
         CppTypeRef.TryParse("TESObjectTREE*", out var tree).Should().BeTrue();
         Map.TryToPapyrus(tree, out _, out var refusal).Should().BeFalse();
         refusal.Should().Contain("the form table does not name");
@@ -179,8 +163,6 @@ public class F4SETypeMapTests
         Map.TryToPapyrus(jagged, out _, out var refusal).Should().BeFalse();
         refusal.Should().Contain("jagged");
     }
-
-
 
     [Theory]
     [InlineData("bool")]
@@ -242,8 +224,6 @@ public class F4SETypeMapTests
             back.Name.Should().BeEquivalentTo(papyrus);
         }
     }
-
-
 
     [Fact]
     public void The_template_instantiation_matches_the_shipped_registration_shape()

@@ -7,7 +7,7 @@ public static class MajorRecordPrinter<TMajor>
     where TMajor : class, IMajorRecordGetter
 {
     public static string TypeString { get; }
-    
+
     static MajorRecordPrinter()
     {
         Warmup.Init();

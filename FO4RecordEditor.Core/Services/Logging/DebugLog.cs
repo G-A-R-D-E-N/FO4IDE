@@ -2,14 +2,6 @@ using System.IO;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
 public static class DebugLog
 {
     private static readonly object _lock = new();
@@ -75,17 +67,13 @@ public static class DebugLog
     public static void Info(string category, string message, string? detail = null) => Write("INFO", category, message, detail);
     public static void Debug(string category, string message, string? detail = null) => Write("DEBUG", category, message, detail);
 
-
     public static void Interop(string method, string? args = null) =>
         Write("DEBUG", "Interop", args == null ? method + "()" : $"{method}({Trunc(args, 400)})");
-
 
     public static void Exception(string context, Exception ex) =>
         Write("ERROR", "Error", $"{context} threw {ex.GetType().Name}: {ex.Message}", ex.ToString());
 
     private static string Trunc(string s, int max) => s.Length <= max ? s : s[..max] + "…";
-
-
 
     public static string Guard(string method, Func<string> body, string? args = null)
     {

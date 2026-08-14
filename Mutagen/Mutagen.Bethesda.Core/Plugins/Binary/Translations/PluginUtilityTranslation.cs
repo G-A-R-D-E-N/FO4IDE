@@ -260,8 +260,6 @@ internal static class PluginUtilityTranslation
         var lastParsed = new PreviousParse();
         Dictionary<RecordType, int>? recordParseCount = null;
 
-
-
         while (!frame.Reader.Complete)
         {
             var subMeta = frame.GetSubrecordHeader();

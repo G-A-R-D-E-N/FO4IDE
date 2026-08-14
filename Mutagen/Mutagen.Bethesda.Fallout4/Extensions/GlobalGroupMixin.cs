@@ -22,7 +22,7 @@ public static class GlobalGroupMixIn
         globals.Add(ret);
         return ret;
     }
-    
+
     public static GlobalFloat AddNewFloat(this IGroup<Global> globals)
     {
         var ret = new GlobalFloat(

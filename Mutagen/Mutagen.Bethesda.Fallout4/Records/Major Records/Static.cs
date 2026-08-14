@@ -26,8 +26,6 @@ public partial class Static
         NavMeshGenerationFilter = 0x0400_0000,
         NavMeshGenerationBoundingBox = 0x0800_0000,
 
-
-
         ShowInWorldMap = 0x1000_0000,
         NavMeshGenerationGround = 0x4000_0000,
     }

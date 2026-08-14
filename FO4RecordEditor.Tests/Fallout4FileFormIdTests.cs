@@ -13,9 +13,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class Fallout4FileFormIdTests
 {
     [Fact]
@@ -84,8 +81,6 @@ public class Fallout4FileFormIdTests
 
             WriteService.SavePlugin(patchName, output, env).Should().Contain("Saved");
             WriteService.ReadMasterNames(output).Should().Equal("Fallout4.esm", fullName, lightName);
-
-
 
             ReadSingleCtdaParameterOne(output).Should().Be(0x02000812u);
         }
@@ -168,8 +163,6 @@ public class Fallout4FileFormIdTests
             WriteService.CreateSeqFile(env, pluginName, outputDir).Should().Contain("Wrote");
             var bytes = File.ReadAllBytes(Path.Combine(outputDir, Path.ChangeExtension(pluginName, ".seq")));
             bytes.Should().HaveCount(4);
-
-
 
             BinaryPrimitives.ReadUInt32LittleEndian(bytes).Should().Be(0x03000801u);
         }

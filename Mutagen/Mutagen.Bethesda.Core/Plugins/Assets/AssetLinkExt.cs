@@ -43,12 +43,6 @@ public static class AssetLinkExt
     }
 #endif
 
-
-
-
-
-
-
     [return: NotNullIfNotNull("src")]
     public static string? Decorate(this IAssetLinkGetter? src, Func<string, string> decorator) =>
         src?.GivenPath.Decorate(decorator);

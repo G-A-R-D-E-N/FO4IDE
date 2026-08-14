@@ -3,12 +3,6 @@ using System.IO.Compression;
 
 namespace FO4RecordEditor.Services.Textures;
 
-
-
-
-
-
-
 public static class PngWriter
 {
     private static readonly byte[] Signature = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
@@ -36,8 +30,6 @@ public static class PngWriter
 
         return output.ToArray();
     }
-
-
 
     private static byte[] Deflate(byte[] rgba, int width, int height, CompressionLevel level)
     {

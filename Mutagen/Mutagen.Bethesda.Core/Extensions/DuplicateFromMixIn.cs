@@ -8,23 +8,6 @@ namespace Mutagen.Bethesda;
 public static class DuplicateFromMixIn
 {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static void DuplicateFromOnlyReferenced<TMod, TModGetter>(
         this TMod modToDuplicateInto,
         ILinkCache<TMod, TModGetter> linkCache,
@@ -41,25 +24,6 @@ public static class DuplicateFromMixIn
             typesToInspect);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static void DuplicateFromOnlyReferenced<TMod, TModGetter>(
         this TMod modToDuplicateInto,
         ILinkCache<TMod, TModGetter> linkCache,
@@ -73,7 +37,6 @@ public static class DuplicateFromMixIn
         {
             throw new ArgumentException("Cannot pass the target mod's Key as the one to extract and self contain");
         }
-
 
         HashSet<IFormLinkGetter> identifiedLinks = new();
         HashSet<FormKey> passedLinks = new();
@@ -110,7 +73,6 @@ public static class DuplicateFromMixIn
             AddAllLinks(new FormLinkInformation(rec.FormKey, rec.Registration.GetterType));
         }
 
-
         mapping = new();
         foreach (var identifiedRec in identifiedLinks)
         {
@@ -122,11 +84,8 @@ public static class DuplicateFromMixIn
             var dup = rec.DuplicateIntoAsNewRecord(modToDuplicateInto, rec.Record.EditorID);
             mapping[rec.Record.FormKey] = dup.FormKey;
 
-
-
             modToDuplicateInto.Remove(identifiedRec.FormKey, identifiedRec.Type);
         }
-
 
         modToDuplicateInto.RemapLinks(mapping);
     }

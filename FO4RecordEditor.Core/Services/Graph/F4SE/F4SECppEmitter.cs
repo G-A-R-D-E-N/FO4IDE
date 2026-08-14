@@ -5,20 +5,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class F4SECppEmitter
 {
 
@@ -33,7 +19,6 @@ public sealed class F4SECppEmitter
     private readonly F4SETypeMap _map;
 
     public F4SECppEmitter(IEnumerable<string>? structNames = null) => _map = new F4SETypeMap(structNames);
-
 
     public string EmitHeader(PluginBinding plugin, ModuleBinding module)
     {
@@ -56,7 +41,6 @@ public sealed class F4SECppEmitter
         text.Append("}\n");
         return text.ToString();
     }
-
 
     public string EmitSource(PluginBinding plugin, ModuleBinding module)
     {
@@ -100,7 +84,6 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-
     private string StubFor(NativeBinding native)
     {
         var text = new StringBuilder();
@@ -116,7 +99,6 @@ public sealed class F4SECppEmitter
         text.Append("\t}\n");
         return text.ToString();
     }
-
 
     public string SignatureOf(NativeBinding native)
     {
@@ -135,15 +117,10 @@ public sealed class F4SECppEmitter
         return $"{returnType} {native.FunctionName}({string.Join(", ", parameters)})";
     }
 
-
-
-
     private string? ReturnStatementFor(NativeBinding native)
     {
         var type = CppOf(native.ReturnType, native.ReturnUnsigned);
         if (type == null || type.Name == "void") return null;
-
-
 
         return $"return {type.Format()}();";
     }
@@ -183,7 +160,6 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-
     public string EmitRegistrationsHeader(PluginBinding plugin) =>
         GeneratedBanner + "\n"
         + "#pragma once\n\n"
@@ -207,7 +183,6 @@ public sealed class F4SECppEmitter
         return text.ToString();
     }
 
-
     public static string NamespaceOf(PluginBinding plugin, ModuleBinding module) =>
         string.IsNullOrEmpty(module.CppNamespace)
             ? $"papyrus{plugin.Name}{module.Name}"
@@ -221,13 +196,6 @@ public sealed class F4SECppEmitter
 
     public static string SourceFileName(PluginBinding plugin, ModuleBinding module) =>
         BaseFileName(plugin, module) + ".cpp";
-
-
-
-
-
-
-
 
     private static string ReceiverNameFor(NativeBinding native)
     {

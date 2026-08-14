@@ -2,26 +2,9 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
-
-
-
-
-
-
 public static class Ba2Packer
 {
     public sealed record Result(int FileCount, long TotalBytes, long ArchiveBytes, int CompressedCount);
-
-
-
-
-
-
-
-
 
     public static Result Pack(IEnumerable<string> sourceDirs, string outputPath, uint version = 1, bool compress = true,
                               Ba2Format format = Ba2Format.General)

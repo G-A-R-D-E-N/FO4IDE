@@ -79,7 +79,6 @@ internal sealed class InternalImmutableLoadOrderLinkCache
             return true;
         }
 
-
         if (modKey != null && cache.PassedMods.Contains(modKey.Value))
         {
             return true;

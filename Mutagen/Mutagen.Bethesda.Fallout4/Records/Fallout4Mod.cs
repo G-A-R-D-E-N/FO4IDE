@@ -243,7 +243,6 @@ internal partial class Fallout4ModBinaryOverlay
     public IReadOnlyList<IFormLinkGetter<IMajorRecordGetter>>? OverriddenForms =>
         this.ModHeader.OverriddenForms;
 
-
     IBinaryModdedWriteBuilderTargetChoice IModGetter.BeginWrite =>
         new BinaryModdedWriteBuilderTargetChoice<IFallout4ModGetter>(
             this,
@@ -557,7 +556,6 @@ partial class Fallout4ModCommon
             .Select(cellSubGroupCount)
             .Sum();
 
-
         count += (uint)item.Worldspaces.Sum(wrld => wrld.SubCells?.Count ?? 0);
         count += (uint)item.Worldspaces
             .SelectMany(wrld => wrld.SubCells)
@@ -568,13 +566,11 @@ partial class Fallout4ModCommon
             .SelectMany(subBlock => subBlock.Items)
             .Sum(cellSubGroupCount);
 
-
         var quests = item.Quests.ToArray();
         count += (uint)quests.Length;
         count += (uint)quests.SelectMany(x => x.DialogTopics)
             .Select(x => x.Responses.Count > 0 ? 1 : 0)
             .Sum();
-
 
         setter(count);
     }

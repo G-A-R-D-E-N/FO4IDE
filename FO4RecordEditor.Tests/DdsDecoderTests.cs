@@ -10,22 +10,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class DdsDecoderTests
 {
     private readonly ITestOutputHelper _out;
@@ -34,7 +18,6 @@ public class DdsDecoderTests
     [Fact]
     public void Bc1DecodesItsFourReferenceColours()
     {
-
 
         var block = new byte[]
         {
@@ -88,7 +71,6 @@ public class DdsDecoderTests
         block[8] = 0xFF; block[9] = 0xFF;
         block[10] = 0; block[11] = 0;
 
-
         var rgba = DecodeSingleBlock(block, dxgi: 77);
         Pixel(rgba, 0).Should().Be((255, 255, 255, 0));
     }
@@ -121,7 +103,6 @@ public class DdsDecoderTests
         ihdr[8].Should().Be(8);
         ihdr[9].Should().Be(6);
 
-
         using var input = new MemoryStream(chunks[1].Data);
         using var zlib = new ZLibStream(input, CompressionMode.Decompress);
         using var raw = new MemoryStream();
@@ -134,11 +115,6 @@ public class DdsDecoderTests
             scanlines.Skip(y * 17 + 1).Take(16).Should().Equal(rgba.Skip(y * 16).Take(16));
         }
     }
-
-
-
-
-
 
     [Fact]
     public void RealTexturesDecodeAtTheirHeaderSize()

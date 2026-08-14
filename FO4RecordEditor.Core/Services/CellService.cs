@@ -7,48 +7,8 @@ using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class CellService
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string? ResolveExteriorCellFormKey(object? env, string worldspaceId, int gridX, int gridY, out string? error)
     {
@@ -70,10 +30,6 @@ public static class CellService
         error = $"No exterior cell found at grid ({gridX},{gridY}) in worldspace '{worldspaceId}'.";
         return null;
     }
-
-
-
-
 
     public static bool TryResolveCellIdPublic(object? env, ref string cellId, string? worldspace, int? gridX, int? gridY, out string? error)
         => TryResolveCellId(env, ref cellId, worldspace, gridX, gridY, out error);
@@ -110,8 +66,6 @@ public static class CellService
 
         var interior = winningCell.Flags.HasFlag(Cell.Flag.IsInteriorCell);
 
-
-
         var merged = new Dictionary<FormKey, IPlacedGetter>();
         foreach (var (_, rec) in MutagenLoader.GetRecordContexts(env, fk))
         {
@@ -128,30 +82,18 @@ public static class CellService
         foreach (var placed in merged.Values)
         {
 
-
-
             if (placed is not IPositionRotationGetter posRot) continue;
 
             string? modelPath = null;
             string? baseEditorId = null;
             string baseFormKey = "";
 
-
-
-
             string? baseType = null;
             float scale = 1f;
-
-
-
 
             string? decalDiffuse = null;
             float? decalWidth = null;
             float? decalHeight = null;
-
-
-
-
 
             List<object>? scolParts = null;
 
@@ -164,8 +106,6 @@ public static class CellService
                     if (cache.TryResolve<IMajorRecordGetter>(po.Base.FormKey, out var baseRec))
                     {
                         baseEditorId = baseRec.EditorID;
-
-
 
                         baseType = baseRec.GetType().Name;
                         if (baseType.EndsWith("BinaryOverlay", StringComparison.Ordinal))
@@ -197,9 +137,6 @@ public static class CellService
                         if (baseRec is ITextureSetGetter txst && !string.IsNullOrWhiteSpace(txst.Diffuse))
                         {
                             decalDiffuse = txst.Diffuse;
-
-
-
 
                             var b = baseRec is IObjectBoundedGetter ob ? ob.ObjectBounds : null;
                             var bw = b != null ? Math.Abs(b.Second.X - b.First.X) : 0f;
@@ -252,11 +189,6 @@ public static class CellService
         });
     }
 
-
-
-
-
-
     private static bool IsSpecialPlacedObject(IPlacedObjectGetter p) =>
         !string.IsNullOrEmpty(p.EditorID) ||
         p.VirtualMachineAdapter != null ||
@@ -276,32 +208,6 @@ public static class CellService
                $"{Math.Round(p.Rotation.X)}|{Math.Round(p.Rotation.Y)}|{Math.Round(p.Rotation.Z)}";
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static string CleanupPlacedReferencesJson(object? env, string cellId, string? worldspace, int? gridX, int? gridY,
         string mode, int maxCount, bool byModel, string patchPlugin, bool apply)
     {
@@ -314,9 +220,6 @@ public static class CellService
         var fk = MutagenLoader.ResolveId(env, cellId.Trim());
         if (fk.IsNull || !cache.TryResolve<ICellGetter>(fk, out var winningCell))
             return JsonConvert.SerializeObject(new { error = $"Could not resolve '{cellId}' to a loaded CELL record." });
-
-
-
 
         var merged = new Dictionary<FormKey, IPlacedObjectGetter>();
         foreach (var (_, rec) in MutagenLoader.GetRecordContexts(env, fk))
@@ -369,8 +272,6 @@ public static class CellService
 
         if (string.IsNullOrWhiteSpace(patchPlugin))
             return JsonConvert.SerializeObject(new { error = "Choose a patch plugin to write the removals into." });
-
-
 
         var patchName = (patchPlugin.Contains('\\') || patchPlugin.Contains('/')) && System.IO.Path.IsPathRooted(patchPlugin)
             ? System.IO.Path.GetFileName(patchPlugin) : patchPlugin;

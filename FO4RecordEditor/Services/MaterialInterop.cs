@@ -7,10 +7,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class MaterialInterop
@@ -19,7 +15,6 @@ public class MaterialInterop
     {
         return HostServices.PickFile(title, filter);
     }
-
 
     public Task<string> Inspect(string path) =>
         Task.Run(() =>
@@ -32,8 +27,6 @@ public class MaterialInterop
             }
         });
 
-
-
     public Task<string> SetFields(string path, string fieldsJson, string outPath) =>
         Task.Run(() =>
         {
@@ -45,7 +38,6 @@ public class MaterialInterop
             }
             catch (Exception ex) { DebugLog.Exception("Material.SetFields", ex); return "Error: " + ex.Message; }
         });
-
 
     public string OpenFolder(string path)
     {
@@ -60,8 +52,6 @@ public class MaterialInterop
         }
         catch (Exception ex) { return "Error: " + ex.Message; }
     }
-
-
 
     public string StageDroppedFile(string name, string base64)
     {

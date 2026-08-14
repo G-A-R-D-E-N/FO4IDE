@@ -6,36 +6,11 @@ namespace Mutagen.Bethesda.Plugins.IO.DI;
 public interface IModFilesMover
 {
 
-
-
-
-
-
-
-
-
-
-
-
-
     void MoveModTo(
         ModPath pathToPlugin,
         DirectoryPath newDirectory,
         bool overwrite = false,
         AssociatedModFileCategory? categories = null);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     void CopyModTo(
         ModPath pathToPlugin,

@@ -2,18 +2,6 @@ using System.Runtime.InteropServices;
 
 namespace Mutagen.Bethesda.Archives.Ba2;
 
-
-
-
-
-
-
-
-
-
-
-
-
 class DDS
 {
     public static uint HeaderSizeForFormat(DXGI_FORMAT fmt)
@@ -105,7 +93,6 @@ struct DDS_HEADER
     public uint GetSize()
     {
 
-
         return (9 * 4) + PixelFormat.GetSize() + (14 * 4);
     }
 
@@ -119,10 +106,8 @@ struct DDS_HEADER
         bw.Write(dwDepth);
         bw.Write(dwMipMapCount);
 
-
         for (int i = 0; i < 11; i++)
             bw.Write(dwReserved1);
-
 
         bw.Write(PixelFormat.dwSize);
         bw.Write(PixelFormat.dwFlags);
@@ -135,7 +120,6 @@ struct DDS_HEADER
 
         bw.Write(dwSurfaceFlags);
         bw.Write(dwCubemapFlags);
-
 
         for (int i = 0; i < 3; i++)
             bw.Write(dwReserved2);

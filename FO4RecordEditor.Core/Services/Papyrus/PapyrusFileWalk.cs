@@ -4,28 +4,6 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class PapyrusFileWalk
 {
     public static IEnumerable<string> EnumerateFiles(string root, string pattern)

@@ -6,11 +6,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
 public class NifServiceSmokeTests
 {
     private const string SampleNif =

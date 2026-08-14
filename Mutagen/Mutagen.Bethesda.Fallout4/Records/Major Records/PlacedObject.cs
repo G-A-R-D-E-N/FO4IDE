@@ -32,10 +32,6 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-
-
-
-
     [Flags]
     public enum StaticMajorFlag : uint
     {
@@ -54,10 +50,6 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-
-
-
-
     [Flags]
     public enum ContainerMajorFlag : uint
     {
@@ -72,9 +64,6 @@ partial class PlacedObject
         Ground = 0x4000_0000,
         MultiBound = 0x8000_0000,
     }
-
-
-
 
     [Flags]
     public enum DoorMajorFlag : uint
@@ -92,9 +81,6 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-
-
-
     [Flags]
     public enum LightMajorFlag : uint
     {
@@ -110,9 +96,6 @@ partial class PlacedObject
         NoRespawn = 0x4000_0000,
         MultiBound = 0x8000_0000,
     }
-
-
-
 
     [Flags]
     public enum MoveableStaticMajorFlag : uint
@@ -130,9 +113,6 @@ partial class PlacedObject
         MultiBound = 0x8000_0000,
     }
 
-
-
-
     [Flags]
     public enum AddonNodeMajorFlag : uint
     {
@@ -144,10 +124,6 @@ partial class PlacedObject
         NoRespawn = 0x4000_0000,
         MultiBound = 0x8000_0000,
     }
-
-
-
-
 
     [Flags]
     public enum ItemMajorFlag : uint

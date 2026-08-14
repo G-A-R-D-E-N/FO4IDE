@@ -5,24 +5,10 @@ using System.Text.RegularExpressions;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class F4SERegionMerge
 {
     public const string BeginPrefix = "// >>> body: ";
     public const string EndPrefix = "// <<< body: ";
-
 
     public const string SignatureChangedBanner =
         "\t// SIGNATURE CHANGED: this body was written against a different signature. Review it.";
@@ -31,21 +17,11 @@ public static class F4SERegionMerge
         @"^[ \t]*//[ \t]*(?<kind>>>>|<<<)[ \t]*body:[ \t]*(?<name>[^\r\n]*?)[ \t]*$",
         RegexOptions.Multiline | RegexOptions.Compiled);
 
-
     public sealed record Region(string Name, string Body, string SignatureLine);
-
 
     public static string Begin(string name) => BeginPrefix + name;
 
-
     public static string End(string name) => EndPrefix + name;
-
-
-
-
-
-
-
 
     public static IReadOnlyDictionary<string, Region> Read(string? existing)
     {
@@ -67,8 +43,6 @@ public static class F4SERegionMerge
                 continue;
             }
 
-
-
             if (openName == null || !string.Equals(openName, name, StringComparison.Ordinal)) continue;
 
             var body = normalized[openEnd..match.Index].Trim('\n');
@@ -78,14 +52,6 @@ public static class F4SERegionMerge
 
         return regions;
     }
-
-
-
-
-
-
-
-
 
     private static string SignatureLineBefore(string text, int markerStart)
     {
@@ -103,11 +69,6 @@ public static class F4SERegionMerge
 
         return "";
     }
-
-
-
-
-
 
     public static string Merge(string generated, string? existing)
     {
@@ -153,11 +114,6 @@ public static class F4SERegionMerge
         result.Append(normalized, cursor, normalized.Length - cursor);
         return result.ToString();
     }
-
-
-
-
-
 
     public static IReadOnlyList<string> Orphaned(string generated, string? existing)
     {

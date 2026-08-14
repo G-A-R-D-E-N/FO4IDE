@@ -9,35 +9,13 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class F4SECorpusTests
 {
     private readonly ITestOutputHelper _output;
 
     public F4SECorpusTests(ITestOutputHelper output) => _output = output;
 
-
-
-
-
-
-
-
-
     private static readonly Regex RegistrationCall = new(@"\bRegisterFunction\s*\(", RegexOptions.Compiled);
-
 
     private static IReadOnlyList<string> ModuleDirectories()
     {

@@ -32,8 +32,6 @@ public sealed class KnowledgeGraph
             var type = node.GetValue("Type") ?? "";
             var eid = node.GetValue("EditorID") ?? "";
 
-
-
             var entry = new RecordEntry(fk, eid, type, plugin, node, IsWinningOverride: true);
 
             Add(_overrides, fk, entry);

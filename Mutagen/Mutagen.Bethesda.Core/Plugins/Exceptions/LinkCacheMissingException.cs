@@ -1,8 +1,5 @@
 namespace Mutagen.Bethesda.Plugins.Exceptions;
 
-
-
-
 public class LinkCacheMissingException : Exception
 {
     public FormKey FormKey { get; }

@@ -2,18 +2,6 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Textures;
 
-
-
-
-
-
-
-
-
-
-
-
-
 public static class BcnDecoder
 {
 
@@ -27,10 +15,6 @@ public static class BcnDecoder
         97 or 98 or 99 => true,
         _ => false,
     };
-
-
-
-
 
     public static void DecodeBlockFormat(ReadOnlySpan<byte> surface, byte dxgi, int width, int height, byte[] rgba)
     {
@@ -71,8 +55,6 @@ public static class BcnDecoder
         }
     }
 
-
-
     private static void ColorBlock(ReadOnlySpan<byte> block, Span<byte> texels, bool onlyOpaque)
     {
         int c0 = block[0] | (block[1] << 8);
@@ -88,15 +70,11 @@ public static class BcnDecoder
         if (c0 > c1 || onlyOpaque)
         {
 
-
             Set(refs, 2, ((2 * r0 + r1) * 351 + 61) >> 7, ((2 * g0 + g1) * 2763 + 1039) >> 11, ((2 * b0 + b1) * 351 + 61) >> 7, 255);
             Set(refs, 3, ((r0 + 2 * r1) * 351 + 61) >> 7, ((g0 + 2 * g1) * 2763 + 1039) >> 11, ((b0 + 2 * b1) * 351 + 61) >> 7, 255);
         }
         else
         {
-
-
-
 
             Set(refs, 2, ((r0 + r1) * 1053 + 125) >> 8, ((g0 + g1) * 4145 + 1019) >> 11, ((b0 + b1) * 1053 + 125) >> 8, 255);
             Set(refs, 3, 0, 0, 0, 0);
@@ -137,7 +115,6 @@ public static class BcnDecoder
     private static void Bc4(ReadOnlySpan<byte> block, Span<byte> texels)
     {
 
-
         Span<byte> red = stackalloc byte[16];
         SmoothAlpha(block, red);
         for (int i = 0; i < 16; i++) Set(texels, i, red[i], red[i], red[i], 255);
@@ -151,7 +128,6 @@ public static class BcnDecoder
         SmoothAlpha(block.Slice(8, 8), green);
         for (int i = 0; i < 16; i++) Set(texels, i, red[i], green[i], 0, 255);
     }
-
 
     private static void SmoothAlpha(ReadOnlySpan<byte> block, Span<byte> values)
     {
@@ -174,8 +150,6 @@ public static class BcnDecoder
         for (int i = 0; i < 6; i++) indices |= (ulong)block[2 + i] << (8 * i);
         for (int i = 0; i < 16; i++) values[i] = palette[(int)((indices >> (3 * i)) & 7)];
     }
-
-
 
     private static readonly int[] ColorBitsPerMode = { 4, 6, 5, 7, 5, 7, 7, 5 };
     private static readonly int[] AlphaBitsPerMode = { 0, 0, 0, 0, 6, 8, 7, 5 };
@@ -260,7 +234,6 @@ public static class BcnDecoder
         for (int e = 0; e < endpointCount; e++)
         {
 
-
             var precision = colorBits + pBit;
             for (int c = 0; c < 3; c++)
             {
@@ -280,8 +253,6 @@ public static class BcnDecoder
         var indexBits2 = mode == 4 ? 3 : mode == 5 ? 2 : 0;
         var weights = indexBits == 2 ? Weight2 : indexBits == 3 ? Weight3 : Weight4;
         var weights2 = indexBits2 == 2 ? Weight2 : Weight3;
-
-
 
         Span<int> indices = stackalloc int[16];
         for (int i = 0; i < 16; i++)
@@ -336,8 +307,6 @@ public static class BcnDecoder
         }
     }
 
-
-
     private static byte PartitionSet(int subsets, int partition, int texel)
         => subsets == 1 ? (byte)(texel == 0 ? 0x80 : 0)
          : subsets == 2 ? Partitions2[partition * 16 + texel]
@@ -353,10 +322,6 @@ public static class BcnDecoder
             table[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
         return table;
     }
-
-
-
-
 
     private ref struct BitStream
     {
@@ -382,9 +347,6 @@ public static class BcnDecoder
 
         public int ReadBit() => Read(1);
     }
-
-
-
 
     private const string Partitions2Hex =
         "80000101000001010000010100000181" + "80000001000000010000000100000081" +

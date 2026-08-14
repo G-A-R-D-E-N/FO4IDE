@@ -7,7 +7,6 @@ interface OverriddenByProps {
   onExpand?: () => void;
 }
 
-
 export default function OverriddenBy({ plugins, onExpand }: OverriddenByProps) {
   if (plugins.length === 0) {
     return null;

@@ -25,7 +25,7 @@ internal sealed class MetaInterfaceMapper : IMetaInterfaceMapGetter
     private readonly Lazy<Dictionary<Type, InterfaceMappingResult>> _typeDict;
     private readonly Lazy<Dictionary<GameCategory, Dictionary<string, InterfaceMappingResult>>> _categoryTypeDictByName;
     private readonly Lazy<Dictionary<string, InterfaceMappingResult>> _typeDictByName;
-    
+
     public MetaInterfaceMapper(
         IAspectInterfaceMapGetter aspectInterfaceMapGetter,
         ILinkInterfaceMapGetter linkInterfaceMapGetter,

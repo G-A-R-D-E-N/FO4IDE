@@ -2,9 +2,6 @@
 
 namespace Mutagen.Bethesda.Plugins.Binary.Parameters;
 
-
-
-
 public abstract class AMastersListOrderingOption
 {
     public static implicit operator AMastersListOrderingOption(MastersListOrderingOption option)

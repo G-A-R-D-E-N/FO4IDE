@@ -22,9 +22,9 @@ partial class SoundDescriptorBinaryCreateTranslation
     {
         Standard = 0x1EEF540A,
         Compound = 0x54651A43,
-        AutoWeapon = 0xED157AE3 
+        AutoWeapon = 0xED157AE3
     }
-    
+
     public static partial ParseResult FillBinaryDataParseCustom(MutagenFrame frame, ISoundDescriptorInternal item, PreviousParse lastParsed)
     {
         if (item.Data == null)
@@ -33,7 +33,7 @@ partial class SoundDescriptorBinaryCreateTranslation
         }
 
         frame.ReadSubrecordHeader(RecordTypes.BNAM);
-        
+
         item.Data.CopyInFromBinary(frame);
         return null;
     }
@@ -63,7 +63,7 @@ partial class SoundDescriptorBinaryWriteTranslation
             ISoundDescriptorCompoundData _ => SoundDescriptorBinaryCreateTranslation.DescriptorType.Compound,
             _ => throw new NotImplementedException()
         };
-        
+
         using (HeaderExport.Subrecord(writer, RecordTypes.CNAM))
         {
             writer.Write((uint)type);

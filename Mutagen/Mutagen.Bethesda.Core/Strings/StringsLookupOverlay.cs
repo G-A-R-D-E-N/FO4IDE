@@ -7,9 +7,6 @@ using System.IO.Abstractions;
 
 namespace Mutagen.Bethesda.Strings;
 
-
-
-
 public sealed class StringsLookupOverlay : IStringsLookup
 {
     private readonly Dictionary<uint, int> _locations = new();
@@ -20,46 +17,21 @@ public sealed class StringsLookupOverlay : IStringsLookup
     public int Count => _locations.Count;
     public string? AssociatedPath { get; }
 
-
-
-
-
-
-
     public StringsLookupOverlay(ReadOnlyMemorySlice<byte> data, StringsFileFormat type, IMutagenEncoding encoding)
     {
         Init(data, type, encoding);
     }
-
-
-
-
-
-
 
     public StringsLookupOverlay(ReadOnlyMemorySlice<byte> data, StringsSource source, IMutagenEncoding encoding)
     {
         Init(data, StringsUtility.GetFormat(source), encoding);
     }
 
-
-
-
-
-
-
     public StringsLookupOverlay(string path, StringsFileFormat type, IMutagenEncoding encoding)
     {
         AssociatedPath = path;
         Init(File.ReadAllBytes(path), type, encoding);
     }
-
-
-
-
-
-
-
 
     public StringsLookupOverlay(string path, StringsSource source, IMutagenEncoding encoding, IFileSystem? fileSystem = null)
     {
@@ -96,7 +68,6 @@ public sealed class StringsLookupOverlay : IStringsLookup
             throw new ArgumentException("Strings file was too big for current systems");
         }
     }
-
 
     public bool TryLookup(uint key, [MaybeNullWhen(false)] out string str)
     {

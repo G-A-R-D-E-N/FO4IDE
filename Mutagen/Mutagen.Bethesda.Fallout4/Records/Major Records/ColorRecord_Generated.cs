@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -57,8 +53,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -705,8 +699,6 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new TranslatedString? Name { get; set; }
         new AColorRecordData Data { get; set; }
         new ColorRecord.Flag Flags { get; set; }
@@ -738,8 +730,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => ColorRecord_Registration.Instance;
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -1318,7 +1308,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return ColorRecord.GetNew();
@@ -1819,7 +1808,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

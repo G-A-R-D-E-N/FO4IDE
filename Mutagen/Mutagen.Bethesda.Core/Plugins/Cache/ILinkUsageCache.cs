@@ -15,45 +15,19 @@ public interface ILinkUsageResults<TScope>
 public interface ILinkUsageCache
 {
 
-
-
-
-
-
     ILinkUsageResults<TUserRecordScope> GetUsagesOf<TUserRecordScope>(
         IFormLinkIdentifier identifier)
         where TUserRecordScope : class, IMajorRecordGetter;
 
-
-
-
-
-
     ILinkUsageResults<IMajorRecordGetter> GetUsagesOf(
         IFormLinkIdentifier identifier);
-
-
-
-
-
-
 
     ILinkUsageResults<TUserRecordScope> GetUsagesOf<TUserRecordScope>(
         IMajorRecordGetter majorRecord)
         where TUserRecordScope : class, IMajorRecordGetter;
 
-
-
-
-
-
     ILinkUsageResults<IMajorRecordGetter> GetUsagesOf(
         IMajorRecordGetter majorRecord);
-
-
-
-
-
 
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     ILinkUsageResults<IMajorRecordGetter> GetUsagesOf(FormKey formKey);

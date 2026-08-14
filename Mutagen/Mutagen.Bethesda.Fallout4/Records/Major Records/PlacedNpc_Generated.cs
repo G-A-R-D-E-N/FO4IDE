@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region VirtualMachineAdapter
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private VirtualMachineAdapter? _VirtualMachineAdapter;
-
-
 
         public VirtualMachineAdapter? VirtualMachineAdapter
         {
@@ -2043,8 +2037,6 @@ namespace Mutagen.Bethesda.Fallout4
         IScripted
     {
 
-
-
         new VirtualMachineAdapter? VirtualMachineAdapter { get; set; }
         new IFormLinkNullable<INpcGetter> Base { get; set; }
         new IFormLinkNullable<IEncounterZoneGetter> EncounterZone { get; set; }
@@ -2108,8 +2100,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => PlacedNpc_Registration.Instance;
         #region VirtualMachineAdapter
-
-
 
         IVirtualMachineAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
@@ -3254,7 +3244,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public override object GetNew()
         {
@@ -4434,7 +4423,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

@@ -8,9 +8,6 @@ using Mutagen.Bethesda.Plugins.Exceptions;
 
 namespace Mutagen.Bethesda.Plugins.Utility;
 
-
-
-
 public sealed class RecordTypeInfoCacheReader
 {
     private record CacheItem(IReadOnlyList<FormKey> List, HashSet<FormKey> Set);
@@ -31,12 +28,10 @@ public sealed class RecordTypeInfoCacheReader
     {
         if (formKey.IsNull) return false;
 
-
         if (GetCacheItem<T>().Set.Contains(formKey))
         {
             return true;
         }
-
 
         if (formKey.ModKey != _modKey)
         {
@@ -48,12 +43,10 @@ public sealed class RecordTypeInfoCacheReader
                     $"Cannot determine record type for FormKey {formKey} from mod {formKey.ModKey} because it is not in the current mod {_modKey} and no LinkCache was provided for cross-mod resolution.");
             }
 
-
             if (_linkCache.TryResolve<T>(formKey, out var _))
             {
                 return true;
             }
-
 
 #pragma warning disable CS0618
             if (!_linkCache.TryResolve(formKey, out var _))
@@ -62,10 +55,8 @@ public sealed class RecordTypeInfoCacheReader
                 throw new MissingRecordException(formKey, typeof(T));
             }
 
-
             return false;
         }
-
 
         return false;
     }

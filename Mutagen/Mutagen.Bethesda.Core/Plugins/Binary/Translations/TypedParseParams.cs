@@ -10,7 +10,7 @@ public readonly struct TypedParseParams
     public bool ShortCircuit => !_doNotShortCircuit;
 
     public TypedParseParams(
-        int? lengthOverride, 
+        int? lengthOverride,
         RecordTypeConverter? recordTypeConverter,
         bool doNotShortCircuit)
     {
@@ -41,12 +41,12 @@ public static class TypedParseParamsExt
         if (rhs == null) return null;
         throw new NotImplementedException();
     }
-        
+
     public static TypedParseParams With(this TypedParseParams param, RecordTypeConverter conv)
     {
         return new TypedParseParams(
             lengthOverride: param.LengthOverride,
-            recordTypeConverter: conv, 
+            recordTypeConverter: conv,
             doNotShortCircuit: default);
     }
 
@@ -54,7 +54,7 @@ public static class TypedParseParamsExt
     {
         return new TypedParseParams(
             lengthOverride: lengthOverride,
-            recordTypeConverter: conv, 
+            recordTypeConverter: conv,
             doNotShortCircuit: default);
     }
 
@@ -62,7 +62,7 @@ public static class TypedParseParamsExt
     {
         return new TypedParseParams(
             lengthOverride: lengthOverride,
-            recordTypeConverter: param.RecordTypeConverter, 
+            recordTypeConverter: param.RecordTypeConverter,
             doNotShortCircuit: default);
     }
 
@@ -70,7 +70,7 @@ public static class TypedParseParamsExt
     {
         return new TypedParseParams(
             lengthOverride: param.LengthOverride,
-            recordTypeConverter: null, 
+            recordTypeConverter: null,
             doNotShortCircuit: !param.ShortCircuit);
     }
 
@@ -78,7 +78,7 @@ public static class TypedParseParamsExt
     {
         return new TypedParseParams(
             lengthOverride: param.LengthOverride,
-            recordTypeConverter: param.RecordTypeConverter, 
+            recordTypeConverter: param.RecordTypeConverter,
             doNotShortCircuit: true);
     }
 
@@ -86,7 +86,7 @@ public static class TypedParseParamsExt
     {
         return new TypedParseParams(
             lengthOverride: param.LengthOverride,
-            recordTypeConverter: param.RecordTypeConverter, 
+            recordTypeConverter: param.RecordTypeConverter,
             doNotShortCircuit: false);
     }
 
@@ -94,7 +94,7 @@ public static class TypedParseParamsExt
     {
         return converter.RecordTypeConverter.ConvertToStandard(rec);
     }
-        
+
     public static RecordType ConvertToCustom(this TypedParseParams converter, RecordType rec)
     {
         return converter.RecordTypeConverter.ConvertToCustom(rec);

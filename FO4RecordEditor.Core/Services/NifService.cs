@@ -8,12 +8,6 @@ using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 public static class NifService
 {
     private static string? ResolveExe() => ToolPaths.Niftool();
@@ -52,20 +46,8 @@ public static class NifService
         return Run(new List<string> { "geo", nifPath });
     }
 
-
-
-
-
     public static int GeoBatchDone;
     public static int GeoBatchTotal;
-
-
-
-
-
-
-
-
 
     public static string GeoBatch(IEnumerable<string> relModelPaths)
     {
@@ -87,9 +69,6 @@ public static class NifService
             if (resolved == null)
             {
 
-
-
-
                 DebugLog.Info("Nif.GeoBatch", $"Not found (loose or in any indexed archive): {rel}");
                 results[rel] = new { error = "Not found (loose or in any indexed archive)." };
                 Interlocked.Increment(ref GeoBatchDone);
@@ -97,9 +76,6 @@ public static class NifService
             }
 
             var raw = Geo(resolved);
-
-
-
 
             var ok = raw.TrimStart().StartsWith('{');
             if (!ok) DebugLog.Info("Nif.GeoBatch", $"niftool geo failed for {rel} (resolved: {resolved}): {raw}");
@@ -128,7 +104,6 @@ public static class NifService
         return Run(new List<string> { "fix", nifPath, outNif });
     }
 
-
     public static string Tree(string nifPath)
     {
         nifPath = Clean(nifPath);
@@ -136,9 +111,6 @@ public static class NifService
         if (!File.Exists(nifPath)) return $"NIF not found: {nifPath}";
         return Run(new List<string> { "tree", nifPath });
     }
-
-
-
 
     public static string ApplyEdits(string nifPath, string editsJson, string outNif = "")
     {

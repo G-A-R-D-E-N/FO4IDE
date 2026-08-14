@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -60,8 +56,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private VirtualMachineAdapter? _VirtualMachineAdapter;
 
-
-
         public VirtualMachineAdapter? VirtualMachineAdapter
         {
             get => _VirtualMachineAdapter;
@@ -79,8 +73,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region ObjectBounds
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ObjectBounds? _ObjectBounds;
-
-
 
         public ObjectBounds? ObjectBounds
         {
@@ -105,8 +97,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<ITransformGetter> IHolotapeGetter.PreviewTransform => this.PreviewTransform;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -144,8 +134,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
 
-
-
         public Model? Model
         {
             get => _Model;
@@ -161,8 +149,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Icons
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Icons? _Icons;
-
-
 
         public Icons? Icons
         {
@@ -971,24 +957,14 @@ namespace Mutagen.Bethesda.Fallout4
         IWeightValue
     {
 
-
-
         new VirtualMachineAdapter? VirtualMachineAdapter { get; set; }
-
-
 
         new ObjectBounds? ObjectBounds { get; set; }
         new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
 
-
-
         new Model? Model { get; set; }
-
-
 
         new Icons? Icons { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> PickUpSound { get; set; }
@@ -1033,32 +1009,22 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Holotape_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         IVirtualMachineAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter? ObjectBounds { get; }
         #endregion
         IFormLinkNullableGetter<ITransformGetter> PreviewTransform { get; }
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         #region Model
 
-
-
         IModelGetter? Model { get; }
         #endregion
         #region Icons
-
-
 
         IIconsGetter? Icons { get; }
         #endregion
@@ -1769,7 +1735,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public override object GetNew()
         {
@@ -2502,7 +2467,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2536,7 +2500,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IHolotapeGetter);
-
 
         #region VirtualMachineAdapter
         private int? _VirtualMachineAdapterLengthOverride;

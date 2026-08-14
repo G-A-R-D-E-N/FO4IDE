@@ -63,7 +63,7 @@ public static class StringsUtility
 
     public static string GetFileName(
         StringsLanguageFormat languageFormat,
-        ModKey modKey, 
+        ModKey modKey,
         Language language,
         StringsSource source)
     {
@@ -165,7 +165,7 @@ public static class StringsUtility
     public static bool TryRetrieveInfoFromString(
         StringsLanguageFormat languageFormat,
         ReadOnlySpan<char> name,
-        out StringsSource source, 
+        out StringsSource source,
         out Language language,
         out ReadOnlySpan<char> modName)
     {

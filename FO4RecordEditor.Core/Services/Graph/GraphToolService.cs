@@ -6,14 +6,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
 public static class GraphToolService
 {
 
@@ -36,7 +28,6 @@ public static class GraphToolService
         return text.ToString().TrimEnd();
     }
 
-
     public static string Compile(
         string graphPath, string? output = null, string? imports = null, bool sourceOnly = false)
     {
@@ -54,7 +45,6 @@ public static class GraphToolService
             foreach (var diagnostic in result.Diagnostics) text.AppendLine(Describe(diagnostic, document!));
             if (result.Source != null)
             {
-
 
                 text.AppendLine().AppendLine("Generated source:").AppendLine(result.Source);
             }
@@ -93,7 +83,6 @@ public static class GraphToolService
         return text.ToString().TrimEnd();
     }
 
-
     public static string SearchPalette(string query, string? imports = null, int limit = 30)
     {
         var compiler = new GraphCompiler(IndexFor(null, imports));
@@ -107,7 +96,6 @@ public static class GraphToolService
         if (result.Truncated) text.AppendLine($"({result.Total - result.Entries.Count} more not shown.)");
         return text.ToString().TrimEnd();
     }
-
 
     public static string DescribeNode(string nodeType, string? imports = null)
     {
@@ -150,13 +138,6 @@ public static class GraphToolService
         return false;
     }
 
-
-
-
-
-
-
-
     private static PapyrusScriptIndexRoots IndexFor(string? graphPath, string? imports) =>
         new(graphPath, imports);
 
@@ -176,11 +157,6 @@ public static class GraphToolService
         return $"  {severity} {diagnostic.Code}: {diagnostic.Message}{where}{related}";
     }
 }
-
-
-
-
-
 
 public sealed class PapyrusScriptIndexRoots
 {

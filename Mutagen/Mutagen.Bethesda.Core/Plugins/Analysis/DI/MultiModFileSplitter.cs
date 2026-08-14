@@ -49,20 +49,12 @@ public class MultiModFileSplitter : IMultiModFileSplitter
         }
     }
 
-
-
-
     internal class Cluster<TMod, TModGetter>
         where TMod : IMod, TModGetter, IMajorRecordContextEnumerable<TMod, TModGetter>
         where TModGetter : IModGetter
     {
 
-
-
         public HashSet<ModKey> Masters = new();
-
-
-
 
         public List<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> Records = new();
     }
@@ -85,21 +77,11 @@ public class MultiModFileSplitter : IMultiModFileSplitter
         return result;
     }
 
-
-
-
-
-
-
-
     private static HashSet<ModKey> GetMastersForClustering(
         IModContext<IMajorRecordGetter> rec,
         ModKey except)
     {
         var result = GetAllMastersForRecord(rec.Record, except);
-
-
-
 
         var parent = rec.Parent;
         while (parent?.Record is IMajorRecordGetter parentRecord)
@@ -111,12 +93,6 @@ public class MultiModFileSplitter : IMultiModFileSplitter
 
         return result;
     }
-
-
-
-
-
-
 
     private static List<Cluster<TMod, TModGetter>> GenerateClusters<TMod, TModGetter>(TMod inputMod, int limit)
         where TMod : IMod, TModGetter, IMajorRecordContextEnumerable<TMod, TModGetter>
@@ -131,7 +107,6 @@ public class MultiModFileSplitter : IMultiModFileSplitter
         {
             var mastersHashSet = GetMastersForClustering(rec, inputMod.ModKey);
 
-
             if (mastersHashSet.Count > limit)
             {
                 throw new TooManyMastersException(
@@ -144,7 +119,6 @@ public class MultiModFileSplitter : IMultiModFileSplitter
             if (clusterLookupCache.ContainsKey(masters))
             {
                 var cacheCluster = clusterLookupCache[masters];
-
 
                 cacheCluster.Records.Add(rec);
                 continue;

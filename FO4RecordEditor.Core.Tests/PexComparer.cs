@@ -5,45 +5,12 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 internal static class PexComparer
 {
 
     public const string DefaultReferenceLabel = "CK";
 
-
     public const string DefaultOursLabel = "ours";
-
-
-
-
-
-
-
 
     public static string? FirstDifference(
         PexFile reference,
@@ -107,7 +74,6 @@ internal static class PexComparer
         return null;
     }
 
-
     public static string? CompareFunctions(
         PexFunction theirs,
         PexFunction ours,
@@ -132,12 +98,8 @@ internal static class PexComparer
             : $"{theirs.Instructions.Count} instructions vs {ours.Instructions.Count}";
     }
 
-
-
-
     public static string Normalise(PexInstruction instruction) =>
         instruction.Mnemonic + " " + string.Join(" ", instruction.Args.Select(Operand));
-
 
     public static string Operand(PexValue value) => value.Type switch
     {
@@ -149,18 +111,10 @@ internal static class PexComparer
         _ => "None",
     };
 
-
     public static string NormaliseName(string name) =>
         name.StartsWith("::temp", StringComparison.OrdinalIgnoreCase) ? "::temp" :
         name.StartsWith("::mangled_", StringComparison.OrdinalIgnoreCase) ? "::mangled" :
         name.ToLowerInvariant();
-
-
-
-
-
-
-
 
     public static IReadOnlyDictionary<string, PexFunction> FunctionsOf(PexObject obj)
     {

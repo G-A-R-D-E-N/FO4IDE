@@ -9,28 +9,12 @@ namespace Mutagen.Bethesda;
 public static class LinkCacheConstructionMixIn
 {
 
-
-
-
-
-
-
-
     public static ImmutableModLinkCache ToUntypedImmutableLinkCache(
         this IModGetter mod,
         LinkCachePreferences? prefs = null)
     {
         return new ImmutableModLinkCache(mod, prefs ?? LinkCachePreferences.Default);
     }
-
-
-
-
-
-
-
-
-
 
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache<TMod>(
         this ILoadOrderGetter<TMod> loadOrder,
@@ -41,16 +25,6 @@ public static class LinkCacheConstructionMixIn
             loadOrder.ListedOrder,
             GameCategoryHelper.TryFromModType<TMod>(), prefs ?? LinkCachePreferences.Default);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache(
         this ILoadOrderGetter<IModGetter> loadOrder,
@@ -71,15 +45,6 @@ public static class LinkCacheConstructionMixIn
             prefs ?? LinkCachePreferences.Default);
     }
 
-
-
-
-
-
-
-
-
-
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache<TMod>(
         this ILoadOrderGetter<IModListingGetter<TMod>> loadOrder,
         LinkCachePreferences? prefs = null)
@@ -92,16 +57,6 @@ public static class LinkCacheConstructionMixIn
             GameCategoryHelper.TryFromModType<TMod>(),
             prefs ?? LinkCachePreferences.Default);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache(
         this ILoadOrderGetter<IModListingGetter<IModGetter>> loadOrder,
@@ -125,15 +80,6 @@ public static class LinkCacheConstructionMixIn
             prefs ?? LinkCachePreferences.Default);
     }
 
-
-
-
-
-
-
-
-
-
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache<TMod>(
         this IEnumerable<IModListingGetter<TMod>> loadOrder,
         LinkCachePreferences? prefs = null)
@@ -146,16 +92,6 @@ public static class LinkCacheConstructionMixIn
             GameCategoryHelper.TryFromModType<TMod>(),
             prefs ?? LinkCachePreferences.Default);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache(
         this IEnumerable<IModListingGetter<IModGetter>> loadOrder,
@@ -179,15 +115,6 @@ public static class LinkCacheConstructionMixIn
             prefs ?? LinkCachePreferences.Default);
     }
 
-
-
-
-
-
-
-
-
-
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache<TMod>(
         this IEnumerable<TMod> loadOrder,
         LinkCachePreferences? prefs = null)
@@ -198,16 +125,6 @@ public static class LinkCacheConstructionMixIn
             GameCategoryHelper.TryFromModType<TMod>(),
             prefs ?? LinkCachePreferences.Default);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static ImmutableLoadOrderLinkCache ToUntypedImmutableLinkCache<TMod>(
         this IEnumerable<TMod> loadOrder,
@@ -230,14 +147,6 @@ public static class LinkCacheConstructionMixIn
             prefs ?? LinkCachePreferences.Default);
     }
 
-
-
-
-
-
-
-
-
     public static ImmutableModLinkCache<TMod, TModGetter> ToImmutableLinkCache<TMod, TModGetter>(
         this TModGetter mod,
         LinkCachePreferences? prefs = null)
@@ -247,13 +156,6 @@ public static class LinkCacheConstructionMixIn
         return new ImmutableModLinkCache<TMod, TModGetter>(mod, prefs ?? LinkCachePreferences.Default);
     }
 
-
-
-
-
-
-
-
     public static MutableModLinkCache<TMod, TModGetter> ToMutableLinkCache<TMod, TModGetter>(
         this TModGetter mod)
         where TMod : class, IContextMod<TMod, TModGetter>, TModGetter
@@ -262,27 +164,11 @@ public static class LinkCacheConstructionMixIn
         return new MutableModLinkCache<TMod, TModGetter>(mod);
     }
 
-
-
-
-
-
-
-
     public static MutableModLinkCache ToUntypedMutableLinkCache(
         this IModGetter mod)
     {
         return new MutableModLinkCache(mod);
     }
-
-
-
-
-
-
-
-
-
 
     public static ImmutableLoadOrderLinkCache<TMod, TModGetter> ToImmutableLinkCache<TMod, TModGetter>(
         this ILoadOrderGetter<TModGetter> loadOrder,
@@ -292,15 +178,6 @@ public static class LinkCacheConstructionMixIn
     {
         return new ImmutableLoadOrderLinkCache<TMod, TModGetter>(loadOrder.ListedOrder, prefs ?? LinkCachePreferences.Default);
     }
-
-
-
-
-
-
-
-
-
 
     public static ImmutableLoadOrderLinkCache<TMod, TModGetter> ToImmutableLinkCache<TMod, TModGetter>(
         this ILoadOrderGetter<IModListingGetter<TModGetter>> loadOrder,
@@ -315,15 +192,6 @@ public static class LinkCacheConstructionMixIn
             prefs ?? LinkCachePreferences.Default);
     }
 
-
-
-
-
-
-
-
-
-
     public static ImmutableLoadOrderLinkCache<TMod, TModGetter> ToImmutableLinkCache<TMod, TModGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> loadOrder,
         LinkCachePreferences? prefs = null)
@@ -337,15 +205,6 @@ public static class LinkCacheConstructionMixIn
             prefs ?? LinkCachePreferences.Default);
     }
 
-
-
-
-
-
-
-
-
-
     public static ImmutableLoadOrderLinkCache<TMod, TModGetter> ToImmutableLinkCache<TMod, TModGetter>(
         this IEnumerable<TModGetter> loadOrder,
         LinkCachePreferences? prefs = null)
@@ -354,13 +213,6 @@ public static class LinkCacheConstructionMixIn
     {
         return new ImmutableLoadOrderLinkCache<TMod, TModGetter>(loadOrder, prefs ?? LinkCachePreferences.Default);
     }
-
-
-
-
-
-
-
 
     public static ILinkCache<TMod, TModGetter> ToMutableLinkCache<TMod, TModGetter>(
         this ILoadOrderGetter<TModGetter> immutableBaseCache,
@@ -374,14 +226,6 @@ public static class LinkCacheConstructionMixIn
             mutableMods);
     }
 
-
-
-
-
-
-
-
-
     public static MutableLoadOrderLinkCache ToUntypedMutableLinkCache(
         this ILoadOrderGetter<IModGetter> immutableBaseCache,
         IMod mutableMod,
@@ -391,13 +235,6 @@ public static class LinkCacheConstructionMixIn
             immutableBaseCache.ToUntypedImmutableLinkCache(mutableMod.GameRelease.ToCategory()),
             mutableMod.AsEnumerable().Concat(additionalMutableMods).ToArray());
     }
-
-
-
-
-
-
-
 
     public static ILinkCache<TMod, TModGetter> ToMutableLinkCache<TMod, TModGetter>(
         this ILoadOrderGetter<IModListingGetter<TModGetter>> immutableBaseCache,
@@ -411,13 +248,6 @@ public static class LinkCacheConstructionMixIn
             mutableMods);
     }
 
-
-
-
-
-
-
-
     public static ILinkCache ToUntypedMutableLinkCache<TMod>(
         this ILoadOrderGetter<IModListingGetter<TMod>> immutableBaseCache,
         params TMod[] mutableMods)
@@ -428,14 +258,6 @@ public static class LinkCacheConstructionMixIn
             immutableBaseCache.ToUntypedImmutableLinkCache<TMod>(),
             mutableMods.Select(x => (IMod)x).ToArray());
     }
-
-
-
-
-
-
-
-
 
     public static ILinkCache ToUntypedMutableLinkCache(
         this ILoadOrderGetter<IModListingGetter<IModGetter>> immutableBaseCache,
@@ -453,13 +275,6 @@ public static class LinkCacheConstructionMixIn
             mutableMods);
     }
 
-
-
-
-
-
-
-
     public static ILinkCache<TMod, TModGetter> ToMutableLinkCache<TMod, TModGetter>(
         this IEnumerable<TModGetter> immutableBaseCache,
         params TMod[] mutableMods)
@@ -471,14 +286,6 @@ public static class LinkCacheConstructionMixIn
             immutableBaseCache.ToImmutableLinkCache<TMod, TModGetter>(),
             mutableMods);
     }
-
-
-
-
-
-
-
-
 
     public static ILinkCache ToUntypedMutableLinkCache(
         this IEnumerable<IModGetter> immutableBaseCache,

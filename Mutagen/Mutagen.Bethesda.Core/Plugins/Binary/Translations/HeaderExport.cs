@@ -5,25 +5,12 @@ using static Mutagen.Bethesda.Translations.Binary.UtilityTranslation;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Translations;
 
-
-
-
-
-
 public readonly struct HeaderExport : IDisposable
 {
 
-
-
     public readonly MutagenWriter Writer;
 
-
-
-
     public readonly long SizePosition;
-
-
-
 
     public readonly RecordHeaderConstants RecordConstants;
 
@@ -37,14 +24,6 @@ public readonly struct HeaderExport : IDisposable
         SizePosition = sizePosition;
     }
 
-
-
-
-
-
-
-
-
     public static HeaderExport Header(
         MutagenWriter writer,
         RecordType record,
@@ -56,26 +35,12 @@ public readonly struct HeaderExport : IDisposable
         return new HeaderExport(writer, sizePosition, writer.MetaData.Constants.Constants(type));
     }
 
-
-
-
-
-
-
-
     public static HeaderExport Record(
         MutagenWriter writer,
         RecordType record)
     {
         return Header(writer, record, ObjectType.Record);
     }
-
-
-
-
-
-
-
 
     public static HeaderExport Group(
         MutagenWriter writer,
@@ -84,28 +49,12 @@ public readonly struct HeaderExport : IDisposable
         return Header(writer, record, ObjectType.Group);
     }
 
-
-
-
-
-
-
-
     public static HeaderExport Subrecord(
         MutagenWriter writer,
         RecordType record)
     {
         return Header(writer, record, ObjectType.Subrecord);
     }
-
-
-
-
-
-
-
-
-
 
     public static IDisposable Subrecord(
         MutagenWriter writer,
@@ -129,9 +78,6 @@ public readonly struct HeaderExport : IDisposable
         }
     }
 
-
-
-
     public void Dispose()
     {
         var endPos = Writer.Position;
@@ -145,8 +91,6 @@ public readonly struct HeaderExport : IDisposable
         {
             diff -= RecordConstants.LengthAfterType;
         }
-
-
 
         if (diff < 0)
         {

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -60,8 +56,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private VirtualMachineAdapter? _VirtualMachineAdapter;
 
-
-
         public VirtualMachineAdapter? VirtualMachineAdapter
         {
             get => _VirtualMachineAdapter;
@@ -77,8 +71,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #endregion
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -108,8 +100,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #region Name
 
-
-
         public TranslatedString Name { get; set; } = string.Empty;
         ITranslatedStringGetter IKeyGetter.Name => this.Name;
         #region Aspects
@@ -135,8 +125,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
 
-
-
         public Model? Model
         {
             get => _Model;
@@ -153,8 +141,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Icons? _Icons;
 
-
-
         public Icons? Icons
         {
             get => _Icons;
@@ -170,8 +156,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Destructible
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Destructible? _Destructible;
-
-
 
         public Destructible? Destructible
         {
@@ -208,8 +192,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
@@ -1099,34 +1081,20 @@ namespace Mutagen.Bethesda.Fallout4
         IWeightValue
     {
 
-
-
         new VirtualMachineAdapter? VirtualMachineAdapter { get; set; }
-
-
 
         new ObjectBounds ObjectBounds { get; set; }
         new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
 
-
-
         new TranslatedString Name { get; set; }
-
-
 
         new Model? Model { get; set; }
 
-
-
         new Icons? Icons { get; set; }
-
-
 
         new Destructible? Destructible { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> PickUpSound { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> PutDownSound { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new UInt32 Value { get; set; }
@@ -1173,46 +1141,32 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Key_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         IVirtualMachineAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         IFormLinkNullableGetter<ITransformGetter> PreviewTransform { get; }
         #region Name
 
-
-
         ITranslatedStringGetter Name { get; }
         #endregion
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
         #region Icons
 
-
-
         IIconsGetter? Icons { get; }
         #endregion
         #region Destructible
-
-
 
         IDestructibleGetter? Destructible { get; }
         #endregion
         IFormLinkNullableGetter<ISoundDescriptorGetter> PickUpSound { get; }
         IFormLinkNullableGetter<ISoundDescriptorGetter> PutDownSound { get; }
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
@@ -1950,7 +1904,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Key.GetNew();
@@ -2679,7 +2632,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

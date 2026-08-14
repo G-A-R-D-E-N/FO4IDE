@@ -161,7 +161,6 @@ public class DuplicateFormIdScannerAuditTests
             if (bytes.AsSpan(i, 4).SequenceEqual(marker))
             {
 
-
                 var isGroupLabel = i >= 8 && bytes.AsSpan(i - 8, 4).SequenceEqual("GRUP"u8);
                 if (!isGroupLabel) offsets.Add(i);
             }

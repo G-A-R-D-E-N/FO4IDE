@@ -28,7 +28,6 @@ public sealed class LoadOrderWriter : ILoadOrderWriter
         _implicitListingsProvider = implicitListingsProvider;
     }
 
-
     public void Write(
         FilePath path,
         IEnumerable<ILoadOrderListingGetter> loadOrder,

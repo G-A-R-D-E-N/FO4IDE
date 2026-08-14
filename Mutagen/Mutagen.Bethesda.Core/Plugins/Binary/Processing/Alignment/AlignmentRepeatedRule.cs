@@ -10,10 +10,6 @@ public sealed record AlignmentRepeatedSubrule(RecordType RecordType, bool Single
     public bool Ender { get; init; }
 }
 
-
-
-
-
 public sealed class AlignmentRepeatedRule : AlignmentRule
 {
     public Dictionary<RecordType, AlignmentRepeatedSubrule> SubTypes;

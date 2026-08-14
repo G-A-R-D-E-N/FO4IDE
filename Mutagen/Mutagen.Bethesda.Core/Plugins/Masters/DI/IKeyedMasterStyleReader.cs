@@ -13,7 +13,7 @@ public class KeyedMasterStyleReader : IKeyedMasterStyleReader
 {
     private readonly IGameReleaseContext _gameReleaseContext;
     private readonly IFileSystem _fileSystem;
-    
+
     public KeyedMasterStyleReader(
         IGameReleaseContext gameReleaseContext,
         IFileSystem fileSystem)
@@ -29,7 +29,7 @@ public class KeyedMasterStyleReader : IKeyedMasterStyleReader
     {
         return KeyedMasterStyle.FromPath(modPath, release, fileSystem);
     }
-    
+
     KeyedMasterStyle IKeyedMasterStyleReader.ReadFrom(
         ModPath path)
     {

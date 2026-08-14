@@ -20,7 +20,7 @@ public static class ModToGenericCallHelper
 
         return genMethod.Invoke(sourceObj, parameters);
     }
-    
+
     public static async Task InvokeFromCategoryAsync<TSource>(TSource sourceObj, GameCategory category, MethodInfo methodInfo, params object?[] parameters)
     {
         var obj = InvokeFromCategory(sourceObj, category, methodInfo, parameters);
@@ -29,7 +29,7 @@ public static class ModToGenericCallHelper
             await t;
         }
     }
-    
+
     public static async Task<TRet> InvokeFromCategoryAsync<TSource, TRet>(TSource sourceObj, GameCategory category, MethodInfo methodInfo, params object?[] parameters)
     {
         var obj = InvokeFromCategory(sourceObj, category, methodInfo, parameters);

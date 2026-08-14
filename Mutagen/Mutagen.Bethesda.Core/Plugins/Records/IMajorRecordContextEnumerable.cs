@@ -6,26 +6,10 @@ namespace Mutagen.Bethesda.Plugins.Records;
 public interface IMajorRecordSimpleContextEnumerable
 {
 
-
-
-
     IEnumerable<IModContext<IMajorRecordGetter>> EnumerateMajorRecordSimpleContexts();
-
-
-
-
-
-
 
     IEnumerable<IModContext<TMajor>> EnumerateMajorRecordSimpleContexts<TMajor>(bool throwIfUnknown = true)
         where TMajor : class, IMajorRecordQueryableGetter;
-
-
-
-
-
-
-
 
     IEnumerable<IModContext<IMajorRecordGetter>> EnumerateMajorRecordSimpleContexts(Type t, bool throwIfUnknown = true);
 }
@@ -35,23 +19,9 @@ public interface IMajorRecordContextEnumerable<TMod, TModGetter> : IMajorRecordS
     where TMod : TModGetter, IMod
 {
 
-
-
-
-
-
-
     IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> EnumerateMajorRecordContexts<TSetter, TGetter>(ILinkCache linkCache, bool throwIfUnknown = true)
         where TSetter : class, IMajorRecordQueryable, TGetter
         where TGetter : class, IMajorRecordQueryableGetter;
-
-
-
-
-
-
-
-
 
     IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> EnumerateMajorRecordContexts(ILinkCache linkCache, Type t, bool throwIfUnknown = true);
 }

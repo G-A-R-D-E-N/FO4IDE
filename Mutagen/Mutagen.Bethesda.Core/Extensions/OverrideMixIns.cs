@@ -12,22 +12,6 @@ namespace Mutagen.Bethesda;
 public static class OverrideMixIns
 {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<TMajor> WinningOverrides<TMajor>(
         this IEnumerable<IModListingGetter<IModGetter>> modListings,
         bool includeDeletedRecords = false)
@@ -39,21 +23,6 @@ public static class OverrideMixIns
             .WinningOverrides<TMajor>(includeDeletedRecords: includeDeletedRecords);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<IMajorRecordGetter> WinningOverrides(
         this IEnumerable<IModListingGetter<IModGetter>> modListings,
         Type type,
@@ -64,21 +33,6 @@ public static class OverrideMixIns
             .WhereNotNull()
             .WinningOverrides(type, includeDeletedRecords: includeDeletedRecords);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<TMajor> WinningOverrides<TMajor>(
         this IEnumerable<IModGetter> mods,
@@ -98,21 +52,6 @@ public static class OverrideMixIns
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<IMajorRecordGetter> WinningOverrides(
         this IEnumerable<IModGetter> mods,
         Type type,
@@ -130,29 +69,6 @@ public static class OverrideMixIns
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
         ILinkCache linkCache,
@@ -168,27 +84,6 @@ public static class OverrideMixIns
             .WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(linkCache, includeDeletedRecords: includeDeletedRecords);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningContextOverrides<TMod, TModGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
         ILinkCache linkCache,
@@ -202,27 +97,6 @@ public static class OverrideMixIns
             .WhereNotNull()
             .WinningContextOverrides<TMod, TModGetter>(linkCache, type, includeDeletedRecords: includeDeletedRecords);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(
         this IEnumerable<TModGetter> mods,
@@ -245,27 +119,6 @@ public static class OverrideMixIns
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningContextOverrides<TMod, TModGetter>(
         this IEnumerable<TModGetter> mods,
@@ -292,29 +145,6 @@ public static class OverrideMixIns
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningOverrideContexts<TMod, TModGetter, TSetter, TGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
@@ -328,27 +158,6 @@ public static class OverrideMixIns
         return WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(modListings, linkCache, includeDeletedRecords);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningOverrideContexts<TMod, TModGetter>(
         this IEnumerable<IModListingGetter<TModGetter>> modListings,
@@ -360,27 +169,6 @@ public static class OverrideMixIns
     {
         return WinningContextOverrides<TMod, TModGetter>(modListings, linkCache, type, includeDeletedRecords);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, TSetter, TGetter>> WinningOverrideContexts<TMod, TModGetter, TSetter, TGetter>(
@@ -394,27 +182,6 @@ public static class OverrideMixIns
     {
         return WinningContextOverrides<TMod, TModGetter, TSetter, TGetter>(mods, linkCache, includeDeletedRecords);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     [Obsolete("Use WinningContextOverrides instead")]
     public static IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> WinningOverrideContexts<TMod, TModGetter>(

@@ -8,8 +8,6 @@ namespace Mutagen.Bethesda.Plugins.Allocators;
 public abstract class BaseFormKeyAllocator : IFormKeyAllocator
 {
 
-
-
     public IMod Mod { get; }
 
     private readonly HashSet<string> _allocatedEditorIDs = new();
@@ -39,24 +37,10 @@ public abstract class BaseFormKeyAllocator : IFormKeyAllocator
     protected abstract FormKey GetNextFormKeyNotNull(string editorID);
 }
 
-
-
-
 public interface IFormKeyAllocator
 {
 
-
-
-
     FormKey GetNextFormKey();
-
-
-
-
-
-
-
-
 
     FormKey GetNextFormKey(string? editorID);
 }

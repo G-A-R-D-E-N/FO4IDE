@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -39,8 +35,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public partial class BaseLayer :
         IBaseLayer,
@@ -427,8 +421,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IBaseLayer :
         IBaseLayerGetter,
         IFormLinkContainer,
@@ -436,9 +428,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new LayerHeader? Header { get; set; }
     }
-
-
-
 
     public partial interface IBaseLayerGetter :
         ILoquiObject,
@@ -847,7 +836,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return BaseLayer.GetNew();
@@ -1099,7 +1087,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

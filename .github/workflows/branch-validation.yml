@@ -19,7 +19,6 @@ jobs:
   portable-core-and-web:
     name: Portable core, server, and web
 
-
     runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 40
     steps:
@@ -34,10 +33,6 @@ jobs:
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-
-
-
-
 
           dotnet-version: 10.0.x
 
@@ -72,12 +67,6 @@ jobs:
       - name: Build cross-platform server
         run: dotnet build FO4RecordEditor.Server/FO4RecordEditor.Server.csproj --configuration Release
 
-
-
-
-
-
-
       - name: Restore Windows test project (compile gate)
         run: dotnet restore FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj -p:EnableWindowsTargeting=true
 
@@ -86,10 +75,6 @@ jobs:
 
   windows-compile:
     name: Windows compile (self-hosted)
-
-
-
-
 
     runs-on: [self-hosted, Linux, X64, wine, msvc]
     concurrency:
@@ -131,18 +116,6 @@ jobs:
   windows-tests:
     name: Windows integration tests
 
-
-
-
-
-
-
-
-
-
-
-
-
     if: vars.RUN_WINDOWS_TESTS == 'true'
     runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 50
@@ -155,8 +128,6 @@ jobs:
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-
-
 
           dotnet-version: |
             10.0.x
@@ -185,10 +156,6 @@ jobs:
 
       - name: Run Windows integration test suite
         env:
-
-
-
-
 
           FO4RE_TEST_DATA: ${{ vars.FO4RE_TEST_DATA }}
         run: dotnet test FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj --configuration Release --no-build --logger "console;verbosity=normal"

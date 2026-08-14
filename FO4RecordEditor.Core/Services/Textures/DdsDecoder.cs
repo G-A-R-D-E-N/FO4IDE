@@ -3,28 +3,12 @@ using FO4RecordEditor.Services.Archives;
 
 namespace FO4RecordEditor.Services.Textures;
 
-
-
-
-
-
-
-
-
-
 public static class DdsDecoder
 {
 
     public static bool CanDecode(byte dxgi) => BcnDecoder.CanDecode(dxgi) || IsUncompressed(dxgi);
 
     private static bool IsUncompressed(byte dxgi) => dxgi is 28 or 29 or 87 or 88 or 91 or 93 or 49 or 61 or 65 or 85 or 86 or 115;
-
-
-
-
-
-
-
 
     public static byte[] Decode(ReadOnlySpan<byte> ddsBytes, out int width, out int height, bool reconstructZ = false)
     {
@@ -52,13 +36,11 @@ public static class DdsDecoder
         return rgba;
     }
 
-
     public static byte[] ToPng(ReadOnlySpan<byte> ddsBytes, bool reconstructZ = false)
     {
         var rgba = Decode(ddsBytes, out var width, out var height, reconstructZ);
         return PngWriter.Write(rgba, width, height);
     }
-
 
     public static bool IsBc5(ReadOnlySpan<byte> ddsBytes)
     {

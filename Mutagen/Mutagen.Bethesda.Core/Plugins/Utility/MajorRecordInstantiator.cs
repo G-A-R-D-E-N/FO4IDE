@@ -6,17 +6,9 @@ using System.Reflection;
 
 namespace Mutagen.Bethesda.Plugins.Utility;
 
-
-
-
-
-
-
 public static class MajorRecordInstantiator<TMajor>
     where TMajor : IMajorRecordGetter
 {
-
-
 
     public static readonly Func<FormKey, GameRelease, TMajor> Activator;
 
@@ -46,15 +38,9 @@ public static class MajorRecordInstantiator<TMajor>
     }
 }
 
-
-
-
 public static class MajorRecordInstantiator
 {
     private static ImmutableDictionary<Type, Func<FormKey, GameRelease, IMajorRecord>> _activators = ImmutableDictionary<Type, Func<FormKey, GameRelease, IMajorRecord>>.Empty;
-
-
-
 
     public static IMajorRecord Activator(FormKey formKey, GameRelease release, Type recordType)
     {

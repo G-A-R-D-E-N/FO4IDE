@@ -5,7 +5,7 @@ namespace Mutagen.Bethesda.Pex;
 internal class PexWriter : BinaryWriter
 {
     private readonly bool _isBigEndian;
-        
+
     public PexWriter(Stream output, bool isBigEndian) : base(output)
     {
         _isBigEndian = isBigEndian;
@@ -37,7 +37,7 @@ internal class PexWriter : BinaryWriter
         else
             base.Write(value);
     }
-        
+
     public override void Write(ulong value)
     {
         if (_isBigEndian)

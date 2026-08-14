@@ -10,22 +10,9 @@ namespace Mutagen.Bethesda.Fonts.DI;
 public interface IGetFontConfigListing
 {
 
-
-
-
 	DataRelativePath? Get();
 
-
-
-
-
-
 	DataRelativePath? Get(FilePath path);
-
-
-
-
-
 
 	DataRelativePath? Get(Stream iniStream);
 }
@@ -53,12 +40,10 @@ public sealed class GetFontConfigListing : IGetFontConfigListing
 		_iniPathProvider = iniPathProvider;
 	}
 
-
 	public DataRelativePath? Get()
 	{
 		return Get(_iniPathProvider.Path);
 	}
-
 
 	public DataRelativePath? Get(FilePath path)
 	{
@@ -67,7 +52,6 @@ public sealed class GetFontConfigListing : IGetFontConfigListing
 		var fileStream = _fileSystem.File.OpenRead(path.Path);
 		return Get(fileStream);
 	}
-
 
 	public DataRelativePath? Get(Stream iniStream)
 	{

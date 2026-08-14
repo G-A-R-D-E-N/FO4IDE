@@ -4,19 +4,9 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
 public class F4SEExtractorTests
 {
     private static readonly F4SERegistrationExtractor Extractor = new();
-
-
 
     [Fact]
     public void The_compact_style_is_recovered()
@@ -79,8 +69,6 @@ public class F4SEExtractorTests
         schema.Natives.Should().ContainSingle().Which.FunctionName.Should().Be("HasKeyword");
     }
 
-
-
     [Fact]
     public void A_nested_template_argument_is_split_correctly()
     {
@@ -118,12 +106,9 @@ public class F4SEExtractorTests
         schema.Natives.Should().ContainSingle().Which.ReturnType.ToString().Should().Be("MiscObject");
     }
 
-
-
     [Fact]
     public void A_latent_registration_is_marked_latent()
     {
-
 
         var schema = Extractor.Extract("""
             vm->RegisterFunction(new LatentNativeFunction3<StaticFunctionTag, bool, BSFixedString, BSFixedString, VMVariable>("Set", "UI", papyrusUI::Set, vm));
@@ -172,8 +157,6 @@ public class F4SEExtractorTests
         declared.VmTypeName.Should().Be(owner + "#" + name);
     }
 
-
-
     [Fact]
     public void A_line_commented_registration_is_not_recovered()
     {
@@ -212,7 +195,6 @@ public class F4SEExtractorTests
     public void An_arity_that_disagrees_with_its_type_name_is_refused()
     {
 
-
         var schema = Extractor.Extract("""
             vm->RegisterFunction(new NativeFunction2<Actor, bool, UInt32>("Wrong", "Actor", papyrusActor::Wrong, vm));
             """);
@@ -220,8 +202,6 @@ public class F4SEExtractorTests
         schema.Natives.Should().BeEmpty();
         schema.Problems.Should().ContainSingle().Which.Should().Contain("carries 1 parameter types");
     }
-
-
 
     [Fact]
     public void A_recovered_binding_carries_the_line_it_came_from()
@@ -250,7 +230,6 @@ public class F4SEExtractorTests
     [Fact]
     public void A_struct_the_same_file_declares_is_mapped_in_signatures()
     {
-
 
         var schema = Extractor.Extract("""
             DECLARE_STRUCT(WornItem, "Actor")

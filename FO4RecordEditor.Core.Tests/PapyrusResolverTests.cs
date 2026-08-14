@@ -7,15 +7,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class PapyrusResolverTests : IDisposable
 {
     private readonly string _root;
@@ -47,7 +38,6 @@ public class PapyrusResolverTests : IDisposable
         return new PapyrusResolver(index).Resolve(script!);
     }
 
-
     private static List<PapyrusBinding> BindingsNamed(PapyrusResolution r, string name) =>
         r.Bindings
             .Where(kv => kv.Key is PapyrusIdentifierExpression id
@@ -61,7 +51,6 @@ public class PapyrusResolverTests : IDisposable
         all.Should().HaveCount(1, $"exactly one identifier named {name} was expected");
         return all[0];
     }
-
 
     private static PapyrusType AssignedTypeIn(PapyrusResolution r, string target)
     {
@@ -81,8 +70,6 @@ public class PapyrusResolverTests : IDisposable
             foreach (var n in Walk(child)) yield return n;
         }
     }
-
-
 
     [Fact]
     public void A_local_binds_to_its_definition_with_its_declared_type()
@@ -116,7 +103,6 @@ EndFunction");
         Only(r, "label").Type.Should().Be(PapyrusType.String);
     }
 
-
     [Fact]
     public void A_variable_defined_in_a_block_is_not_visible_after_it()
     {
@@ -136,8 +122,6 @@ EndFunction");
         r.Diagnostics[0].Message.Should().Contain("inner");
     }
 
-
-
     [Fact]
     public void An_initializer_is_resolved_before_the_variable_it_initializes_exists()
     {
@@ -153,8 +137,6 @@ EndFunction");
         Only(r, "outer").Kind.Should().Be(PapyrusBindingKind.ScriptVariable);
         r.Diagnostics.Should().BeEmpty();
     }
-
-
 
     [Fact]
     public void A_member_inherited_from_a_parent_binds_to_the_parents_declaration()
@@ -199,7 +181,6 @@ EndFunction");
         health.Type.Should().Be(PapyrusType.Int);
     }
 
-
     [Fact]
     public void Self_is_the_type_of_the_script_being_resolved()
     {
@@ -215,7 +196,6 @@ EndFunction");
         self.Kind.Should().Be(PapyrusBindingKind.SelfKeyword);
         self.Type.Should().Be(PapyrusType.Object("A"));
     }
-
 
     [Fact]
     public void Parent_is_the_type_of_the_parent_script()
@@ -236,7 +216,6 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-
     [Fact]
     public void A_global_function_cannot_see_script_members()
     {
@@ -252,8 +231,6 @@ EndFunction");
         r.Diagnostics.Should().ContainSingle()
             .Which.Message.Should().Contain("Counter");
     }
-
-
 
     [Fact]
     public void A_member_on_an_object_typed_expression_resolves_on_that_scripts_chain()
@@ -297,7 +274,6 @@ EndFunction");
         r.Diagnostics[0].Message.Should().Contain("Nope").And.Contain("Target");
     }
 
-
     [Fact]
     public void A_script_name_receiver_resolves_a_global_function()
     {
@@ -314,8 +290,6 @@ EndFunction");
         var r = Resolve("A");
 
         Only(r, "Game").Kind.Should().Be(PapyrusBindingKind.Script);
-
-
 
         r.Bindings.Values.Where(b => b.Name == "GetPlayer").Should().NotBeEmpty()
             .And.OnlyContain(b => b.Kind == PapyrusBindingKind.Function
@@ -344,7 +318,6 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-
     [Fact]
     public void An_import_does_not_bring_in_instance_members()
     {
@@ -363,8 +336,6 @@ EndFunction");
         r.Diagnostics.Should().ContainSingle()
             .Which.Message.Should().Contain("NotGlobal");
     }
-
-
 
     [Fact]
     public void An_array_element_has_the_element_type()
@@ -407,8 +378,6 @@ EndFunction");
         r.Bindings.Values.Should().ContainSingle(b => b.Kind == PapyrusBindingKind.ArrayMember)
             .Which.Type.Kind.Should().Be(expected);
     }
-
-
 
     [Fact]
     public void A_struct_member_resolves_with_its_declared_type()
@@ -458,8 +427,6 @@ EndStruct");
         PapyrusType.StructOf("A", aPoint.Name).Should().NotBe(PapyrusType.StructOf("B", bPoint.Name));
     }
 
-
-
     [Theory]
     [InlineData("1 + 2", PapyrusTypeKind.Int)]
     [InlineData("1 + 2.0", PapyrusTypeKind.Float)]
@@ -502,11 +469,6 @@ EndFunction");
         r.TypeOf(assigns[1].Value).Should().Be(PapyrusType.Bool);
     }
 
-
-
-
-
-
     [Fact]
     public void A_script_whose_parent_is_missing_reports_nothing_and_says_so()
     {
@@ -539,9 +501,6 @@ EndFunction");
         r.Diagnostics.Should().BeEmpty();
     }
 
-
-
-
     [Fact]
     public void A_call_qualified_by_a_script_that_is_not_on_the_roots_is_not_a_typo()
     {
@@ -556,7 +515,6 @@ EndFunction");
         r.BaseChainComplete.Should().BeFalse();
         r.Diagnostics.Should().BeEmpty();
     }
-
 
     [Fact]
     public void A_bare_unknown_name_used_as_a_value_is_still_reported()

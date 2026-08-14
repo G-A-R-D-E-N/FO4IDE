@@ -27,7 +27,6 @@ interface Settings {
 
 const host = () => window.chrome?.webview?.hostObjects?.settings;
 
-
 const MODELS = [
   { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6 -- Recommended (best balance)' },
   { id: 'claude-opus-4-8', label: 'Claude Opus 4.8 -- Most capable' },
@@ -230,7 +229,6 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
               </label>
 
               {
-
 
 }
               <label className="settings-field">

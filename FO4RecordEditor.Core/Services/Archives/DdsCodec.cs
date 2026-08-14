@@ -2,17 +2,10 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
 public sealed record DdsFormatInfo(byte Dxgi, string Name, int BlockBytes, int PixelBytes)
 {
     public bool IsBlockCompressed => BlockBytes > 0;
 }
-
-
-
-
 
 public sealed record DdsInfo(
     int Width,
@@ -26,7 +19,6 @@ public sealed record DdsInfo(
 {
     public byte DxgiFormat => Format.Dxgi;
 
-
     public long PayloadSize
     {
         get
@@ -37,18 +29,6 @@ public sealed record DdsInfo(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 public static class DdsCodec
 {
@@ -65,9 +45,6 @@ public static class DdsCodec
 
     private const int LegacyHeaderSize = 128;
     private const int Dx10HeaderSize = 148;
-
-
-
 
     private static readonly DdsFormatInfo[] Formats =
     {
@@ -115,10 +92,7 @@ public static class DdsCodec
 
     private static readonly Dictionary<byte, DdsFormatInfo> ByDxgi = Formats.ToDictionary(f => f.Dxgi);
 
-
     public static DdsFormatInfo? Lookup(byte dxgi) => ByDxgi.TryGetValue(dxgi, out var f) ? f : null;
-
-
 
     public static long MipSize(DdsFormatInfo format, int width, int height)
     {
@@ -128,17 +102,11 @@ public static class DdsCodec
         return (long)((w + 3) / 4) * ((h + 3) / 4) * format.BlockBytes;
     }
 
-
     public static long MipSize(byte dxgi, int width, int height)
         => MipSize(Lookup(dxgi) ?? throw new InvalidDataException($"DXGI format {dxgi} is not one this tool can size."),
                    width, height);
 
     public static DdsInfo Parse(string path) => Parse(File.ReadAllBytes(path), path);
-
-
-
-
-
 
     public static DdsInfo Parse(ReadOnlySpan<byte> bytes, string what = "texture")
     {
@@ -154,7 +122,6 @@ public static class DdsCodec
         var depth = (int)U32(bytes, 24);
         var mipCount = (int)U32(bytes, 28);
         var caps2 = U32(bytes, 112);
-
 
         var pfFlags = U32(bytes, 80);
         var fourCc = U32(bytes, 84);
@@ -205,12 +172,6 @@ public static class DdsCodec
 
         return new DdsInfo(width, height, mipCount, isCube, arraySize, isVolume ? Math.Max(1, depth) : 1, dataOffset, format);
     }
-
-
-
-
-
-
 
     public static byte[] BuildHeader(DdsInfo info)
     {

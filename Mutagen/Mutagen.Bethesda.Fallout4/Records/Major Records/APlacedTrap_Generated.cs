@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -42,8 +38,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public abstract partial class APlacedTrap :
         Fallout4MajorRecord,
         IAPlacedTrapInternal,
@@ -61,8 +55,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region VirtualMachineAdapter
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private VirtualMachineAdapter? _VirtualMachineAdapter;
-
-
 
         public VirtualMachineAdapter? VirtualMachineAdapter
         {
@@ -1797,8 +1789,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAPlacedTrap :
         IAPlacedTrapGetter,
         IFallout4MajorRecordInternal,
@@ -1811,8 +1801,6 @@ namespace Mutagen.Bethesda.Fallout4
         IPositionRotation,
         IScripted
     {
-
-
 
         new VirtualMachineAdapter? VirtualMachineAdapter { get; set; }
         new IFormLinkNullable<IEncounterZoneGetter> EncounterZone { get; set; }
@@ -1855,9 +1843,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
 
-
-
-
     public partial interface IAPlacedTrapGetter :
         IFallout4MajorRecordGetter,
         IBinaryItem,
@@ -1872,8 +1857,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => APlacedTrap_Registration.Instance;
         #region VirtualMachineAdapter
-
-
 
         IVirtualMachineAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
@@ -2955,7 +2938,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return APlacedTrap.GetNew();
@@ -4031,7 +4013,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -4186,7 +4167,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         public override ParseResult FillRecordType(
             OverlayStream stream,

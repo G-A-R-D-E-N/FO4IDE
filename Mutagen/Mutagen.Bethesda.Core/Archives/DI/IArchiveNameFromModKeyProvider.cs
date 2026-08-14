@@ -12,7 +12,7 @@ public interface IArchiveNameFromModKeyProvider
 public class ArchiveNameFromModKeyProvider : IArchiveNameFromModKeyProvider
 {
     private readonly IGameReleaseContext _gameRelease;
-    
+
     public ArchiveNameFromModKeyProvider(IGameReleaseContext gameRelease)
     {
         _gameRelease = gameRelease;

@@ -4,18 +4,6 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
 public class GraphReturnFlowTests
 {
     private static GraphDiagnostic RefusedForFallingOff(GraphDocument document)

@@ -155,7 +155,7 @@ partial class QuestBinaryCreateTranslation
                 obj.Timestamp = BinaryPrimitives.ReadInt32LittleEndian(groupMeta.LastModifiedData);
                 obj.Unknown = frame.GetInt32(offset: 20);
                 if (FormKey.Factory(
-                        frame.MetaData.MasterReferences, 
+                        frame.MetaData.MasterReferences,
                         new FormID(BinaryPrimitives.ReadUInt32LittleEndian(groupMeta.ContainedRecordTypeData)),
                         reference: true) != obj.FormKey)
                 {
@@ -483,7 +483,7 @@ partial class QuestBinaryOverlay
             if (groupMeta.GroupType != (int)GroupTypeEnum.QuestChildren) return;
             this._grupData = stream.ReadMemory(checked((int)groupMeta.TotalLength));
             var formKey = FormKey.Factory(
-                _package.MetaData.MasterReferences, 
+                _package.MetaData.MasterReferences,
                 new FormID(BinaryPrimitives.ReadUInt32LittleEndian(groupMeta.ContainedRecordTypeData)),
                 reference: true);
             if (formKey != this.FormKey)

@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class AudioInterop
@@ -29,15 +25,12 @@ public class AudioInterop
         return HostServices.PickSavePath(title, filter);
     }
 
-
-
     public Task<string> ConvertToXwm(string source, string output, int bitrateBps) =>
         Task.Run(() =>
         {
             try { return AudioService.ConvertToXwm(source, output, bitrateBps > 0 ? bitrateBps : null); }
             catch (Exception ex) { DebugLog.Exception("Audio.ConvertToXwm", ex); return "Error: " + ex.Message; }
         });
-
 
     public Task<string> ConvertFromXwm(string source, string output, string targetExt) =>
         Task.Run(() =>
@@ -46,8 +39,6 @@ public class AudioInterop
             catch (Exception ex) { DebugLog.Exception("Audio.ConvertFromXwm", ex); return "Error: " + ex.Message; }
         });
 
-
-
     public Task<string> MakeFuz(string audioSource, string lipPath, string fuzOutput, bool noLip) =>
         Task.Run(() =>
         {
@@ -55,14 +46,12 @@ public class AudioInterop
             catch (Exception ex) { DebugLog.Exception("Audio.MakeFuz", ex); return "Error: " + ex.Message; }
         });
 
-
     public Task<string> ExtractFuz(string fuzPath, string xwmOutput, string lipOutput, bool alsoWav) =>
         Task.Run(() =>
         {
             try { return AudioService.ExtractFuz(fuzPath, xwmOutput, lipOutput, alsoWav); }
             catch (Exception ex) { DebugLog.Exception("Audio.ExtractFuz", ex); return "Error: " + ex.Message; }
         });
-
 
     public string OpenFolder(string path)
     {
@@ -77,8 +66,6 @@ public class AudioInterop
         }
         catch (Exception ex) { return "Error: " + ex.Message; }
     }
-
-
 
     public string StageDroppedFile(string name, string base64)
     {

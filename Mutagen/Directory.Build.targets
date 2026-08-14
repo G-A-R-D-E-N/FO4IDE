@@ -1,35 +1,5 @@
 <Project>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <PropertyGroup>
         <IsPackable>false</IsPackable>
         <GenerateDocumentationFile>false</GenerateDocumentationFile>
@@ -37,7 +7,6 @@
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <NoWarn>$(NoWarn);CS1591;CS1066;CS1573;CS0108;CS1574;CS1570;CS0419;CA2022;CS1711;CS8524;CS0628;CA1416;CS0219;CS0169;CS0109</NoWarn>
     </PropertyGroup>
-
 
     <Target Name="ClearLocalNuGetPackages" AfterTargets="Build" Condition="'$(GeneratePackageOnBuild)' == 'true'">
         <PropertyGroup>
@@ -52,11 +21,9 @@
 
         <Message Text="Clearing local NuGet package cache for $(CurrentPackageId)..." Importance="high" />
 
-
         <Exec Condition="'$(OS)' == 'Windows_NT'"
               Command="if exist &quot;$(NuGetPackagesPath)\$(CurrentPackageIdLower)&quot; ( echo Deleting $(NuGetPackagesPath)\$(CurrentPackageIdLower) &amp;&amp; rd /s /q &quot;$(NuGetPackagesPath)\$(CurrentPackageIdLower)&quot; )"
               ContinueOnError="true" />
-
 
         <Exec Condition="'$(OS)' != 'Windows_NT'"
               Command="if [ -d &quot;$(NuGetPackagesPath)/$(CurrentPackageIdLower)&quot; ]; then echo &quot;Deleting $(NuGetPackagesPath)/$(CurrentPackageIdLower)&quot;; rm -rf &quot;$(NuGetPackagesPath)/$(CurrentPackageIdLower)&quot;; fi"

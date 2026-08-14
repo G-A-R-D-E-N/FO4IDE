@@ -6,38 +6,18 @@ using Mutagen.Bethesda.Strings.DI;
 
 namespace Mutagen.Bethesda.Plugins.Meta;
 
-
-
-
 public sealed record GameConstants
 {
 
-
-
     public GameRelease Release { get; init; }
-
-
-
 
     public sbyte ModHeaderLength { get; }
 
-
-
-
     public sbyte ModHeaderFluffLength { get; }
-
-
-
 
     public GroupConstants GroupConstants { get; }
 
-
-
-
     public MajorRecordConstants MajorConstants { get; }
-
-
-
 
     public RecordHeaderConstants SubConstants { get; }
 
@@ -116,9 +96,6 @@ public sealed record GameConstants
         MediumMasterFlag = mediumMasterFlag;
     }
 
-
-
-
     public static readonly GameConstants Oblivion = new GameConstants(
         release: GameRelease.Oblivion,
         modHeaderLength: 20,
@@ -186,9 +163,6 @@ public sealed record GameConstants
         PluginsFileInGameFolder = true,
         DataFolderRelativePath = Path.Combine("OblivionRemastered", "Content", "Dev", "ObvData", "Data")
     };
-
-
-
 
     public static readonly GameConstants SkyrimLE = new GameConstants(
         release: GameRelease.SkyrimLE,
@@ -267,9 +241,6 @@ public sealed record GameConstants
         IniName = "Enderal",
     };
 
-
-
-
     public static readonly GameConstants SkyrimSE = SkyrimLE with
     {
         Release = GameRelease.SkyrimSE,
@@ -279,17 +250,11 @@ public sealed record GameConstants
         MyDocumentsString = "Skyrim Special Edition",
     };
 
-
-
-
     public static readonly GameConstants SkyrimSEGog = SkyrimSE with
     {
         Release = GameRelease.SkyrimSEGog,
         MyDocumentsString = "Skyrim Special Edition GOG",
     };
-
-
-
 
     public static readonly GameConstants SkyrimVR = SkyrimSE with
     {
@@ -311,9 +276,6 @@ public sealed record GameConstants
         MyDocumentsString = "Enderal Special Edition GOG",
         IniName = "Enderal",
     };
-
-
-
 
     public static readonly GameConstants Fallout4 = new GameConstants(
         release: GameRelease.Fallout4,
@@ -398,9 +360,6 @@ public sealed record GameConstants
         IniName = "Fallout4",
     };
 
-
-
-
     public static readonly GameConstants Starfield = new GameConstants(
         release: GameRelease.Starfield,
         modHeaderLength: 24,
@@ -477,11 +436,6 @@ public sealed record GameConstants
         mediumMasterFlag: 0x0000_0400,
         encodings: new(NonTranslated: MutagenEncoding._1252, NonLocalized: MutagenEncoding._1252));
 
-
-
-
-
-
     public RecordHeaderConstants Constants(ObjectType type)
     {
         return type switch
@@ -492,11 +446,6 @@ public sealed record GameConstants
             _ => throw new NotImplementedException(),
         };
     }
-
-
-
-
-
 
     public static GameConstants Get(GameRelease release)
     {

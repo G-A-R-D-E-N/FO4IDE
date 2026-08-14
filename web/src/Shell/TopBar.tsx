@@ -39,7 +39,6 @@ export default function TopBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -51,7 +50,6 @@ export default function TopBar({
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
-
 
   useEffect(() => {
     const q = query.trim();
@@ -66,7 +64,6 @@ export default function TopBar({
     }, 300);
     return () => { cancelled = true; clearTimeout(t); };
   }, [query, onSearch]);
-
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {

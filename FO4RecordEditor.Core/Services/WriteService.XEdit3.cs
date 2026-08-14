@@ -4,36 +4,8 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
 public static partial class WriteService
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string DeepCopyAsOverride(object? env, string sourcePlugin, string id, string patchPlugin,
         bool apply, bool overwrite = false, int cap = 200)
@@ -65,7 +37,6 @@ public static partial class WriteService
                 "its placed objects individually with create_placed_object instead.");
 
         var owner = ModKey.FromNameAndExtension(sourceName);
-
 
         var visited = new HashSet<FormKey> { rootFk };
         var queue = new Queue<IMajorRecordGetter>();
@@ -105,9 +76,6 @@ public static partial class WriteService
                    string.Join(", ", byType) + "." + overwriteNote + " Re-run with apply=true.";
         }
 
-
-
-
         if (existing.Count > 0 && !overwrite)
         {
             var sample = string.Join(", ", existing.Take(5).Select(e => $"{e.editorId} ({e.formKey})"));
@@ -120,8 +88,6 @@ public static partial class WriteService
 
         int ok = 0;
         var failures = new List<string>();
-
-
 
         foreach (var rec in toCopy.AsEnumerable().Reverse())
         {
@@ -136,22 +102,6 @@ public static partial class WriteService
         if (failures.Count > 0) result += $" {failures.Count} failed: {string.Join("; ", failures.Take(5))}.";
         return result;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string ChangeReferencingRecords(object? env, string fromId, string toId, string patchPlugin, bool apply, int cap = 300)
     {
@@ -186,10 +136,6 @@ public static partial class WriteService
         var patch = GetMutable(patchName);
         if (patch == null) return ToolError.Fail($"Could not open or create patch plugin '{patchName}'.");
 
-
-
-
-
         var targetIndex = LoadOrderIndexOf(env, patchName);
         if (targetIndex >= 0)
         {
@@ -217,9 +163,6 @@ public static partial class WriteService
         foreach (var r in referencing)
         {
             if (!FormKey.TryFactory(r.FormKey, out var rfk)) { failures.Add($"{r.FormKey}: not a FormKey"); continue; }
-
-
-
 
             var ovr = FindMutableRecord(patch, rfk.ToString());
             if (ovr == null)

@@ -17,9 +17,6 @@ using StrongInject;
 
 namespace Mutagen.Bethesda.Plugins.Order;
 
-
-
-
 public static partial class LoadOrder
 {
     private static TimestampAligner Aligner = new(IFileSystemExt.DefaultFilesystem);
@@ -27,21 +24,7 @@ public static partial class LoadOrder
 
     #region Timestamps
 
-
-
-
-
-
     public static bool NeedsTimestampAlignment(GameCategory game) => Aligner.NeedsTimestampAlignment(game);
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<ILoadOrderListingGetter> AlignToTimestamps(
         IEnumerable<ILoadOrderListingGetter> incomingLoadOrder,
@@ -51,25 +34,10 @@ public static partial class LoadOrder
         return Aligner.AlignToTimestamps(incomingLoadOrder, dataPath, throwOnMissingMods: throwOnMissingMods);
     }
 
-
-
-
-
-
-
     public static IEnumerable<ModKey> AlignToTimestamps(IEnumerable<(ModKey ModKey, DateTime Write)> incomingLoadOrder)
     {
         return Aligner.AlignToTimestamps(incomingLoadOrder);
     }
-
-
-
-
-
-
-
-
-
 
     public static void AlignTimestamps(
         IEnumerable<ModKey> loadOrder,
@@ -111,17 +79,6 @@ public static partial class LoadOrder
             };
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<ILoadOrderListingGetter> GetLoadOrderListings(
         GameRelease game,
@@ -370,15 +327,6 @@ public static partial class LoadOrder
         }
     }
 
-
-
-
-
-
-
-
-
-
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         IEnumerable<ILoadOrderListingGetter> loadOrder,
@@ -389,15 +337,6 @@ public static partial class LoadOrder
         return new ImportDataFolderModule<TMod>(gameRelease, dataFolder, loadOrder, fileSystem)
             .Resolve().Value.Import();
     }
-
-
-
-
-
-
-
-
-
 
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
@@ -438,14 +377,6 @@ public static partial class LoadOrder
         }
     }
 
-
-
-
-
-
-
-
-
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
         IEnumerable<ModKey> loadOrder,
@@ -457,14 +388,6 @@ public static partial class LoadOrder
         return new ImportDataFolderModFactoryModule<TMod>(gameRelease, dataFolder, loadOrder.Select(x => new LoadOrderListing(x, true)), factory, fileSystem)
             .Resolve().Value.Import();
     }
-
-
-
-
-
-
-
-
 
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
@@ -497,14 +420,6 @@ public static partial class LoadOrder
         }
     }
 
-
-
-
-
-
-
-
-
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ILoadOrderListingGetter> loadOrder,
         GameRelease gameRelease,
@@ -514,14 +429,6 @@ public static partial class LoadOrder
         return new ImportModule<TMod>(gameRelease, loadOrder, fileSystem)
             .Resolve().Value.Import();
     }
-
-
-
-
-
-
-
-
 
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ModKey> loadOrder,
@@ -557,15 +464,6 @@ public static partial class LoadOrder
         }
     }
 
-
-
-
-
-
-
-
-
-
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ModKey> loadOrder,
         GameRelease gameRelease,
@@ -578,15 +476,6 @@ public static partial class LoadOrder
                 factory, fileSystem)
             .Resolve().Value.Import();
     }
-
-
-
-
-
-
-
-
-
 
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         IEnumerable<ILoadOrderListingGetter> loadOrder,
@@ -617,13 +506,6 @@ public static partial class LoadOrder
         }
     }
 
-
-
-
-
-
-
-
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         GameRelease gameRelease,
         IFileSystem? fileSystem = null)
@@ -650,14 +532,6 @@ public static partial class LoadOrder
             _modImporter = new ModImporterWrapper<TMod>(factory);
         }
     }
-
-
-
-
-
-
-
-
 
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         GameRelease gameRelease,
@@ -686,14 +560,6 @@ public static partial class LoadOrder
             _dataDirectory = new DataDirectoryInjection(dataFolder);
         }
     }
-
-
-
-
-
-
-
-
 
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
@@ -725,15 +591,6 @@ public static partial class LoadOrder
             _modImporter = new ModImporterWrapper<TMod>(factory);
         }
     }
-
-
-
-
-
-
-
-
-
 
     public static ILoadOrder<IModListing<TMod>> Import<TMod>(
         DirectoryPath dataFolder,
@@ -785,27 +642,13 @@ public static partial class LoadOrder
 public interface ILoadOrderGetter : IDisposable
 {
 
-
-
     int Count { get; }
-
-
-
 
     bool DisposingItems { get; }
 
-
-
-
     IEnumerable<ModKey> ListedOrder { get; }
 
-
-
-
     IEnumerable<ModKey> PriorityOrder { get; }
-
-
-
 
     bool ContainsKey(ModKey key);
 }
@@ -820,30 +663,13 @@ public interface ILoadOrderGetter<out TListing> :
 
     TListing? TryGetAtIndex(int index);
 
-
-
-
     new IEnumerable<TListing> ListedOrder { get; }
-
-
-
 
     new IEnumerable<TListing> PriorityOrder { get; }
 
-
-
-
     new int Count { get; }
 
-
-
-
     new bool ContainsKey(ModKey key);
-
-
-
-
-
 
     int IndexOf(ModKey key);
 }
@@ -852,29 +678,11 @@ public interface ILoadOrder<TListing> : ILoadOrderGetter<TListing>
     where TListing : IModKeyed
 {
 
-
-
-
-
     void Add(TListing item);
-
-
-
-
-
 
     void Add(IEnumerable<TListing> items);
 
-
-
-
-
-
-
     void Add(TListing item, int index);
-
-
-
 
     void Clear();
 
@@ -887,32 +695,23 @@ public interface ILoadOrder<TListing> : ILoadOrderGetter<TListing>
     void Set(IEnumerable<TListing> items);
 }
 
-
-
-
-
 public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
     where TListing : IModKeyed
 {
     private readonly List<ItemContainer> _byLoadOrder = new();
     private readonly Dictionary<ModKey, ItemContainer> _byModKey = new();
 
-
     public int Count => _byLoadOrder.Count;
 
     public bool DisposingItems { get; }
-
 
     public TListing this[int index] => _byLoadOrder[index].Item;
 
     IEnumerable<TListing> IReadOnlyCache<TListing, ModKey>.Items => ListedOrder;
 
-
     public IEnumerable<ModKey> Keys => _byModKey.Keys;
 
-
     public IEnumerable<TListing> ListedOrder => _byLoadOrder.Select(i => i.Item);
-
 
     public IEnumerable<TListing> PriorityOrder =>
         ((IEnumerable<ItemContainer>)_byLoadOrder).Reverse().Select(i => i.Item);
@@ -929,7 +728,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
             return new KeyValue<ModKey, TListing>(cont.Item.ModKey, cont.Item);
         }
     }
-
 
     public TListing this[ModKey key]
     {
@@ -969,12 +767,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         }
     }
 
-
-
-
-
-
-
     public bool TryGetValue(ModKey key, [MaybeNullWhen(false)] out TListing value)
     {
         if (_byModKey.TryGetValue(key, out var container))
@@ -987,11 +779,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         return false;
     }
 
-
-
-
-
-
     public TListing? TryGetValue(ModKey key)
     {
         if (_byModKey.TryGetValue(key, out var container))
@@ -1002,11 +789,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         return default;
     }
 
-
-
-
-
-
     public TListing? TryGetAtIndex(int index)
     {
         if (!_byLoadOrder.InRange(index))
@@ -1016,7 +798,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
 
         return _byLoadOrder[index].Item;
     }
-
 
     public void Add(TListing item)
     {
@@ -1034,7 +815,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         _byLoadOrder.Add(container);
     }
 
-
     public void Add(IEnumerable<TListing> items)
     {
         foreach (var item in items)
@@ -1042,7 +822,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
             Add(item);
         }
     }
-
 
     public void Add(TListing item, int index)
     {
@@ -1068,12 +847,10 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
         }
     }
 
-
     public bool ContainsKey(ModKey key)
     {
         return IndexOf(key) != -1;
     }
-
 
     public int IndexOf(ModKey key)
     {
@@ -1084,7 +861,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
 
         return container.Index;
     }
-
 
     public void Clear()
     {
@@ -1154,9 +930,6 @@ public sealed class LoadOrder<TListing> : ILoadOrder<TListing>
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-
-
 
     public void Dispose()
     {

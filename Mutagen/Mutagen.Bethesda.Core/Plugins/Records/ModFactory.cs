@@ -12,11 +12,6 @@ using Mutagen.Bethesda.Plugins.Records.Loqui;
 namespace Mutagen.Bethesda.Plugins.Records
 {
 
-
-
-
-
-
     public static class ModFactory<TMod>
         where TMod : IModGetter
     {
@@ -26,30 +21,13 @@ namespace Mutagen.Bethesda.Plugins.Records
         public delegate TMod ImportGetterWithMultiFileDetectionDelegate(ModPath modPath, IEnumerable<ModKey> loadOrder, GameRelease release, BinaryReadParameters? param = null);
         public delegate TMod ImportSetterWithMultiFileDetectionDelegate(ModPath modPath, IEnumerable<ModKey> loadOrder, GameRelease release, BinaryReadParameters? param = null);
 
-
-
-
         public static readonly ActivatorDelegate Activator;
-
-
-
 
         public static readonly ImporterDelegate Importer;
 
-
-
-
         public static readonly ImportMultiFileGetterDelegate ImportMultiFileGetter;
 
-
-
-
-
         public static readonly ImportGetterWithMultiFileDetectionDelegate ImportGetterWithMultiFileDetection;
-
-
-
-
 
         public static readonly ImportSetterWithMultiFileDetectionDelegate ImportSetterWithMultiFileDetection;
 
@@ -136,9 +114,6 @@ namespace Mutagen.Bethesda.Plugins.Records
         }
     }
 
-
-
-
     public static class ModFactory
     {
         record Delegates(
@@ -181,15 +156,6 @@ namespace Mutagen.Bethesda.Plugins.Records
             return _dict[release.ToCategory()].Activator(modKey, release, headerVersion: headerVersion, forceUseLowerFormIDRanges: forceUseLowerFormIDRanges);
         }
 
-
-
-
-
-
-
-
-
-
         public static IModDisposeGetter ImportGetterWithMultiFileDetection(
             ModPath modPath,
             IEnumerable<ModKey> loadOrder,
@@ -198,12 +164,10 @@ namespace Mutagen.Bethesda.Plugins.Records
         {
             var fileSystem = param?.FileSystem ?? new System.IO.Abstractions.FileSystem();
 
-
             if (Analysis.MultiModFileAnalysis.IsMultiModFile(modPath, fileSystem))
             {
 
                 var splitFiles = Analysis.MultiModFileAnalysis.GetSplitModFiles(modPath, fileSystem);
-
 
                 return ImportMultiFileGetter(
                     modPath.ModKey,
@@ -219,15 +183,6 @@ namespace Mutagen.Bethesda.Plugins.Records
             }
         }
 
-
-
-
-
-
-
-
-
-
         public static IMod ImportSetterWithMultiFileDetection(
             ModPath modPath,
             IEnumerable<ModKey> loadOrder,
@@ -237,18 +192,8 @@ namespace Mutagen.Bethesda.Plugins.Records
 
             using var getter = ImportGetterWithMultiFileDetection(modPath, loadOrder, release, param);
 
-
             return getter.DeepCopy();
         }
-
-
-
-
-
-
-
-
-
 
         public static IModDisposeGetter ImportMultiFileGetter(
             ModKey targetModKey,
@@ -259,8 +204,6 @@ namespace Mutagen.Bethesda.Plugins.Records
         {
             param ??= BinaryReadParameters.Default;
 
-
-
             var splitModKeys = new HashSet<ModKey> { targetModKey };
             var splitFilesList = new List<ModPath>();
             foreach (var splitFile in splitFiles)
@@ -270,13 +213,11 @@ namespace Mutagen.Bethesda.Plugins.Records
                 splitFilesList.Add(new ModPath(targetModKey, splitFile.Path));
             }
 
-
             var overlays = new List<IModDisposeGetter>();
             foreach (var splitFile in splitFilesList)
             {
 
                 var header = ModHeaderFrame.FromPath(splitFile, release, fileSystem: param.FileSystem);
-
 
                 var remappedMasters = header.Masters(splitFile.ModKey)
                     .Select(m => splitModKeys.Contains(m.Master)
@@ -293,14 +234,9 @@ namespace Mutagen.Bethesda.Plugins.Records
                 overlays.Add(overlay);
             }
 
-
             ValidateNoDuplicates(overlays, targetModKey, release);
 
-
-
-
             var mergedMasters = MergeMasters(overlays, loadOrder, splitModKeys);
-
 
             return CreateMultiFileOverlay(targetModKey, release, overlays, mergedMasters);
         }
@@ -310,8 +246,6 @@ namespace Mutagen.Bethesda.Plugins.Records
             IEnumerable<ModKey> loadOrder,
             HashSet<ModKey> excludedModKeys)
         {
-
-
 
             var allMasters = new HashSet<ModKey>();
             foreach (var overlay in overlays)
@@ -325,18 +259,15 @@ namespace Mutagen.Bethesda.Plugins.Records
                 }
             }
 
-
             var loadOrderList = loadOrder.ToList();
             var loadOrderDict = loadOrderList
                 .Select((m, i) => new { ModKey = m, Index = i })
                 .ToDictionary(x => x.ModKey, x => x.Index);
 
-
             var orderedMasterKeys = allMasters
                 .OrderBy(m => loadOrderDict.TryGetValue(m, out var index) ? index : int.MaxValue)
                 .ThenBy(m => m.FileName.String)
                 .ToList();
-
 
             var result = new List<IMasterReferenceGetter>();
             foreach (var masterKey in orderedMasterKeys)
@@ -356,15 +287,12 @@ namespace Mutagen.Bethesda.Plugins.Records
 
             var (typeName, assemblyName) = gameRelease.ToCategory().GetMultiFileOverlayTypeInfo();
 
-
             var assemblyQualifiedName = $"{typeName}, {assemblyName}";
             var overlayType = Type.GetType(assemblyQualifiedName);
             if (overlayType == null)
             {
                 throw new InvalidOperationException($"Could not find multi-file overlay type: {assemblyQualifiedName}");
             }
-
-
 
             var constructor = overlayType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                 .FirstOrDefault(c =>
@@ -387,11 +315,8 @@ namespace Mutagen.Bethesda.Plugins.Records
                 throw new InvalidOperationException($"Could not find appropriate constructor for {assemblyQualifiedName}");
             }
 
-
             var listParameterType = constructor.GetParameters()[1].ParameterType;
             var listElementType = listParameterType.GetGenericArguments()[0];
-
-
 
             var typedListType = typeof(List<>).MakeGenericType(listElementType);
             var typedList = (System.Collections.IList)System.Activator.CreateInstance(typedListType)!;
@@ -399,7 +324,6 @@ namespace Mutagen.Bethesda.Plugins.Records
             {
                 typedList.Add(item);
             }
-
 
             var overlay = constructor.Invoke(new object[]
             {
@@ -432,9 +356,6 @@ namespace Mutagen.Bethesda.Plugins.Records
                     {
                         if (parentRecordTypes.Contains(Mapping.RecordTypeLookup.GetRecordType(record.GetType())))
                         {
-
-
-
 
                             seenFormKeys[record.FormKey] = fileName;
                             continue;

@@ -10,11 +10,6 @@ using FO4RecordEditor.Services.Archives;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
 public static class ArchiveService
 {
     private static IArchiveReader? TryOpen(string archivePath, out string error)
@@ -27,12 +22,6 @@ public static class ArchiveService
     }
 
     private static readonly TimeSpan FilterRegexTimeout = TimeSpan.FromMilliseconds(100);
-
-
-
-
-
-
 
     internal static Func<string, bool> BuildMatcher(string? filter, string? mode, TimeSpan? regexTimeout = null)
     {
@@ -97,9 +86,6 @@ public static class ArchiveService
         return header + "\n" + string.Join("\n", shown.Select(f => $"{f.Path}  ({f.Size:N0} bytes)"));
     }
 
-
-
-
     public static string ListArchiveJson(string archivePath, string? filter, int limit, string? filterMode = null)
     {
         var reader = TryOpen(archivePath, out var err);
@@ -123,9 +109,6 @@ public static class ArchiveService
             entries = shown.Select(f => new { path = f.Path, size = f.Size }),
         });
     }
-
-
-
 
     public static string ExtractSelected(string archivePath, IEnumerable<string> innerPaths, string outDir)
     {
@@ -186,8 +169,6 @@ public static class ArchiveService
         if (all.Count == 0)
             return $"No entries" + (string.IsNullOrWhiteSpace(filter) ? "" : $" matching '{filter}'") + $" in '{Path.GetFileName(archivePath)}'.";
 
-
-
         if (all.Count > limit)
             return ToolError.Fail($"'{Path.GetFileName(archivePath)}' has {all.Count} matching entries, over the {limit} limit. " +
                 "Narrow with 'filter' (a path substring, e.g. 'Meshes\\mymod\\') or raise 'limit'.");
@@ -219,16 +200,6 @@ public static class ArchiveService
         if (failures.Count > 0) msg += $" {failures.Count} FAILED: " + string.Join("; ", failures.Take(10));
         return msg;
     }
-
-
-
-
-
-
-
-
-
-
 
     public static string CompareArchivesJson(string archivePathA, string archivePathB)
     {
@@ -275,21 +246,6 @@ public static class ArchiveService
         });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static string Pack(IReadOnlyList<string> sourcePaths, string outputBa2, string format, string rootDir, bool compress,
                               bool useArchive2 = false)
     {
@@ -331,18 +287,11 @@ public static class ArchiveService
         psi.ArgumentList.Add($"-r={rootDir}");
         if (!compress) psi.ArgumentList.Add("-compression=None");
 
-
-
         var run = ProcessRunner.Run(psi, TimeSpan.FromMinutes(10));
         if (!run.Started) return ToolError.Fail("Failed to start Archive2.exe.");
         if (run.TimedOut) return ToolError.Fail("Archive2.exe timed out after 10 minutes (killed).");
         if (run.ExitCode != 0 || !File.Exists(outputBa2))
             return ToolError.Fail($"Archive2.exe failed (exit {run.ExitCode}):\n{run.Combined}");
-
-
-
-
-
 
         var headerVersion = ReadBa2HeaderVersion(outputBa2);
         if (headerVersion is int v && v >= 7)
@@ -356,10 +305,6 @@ public static class ArchiveService
         var count = run.Combined.Split('\n').Count(l => l.TrimStart().StartsWith("Adding \"", StringComparison.Ordinal));
         return $"RESULT: success ({count} file(s) -> {outputBa2})\n\n{run.Combined}".TrimEnd();
     }
-
-
-
-
 
     private static string PackInProcess(List<string> sources, string outputBa2, string rootDir, bool compress, Ba2Format format)
     {
@@ -382,9 +327,6 @@ public static class ArchiveService
                $"{result.TotalBytes:N0} bytes in, {result.ArchiveBytes:N0} bytes out, " +
                $"{result.CompressedCount} compressed, {result.FileCount - result.CompressedCount} stored.";
     }
-
-
-
 
     private static int? ReadBa2HeaderVersion(string ba2Path)
     {

@@ -6,11 +6,6 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
 public sealed class PluginMcpServer : IDisposable
 {
     private const string ProtocolVersion = "2024-11-05";
@@ -81,7 +76,6 @@ public sealed class PluginMcpServer : IDisposable
             using var doc = JsonDocument.Parse(body);
             var root = doc.RootElement;
             var method = root.TryGetProperty("method", out var mEl) ? mEl.GetString() : null;
-
 
             if (!root.TryGetProperty("id", out var idEl))
             {

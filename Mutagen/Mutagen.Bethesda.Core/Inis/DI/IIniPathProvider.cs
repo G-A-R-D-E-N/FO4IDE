@@ -13,7 +13,7 @@ public sealed class IniPathProvider : IIniPathProvider
 {
     private readonly IGameReleaseContext _releaseContext;
     private readonly IIniPathLookup _lookup;
-    
+
     public FilePath Path => _lookup.Get(_releaseContext.Release);
 
     public IniPathProvider(
@@ -23,7 +23,7 @@ public sealed class IniPathProvider : IIniPathProvider
         _releaseContext = releaseContext;
         _lookup = lookup;
     }
-    
+
     public FilePath? TryGetPath()
     {
         return _lookup.TryGet(_releaseContext.Release);

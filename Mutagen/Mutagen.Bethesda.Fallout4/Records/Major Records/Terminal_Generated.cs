@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -60,8 +56,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private VirtualMachineAdapterIndexed? _VirtualMachineAdapter;
 
-
-
         public VirtualMachineAdapterIndexed? VirtualMachineAdapter
         {
             get => _VirtualMachineAdapter;
@@ -75,8 +69,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #endregion
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -116,8 +108,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #region Name
 
-
-
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ITranslatedStringGetter? ITerminalGetter.Name => this.Name;
@@ -154,8 +144,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
 
-
-
         public Model? Model
         {
             get => _Model;
@@ -171,8 +159,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
@@ -1699,26 +1685,16 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new VirtualMachineAdapterIndexed? VirtualMachineAdapter { get; set; }
-
-
 
         new ObjectBounds ObjectBounds { get; set; }
         new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
         new TranslatedString? HeaderText { get; set; }
         new TranslatedString? WelcomeText { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
 
-
-
         new Model? Model { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new ExtendedList<ObjectProperty>? Properties { get; set; }
@@ -1769,13 +1745,9 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Terminal_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         IVirtualMachineAdapterIndexedGetter? VirtualMachineAdapter { get; }
         #endregion
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
@@ -1784,19 +1756,13 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedStringGetter? WelcomeText { get; }
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         #region Model
 
-
-
         IModelGetter? Model { get; }
         #endregion
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
@@ -2723,7 +2689,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public override object GetNew()
         {
@@ -3833,7 +3798,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

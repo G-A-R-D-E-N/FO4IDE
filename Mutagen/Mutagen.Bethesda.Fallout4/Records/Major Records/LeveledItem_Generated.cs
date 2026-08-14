@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -57,8 +53,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -945,8 +939,6 @@ namespace Mutagen.Bethesda.Fallout4
         IReferenceableObject
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
         new Percent ChanceNone { get; set; }
         new Byte? MaxCount { get; set; }
@@ -983,8 +975,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => LeveledItem_Registration.Instance;
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
@@ -1651,7 +1641,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return LeveledItem.GetNew();
@@ -2264,7 +2253,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2298,7 +2286,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ILeveledItemGetter);
-
 
         #region ObjectBounds
         private RangeInt32? _ObjectBoundsLocation;

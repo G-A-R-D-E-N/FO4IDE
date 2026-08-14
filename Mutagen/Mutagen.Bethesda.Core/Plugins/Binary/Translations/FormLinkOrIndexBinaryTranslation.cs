@@ -6,7 +6,7 @@ namespace Mutagen.Bethesda.Plugins.Binary.Translations;
 public class FormLinkOrIndexBinaryTranslation
 {
     public static FormLinkOrIndexBinaryTranslation Instance = new();
-    
+
     public void Write<T>(
         MutagenWriter writer,
         IFormLinkOrIndexGetter<T> item)

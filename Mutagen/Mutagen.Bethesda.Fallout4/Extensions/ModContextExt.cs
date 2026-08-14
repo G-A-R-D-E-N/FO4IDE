@@ -49,7 +49,7 @@ internal static class ModContextExt
     public static readonly Landscape.TranslationMask? LandscapeCopyMask = null;
 
     private static readonly string CellObjectKey =
-        LoquiRegistration.StaticRegister.GetRegister(typeof(ICell)).FullName; 
+        LoquiRegistration.StaticRegister.GetRegister(typeof(ICell)).FullName;
 
     public static IEnumerable<IModContext<IFallout4Mod, IFallout4ModGetter, IMajorRecord, IMajorRecordGetter>> EnumerateMajorRecordContexts(
         this IFallout4ListGroupGetter<ICellBlockGetter> cellBlocks,
@@ -143,12 +143,12 @@ internal static class ModContextExt
                     if (match != MajorRecordContextEnumerableUtility.TypeMatch.Match)
                     {
                         foreach (var con in CellCommon.Instance.EnumerateMajorRecordContexts(
-                                     readOnlyCell, 
+                                     readOnlyCell,
                                      linkCache,
                                      type,
-                                     modKey, 
-                                     subBlockContext, 
-                                     throwIfUnknown, 
+                                     modKey,
+                                     subBlockContext,
+                                     throwIfUnknown,
                                      (m, c) => cellGetter(m, c, false, default(string?), default(FormKey?)),
                                      (m, c, e, f) => cellGetter(m, c, true, e, f)))
                         {
@@ -159,7 +159,7 @@ internal static class ModContextExt
             }
         }
     }
-    
+
     public static IEnumerable<IModContext<IFallout4Mod, IFallout4ModGetter, IMajorRecord, IMajorRecordGetter>> EnumerateMajorRecordContexts(
         this IReadOnlyList<IWorldspaceBlockGetter> worldspaceBlocks,
         IWorldspaceGetter worldspace,
@@ -229,7 +229,7 @@ internal static class ModContextExt
                         }
                         return cell;
                     };
-                    
+
                     var match = MajorRecordContextEnumerableUtility.GetMatch(type, CellObjectKey);
                     if (match != MajorRecordContextEnumerableUtility.TypeMatch.NotMatch)
                     {
@@ -244,12 +244,12 @@ internal static class ModContextExt
                     if (match != MajorRecordContextEnumerableUtility.TypeMatch.Match)
                     {
                         foreach (var con in CellCommon.Instance.EnumerateMajorRecordContexts(
-                                     readOnlyCell, 
+                                     readOnlyCell,
                                      linkCache,
                                      type,
-                                     modKey, 
-                                     subBlockContext, 
-                                     throwIfUnknown, 
+                                     modKey,
+                                     subBlockContext,
+                                     throwIfUnknown,
                                      (m, c) => cellGetter(m, c, false, default(string?), default(FormKey?)),
                                      (m, c, e, f) => cellGetter(m, c, true, e, f)))
                         {

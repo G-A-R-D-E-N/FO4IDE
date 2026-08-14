@@ -15,7 +15,6 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
     private readonly ShellViewModel _shell = new();
     private readonly AppInterop _appInterop;
 
-
     private readonly object _logLock = new();
     private readonly object _errorsLock = new();
 
@@ -27,7 +26,6 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
 
         System.Windows.Data.BindingOperations.EnableCollectionSynchronization(_shell.Log.Entries, _logLock);
         System.Windows.Data.BindingOperations.EnableCollectionSynchronization(_shell.Errors, _errorsLock);
-
 
         _appInterop = new AppInterop(_shell, (msg, pct) =>
         {
@@ -66,7 +64,6 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
 
         AppWebView.CoreWebView2.AddHostObjectToScript("appInterop", _appInterop);
         AppWebView.CoreWebView2.AddHostObjectToScript("backend", new BackendInterop(_shell));
-
 
         AppWebView.CoreWebView2.AddHostObjectToScript("chat", new Services.ChatInterop(_shell,
             payload => Dispatcher.BeginInvoke(() =>

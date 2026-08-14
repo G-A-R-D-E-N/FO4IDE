@@ -5,33 +5,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class PapyrusLexer
 {
     private readonly string _text;
@@ -46,10 +19,8 @@ public sealed class PapyrusLexer
         _diagnostics = diagnostics;
     }
 
-
     internal static List<PapyrusToken> Lex(string text, DiagnosticBag diagnostics) =>
         new PapyrusLexer(text, diagnostics).LexAll();
-
 
     public static (IReadOnlyList<PapyrusToken> Tokens, IReadOnlyList<PapyrusDiagnostic> Diagnostics) Lex(string text)
     {
@@ -110,16 +81,6 @@ public sealed class PapyrusLexer
         return LexOperator(start, line, column);
     }
 
-
-
-
-
-
-
-
-
-
-
     private void SkipTrivia()
     {
         while (!AtEnd)
@@ -131,7 +92,6 @@ public sealed class PapyrusLexer
                 _pos++;
                 continue;
             }
-
 
             if (c == ';' && Peek() == '/')
             {
@@ -212,16 +172,6 @@ public sealed class PapyrusLexer
         return new PapyrusToken(kind, text, SpanFrom(start, line, column));
     }
 
-
-
-
-
-
-
-
-
-
-
     private PapyrusToken LexNumber(int start, int line, int column)
     {
         if (Current == '0' && (Peek() == 'x' || Peek() == 'X'))
@@ -248,8 +198,6 @@ public sealed class PapyrusLexer
 
         var isFloat = false;
 
-
-
         if (Current == '.' && char.IsDigit(Peek()))
         {
             isFloat = true;
@@ -269,15 +217,6 @@ public sealed class PapyrusLexer
             text,
             SpanFrom(start, line, column));
     }
-
-
-
-
-
-
-
-
-
 
     private PapyrusToken LexString(int start, int line, int column)
     {
@@ -308,8 +247,6 @@ public sealed class PapyrusLexer
                     'r' => "\r",
                     '\\' => "\\",
                     '"' => "\"",
-
-
 
                     _ => "\\" + esc,
                 });

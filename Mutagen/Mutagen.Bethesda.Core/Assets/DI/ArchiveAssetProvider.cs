@@ -35,7 +35,7 @@ public class ArchiveAssetProvider : IAssetProvider
             stream = null;
             return false;
         }
-        
+
         stream = archiveFile.AsStream();
         return true;
     }
@@ -48,7 +48,7 @@ public class ArchiveAssetProvider : IAssetProvider
             size = 0;
             return false;
         }
-        
+
         size = archiveFile.Size;
         return true;
     }

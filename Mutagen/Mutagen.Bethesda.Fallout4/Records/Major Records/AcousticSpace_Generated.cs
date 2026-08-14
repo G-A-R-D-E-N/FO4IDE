@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -56,8 +52,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -696,8 +690,6 @@ namespace Mutagen.Bethesda.Fallout4
         IReferenceableObject
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> LoopingSound { get; set; }
         new IFormLinkNullable<IRegionGetter> UseSoundFromRegion { get; set; }
@@ -727,8 +719,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => AcousticSpace_Registration.Instance;
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
@@ -1322,7 +1312,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return AcousticSpace.GetNew();
@@ -1790,7 +1779,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1824,7 +1812,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IAcousticSpaceGetter);
-
 
         #region ObjectBounds
         private RangeInt32? _ObjectBoundsLocation;

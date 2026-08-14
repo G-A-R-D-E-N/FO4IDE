@@ -4,14 +4,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
 public static class BuiltinNodeDefinitions
 {
     public const string Branch = "branch";
@@ -37,14 +29,6 @@ public static class BuiltinNodeDefinitions
     public const string LiteralPrefix = "literal.";
     public const string OperatorPrefix = "op.";
     public const string ArrayPrefix = "array.";
-
-
-
-
-
-
-
-
 
     private static readonly (string Name, string Result, int Args, bool Pure)[] ArrayMembers =
     {
@@ -94,12 +78,10 @@ public static class BuiltinNodeDefinitions
 
     private static IReadOnlyList<NodeDefinition>? _all;
 
-
     public static IReadOnlyList<NodeDefinition> All => _all ??= Build();
 
     public static NodeDefinition? Find(string? id) =>
         id == null ? null : All.FirstOrDefault(d => string.Equals(d.Id, id, StringComparison.OrdinalIgnoreCase));
-
 
     public static string? OperatorToken(string definitionId)
     {
@@ -113,7 +95,6 @@ public static class BuiltinNodeDefinitions
         return null;
     }
 
-
     public static string? ArrayMemberName(string definitionId)
     {
         if (!definitionId.StartsWith(ArrayPrefix, StringComparison.OrdinalIgnoreCase)) return null;
@@ -122,7 +103,6 @@ public static class BuiltinNodeDefinitions
             if (string.Equals(name, suffix, StringComparison.OrdinalIgnoreCase)) return name;
         return null;
     }
-
 
     public static IReadOnlyList<string> ArrayMemberNames =>
         ArrayMembers.Select(m => m.Name).ToList();
@@ -258,7 +238,6 @@ public static class BuiltinNodeDefinitions
                 Id = Cast, Kind = GraphNodeKind.Cast, Title = "Cast", Category = "Values",
                 IsPure = true, LocalNameHint = "cast",
 
-
                 Summary = "Converts a value to another type with 'as'.",
                 Pins = new[]
                 {
@@ -363,7 +342,6 @@ public static class BuiltinNodeDefinitions
                 DataIn(PinIds.Left, "A", PinTypeExpr.Generic()),
                 DataIn(PinIds.Right, "B", PinTypeExpr.Generic()),
 
-
                 DataOut(
                     PinIds.Return, "Result",
                     op.Result.Length > 0 ? PinTypeExpr.Concrete(op.Result) : PinTypeExpr.Generic()),
@@ -394,8 +372,6 @@ public static class BuiltinNodeDefinitions
             var pins = new List<PinDefinition>();
             if (!member.Pure) pins.Add(ExecIn());
             pins.Add(DataIn(PinIds.Array, "Array", PinTypeExpr.ArrayOfGeneric()));
-
-
 
             switch (member.Name)
             {

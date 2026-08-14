@@ -16,7 +16,6 @@ public class PluginMcpServerTests
     public async Task Mcp_Initialize_ToolsList_And_Call_Work()
     {
 
-
         MutagenLoader.LooseMods.Clear();
         MutagenLoader.EditableMods.Clear();
 
@@ -27,17 +26,14 @@ public class PluginMcpServerTests
 
         using var http = new HttpClient();
 
-
         var init = await (await http.PostAsync(server.Url,
             Json(new { jsonrpc = "2.0", id = 1, method = "initialize" }))).Content.ReadAsStringAsync();
         init.Should().Contain("protocolVersion").And.Contain("fo4editor");
-
 
         var list = await (await http.PostAsync(server.Url,
             Json(new { jsonrpc = "2.0", id = 2, method = "tools/list" }))).Content.ReadAsStringAsync();
         list.Should().Contain("list_plugins").And.Contain("search_records").And.Contain("inputSchema");
         list.Should().NotContain("input_schema");
-
 
         var call = await (await http.PostAsync(server.Url,
             Json(new

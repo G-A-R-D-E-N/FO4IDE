@@ -2,36 +2,17 @@ namespace FO4RecordEditor.Services.Archives;
 
 public enum Ba2Format { General, DirectX }
 
-
-
-
-
-
-
-
 public sealed record Ba2Chunk(byte[] Data, uint DecompressedSize, bool Compressed, ushort MipFirst, ushort MipLast)
 {
     public static Ba2Chunk Stored(byte[] data) => new(data, (uint)data.Length, false, 0, 0);
 }
 
-
 public sealed record Ba2TextureInfo(ushort Height, ushort Width, byte MipCount, byte DxgiFormat, byte Flags, byte TileMode);
-
-
-
-
-
 
 public sealed class Ba2Entry
 {
 
-
-
-
-
-
     public byte[] NameBytes { get; set; } = Array.Empty<byte>();
-
 
     public string Path
     {
@@ -40,9 +21,6 @@ public sealed class Ba2Entry
     }
     public required List<Ba2Chunk> Chunks { get; init; }
     public Ba2TextureInfo? Texture { get; init; }
-
-
-
 
     public uint NameHash { get; set; }
     public uint ExtensionHash { get; set; }

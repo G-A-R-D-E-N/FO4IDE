@@ -8,43 +8,14 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 public interface ITimestampAligner
 {
 
-
-
-
-
     bool NeedsTimestampAlignment(GameCategory game);
-
-
-
-
-
-
-
-
-
 
     IEnumerable<ILoadOrderListingGetter> AlignToTimestamps(
         IEnumerable<ILoadOrderListingGetter> incomingLoadOrder,
         DirectoryPath dataPath,
         bool throwOnMissingMods = true);
 
-
-
-
-
-
-
-
     IEnumerable<ModKey> AlignToTimestamps(IEnumerable<(ModKey ModKey, DateTime Write)> incomingLoadOrder);
-
-
-
-
-
-
-
-
-
 
     void AlignTimestamps(
         IEnumerable<ModKey> loadOrder,
@@ -63,7 +34,6 @@ public sealed class TimestampAligner : ITimestampAligner
         _FileSystem = fileSystem;
     }
 
-
     public bool NeedsTimestampAlignment(GameCategory game)
     {
         switch (game)
@@ -78,7 +48,6 @@ public sealed class TimestampAligner : ITimestampAligner
                 throw new NotImplementedException();
         }
     }
-
 
     public IEnumerable<ILoadOrderListingGetter> AlignToTimestamps(
         IEnumerable<ILoadOrderListingGetter> incomingLoadOrder,
@@ -102,14 +71,12 @@ public sealed class TimestampAligner : ITimestampAligner
             .Select(i => new LoadOrderListing(i.ModKey, i.Enabled));
     }
 
-
     public IEnumerable<ModKey> AlignToTimestamps(IEnumerable<(ModKey ModKey, DateTime Write)> incomingLoadOrder)
     {
         return incomingLoadOrder
             .OrderBy(i => i, new LoadOrderTimestampComparer(incomingLoadOrder.Select(i => i.ModKey).ToList()))
             .Select(i => i.ModKey);
     }
-
 
     public void AlignTimestamps(
         IEnumerable<ModKey> loadOrder,

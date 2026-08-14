@@ -39,9 +39,6 @@ export default function ConflictResolver() {
   const [editablePlugins, setEditablePlugins] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
 
-
-
-
   const copyReport = async () => {
     if (!matrix) return;
     const lines: string[] = [
@@ -67,7 +64,6 @@ export default function ConflictResolver() {
 
   const [status, setStatus] = useState('');
 
-
   useEffect(() => {
     const init = async () => {
 
@@ -83,7 +79,6 @@ export default function ConflictResolver() {
     };
     init();
   }, []);
-
 
   useEffect(() => {
     const loadMatrix = async () => {
@@ -129,7 +124,6 @@ export default function ConflictResolver() {
     if (!differs) return 'var(--conflict-green)';
     if (me.length === 0) return 'var(--conflict-empty)';
     if (present.length === 1) return 'var(--conflict-yellow)';
-
 
     let winner = -1;
     for (let i = vals.length - 1; i >= 0; i--) {

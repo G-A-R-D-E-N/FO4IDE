@@ -5,17 +5,14 @@
   --bg-tertiary: #1c1d22;
   --bg-hover: #23252b;
 
-
   --border-color: #2a2c33;
   --border-strong: #3a3d45;
-
 
   --text-primary: #e6e6e6;
   --text-secondary: #9aa0aa;
   --text-muted: #6b7079;
   --text-highlight: #f85149;
   --text-identical: #56d364;
-
 
   --conflict-green: #1b3a26;
   --conflict-yellow: #4a4119;
@@ -24,20 +21,17 @@
   --conflict-red: #4d1f1f;
   --conflict-empty: #0d0e11;
 
-
   --accent-color: #3fb950;
   --accent-hover: #46c45a;
   --accent-dim: #2ea043;
   --accent-success: #3fb950;
   --accent-info: #388bfd;
 
-
   --status-base: #56d364;
   --status-changed: #f85149;
   --status-warning: #d29922;
   --status-ok: #3fb950;
   --status-info: #388bfd;
-
 
   --chip-1: #3fb950;
   --chip-2: #a371f7;
@@ -47,8 +41,6 @@
   --chip-6: #f778ba;
   --chip-7: #f0883e;
   --chip-8: #56d4dd;
-
-
 
   --bp-grid: rgba(255, 255, 255, 0.045);
   --radius: 6px;
@@ -92,7 +84,6 @@ body {
   background: var(--text-muted);
 }
 
-
 [data-theme="light"] {
   --bg-primary: #eef0f4;
   --bg-secondary: #f6f7f9;
@@ -131,8 +122,6 @@ body {
   --bp-grid: rgba(0, 0, 0, 0.06);
 }
 
-
-
 [data-theme="light"] .glass-panel {
   background: var(--bg-secondary);
   backdrop-filter: none;
@@ -150,7 +139,6 @@ body {
 [data-theme="light"] .rv-c-notdefined,
 [data-theme="light"] .rv-c-none      { color: #c8cdd5; background: transparent; }
 [data-theme="light"] .rv-win-icon    { color: #b45309; }
-
 
 [data-theme="light"] .rv-grid th           { background: var(--bg-tertiary); color: var(--text-secondary); }
 [data-theme="light"] td.rv-sticky,

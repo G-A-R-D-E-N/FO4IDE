@@ -5,33 +5,14 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Order;
 
-
-
-
-
 public interface ILoadOrderListingGetter : IModKeyed
 {
 
-
-
     bool Enabled { get; }
-
-
-
-
-
 
     bool Ghosted { get; }
 
-
-
-
-
-
     string GhostSuffix { get; }
-
-
-
 
     string FileName { get; }
 
@@ -41,22 +22,17 @@ public interface ILoadOrderListingGetter : IModKeyed
     }
 }
 
-
 [DebuggerDisplay("{ToString()}")]
 public sealed record LoadOrderListing : ILoadOrderListingGetter
 {
 
     public ModKey ModKey { get; init; }
 
-
     public bool Enabled { get; init; }
-
 
     public bool Ghosted => !string.IsNullOrWhiteSpace(GhostSuffix);
 
-
     public string GhostSuffix { get; init; } = string.Empty;
-
 
     public string FileName => OrderUtility.GetListingFilename(ModKey, GhostSuffix);
 
@@ -95,7 +71,6 @@ public sealed record LoadOrderListing : ILoadOrderListingGetter
     {
         return new LoadOrderListing(modKey, enabled: true);
     }
-
 
     public static bool TryFromString(ReadOnlySpan<char> str, bool enabledMarkerProcessing, [MaybeNullWhen(false)] out LoadOrderListing listing)
     {
@@ -137,12 +112,10 @@ public sealed record LoadOrderListing : ILoadOrderListingGetter
         return false;
     }
 
-
     public static bool TryFromFileName(FileName fileName, bool enabledMarkerProcessing, [MaybeNullWhen(false)] out LoadOrderListing listing)
     {
         return TryFromString(fileName.String, enabledMarkerProcessing, out listing);
     }
-
 
     public static LoadOrderListing FromString(ReadOnlySpan<char> str, bool enabledMarkerProcessing)
     {
@@ -152,7 +125,6 @@ public sealed record LoadOrderListing : ILoadOrderListingGetter
         }
         return listing;
     }
-
 
     public static LoadOrderListing FromFileName(FileName name, bool enabledMarkerProcessing)
     {

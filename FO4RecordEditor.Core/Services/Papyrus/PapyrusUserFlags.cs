@@ -5,47 +5,17 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class PapyrusUserFlagTable
 {
     private readonly Dictionary<string, uint> _masks = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<PexUserFlag> _flags = new();
 
-
     public IReadOnlyList<PexUserFlag> Flags => _flags;
-
 
     public uint MaskFor(string flagName) =>
         _masks.TryGetValue(flagName, out var mask) ? mask : 0u;
 
     public bool Knows(string flagName) => _masks.ContainsKey(flagName);
-
-
-
-
-
 
     public uint MaskFor(IEnumerable<string> written)
     {
@@ -64,10 +34,6 @@ public sealed class PapyrusUserFlagTable
 
     private void Sort() => _flags.Sort((a, b) => a.Index.CompareTo(b.Index));
 
-
-
-
-
     public static PapyrusUserFlagTable Fallout4Default()
     {
         var table = new PapyrusUserFlagTable();
@@ -82,14 +48,6 @@ public sealed class PapyrusUserFlagTable
         return table;
     }
 
-
-
-
-
-
-
-
-
     public static PapyrusUserFlagTable Parse(string text)
     {
         var table = new PapyrusUserFlagTable();
@@ -99,7 +57,6 @@ public sealed class PapyrusUserFlagTable
         {
             var line = raw.Trim();
             if (line.Length == 0) continue;
-
 
             int brace = line.IndexOf('{');
             if (brace >= 0) line = line[..brace].Trim();
@@ -129,7 +86,6 @@ public sealed class PapyrusUserFlagTable
         return table;
     }
 
-
     public static PapyrusUserFlagTable FromFileOrDefault(string? path)
     {
         if (string.IsNullOrWhiteSpace(path)) return Fallout4Default();
@@ -148,7 +104,6 @@ public sealed class PapyrusUserFlagTable
             return Fallout4Default();
         }
     }
-
 
     public static string? FindFlagFile(IEnumerable<string> roots)
     {

@@ -6,8 +6,6 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Tests;
 
-
-
 public class Mo2ProfileLoaderTests : IDisposable
 {
     private readonly Xunit.Abstractions.ITestOutputHelper _out;
@@ -52,8 +50,6 @@ public class Mo2ProfileLoaderTests : IDisposable
         }
         listed.Should().Be(plugins.Count);
 
-
-
         var cache = (Mutagen.Bethesda.Plugins.Cache.ILinkCache)dynEnv.LinkCache;
         cache.Should().NotBeNull();
     }
@@ -64,8 +60,6 @@ public class Mo2ProfileLoaderTests : IDisposable
         if (!Available) return;
         var info = Mo2ProfileLoader.ReadInstanceInfo(Instance);
         var (_, plugins) = Mo2ProfileLoader.Load(Instance, info.Profile, info.GameDataFolder);
-
-
 
         plugins.Should().Contain("Fallout4.esm");
 
@@ -95,7 +89,6 @@ public class Mo2ProfileLoaderTests : IDisposable
         var link = Mutagen.Bethesda.Plugins.FormLinkInformation.Factory(component);
 
         var rendered = MutagenLoader.FormatFormLink(link);
-
 
         rendered.Should().Contain("[").And.Contain(component.FormKey.ToString());
         rendered.Should().NotBe(component.FormKey.ToString(), "the link should resolve to a name");
@@ -134,8 +127,6 @@ public class Mo2ProfileLoaderTests : IDisposable
         var (env, _) = Mo2ProfileLoader.Load(Instance, info.Profile, info.GameDataFolder);
         var cache = MutagenLoader.LinkCache!;
 
-
-
         var cobj = cache.PriorityOrder
             .SelectMany(m => m.EnumerateMajorRecords())
             .OfType<Mutagen.Bethesda.Fallout4.IConstructibleObjectGetter>()
@@ -161,12 +152,6 @@ public class Mo2ProfileLoaderTests : IDisposable
         if (!Available) return;
         var info = Mo2ProfileLoader.ReadInstanceInfo(Instance);
         var (env, plugins) = Mo2ProfileLoader.Load(Instance, info.Profile, info.GameDataFolder);
-
-
-
-
-
-
 
         var implicitMasters = new HashSet<string>(
             Mutagen.Bethesda.Plugins.Implicits.Get(Mutagen.Bethesda.GameRelease.Fallout4).Listings.Select(m => m.FileName.String),

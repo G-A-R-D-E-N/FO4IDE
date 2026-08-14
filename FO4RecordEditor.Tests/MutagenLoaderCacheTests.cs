@@ -5,16 +5,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
 [Collection("MutagenLoaderCache")]
 public class MutagenLoaderCacheTests : IDisposable
 {
@@ -40,13 +30,10 @@ public class MutagenLoaderCacheTests : IDisposable
     {
         MutagenLoader.MaxCachedModIndexes = 5;
 
-
         for (int i = 0; i < 20; i++)
             MutagenLoader.SeedModIndexForTest($"Mod{i:D2}.esp", new object());
 
-
         MutagenLoader.ModIndexCacheCount.Should().Be(5);
-
 
         for (int i = 15; i < 20; i++)
             MutagenLoader.ModIndexCacheContains($"Mod{i:D2}.esp").Should().BeTrue($"Mod{i:D2} was seeded last");
@@ -59,19 +46,13 @@ public class MutagenLoaderCacheTests : IDisposable
     {
         MutagenLoader.MaxCachedModIndexes = 3;
 
-
         MutagenLoader.EditableMods["MyPatch.esp"] = new object();
         MutagenLoader.SeedModIndexForTest("MyPatch.esp", new object());
         for (int i = 0; i < 20; i++)
             MutagenLoader.SeedModIndexForTest($"Vanilla{i:D2}.esp", new object());
 
-
         MutagenLoader.ModIndexCacheContains("MyPatch.esp").Should().BeTrue("EditableMods entries are never evicted");
     }
-
-
-
-
 
     [Fact]
     public void Cache_evicts_on_the_record_budget_even_when_far_under_the_entry_cap()
@@ -85,11 +66,9 @@ public class MutagenLoaderCacheTests : IDisposable
         MutagenLoader.ModIndexCacheCount.Should().BeLessThan(6, "the record budget must bite before the entry cap");
         MutagenLoader.ModIndexRetainedRecords.Should().BeLessThanOrEqualTo(100_000);
 
-
         MutagenLoader.ModIndexCacheContains("Big05.esp").Should().BeTrue();
         MutagenLoader.ModIndexCacheContains("Big00.esp").Should().BeFalse();
     }
-
 
     [Fact]
     public void Indexes_that_retain_no_records_do_not_count_against_the_record_budget()
@@ -103,9 +82,6 @@ public class MutagenLoaderCacheTests : IDisposable
         MutagenLoader.ModIndexCacheCount.Should().Be(50, "counts-only indexes hold no records to evict");
         MutagenLoader.ModIndexRetainedRecords.Should().Be(0);
     }
-
-
-
 
     [Fact]
     public void Actively_edited_plugins_survive_the_record_budget_too()

@@ -4,9 +4,6 @@ using Mutagen.Bethesda.Plugins.Implicit.DI;
 
 namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-
-
-
 public interface IImplicitListingsProvider : IListingsProvider
 {
     new IEnumerable<IModListingGetter> Get();

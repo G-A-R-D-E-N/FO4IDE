@@ -1,15 +1,7 @@
 ﻿namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-
-
-
 public interface IPluginListingsParser
 {
-
-
-
-
-
 
     IEnumerable<ILoadOrderListingGetter> Parse(Stream stream);
 }
@@ -26,7 +18,6 @@ public sealed class PluginListingsParser : IPluginListingsParser
         _commentTrimmer = commentTrimmer;
         _listingParser = listingParser;
     }
-
 
     public IEnumerable<ILoadOrderListingGetter> Parse(Stream stream)
     {

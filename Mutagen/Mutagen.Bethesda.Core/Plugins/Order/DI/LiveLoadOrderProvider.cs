@@ -61,8 +61,6 @@ public sealed class LiveLoadOrderProvider : ILiveLoadOrderProvider
 
                                         var refreshedListings = ListingsProvider.Get().ToArray();
 
-
-
                                         list.Clear();
                                         list.AddRange(refreshedListings);
                                         stateSubj.OnNext(null);

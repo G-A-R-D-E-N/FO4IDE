@@ -6,54 +6,31 @@ namespace FO4RecordEditor.Services.Graph;
 
 public enum PinDirection { In, Out }
 
-
-
-
-
-
-
-
 public enum PinKind { Exec, Data }
-
 
 public enum PinTypeForm
 {
 
     Concrete,
 
-
     Generic,
-
 
     ArrayOfGeneric,
 
-
     ElementOfGeneric,
-
 
     SelfType,
 
-
     Any,
 }
-
-
-
-
-
-
-
-
 
 public sealed record PinTypeExpr
 {
     public PinTypeForm Form { get; init; } = PinTypeForm.Concrete;
 
-
     public string TypeName { get; init; } = "";
 
     public bool IsArray { get; init; }
-
 
     public string Variable { get; init; } = "T";
 
@@ -84,7 +61,6 @@ public sealed record PinTypeExpr
     };
 }
 
-
 public sealed record PinDefinition
 {
     public required string Id { get; init; }
@@ -95,28 +71,17 @@ public sealed record PinDefinition
 
     public required PinKind Kind { get; init; }
 
-
     public PinTypeExpr? Type { get; init; }
 
     public bool IsOptional { get; init; }
 
-
     public string? DeclaredDefault { get; init; }
-
 
     public string? Description { get; init; }
 
     public override string ToString() =>
         $"{Direction} {Kind} {Id}{(Type == null ? "" : " : " + Type)}";
 }
-
-
-
-
-
-
-
-
 
 public sealed record NodeDefinition
 {
@@ -126,18 +91,9 @@ public sealed record NodeDefinition
 
     public string Title { get; init; } = "";
 
-
     public string Category { get; init; } = "";
 
     public string? Summary { get; init; }
-
-
-
-
-
-
-
-
 
     public bool IsPure { get; init; }
 
@@ -147,18 +103,7 @@ public sealed record NodeDefinition
 
     public bool IsGlobal { get; init; }
 
-
-
-
-
-
-
-
-
-
-
     public bool IsRemoteEvent { get; init; }
-
 
     public string? LocalNameHint { get; init; }
 
@@ -183,13 +128,6 @@ public sealed record NodeDefinition
     public PinDefinition? Pin(string? id) =>
         id == null ? null : Pins.FirstOrDefault(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase));
 
-
-
-
-
-
-
-
     public IReadOnlyList<PinDefinition> PinsFor(GraphNode node, GraphDocument? document = null)
     {
         switch (Kind)
@@ -201,19 +139,12 @@ public sealed record NodeDefinition
                 var declared = document?.Variables.FirstOrDefault(v =>
                     string.Equals(v.Name, name, StringComparison.OrdinalIgnoreCase));
 
-
-
-
                 var written = declared?.Type ?? node.ConfigString("type");
                 if (string.IsNullOrWhiteSpace(written)) return Pins;
 
                 var type = TypeFromWritten(written);
                 return Pins.Select(p => p.Kind == PinKind.Data ? p with { Type = type } : p).ToList();
             }
-
-
-
-
 
             case GraphNodeKind.Cast:
             case GraphNodeKind.NewArray:
@@ -259,10 +190,6 @@ public sealed record NodeDefinition
 
     public override string ToString() => $"{Id} ({Kind})";
 }
-
-
-
-
 
 public static class PinIds
 {

@@ -27,9 +27,6 @@ public sealed class AnthropicProvider : IAIProvider
         [EnumeratorCancellation] CancellationToken ct = default)
     {
 
-
-
-
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
             yield return "No Anthropic API key is configured, so the request was not sent. "

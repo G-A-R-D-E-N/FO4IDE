@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Internal;
@@ -919,7 +915,6 @@ namespace Mutagen.Bethesda.Fallout4.Internals
 
         #endregion
 
-
         public object GetNew()
         {
             return Properties.GetNew();
@@ -1122,7 +1117,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4.Internals

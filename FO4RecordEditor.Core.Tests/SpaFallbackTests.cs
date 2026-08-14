@@ -3,13 +3,6 @@ using FO4RecordEditor.Services;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
 public class SpaFallbackTests
 {
     [Fact]
@@ -24,7 +17,6 @@ public class SpaFallbackTests
     [Fact]
     public void Fetch_GetWithNonHtmlAccept_IsNotNavigation()
     {
-
 
         SpaFallback.IsTopLevelNavigation("GET", "*/*").Should().BeFalse();
         SpaFallback.IsTopLevelNavigation("GET", "text/event-stream").Should().BeFalse();
@@ -55,7 +47,6 @@ public class SpaFallbackTests
     public void AppEntryPath_MatchesTheUrlTheNativeWindowLoads()
     {
 
-
         SpaFallback.AppEntryPath.Should().Be("/#/main");
     }
 
@@ -69,8 +60,6 @@ public class SpaFallbackTests
     [Fact]
     public void ShouldRedirect_RootPath_IsFalse_ToAvoidARedirectLoop()
     {
-
-
 
         SpaFallback.ShouldRedirect("/", "GET", "text/html").Should().BeFalse();
         SpaFallback.ShouldRedirect("", "GET", "text/html").Should().BeFalse();

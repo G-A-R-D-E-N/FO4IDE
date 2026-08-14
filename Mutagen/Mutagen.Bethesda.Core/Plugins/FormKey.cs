@@ -8,58 +8,23 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
-
-
-
-
-
 [DebuggerDisplay("{ToString()}")]
 public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFormKeyGetter
 {
 
-
-
     public const string NullStr = "Null";
-
-
-
 
     public static readonly FormKey Null = new FormKey(ModKey.Null, 0);
 
-
-
-
     public const string NoneStr = "None";
-
-
-
 
     public static readonly FormKey None = new FormKey(ModKey.Null, 0xFFFFFF);
 
-
-
-
     public readonly uint ID;
-
-
-
 
     public readonly ModKey ModKey;
 
-
-
-
     public bool IsNull => ModKey.IsNull;
-
-
-
-
-
-
 
     public FormKey(ModKey modKey, uint id)
     {
@@ -67,25 +32,10 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         ID = id & 0xFFFFFF;
     }
 
-
-
-
-
-
-
-
     internal static FormKey Factory(IReadOnlySeparatedMasterPackage masterReferences, FormID formId, bool reference)
     {
         return masterReferences.GetFormKey(formId, reference: reference);
     }
-
-
-
-
-
-
-
-
 
     internal static FormKey Factory(IReadOnlySeparatedMasterPackage masterReferences, FormID formId, bool reference, bool maxIsNull)
     {
@@ -98,18 +48,10 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
 
     private static bool IsDelim(char c) => c is ':' or '_';
 
-
-
-
-
-
-
-
     public static bool TryFactory(ReadOnlySpan<char> str, [MaybeNullWhen(false)]out FormKey formKey)
     {
 
         str = str.Trim();
-
 
         if (NullStr.AsSpan().Equals(str, StringComparison.OrdinalIgnoreCase))
         {
@@ -117,13 +59,11 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
             return true;
         }
 
-
         if (NoneStr.AsSpan().Equals(str, StringComparison.OrdinalIgnoreCase))
         {
             formKey = None;
             return true;
         }
-
 
         const int shortCircuitSize = 9;
         if (str.Length < shortCircuitSize)
@@ -131,7 +71,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
             formKey = default!;
             return false;
         }
-
 
         if (!IsDelim(str[6]))
         {
@@ -141,13 +80,11 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
 
         int delim = 6;
 
-
         if (!uint.TryParse(str.Slice(0, delim), NumberStyles.HexNumber, null, out var id))
         {
             formKey = default!;
             return false;
         }
-
 
         str = str.Slice(delim + 1);
 
@@ -170,12 +107,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         return true;
     }
 
-
-
-
-
-
-
     public static FormKey? TryFactory(ReadOnlySpan<char> str)
     {
         if (TryFactory(str, out var formKey))
@@ -185,13 +116,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         return default;
     }
 
-
-
-
-
-
-
-
     public static FormKey Factory(ReadOnlySpan<char> str)
     {
         if (!TryFactory(str, out var form))
@@ -200,10 +124,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         }
         return form;
     }
-
-
-
-
 
     public override string ToString()
     {
@@ -219,18 +139,10 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         return $"{IDString()}:{ModKey}";
     }
 
-
-
-
-
     public string IDString()
     {
         return ID.ToString("X6");
     }
-
-
-
-
 
     public string ToFilesafeString()
     {
@@ -241,21 +153,11 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         return $"{IDString()}_{ModKey}";
     }
 
-
-
-
-
-
     public override bool Equals(object? other)
     {
         if (other is not FormKey key) return false;
         return Equals(key);
     }
-
-
-
-
-
 
     public bool Equals(FormKey other)
     {
@@ -264,10 +166,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         return true;
     }
 
-
-
-
-
     public override int GetHashCode()
     {
         var hash = new HashCode();
@@ -275,16 +173,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         hash.Add(ID);
         return hash.ToHashCode();
     }
-
-
-
-
-
-
-
-
-
-
 
     public int CompareTo(FormKey other)
     {
@@ -345,10 +233,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
 
     #region Comparers
 
-
-
-
-
     public static Comparer<FormKey> AlphabeticalComparer(bool mastersFirst = true) => new AlphabeticalFormKeyComparer(mastersFirst);
 
     private class AlphabeticalFormKeyComparer : Comparer<FormKey>
@@ -375,44 +259,17 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
         }
     }
 
-
-
-
-
-
-
-
-
-
     public static Comparer<FormKey> LoadOrderComparer(
         IReadOnlyList<ModKey> loadOrder,
         Comparer<FormKey>? matchingModKeyFallback = null,
         Comparer<FormKey>? notOnLoadOrderFallback = null) =>
         new ModKeyListFormKeyComparer(loadOrder, matchingModKeyFallback: matchingModKeyFallback, notOnLoadOrderFallback: notOnLoadOrderFallback);
 
-
-
-
-
-
-
-
-
-
     public static Comparer<FormKey> LoadOrderComparer(
         IEnumerable<ModKey> loadOrder,
         Comparer<FormKey>? matchingModKeyFallback = null,
         Comparer<FormKey>? notOnLoadOrderFallback = null) =>
         new ModKeyListFormKeyComparer(loadOrder.ToList(), matchingModKeyFallback: matchingModKeyFallback, notOnLoadOrderFallback: notOnLoadOrderFallback);
-
-
-
-
-
-
-
-
-
 
     public static Comparer<FormKey> LoadOrderComparer(
         ILoadOrderGetter loadOrder,
@@ -464,14 +321,6 @@ public readonly struct FormKey : IEquatable<FormKey>, IComparable<FormKey>, IFor
             return _matchingModKeyFallback.Compare(x, y);
         }
     }
-
-
-
-
-
-
-
-
 
     public static Comparer<FormKey> LoadOrderComparer<TItem>(
         LoadOrder<TItem> loadOrder,

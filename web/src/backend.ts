@@ -1,7 +1,4 @@
 
-
-
-
 export interface Backend {
 
   GetConflicts(): Promise<string>;
@@ -12,7 +9,6 @@ export interface Backend {
   SearchRecords(query: string, typeFilter: string): Promise<string>;
   GetEditablePlugins(): Promise<string>;
 
-
   OpenPlugin(plugin: string): Promise<string>;
   CreatePlugin(name: string): Promise<string>;
   SetField(plugin: string, record: string, field: string, value: string): Promise<string>;
@@ -22,7 +18,6 @@ export interface Backend {
   RemoveListItem(plugin: string, record: string, field: string, value: string): Promise<string>;
   DeleteRecord(plugin: string, id: string): Promise<string>;
 
-
   CopyAsOverride(sourcePlugin: string, id: string, patchPlugin: string, overwrite: boolean): Promise<string>;
   CopyAsOverrideMany(itemsJson: string, patchPlugin: string, overwrite: boolean): Promise<string>;
   RevertOverrides(badPlugin: string, patchPlugin: string, signature: string,
@@ -31,7 +26,6 @@ export interface Backend {
   CheckEslEligibility(plugin: string): Promise<string>;
   CleanPlugin(plugin: string): Promise<string>;
   RenumberFormId(plugin: string, record: string, newId: string): Promise<string>;
-
 
   DescribeElement(plugin: string, record: string, path: string): Promise<string>;
   AddElement(plugin: string, record: string, path: string, template: string): Promise<string>;
@@ -56,7 +50,6 @@ export interface Backend {
   DeepCopyAsOverride(sourcePlugin: string, id: string, patchPlugin: string, apply: boolean, overwrite: boolean): Promise<string>;
   ChangeReferencingRecords(from: string, to: string, patchPlugin: string, apply: boolean): Promise<string>;
 
-
   GetActivePlugins(): Promise<string>;
   GetRecordTypeIndex(): Promise<string>;
   GetPluginRecordTypes(plugin: string): Promise<string>;
@@ -70,13 +63,10 @@ export interface Backend {
   GetHistory(formKey: string): Promise<string>;
   GetLoadOrderSummary(): Promise<string>;
 
-
   ResolveConflict(formKey: string, winner: string, patch: string): Promise<string>;
   SavePatch(patch: string): Promise<string>;
   SavePlugin(plugin: string, path: string): Promise<string>;
 }
-
-
 
 export type PluginKind = 'master' | 'plugin' | 'light';
 
@@ -103,7 +93,6 @@ export interface LoadOrderSummary {
   TotalRecords: number; PluginCount: number; Plugins: string[];
 }
 
-
 export interface AppInterop {
   BrowseForMo2Folder(): Promise<string>;
   OpenMo2Profile(instancePath: string): Promise<void>;
@@ -115,7 +104,6 @@ export interface AppInterop {
   GetChildren(path: string): Promise<string>;
   OpenRecord(path: string): Promise<string>;
 }
-
 
 export interface ConflictFieldRow {
   Field: string;
@@ -152,7 +140,6 @@ export interface ElementActions {
   error?: string;
 }
 
-
 export interface ConditionDto {
   function: string;
   operator: string;
@@ -174,7 +161,6 @@ export interface ConflictMatrix {
   Level: string;
 }
 
-
 export interface ConflictEntry {
   FormKey: string;
   EditorID: string;
@@ -183,7 +169,6 @@ export interface ConflictEntry {
   Winner: string;
   InvolvesMod: boolean;
 }
-
 
 export interface FieldNode {
   key: string;
@@ -196,9 +181,6 @@ export interface FieldNode {
   hasChildren: boolean;
   children: FieldNode[];
 }
-
-
-
 
 export interface Chat {
   SendMessage(sessionId: string, text: string, imagesJson: string): Promise<void>;
@@ -220,11 +202,9 @@ export interface ChatSessionMsg { isUser: boolean; text: string; }
 export interface ChatSessionFull { id: string; name: string; messages: ChatSessionMsg[]; }
 export interface SlashCommand { name: string; args: string; help: string; }
 
-
 export interface PapyrusHost {
   BrowseForFile(title: string, filter: string): Promise<string>;
   BrowseForFolder(title: string): Promise<string>;
-
 
   Compile(source: string, output: string, imports: string, flags: string,
           all: boolean, optimize: boolean, release: boolean, compilerPath: string,
@@ -236,15 +216,9 @@ export interface PapyrusHost {
 
   StageDroppedFile(name: string, base64: string): Promise<string>;
 
-
   LookupFunction(script: string, functionName: string): Promise<string>;
 
   LookupScriptInfo(script: string): Promise<string>;
-
-
-
-
-
 
   Analyze(text: string, path: string): Promise<string>;
 
@@ -255,7 +229,6 @@ export interface PapyrusHost {
   WriteScript(path: string, text: string): Promise<string>;
 }
 
-
 export interface PapyrusDiagnostic {
   code: string;
   severity: 'error' | 'warning';
@@ -265,7 +238,6 @@ export interface PapyrusDiagnostic {
   start: number;
   length: number;
 }
-
 
 export interface PapyrusSymbol {
   name: string;
@@ -291,11 +263,6 @@ export interface PapyrusAnalyzeResult {
   error?: string;
 }
 
-
-
-
-
-
 export interface PapyrusSymbolResult {
   resolved: boolean;
   name?: string;
@@ -313,7 +280,6 @@ export interface PapyrusSymbolResult {
   error?: string;
 }
 
-
 export interface NifHost {
   BrowseForFile(title: string, filter: string): Promise<string>;
   BrowseForFolder(title: string): Promise<string>;
@@ -324,7 +290,6 @@ export interface NifHost {
   Inspect(nifPath: string): Promise<string>;
   Geo(nifPath: string): Promise<string>;
 
-
   GetTexture(nifPath: string, relTexPath: string, textureRoot: string): Promise<string>;
   Verify(nifPath: string): Promise<string>;
   Fix(nifPath: string, outNif: string): Promise<string>;
@@ -334,7 +299,6 @@ export interface NifHost {
   OpenFolder(path: string): Promise<string>;
   StageDroppedFile(name: string, base64: string): Promise<string>;
 }
-
 
 export interface MasterRow {
   index: number;
@@ -349,7 +313,6 @@ export interface MastersListResult {
   error?: string;
 }
 
-
 export interface MastersHost {
   GetPlugins(): Promise<string>;
   List(plugin: string): Promise<string>;
@@ -358,7 +321,6 @@ export interface MastersHost {
   SetLight(plugin: string, light: boolean): Promise<string>;
   SavePlugin(plugin: string): Promise<string>;
 }
-
 
 export interface ArchiveEntry { path: string; size: number; }
 export interface ArchiveListResult {
@@ -370,10 +332,7 @@ export interface ArchiveListResult {
   error?: string;
 }
 
-
-
 export type ArchiveFilterMode = 'simple' | 'wildcard' | 'regex';
-
 
 export interface ArchiveCompareResult {
   archiveA?: string;
@@ -384,7 +343,6 @@ export interface ArchiveCompareResult {
   identicalCount?: number;
   error?: string;
 }
-
 
 export interface ArchiveHost {
   BrowseForFile(title: string, filter: string): Promise<string>;
@@ -401,7 +359,6 @@ export interface ArchiveHost {
   OpenFolder(path: string): Promise<string>;
 }
 
-
 export interface MaterialField {
   name: string;
   section: 'material' | 'header';
@@ -415,7 +372,6 @@ export interface MaterialInspectResult {
   error?: string;
 }
 
-
 export interface MaterialHost {
   BrowseForFile(title: string, filter: string): Promise<string>;
   Inspect(path: string): Promise<string>;
@@ -425,12 +381,10 @@ export interface MaterialHost {
   StageDroppedFile(name: string, base64: string): Promise<string>;
 }
 
-
 export interface AudioHost {
   BrowseForFile(title: string, filter: string): Promise<string>;
   BrowseForFolder(title: string): Promise<string>;
   BrowseForSave(title: string, filter: string): Promise<string>;
-
 
   ConvertToXwm(source: string, output: string, bitrateBps: number): Promise<string>;
 
@@ -443,7 +397,6 @@ export interface AudioHost {
   StageDroppedFile(name: string, base64: string): Promise<string>;
 }
 
-
 export interface SettingsHost {
   GetSettings(): Promise<string>;
   SaveSettings(json: string): Promise<string>;
@@ -451,8 +404,6 @@ export interface SettingsHost {
   BrowseFile(title: string, filter: string, current: string): Promise<string>;
   TestClaude(path: string): Promise<string>;
 }
-
-
 
 export interface CellPlacedReference {
   formKey: string;
@@ -463,15 +414,9 @@ export interface CellPlacedReference {
   baseEditorId?: string;
   modelPath: string | null;
 
-
-
   decalDiffuse?: string | null;
   decalWidth?: number | null;
   decalHeight?: number | null;
-
-
-
-
 
   scolParts?: {
     modelPath: string;
@@ -492,14 +437,10 @@ export interface CellReferencesResult {
   error?: string;
 }
 
-
 export interface CellGeoBatchResult {
   count: number;
   geometry: Record<string, unknown>;
 }
-
-
-
 
 export interface CellSearchHit {
   FormKey: string;
@@ -523,16 +464,9 @@ export interface CellHost {
 
   GetGeometryBatchProgress(): Promise<string>;
 
-
-
-
   SetPlacedReferenceTransform(formKey: string, patchPlugin: string,
     x: number, y: number, z: number, rx: number, ry: number, rz: number): Promise<string>;
 }
-
-
-
-
 
 export interface GraphHost {
 
@@ -548,10 +482,6 @@ export interface GraphHost {
 
   CompileToPex(documentJson: string, outputDirectory: string): Promise<string>;
   LoadGraph(path: string): Promise<string>;
-
-
-
-
 
   LoadScript(path: string): Promise<string>;
   SaveGraph(path: string, documentJson: string): Promise<string>;

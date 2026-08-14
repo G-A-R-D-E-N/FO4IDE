@@ -10,13 +10,8 @@ public class GmstDiagnosticTests : IDisposable
     private const string Instance = @"D:\Games\ModlistDownloads";
     private static bool Available => Directory.Exists(Path.Combine(Instance, "profiles"));
 
-
-
     private readonly GlobalStateIsolation _state = new();
     public void Dispose() => _state.Dispose();
-
-
-
 
     [Fact]
     public void RecordsStillExpandToFields()

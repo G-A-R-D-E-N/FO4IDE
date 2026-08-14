@@ -26,14 +26,6 @@ const KIND_LABEL: Record<ConflictKind, string> = {
   All: 'All Conflicts', Value: 'Values', Flag: 'Flags', FormID: 'FormIDs',
 };
 
-
-
-
-
-
-
-
-
 export default function ConflictsView({
   matrix, rows, layout, onLayoutChange, matrixView, anchors,
 }: ConflictsViewProps) {
@@ -49,8 +41,6 @@ export default function ConflictsView({
   const shown = useMemo(
     () => (kind === 'All' ? rows : rows.filter(r => (r.Kind ?? 'Value') === kind)),
     [rows, kind]);
-
-
 
   const groups = useMemo(() => {
     const out: { key: string; label: string; rows: ConflictFieldRow[] }[] = [];
@@ -191,8 +181,6 @@ function ConflictCard({ row, matrix, baseCol, winnerCol }: {
   const winPlugin = matrix.Plugins[winnerCol] ?? matrix.Winner;
   const baseValue = row.Values[baseCol] ?? '';
   const winValue = row.Values[winnerCol] ?? '';
-
-
 
   const others = matrix.Plugins.filter(
     (_, i) => i !== baseCol && i !== winnerCol && (row.Values[i] ?? '') !== '');

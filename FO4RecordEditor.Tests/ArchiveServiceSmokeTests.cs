@@ -7,11 +7,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
 public class ArchiveServiceSmokeTests
 {
     private readonly ITestOutputHelper _out;

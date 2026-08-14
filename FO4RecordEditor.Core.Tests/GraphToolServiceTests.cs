@@ -4,19 +4,9 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class GraphToolServiceTests
 {
     private static string Roots => TestRoots.BaseStubs;
-
 
     private static T WithGraph<T>(GraphDocument document, System.Func<string, T> work)
     {
@@ -53,8 +43,6 @@ public class GraphToolServiceTests
         graph.Wire(entry, PinIds.Exec, wait, PinIds.Exec);
         return graph.Document;
     }
-
-
 
     [Fact]
     public void Validating_a_good_graph_reports_ok_with_its_size()
@@ -99,8 +87,6 @@ public class GraphToolServiceTests
         }
     }
 
-
-
     [Fact]
     public void Compiling_source_only_returns_the_generated_script()
     {
@@ -136,7 +122,6 @@ public class GraphToolServiceTests
     public void A_failed_compile_shows_the_generated_source_it_could_not_use()
     {
 
-
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
         var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -149,8 +134,6 @@ public class GraphToolServiceTests
         text.Should().Contain(GraphDiagnosticCodes.UnconnectedSelf);
         text.Should().Contain("node n");
     }
-
-
 
     [Fact]
     public void Searching_the_palette_returns_definition_ids_and_a_true_total()

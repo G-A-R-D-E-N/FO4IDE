@@ -1,13 +1,4 @@
 
-
-
-
-
-
-
-
-
-
 type Listener = (e: { data: unknown }) => void;
 
 const HOST_OBJECTS = [
@@ -26,8 +17,6 @@ async function call(target: string, method: string, args: unknown[]): Promise<un
   if (!body.ok) throw new Error(`${target}.${method}: ${body.error ?? 'unknown error'}`);
   return body.value;
 }
-
-
 
 function hostObject(name: string) {
   return new Proxy(function () {} as unknown as Record<string, unknown>, {
@@ -51,7 +40,6 @@ function install() {
   };
 
   (window as unknown as { chrome: unknown }).chrome = { ...(window as any).chrome, webview };
-
 
   const source = new EventSource('/events');
   source.onmessage = ev => {

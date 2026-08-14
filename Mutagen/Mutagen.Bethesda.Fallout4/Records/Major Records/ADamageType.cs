@@ -14,7 +14,7 @@ public partial class ADamageType
         var majorMeta = frame.GetMajorRecord();
         if (majorMeta.FormVersion >= 78)
         {
-            return DamageType.CreateFromBinary(frame, translationParams); 
+            return DamageType.CreateFromBinary(frame, translationParams);
         }
         else
         {

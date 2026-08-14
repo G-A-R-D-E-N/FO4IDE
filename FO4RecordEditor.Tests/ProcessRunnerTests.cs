@@ -6,14 +6,10 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class ProcessRunnerTests
 {
     private readonly ITestOutputHelper _out;
     public ProcessRunnerTests(ITestOutputHelper o) => _out = o;
-
 
     private static ProcessStartInfo ChattyOnStderr() => PowerShell(
         "$e=[Console]::Error; 1..2000 | ForEach-Object { $e.WriteLine('x' * 200) }; " +
@@ -96,7 +92,6 @@ public class ProcessRunnerTests
         var act = () => ProcessRunner.Run(
             new ProcessStartInfo { FileName = "definitely_not_a_real_program_xyz.exe" },
             TimeSpan.FromSeconds(5));
-
 
         act.Should().Throw<System.ComponentModel.Win32Exception>();
     }

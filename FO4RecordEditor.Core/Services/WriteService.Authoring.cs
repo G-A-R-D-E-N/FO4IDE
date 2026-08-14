@@ -8,19 +8,8 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
 public static partial class WriteService
 {
-
-
-
 
     public static IFallout4MajorRecord? CreateForScript(string patchPlugin, object? env, string sig, string editorId)
     {
@@ -40,9 +29,6 @@ public static partial class WriteService
         if (rec != null) { MutagenLoader.InvalidateModIndex(name); NotifyChanged(name); }
         return rec;
     }
-
-
-
 
     public static string AddLeveledEntry(string plugin, string recordId, string reference,
         int level, int count, double chanceNonePercent, object? env)
@@ -85,13 +71,6 @@ public static partial class WriteService
         return $"Added leveled entry ({reference} lvl{level} x{count}) to {recordId} in {plugin}. save_plugin to persist.";
     }
 
-
-
-
-
-
-
-
     public static string SetPerkEffects(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -113,7 +92,6 @@ public static partial class WriteService
                 {
                     case "ability":
                     {
-
 
                         if (!el.TryGetProperty("ability", out var abEl) || abEl.GetString() is not { } abStr
                             || !ResolveFk(env, abStr, out var abFk))
@@ -161,7 +139,6 @@ public static partial class WriteService
                 eff.Rank = (byte)JInt(el, "rank", 0);
                 eff.Priority = (byte)JInt(el, "priority", 0);
 
-
                 var tabs = new HashSet<byte>();
                 if (el.TryGetProperty("conditions", out var condArr) && condArr.ValueKind == JsonValueKind.Array)
                 {
@@ -201,14 +178,10 @@ public static partial class WriteService
         return true;
     }
 
-
-
-
     public static string SetMagicEffects(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
         var rec = FindMutableRecord(mod, recordId); if (rec == null) return ToolError.Fail($"Record '{recordId}' not found in {plugin}.");
-
 
         if (rec is not (Spell or ObjectEffect))
             return $"set_magic_effects requires a SPEL or ENCH record, got {rec.GetType().Name}.";
@@ -252,10 +225,6 @@ public static partial class WriteService
         return msg + " save_plugin to persist.";
     }
 
-
-
-
-
     public static string SetQuestAliases(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -292,8 +261,6 @@ public static partial class WriteService
         return msg + " save_plugin to persist.";
     }
 
-
-
     public static string SetQuestStages(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -328,8 +295,6 @@ public static partial class WriteService
         return $"Set {built.Count} quest stage(s) on {recordId} in {plugin}. save_plugin to persist.";
     }
 
-
-
     public static string SetQuestObjectives(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -360,11 +325,6 @@ public static partial class WriteService
         return $"Set {built.Count} quest objective(s) on {recordId} in {plugin}. save_plugin to persist.";
     }
 
-
-
-
-
-
     public static string SetMessageButtons(string plugin, string recordId, string json, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -390,23 +350,12 @@ public static partial class WriteService
         m.MenuButtons.Clear();
         foreach (var b in built) m.MenuButtons.Add(b);
 
-
-
         TrySetNullableEnumFlags(m, "Flags", "MessageBox");
 
         MutagenLoader.InvalidateModIndex(plugin); NotifyChanged(plugin);
         var idx = string.Join(", ", built.Select((b, i) => $"{i}={b.Text}"));
         return $"Set {built.Count} menu button(s) on {recordId} in {plugin} and flagged it MessageBox. Show() returns: {idx}. save_plugin to persist.";
     }
-
-
-
-
-
-
-
-
-
 
     public static string SetFurnitureMarkers(string plugin, string recordId, string json, object? env)
     {
@@ -441,9 +390,6 @@ public static partial class WriteService
         return $"Set {built.Count} furniture marker(s) on {recordId} in {plugin}. save_plugin to persist.";
     }
 
-
-
-
     private static Condition? BuildConditionFromJson(JsonElement el, object? env, out string err)
     {
         err = "";
@@ -477,8 +423,6 @@ public static partial class WriteService
         return c2;
     }
 
-
-
     private static int JInt(JsonElement el, string name, int def)
     {
         if (!el.TryGetProperty(name, out var p)) return def;
@@ -495,8 +439,6 @@ public static partial class WriteService
                 System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var sn)) return sn;
         return def;
     }
-
-
 
     private static void TrySetNullableEnumFlags(object obj, string propName, string? csv)
     {

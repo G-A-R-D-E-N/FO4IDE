@@ -4,9 +4,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class ConflictStatusTests
 {
     [Fact]

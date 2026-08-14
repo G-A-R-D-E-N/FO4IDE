@@ -5,22 +5,9 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
-
-
-
-
-
-
-
 [DebuggerDisplay("ModKey {FileName}")]
 public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
 {
-
-
 
     public static readonly ModKey Null = new ModKey(null!, type: ModType.Master);
 
@@ -29,18 +16,9 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
     private readonly string? _name;
     private readonly int _hash;
 
-
-
-
     public string Name => _name ?? string.Empty;
 
-
-
-
     public ModType Type { get; }
-
-
-
 
     public FileName FileName => new FileName(this.ToString(), check: false);
 
@@ -55,11 +33,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
 
     public bool IsNull => string.IsNullOrWhiteSpace(_name);
 
-
-
-
-
-
     public ModKey(
         string? name,
         ModType type)
@@ -71,7 +44,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         }
         this._name = name == null ? null : string.Intern(name);
         this.Type = type;
-
 
         var nameHash = (_name?.Equals(string.Empty) ?? true) ? 0 : _name.GetHashCode(StringComparison.OrdinalIgnoreCase);
         if (nameHash != 0)
@@ -92,12 +64,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return -1 != str.IndexOfAny(InvalidChars);
     }
 
-
-
-
-
-
-
     public bool Equals(ModKey other)
     {
         return (IsNull && other.IsNull)
@@ -105,30 +71,16 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
                    && string.Equals(this.Name, other.Name, StringComparison.OrdinalIgnoreCase));
     }
 
-
-
-
-
-
-
     public override bool Equals(object? obj)
     {
         if (obj is not ModKey key) return false;
         return Equals(key);
     }
 
-
-
-
-
     public override int GetHashCode()
     {
         return _hash;
     }
-
-
-
-
 
     public override string ToString()
     {
@@ -140,14 +92,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
             modKey.Type.GetFileExtension().AsSpan().CopyTo(chars.Slice(modKey.Name.Length + 1));
         });
     }
-
-
-
-
-
-
-
-
 
     public static bool TryFromNameAndExtension(ReadOnlySpan<char> str, [MaybeNullWhen(false)] out ModKey modKey, out string errorReason)
     {
@@ -180,14 +124,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return TryFromName(str.Slice(0, index), type, out modKey, out errorReason);
     }
 
-
-
-
-
-
-
-
-
     public static bool TryFromNameAndExtension(string? str, [MaybeNullWhen(false)] out ModKey modKey, out string errorReason)
     {
         if (str == null)
@@ -200,35 +136,15 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return TryFromNameAndExtension((ReadOnlySpan<char>)str, out modKey, out errorReason);
     }
 
-
-
-
-
-
-
-
     public static bool TryFromNameAndExtension(ReadOnlySpan<char> str, [MaybeNullWhen(false)] out ModKey modKey)
     {
         return TryFromNameAndExtension(str, out modKey, out _);
     }
 
-
-
-
-
-
-
-
     public static bool TryFromNameAndExtension(string? str, [MaybeNullWhen(false)] out ModKey modKey)
     {
         return TryFromNameAndExtension(str, out modKey, out _);
     }
-
-
-
-
-
-
 
     public static ModKey? TryFromNameAndExtension(ReadOnlySpan<char> str)
     {
@@ -240,12 +156,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return default;
     }
 
-
-
-
-
-
-
     public static ModKey? TryFromNameAndExtension(string? str)
     {
         if (TryFromNameAndExtension(str, out var modKey, out _))
@@ -255,14 +165,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
 
         return default;
     }
-
-
-
-
-
-
-
-
 
     public static bool TryFromFileName(FileName? fileName, [MaybeNullWhen(false)] out ModKey modKey, out string errorReason)
     {
@@ -275,23 +177,10 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return TryFromNameAndExtension(fileName.Value.String, out modKey, out errorReason);
     }
 
-
-
-
-
-
-
-
     public static bool TryFromFileName(FileName? fileName, [MaybeNullWhen(false)] out ModKey modKey)
     {
         return TryFromFileName(fileName, out modKey, out _);
     }
-
-
-
-
-
-
 
     public static ModKey? TryFromFileName(FileName? fileName)
     {
@@ -389,13 +278,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         return true;
     }
 
-
-
-
-
-
-
-
     public static ModKey FromNameAndExtension(ReadOnlySpan<char> str)
     {
         if (TryFromNameAndExtension(str, out var key))
@@ -408,13 +290,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
         }
         throw new ArgumentException($"Could not construct ModKey: {str}", nameof(str));
     }
-
-
-
-
-
-
-
 
     public static ModKey FromFileName(FileName fileName)
     {
@@ -506,7 +381,6 @@ public readonly struct ModKey : IEquatable<ModKey>, IModKeyed
             return xIndex.CompareTo(yIndex);
         }
     }
-
 
     private static int IndexOf<T>(IReadOnlyList<T> list, T item)
     {

@@ -7,15 +7,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class PapyrusTypeCheckerTests : IDisposable
 {
     private readonly string _root;
@@ -50,7 +41,6 @@ public class PapyrusTypeCheckerTests : IDisposable
         return new PapyrusTypeChecker(index).Check(resolution);
     }
 
-
     private void WriteWithHierarchy(string body, string members = "")
     {
         Write("Form", "ScriptName Form");
@@ -63,8 +53,6 @@ Function Go()
 {body}
 EndFunction");
     }
-
-
 
     [Fact]
     public void Assigning_a_string_to_an_int_is_rejected()

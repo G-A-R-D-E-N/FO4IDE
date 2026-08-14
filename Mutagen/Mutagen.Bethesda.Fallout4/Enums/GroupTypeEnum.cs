@@ -1,8 +1,5 @@
 namespace Mutagen.Bethesda.Fallout4;
 
-
-
-
 public enum GroupTypeEnum
 {
     Type = 0,

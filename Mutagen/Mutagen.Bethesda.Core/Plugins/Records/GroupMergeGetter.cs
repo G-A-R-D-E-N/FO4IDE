@@ -31,7 +31,7 @@ internal sealed class GroupMergeGetter<TGroup, TMajor> : IGroupGetter<TMajor>, I
 
     public int Count => SubGroups.Sum(x => x.Count);
     public IEnumerable<FormKey> FormKeys => SubGroups.SelectMany(x => x.FormKeys);
-    
+
     public IEnumerable<TMajor> Records => SubGroups.SelectMany(x => x.Records);
     IEnumerable<IMajorRecordGetter> IGroupGetter.Records => Records;
     IEnumerable<ILoquiObject> IGroupCommonGetter.Records => Records;
@@ -61,7 +61,7 @@ internal sealed class GroupMergeGetter<TGroup, TMajor> : IGroupGetter<TMajor>, I
 
         throw new KeyNotFoundException();
     }
-    
+
     public bool ContainsKey(FormKey key)
     {
         foreach (var subGroup in SubGroups)

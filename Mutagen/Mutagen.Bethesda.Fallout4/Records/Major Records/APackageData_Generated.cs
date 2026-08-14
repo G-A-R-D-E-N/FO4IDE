@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -40,8 +36,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public partial class APackageData :
         IAPackageData,
         IEquatable<IAPackageDataGetter>,
@@ -56,8 +50,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -470,8 +462,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAPackageData :
         IAPackageDataGetter,
         IFormLinkContainer,
@@ -480,14 +470,9 @@ namespace Mutagen.Bethesda.Fallout4
         INamedRequired
     {
 
-
-
         new String? Name { get; set; }
         new APackageData.Flag? Flags { get; set; }
     }
-
-
-
 
     public partial interface IAPackageDataGetter :
         ILoquiObject,
@@ -505,8 +490,6 @@ namespace Mutagen.Bethesda.Fallout4
         object CommonSetterTranslationInstance();
         static ILoquiRegistration StaticRegistration => APackageData_Registration.Instance;
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -911,7 +894,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return APackageData.GetNew();
@@ -1123,7 +1105,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

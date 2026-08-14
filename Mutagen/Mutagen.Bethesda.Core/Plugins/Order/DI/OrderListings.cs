@@ -2,26 +2,10 @@
 
 namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-
-
-
 public interface IOrderListings
 {
 
-
-
-
-
-
     IEnumerable<T> Order<T>(IEnumerable<T> e, Func<T, ModKey> selector);
-
-
-
-
-
-
-
-
 
     IEnumerable<T> Order<T>(
         IEnumerable<T> implicitListings,
@@ -37,7 +21,6 @@ public sealed class OrderListings : IOrderListings
     {
         return e.OrderBy(e => selector(e).Type);
     }
-
 
     public IEnumerable<T> Order<T>(
         IEnumerable<T> implicitListings,

@@ -17,7 +17,7 @@ public sealed class RecordLocator
     private readonly FileLocationConstructor _locs;
     private readonly RecordInterest? _interest;
     private ImmutableStack<GroupLocationMarker> _parentGroupLocations = ImmutableStack<GroupLocationMarker>.Empty;
-    
+
     private RecordLocator(FileLocationConstructor locs, RecordInterest? interest)
     {
         _locs = locs;
@@ -25,7 +25,7 @@ public sealed class RecordLocator
     }
 
     #region Get File Locations
-    
+
     internal class FileLocationConstructor
     {
         public Dictionary<FormKey, (RangeInt64 Range, IEnumerable<GroupLocationMarker> GroupPositions, RecordType Record)> FromFormKeys = new();
@@ -68,7 +68,7 @@ public sealed class RecordLocator
         using var stream = new MutagenBinaryReadStream(
             filePath,
             new ParsingMeta(
-                release, 
+                release,
                 filePath.ModKey,
                 SeparatedMasterPackage.Factory(release, filePath, loadOrder, fileSystem))
             {
@@ -87,7 +87,7 @@ public sealed class RecordLocator
         using var stream = new MutagenBinaryReadStream(
             filePath,
             new ParsingMeta(
-                constants, 
+                constants,
                 filePath.ModKey,
                 masters)
             {
@@ -163,18 +163,18 @@ public sealed class RecordLocator
         reader.Position += groupPin.HeaderLength;
 
         using var frame = MutagenFrame.ByFinalPosition(reader, reader.Position + groupPin.ContentLength);
-        
+
         bool registered = false;
         while (!frame.Complete)
         {
             MajorRecordHeader majorRecordMeta = frame.GetMajorRecordHeader();
             var targetRec = majorRecordMeta.RecordType;
-            
+
             if (frame.TryGetGroupHeader(out var followupNestedGroup)
                 && followupNestedGroup.CanHaveSubGroups)
             {
                 var nestedGroupType = followupNestedGroup.GroupType;
-                var nextNesting = nesting?.Underneath.FirstOrDefault(x => x.GroupType == nestedGroupType) 
+                var nextNesting = nesting?.Underneath.FirstOrDefault(x => x.GroupType == nestedGroupType)
                                   ?? reader.MetaData.Constants.GroupConstants.TryGetNesting(nestedGroupType);
                 if (nextNesting == null)
                 {
@@ -192,7 +192,7 @@ public sealed class RecordLocator
                 reader.Position += majorRecordMeta.TotalLength;
                 continue;
             }
-            
+
             if (IsInterested(targetRec))
             {
                 var pos = reader.Position;

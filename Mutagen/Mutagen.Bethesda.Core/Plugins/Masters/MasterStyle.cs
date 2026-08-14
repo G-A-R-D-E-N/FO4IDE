@@ -10,7 +10,7 @@ internal static class MasterStyleConstruction
     {
         bool small = constants.SmallMasterFlag.HasValue && Enums.HasFlag(flags, constants.SmallMasterFlag.Value);
         bool medium = constants.MediumMasterFlag.HasValue && Enums.HasFlag(flags, constants.MediumMasterFlag.Value);
-        
+
         if (small && medium)
         {
             throw new ModHeaderMalformedException(

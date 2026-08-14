@@ -6,27 +6,12 @@ using Newtonsoft.Json.Linq;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
 public readonly record struct PinRef(string Node, string Pin)
 {
     public override string ToString() => $"{Node}:{Pin}";
 
     public bool IsEmpty => string.IsNullOrEmpty(Node) || string.IsNullOrEmpty(Pin);
 }
-
-
-
-
-
-
-
-
 
 public enum GraphNodeKind
 {
@@ -74,33 +59,19 @@ public enum GraphNodeKind
     Comment,
 }
 
-
 public sealed class GraphPinValue
 {
 
     public string Type { get; set; } = "";
-
 
     public string Value { get; set; } = "";
 
     public override string ToString() => $"{Type}:{Value}";
 }
 
-
-
-
-
-
-
-
-
-
-
-
 public sealed class GraphNode
 {
     public string Id { get; set; } = "";
-
 
     [JsonProperty("def")]
     public string Definition { get; set; } = "";
@@ -113,19 +84,15 @@ public sealed class GraphNode
 
     public string? Comment { get; set; }
 
-
     public JObject Config { get; set; } = new();
-
 
     public Dictionary<string, GraphPinValue> PinValues { get; set; } =
         new(StringComparer.OrdinalIgnoreCase);
-
 
     public string? ConfigString(string key) => Config[key]?.Value<string>();
 
     public override string ToString() => $"{Kind} {Definition} ({Id})";
 }
-
 
 public sealed class GraphWire
 {
@@ -138,22 +105,18 @@ public sealed class GraphWire
     public override string ToString() => $"{From} -> {To}";
 }
 
-
 public sealed class GraphVariable
 {
     public string Name { get; set; } = "";
 
     public string Type { get; set; } = "";
 
-
     public bool IsProperty { get; set; }
-
 
     public string? Initial { get; set; }
 
     public List<string> Flags { get; set; } = new();
 }
-
 
 public sealed class GraphStruct
 {
@@ -161,7 +124,6 @@ public sealed class GraphStruct
 
     public List<GraphVariable> Members { get; set; } = new();
 }
-
 
 public sealed class GraphScriptHeader
 {
@@ -175,33 +137,16 @@ public sealed class GraphScriptHeader
 
     public string? DocComment { get; set; }
 
-
-
-
-
-
-
-
-
     public string? AutoState { get; set; }
 }
-
 
 public enum GraphKind
 {
 
     PapyrusScript = 0,
 
-
     F4SEBinding = 1,
 }
-
-
-
-
-
-
-
 
 public sealed class GraphDocument
 {
@@ -220,13 +165,6 @@ public sealed class GraphDocument
 
     public List<GraphStruct> Structs { get; set; } = new();
 
-
-
-
-
-
-
-
     public List<string> CustomEvents { get; set; } = new();
 
     public List<GraphNode> Nodes { get; set; } = new();
@@ -234,7 +172,6 @@ public sealed class GraphDocument
     public List<GraphWire> Wires { get; set; } = new();
 
     private Dictionary<string, GraphNode>? _byId;
-
 
     public GraphNode? Node(string? id)
     {
@@ -245,7 +182,6 @@ public sealed class GraphDocument
         return _byId.TryGetValue(id, out var node) ? node : null;
     }
 
-
     public void Invalidate() => _byId = null;
 
     public IEnumerable<GraphWire> Into(PinRef pin) =>
@@ -253,7 +189,6 @@ public sealed class GraphDocument
 
     public IEnumerable<GraphWire> OutOf(PinRef pin) =>
         Wires.Where(w => Same(w.From, pin));
-
 
     public IEnumerable<GraphWire> Touching(string nodeId) =>
         Wires.Where(w =>

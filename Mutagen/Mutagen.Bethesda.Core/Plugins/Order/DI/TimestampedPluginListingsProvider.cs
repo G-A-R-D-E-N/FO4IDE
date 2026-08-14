@@ -41,7 +41,7 @@ public sealed class TimestampedPluginListingsProvider : ITimestampedPluginListin
         var mods = RawListingsReader.Read(ListingsPathContext.Path);
         return Aligner.AlignToTimestamps(
             mods,
-            DirectoryProvider.Path, 
+            DirectoryProvider.Path,
             throwOnMissingMods: Prefs.ThrowOnMissingMods);
     }
 }

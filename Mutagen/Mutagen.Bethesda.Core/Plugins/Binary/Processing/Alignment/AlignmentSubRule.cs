@@ -4,9 +4,6 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Processing.Alignment;
 
-
-
-
 public sealed class AlignmentSubRule : AlignmentRule
 {
     public List<RecordType> SubTypes;

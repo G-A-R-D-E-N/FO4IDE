@@ -3,25 +3,11 @@ import { NODE_WIDTH, nodeHeight } from './graphModel';
 
 export interface Point { x: number; y: number }
 
-
 export const COLUMN_GAP = 90;
-
 
 export const ROW_GAP = 28;
 
-
 export const LAYOUT_ORIGIN: Point = { x: 40, y: 40 };
-
-
-
-
-
-
-
-
-
-
-
 
 export function autoLayout(doc: BpDocument, defs: Record<string, BpNodeDef>): Record<string, Point> {
   if (doc.nodes.length === 0) return {};
@@ -36,7 +22,6 @@ export function autoLayout(doc: BpDocument, defs: Record<string, BpNodeDef>): Re
 
   return position(doc, defs, rank, forward);
 }
-
 
 function executionEdges(
   doc: BpDocument,
@@ -56,14 +41,6 @@ function executionEdges(
     .map((w) => ({ from: w.from.node, to: w.to.node }));
 }
 
-
-
-
-
-
-
-
-
 function backEdges(doc: BpDocument, edges: Array<{ from: string; to: string }>): Set<number> {
   const outgoing = new Map<string, Array<{ index: number; to: string }>>();
   edges.forEach((edge, index) => {
@@ -79,8 +56,6 @@ function backEdges(doc: BpDocument, edges: Array<{ from: string; to: string }>):
 
   for (const root of doc.nodes) {
     if (colour.get(root.id) !== WHITE) continue;
-
-
 
     const stack: Array<{ id: string; next: number }> = [{ id: root.id, next: 0 }];
     colour.set(root.id, GREY);
@@ -109,7 +84,6 @@ function backEdges(doc: BpDocument, edges: Array<{ from: string; to: string }>):
   return back;
 }
 
-
 function normalise(rank: Map<string, number>): void {
   let least = 0;
   for (const value of rank.values()) least = Math.min(least, value);
@@ -117,13 +91,6 @@ function normalise(rank: Map<string, number>): void {
 
   for (const [id, value] of rank) rank.set(id, value - least);
 }
-
-
-
-
-
-
-
 
 function rankNodes(doc: BpDocument, edges: Array<{ from: string; to: string }>): Map<string, number> {
   const rank = new Map(doc.nodes.map((n) => [n.id, 0]));
@@ -143,12 +110,6 @@ function rankNodes(doc: BpDocument, edges: Array<{ from: string; to: string }>):
   return rank;
 }
 
-
-
-
-
-
-
 function placePureProducers(
   doc: BpDocument,
   defs: Record<string, BpNodeDef>,
@@ -161,16 +122,12 @@ function placePureProducers(
   );
   if (pure.size === 0) return;
 
-
   for (let pass = 0; pass < doc.nodes.length; pass++) {
     let changed = false;
 
     for (const id of pure) {
       const consumers = doc.wires.filter((w) => w.from.node === id).map((w) => w.to.node);
       if (consumers.length === 0) continue;
-
-
-
 
       const target = Math.min(...consumers.map((c) => rank.get(c) ?? 0)) - 1;
       if (target !== rank.get(id)) {
@@ -182,14 +139,6 @@ function placePureProducers(
     if (!changed) break;
   }
 }
-
-
-
-
-
-
-
-
 
 function position(
   doc: BpDocument,
@@ -245,7 +194,6 @@ function position(
   }
 }
 
-
 export function graphBounds(
   doc: BpDocument,
   defs: Record<string, BpNodeDef>,
@@ -273,12 +221,6 @@ export interface MinimapFit {
   offsetY: number;
 }
 
-
-
-
-
-
-
 export function minimapFit(
   bounds: { x: number; y: number; w: number; h: number } | null,
   width: number,
@@ -299,7 +241,6 @@ export function minimapFit(
     offsetY: padding + (usableHeight - bounds.h * scale) / 2 - bounds.y * scale,
   };
 }
-
 
 export function minimapToWorld(point: Point, fit: MinimapFit): Point {
   return {

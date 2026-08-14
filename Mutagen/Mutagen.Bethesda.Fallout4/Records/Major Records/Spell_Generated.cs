@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #region ObjectBounds
 
-
-
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IObjectBoundsGetter ISpellGetter.ObjectBounds => ObjectBounds;
@@ -77,8 +71,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -115,8 +107,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
@@ -1188,15 +1178,9 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new IFormLinkNullable<IEquipTypeGetter> EquipmentType { get; set; }
@@ -1245,19 +1229,13 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Spell_Registration.Instance;
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
@@ -1996,7 +1974,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Spell.GetNew();
@@ -2646,7 +2623,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2680,7 +2656,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ISpellGetter);
-
 
         #region ObjectBounds
         private RangeInt32? _ObjectBoundsLocation;

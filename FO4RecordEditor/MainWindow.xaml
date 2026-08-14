@@ -27,7 +27,6 @@
       <wv2:WebView2 x:Name="AppWebView" />
     </Grid>
 
-
     <Border x:Name="PaletteOverlay" Grid.RowSpan="2" Background="#88000000" Visibility="Collapsed">
       <ContentControl x:Name="PaletteHost" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,80,0,0"/>
     </Border>

@@ -7,14 +7,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
 public class EnvParameterContractTests
 {
     private readonly ITestOutputHelper _out;
@@ -38,8 +30,6 @@ public class EnvParameterContractTests
             "a defaulted env can be omitted silently, which disables load-order master ordering and " +
             "produces a plugin that hangs the game on load -- pass null explicitly if you truly have none");
     }
-
-
 
     [Theory]
     [InlineData("SavePlugin")]

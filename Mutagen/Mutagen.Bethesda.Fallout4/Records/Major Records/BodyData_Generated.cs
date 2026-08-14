@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -61,8 +57,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -480,8 +474,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new BodyData.PartIndex? Index { get; set; }
 
-
-
         new Model? Model { get; set; }
     }
 
@@ -501,8 +493,6 @@ namespace Mutagen.Bethesda.Fallout4
         static ILoquiRegistration StaticRegistration => BodyData_Registration.Instance;
         BodyData.PartIndex? Index { get; }
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -918,7 +908,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return BodyData.GetNew();
@@ -1191,7 +1180,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

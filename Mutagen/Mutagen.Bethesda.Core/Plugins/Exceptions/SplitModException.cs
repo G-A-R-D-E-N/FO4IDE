@@ -1,8 +1,5 @@
 ﻿namespace Mutagen.Bethesda.Plugins.Exceptions;
 
-
-
-
 public class SplitModException : Exception
 {
     public SplitModException(string message) : base(message) { }

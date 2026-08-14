@@ -3,17 +3,9 @@ namespace Mutagen.Bethesda.Plugins;
 public enum ModType
 {
 
-
-
     Master,
 
-
-
-
     Light,
-
-
-
 
     Plugin,
 }

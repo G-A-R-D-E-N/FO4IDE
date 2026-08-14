@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
         public UInt32 ID { get; set; } = default(UInt32);
         #endregion
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -854,8 +848,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new UInt32 ID { get; set; }
 
-
-
         new String? Name { get; set; }
         new AQuestAlias.Flag? Flags { get; set; }
         new Int32? AliasIDToForceIntoWhenFilled { get; set; }
@@ -878,8 +870,6 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => QuestLocationAlias_Registration.Instance;
         UInt32 ID { get; }
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -1492,7 +1482,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return QuestLocationAlias.GetNew();
@@ -2011,7 +2000,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

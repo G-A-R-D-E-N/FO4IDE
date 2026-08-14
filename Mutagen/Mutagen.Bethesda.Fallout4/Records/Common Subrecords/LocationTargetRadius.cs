@@ -29,7 +29,7 @@ public partial class LocationTargetRadius
         AliasForCollection = 14
     }
 }
-    
+
 partial class LocationTargetRadiusBinaryCreateTranslation
 {
     public static ALocationTarget GetLocationTarget(MutagenFrame frame)
@@ -120,7 +120,7 @@ partial class LocationTargetRadiusBinaryOverlay
     public partial IALocationTargetGetter GetTargetCustom(int location);
     public IALocationTargetGetter Target => GetTargetCustom(location: 0x0);
     #endregion
-    
+
     public partial IALocationTargetGetter GetTargetCustom(int location)
     {
         return LocationTargetRadiusBinaryCreateTranslation.GetLocationTarget(

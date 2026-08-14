@@ -4,15 +4,6 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class GraphStateTests
 {
     private static string Source(GraphDocument document)
@@ -59,7 +50,6 @@ public class GraphStateTests
         source.Should().Contain("State Busy");
         source.Should().Contain("EndState");
 
-
         var stateStart = source.IndexOf("State Busy", System.StringComparison.Ordinal);
         var stateEnd = source.IndexOf("EndState", System.StringComparison.Ordinal);
         source[stateStart..stateEnd].Should().Contain("Enable()");
@@ -101,7 +91,6 @@ public class GraphStateTests
     [Fact]
     public void A_starting_state_nothing_declares_is_refused()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = TwoStates(palette, out _, out _);
@@ -180,7 +169,6 @@ public class GraphStateTests
     [Fact]
     public void Sibling_entries_do_not_make_each_other_look_unreachable()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");

@@ -21,9 +21,6 @@ public partial class Condition
 
     internal const int UseGlobal = 0x04;
 
-
-
-
     [Flags]
     public enum Flag
     {

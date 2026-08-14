@@ -15,9 +15,6 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Translations;
 
-
-
-
 internal record BinaryReadBuilderParams<TMod, TModGetter, TGroupMask>
     where TMod : IMod
     where TModGetter : class, IModDisposeGetter
@@ -40,9 +37,6 @@ internal record BinaryReadBuilderParams<TMod, TModGetter, TGroupMask>
     internal bool _hasLinkCacheCall { get; init; }
 }
 
-
-
-
 internal interface IBinaryReadBuilderInstantiator<TMod, TModGetter, TGroupMask>
     where TMod : IMod
     where TModGetter : class, IModDisposeGetter
@@ -50,9 +44,6 @@ internal interface IBinaryReadBuilderInstantiator<TMod, TModGetter, TGroupMask>
     TMod Mutable(BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> builder);
     TModGetter Readonly(BinaryReadBuilder<TMod, TModGetter, TGroupMask> builder);
 }
-
-
-
 
 public class BinaryReadBuilderSourceChoice<TMod, TModGetter, TGroupMask>
     where TMod : IMod
@@ -72,13 +63,6 @@ public class BinaryReadBuilderSourceChoice<TMod, TModGetter, TGroupMask>
         _needsRecordTypeInfoCacheReader = needsRecordTypeInfoCacheReader;
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> FromPath(
         ModPath path)
     {
@@ -92,12 +76,6 @@ public class BinaryReadBuilderSourceChoice<TMod, TModGetter, TGroupMask>
                 _needsRecordTypeInfoCacheReader = _needsRecordTypeInfoCacheReader
             });
     }
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> FromStream(
         Stream stream,
@@ -114,9 +92,6 @@ public class BinaryReadBuilderSourceChoice<TMod, TModGetter, TGroupMask>
             });
     }
 }
-
-
-
 
 public class BinaryReadBuilderSourceStreamFactoryChoice<TMod, TModGetter, TGroupMask>
     where TMod : IMod
@@ -136,13 +111,6 @@ public class BinaryReadBuilderSourceStreamFactoryChoice<TMod, TModGetter, TGroup
         _needsRecordTypeInfoCacheReader = needsRecordTypeInfoCacheReader;
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> FromPath(ModPath path)
     {
         return new BinaryReadBuilder<TMod, TModGetter, TGroupMask>(
@@ -155,16 +123,6 @@ public class BinaryReadBuilderSourceStreamFactoryChoice<TMod, TModGetter, TGroup
                 _needsRecordTypeInfoCacheReader = _needsRecordTypeInfoCacheReader
             });
     }
-
-
-
-
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> FromStreamFactory(
         Func<Stream> streamFactory,
@@ -181,10 +139,6 @@ public class BinaryReadBuilderSourceStreamFactoryChoice<TMod, TModGetter, TGroup
             });
     }
 }
-
-
-
-
 
 public class BinaryReadBuilderSeparatedSourceChoice<TMod, TModGetter, TGroupMask>
     where TMod : IMod
@@ -204,13 +158,6 @@ public class BinaryReadBuilderSeparatedSourceChoice<TMod, TModGetter, TGroupMask
         _needsRecordTypeInfoCacheReader = needsRecordTypeInfoCacheReader;
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask> FromPath(
         ModPath path)
     {
@@ -224,12 +171,6 @@ public class BinaryReadBuilderSeparatedSourceChoice<TMod, TModGetter, TGroupMask
                 _needsRecordTypeInfoCacheReader = _needsRecordTypeInfoCacheReader
             });
     }
-
-
-
-
-
-
 
     public BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask> FromStream(
         Stream stream,
@@ -247,9 +188,6 @@ public class BinaryReadBuilderSeparatedSourceChoice<TMod, TModGetter, TGroupMask
     }
 }
 
-
-
-
 public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
     where TMod : IMod
     where TModGetter : class, IModDisposeGetter
@@ -261,12 +199,6 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
     {
         _param = param;
     }
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithDefaultLoadOrder()
     {
@@ -288,24 +220,10 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
         });
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrder(IEnumerable<ModKey>? loadOrder)
     {
         return WithLoadOrder(loadOrder?.ToArray() ?? []);
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrder(params ModKey[] loadOrder)
     {
@@ -337,24 +255,10 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
         });
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithLoadOrder(IEnumerable<IModMasterStyledGetter>? loadOrder)
     {
         return WithLoadOrder(loadOrder?.ToArray() ?? []);
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithLoadOrder(params IModMasterStyledGetter[] loadOrder)
     {
@@ -368,13 +272,6 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
             }
         });
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithLoadOrder(ILoadOrderGetter<IModMasterStyledGetter>? loadOrder)
     {
@@ -393,20 +290,10 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
         });
     }
 
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithNoLoadOrder()
     {
         return new BinaryReadBuilder<TMod, TModGetter, TGroupMask>(_param);
     }
-
-
-
-
 
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrderFromHeaderMasters()
     {
@@ -459,13 +346,6 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
         });
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithKnownMasters(params IModMasterStyledGetter[] knownMasters)
     {
         var match = _param.KnownMasters.FirstOrDefault(existingKnownMaster =>
@@ -481,23 +361,10 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
         });
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithKnownMasters(params KeyedMasterStyle[] knownMasters)
     {
         return WithKnownMasters(knownMasters.Cast<IModMasterStyledGetter>().ToArray());
     }
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithLinkCache(ILinkCache? linkCache)
     {
@@ -511,9 +378,6 @@ public class BinaryReadBuilderSeparatedChoice<TMod, TModGetter, TGroupMask>
         });
     }
 }
-
-
-
 
 public class BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask>
     where TMod : IMod
@@ -565,19 +429,9 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         _param = param;
     }
 
-
-
-
-
-
-
-
-
-
     public TModGetter Construct()
     {
         _param = BinaryReadBuilderHelper.RunFinalizationSetters(_param);
-
 
         if (_param._autoSplit)
         {
@@ -605,25 +459,12 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         return _param._instantiator.Readonly(this);
     }
 
-
-
-
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> Mutable()
     {
         return new BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask>(_param);
     }
 
     #region Common
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithStringsFolder(DirectoryPath dir)
     {
@@ -642,11 +483,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithStringsParameters(StringsReadParameters param)
     {
         return this with
@@ -660,11 +496,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
             }
         };
     }
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithBsaFolder(DirectoryPath dir)
     {
@@ -683,11 +514,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithEncoding(IMutagenEncodingProvider encodingProvider)
     {
         return this with
@@ -704,13 +530,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
             }
         };
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithTargetLanguage(Language targetLanguage)
     {
@@ -729,11 +548,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithNonTranslatedEncoding(IMutagenEncoding nonTranslatedEncoding)
     {
         return this with
@@ -750,11 +564,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
             }
         };
     }
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithNonLocalizedEncoding(IMutagenEncoding nonLocalizedEncoding)
     {
@@ -773,12 +582,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithUtf8Encoding(bool on = true)
     {
         return this with
@@ -796,10 +599,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> SingleThread()
     {
         return this with
@@ -813,11 +612,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
             }
         };
     }
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> Parallel(bool parallel = true)
     {
@@ -833,11 +627,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> ThrowIfUnknownSubrecord(bool shouldThrow = true)
     {
         return this with
@@ -851,13 +640,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
             }
         };
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithKnownMasters(params IModMasterStyledGetter[] knownMasters)
     {
@@ -876,22 +658,10 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithKnownMasters(params KeyedMasterStyle[] knownMasters)
     {
         return WithKnownMasters(knownMasters.Cast<IModMasterStyledGetter>().ToArray());
     }
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithFileSystem(IFileSystem? fileSystem)
     {
@@ -927,15 +697,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         });
     }
 
-
-
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithAutoSplitSupport()
     {
         return this with
@@ -959,12 +720,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         }
     }
 
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithLinkCache(ILinkCache? linkCache)
     {
         AssertLoadOrderLinkCacheMutualExclusion(isLoadOrderCall: false);
@@ -982,25 +737,11 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         };
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrder(IEnumerable<ModKey>? loadOrder)
     {
         AssertLoadOrderLinkCacheMutualExclusion(isLoadOrderCall: true);
         return WithLoadOrder(loadOrder?.ToArray() ?? []);
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrder(params ModKey[] loadOrder)
     {
@@ -1035,25 +776,11 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
         });
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrder(IEnumerable<IModMasterStyledGetter>? loadOrder)
     {
         AssertLoadOrderLinkCacheMutualExclusion(isLoadOrderCall: true);
         return WithLoadOrder(loadOrder?.ToArray() ?? []);
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrder(params IModMasterStyledGetter[] loadOrder)
     {
@@ -1076,13 +803,6 @@ public record BinaryReadBuilder<TMod, TModGetter, TGroupMask>
             }
         });
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilderDataFolderChoice<TMod, TModGetter, TGroupMask> WithLoadOrder(ILoadOrderGetter<IModMasterStyledGetter>? loadOrder)
     {
@@ -1122,11 +842,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
 
     #region Common
 
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithStringsFolder(DirectoryPath dir)
     {
         return this with
@@ -1144,11 +859,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithStringsParameters(StringsReadParameters param)
     {
         return this with
@@ -1162,11 +872,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
             }
         };
     }
-
-
-
-
-
 
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithBsaFolder(DirectoryPath dir)
     {
@@ -1185,11 +890,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithEncoding(IMutagenEncodingProvider encodingProvider)
     {
         return this with
@@ -1206,13 +906,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
             }
         };
     }
-
-
-
-
-
-
-
 
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithTargetLanguage(Language targetLanguage)
     {
@@ -1231,11 +924,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithNonTranslatedEncoding(IMutagenEncoding nonTranslatedEncoding)
     {
         return this with
@@ -1252,11 +940,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
             }
         };
     }
-
-
-
-
-
 
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithNonLocalizedEncoding(IMutagenEncoding nonLocalizedEncoding)
     {
@@ -1275,12 +958,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithUtf8Encoding(bool on = true)
     {
         return this with
@@ -1298,10 +975,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> SingleThread()
     {
         return this with
@@ -1315,11 +988,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
             }
         };
     }
-
-
-
-
-
 
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> Parallel(bool parallel = true)
     {
@@ -1335,11 +1003,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> ThrowIfUnknownSubrecord(bool shouldThrow = true)
     {
         return this with
@@ -1353,13 +1016,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
             }
         };
     }
-
-
-
-
-
-
-
 
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithKnownMasters(params IModMasterStyledGetter[] knownMasters)
     {
@@ -1378,22 +1034,10 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
-
-
-
     public BinaryReadBuilder<TMod, TModGetter, TGroupMask> WithKnownMasters(params KeyedMasterStyle[] knownMasters)
     {
         return WithKnownMasters(knownMasters.Cast<IModMasterStyledGetter>().ToArray());
     }
-
-
-
-
-
 
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithFileSystem(IFileSystem fileSystem)
     {
@@ -1429,16 +1073,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         });
     }
 
-
-
-
-
-
-
-
-
-
-
     public new BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithAutoSplitSupport()
     {
         return this with
@@ -1452,12 +1086,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
 
     #endregion
 
-
-
-
-
-
-
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithErrorMask(ErrorMaskBuilder? errorMask)
     {
         return this with
@@ -1468,11 +1096,6 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
             }
         };
     }
-
-
-
-
-
 
     public BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> WithGroupMask(TGroupMask mask)
     {
@@ -1485,18 +1108,9 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
         };
     }
 
-
-
-
-
-
-
-
-
     public new TMod Construct()
     {
         _param = BinaryReadBuilderHelper.RunFinalizationSetters(_param);
-
 
         if (_param._autoSplit)
         {
@@ -1512,14 +1126,12 @@ public record BinaryReadMutableBuilder<TMod, TModGetter, TGroupMask> : BinaryRea
                 var splitFiles = MultiModFileAnalysis.GetSplitModFiles(_param._path.Value, fileSystem);
                 var loadOrder = _param.Params.MasterFlagsLookup?.Items.Select(x => x.ModKey) ?? Enumerable.Empty<ModKey>();
 
-
                 using var overlay = ModFactory<TModGetter>.ImportMultiFileGetter(
                     _param.ModKey,
                     splitFiles.Select(f => (ModPath)f.Path),
                     loadOrder,
                     _param.GameRelease,
                     _param.Params);
-
 
                 return (TMod)overlay.DeepCopy();
             }
@@ -1573,7 +1185,6 @@ internal static class BinaryReadBuilderHelper
             {
                 var fileSystem = p.Params.FileSystem.GetOrDefault();
                 var modOverlays = new List<IModGetter>();
-
 
                 var masterFlagsLookup = loadOrder != null && loadOrder.Count > 0
                     ? new LoadOrder<IModMasterStyledGetter>(

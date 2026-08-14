@@ -4,8 +4,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
 public class StdioMcpServerTests
 {
     private static PluginToolExecutor NoEnvExecutor() => new(() => null);
@@ -37,8 +35,6 @@ public class StdioMcpServerTests
     [Fact]
     public void ToolsCall_InvokesExecutor_AndWrapsResultAsTextContent()
     {
-
-
 
         var resp = StdioMcpServer.HandleLine(
             "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\"," +
@@ -74,8 +70,6 @@ public class StdioMcpServerTests
     {
         StdioMcpServer.HandleLine("not json", NoEnvExecutor()).Should().BeNull();
     }
-
-
 
     [Fact]
     public void ToolsCall_UnknownTool_IsReportedAsError()

@@ -11,9 +11,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class ArchiveServiceTests
 {
     private static string BuildTestBa2(params (string path, byte[] content)[] entries)
@@ -35,7 +32,6 @@ public class ArchiveServiceTests
             bw.Write(Encoding.ASCII.GetBytes("GNRL"));
             bw.Write((uint)entries.Length);
             bw.Write((ulong)nameTableOffset);
-
 
             for (int i = 0; i < entries.Length; i++)
             {
@@ -239,8 +235,6 @@ public class ArchiveServiceTests
         finally { try { File.Delete(archive); } catch { } }
     }
 
-
-
     [Fact]
     public void ListArchiveJson_WildcardFilter_MatchesExtension()
     {
@@ -288,7 +282,6 @@ public class ArchiveServiceTests
     [Fact]
     public void ListArchiveJson_SimpleFilterIsUnchanged_PlainSubstring()
     {
-
 
         var archive = BuildTestBa2((@"Meshes\gun*special.nif", Encoding.ASCII.GetBytes("a")));
         try
@@ -466,8 +459,6 @@ public class ArchiveServiceTests
             try { Directory.Delete(outDir, recursive: true); } catch { }
         }
     }
-
-
 
     [Fact]
     public void CompareArchivesJson_ClassifiesAddedRemovedChangedIdentical()

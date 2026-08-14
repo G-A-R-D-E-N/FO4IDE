@@ -4,28 +4,16 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Translations;
 
-
-
-
 internal static class GlobalCustomParsing
 {
     public static readonly RecordType GLOB = new("GLOB");
     public static readonly RecordType FNAM = new("FNAM");
     public static readonly RecordType FLTV = new("FLTV");
 
-
-
-
     public interface IGlobalCommon
     {
         float? RawFloat { get; set; }
     }
-
-
-
-
-
-
 
     public static char? GetGlobalChar(MajorRecordFrame frame)
     {
@@ -36,13 +24,6 @@ internal static class GlobalCustomParsing
         }
         return (char)fnamMeta.Content[0];
     }
-
-
-
-
-
-
-
 
     public static T Create<T>(
         MutagenFrame frame,
@@ -60,10 +41,8 @@ internal static class GlobalCustomParsing
 
         frame.Reader.Position = initialPos + frame.MetaData.Constants.MajorConstants.TypeAndLengthLength;
 
-
         var fltv = majorMeta.FindSubrecord(FLTV);
         g.RawFloat = fltv.AsFloat();
-
 
         frame.Reader.Position = initialPos + majorMeta.TotalLength;
         return g;

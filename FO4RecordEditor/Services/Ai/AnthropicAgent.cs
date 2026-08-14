@@ -5,12 +5,6 @@ using System.Text.Json.Serialization;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 public sealed class AnthropicAgent
 {
     private static readonly JsonSerializerOptions JsonOpts = new()
@@ -36,9 +30,6 @@ public sealed class AnthropicAgent
 
     public void Reset() => _history.Clear();
 
-
-
-
     public void LoadHistory(IReadOnlyList<(bool IsUser, string Text)> turns)
     {
         _history.Clear();
@@ -53,8 +44,6 @@ public sealed class AnthropicAgent
         }
     }
 
-
-
     public async Task<string> RunAsync(
         string userMessage, string? systemContext,
         Action<string> onText, Action<string>? onToolStatus = null, CancellationToken ct = default,
@@ -62,9 +51,6 @@ public sealed class AnthropicAgent
     {
         _history.Add(new { role = "user", content = userMessage });
         var finalText = new StringBuilder();
-
-
-
 
         var systemBlocks = string.IsNullOrWhiteSpace(systemContext) ? null : new object[]
         {
@@ -109,7 +95,6 @@ public sealed class AnthropicAgent
             var contentArr = rootEl.GetProperty("content");
             var stopReason = rootEl.TryGetProperty("stop_reason", out var sr) ? sr.GetString() : null;
 
-
             _history.Add(new { role = "assistant", content = contentArr.Clone() });
 
             var toolResults = new List<object>();
@@ -146,8 +131,6 @@ public sealed class AnthropicAgent
             break;
         }
 
-
-
         if (onUsage != null && (totalIn + totalCacheRead + totalCacheWrite + totalOut) > 0)
         {
             long billedIn = totalIn + totalCacheWrite;
@@ -159,7 +142,6 @@ public sealed class AnthropicAgent
 
     private async Task<string> PostAsync(object payload, CancellationToken ct)
     {
-
 
         if (string.IsNullOrWhiteSpace(_apiKey))
         {

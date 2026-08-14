@@ -44,7 +44,6 @@ internal sealed class ImmutableModLinkCacheCategory<TKey>
         var majorRecords = new Cache<LinkCacheItem, TKey>(x => _keyGetter(x).Value);
         foreach (var majorRec in _parent._sourceMod.EnumerateMajorRecords()
 
-
                      .Catch((Exception ex) => { }))
         {
             var item = LinkCacheItem.Factory(majorRec, _parent._simple);
@@ -61,7 +60,6 @@ internal sealed class ImmutableModLinkCacheCategory<TKey>
     {
         var cache = new Cache<LinkCacheItem, TKey>(x => _keyGetter(x).Value, _equalityComparer);
         foreach (var majorRec in sourceMod.EnumerateMajorRecords(type)
-
 
                      .Catch((Exception ex) => { }))
         {

@@ -9,7 +9,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-
 SCRIPT = Path(__file__).with_name("check-wiki-links.py")
 
 MAP = """\
@@ -32,7 +31,6 @@ MAP = """\
 
 `INTERNAL.md`
 """
-
 
 class WikiMapCheckTests(unittest.TestCase):
     def make_layout(
@@ -111,7 +109,6 @@ class WikiMapCheckTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("wiki-only source is missing", result.stdout)
-
 
 if __name__ == "__main__":
     unittest.main()

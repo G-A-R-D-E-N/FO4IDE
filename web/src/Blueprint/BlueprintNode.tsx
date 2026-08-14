@@ -18,8 +18,6 @@ interface Props {
   dispatch: (action: GraphAction) => void;
 }
 
-
-
 function BlueprintNode({
   node, def, selected, diagnostics, diagByPin, connect,
   registerElement, onPointerDown, onPinPointerDown, dispatch,
@@ -101,8 +99,6 @@ function Pin({ nodeId, node, pin, connect, diagnostics, onPinPointerDown, dispat
     && !(connect.node === nodeId && connect.pin === pin.id);
   const compatible = connect != null && connect.compatible.has(key);
   const severity = worstSeverity(diagnostics);
-
-
 
   const editable = pin.kind === 'data' && pin.dir === 'in' && isEditable(pin.dataType);
   const current = node.pinValues?.[pin.id]?.value ?? '';

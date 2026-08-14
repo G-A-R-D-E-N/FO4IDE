@@ -2,14 +2,6 @@ using System.IO;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
 public static class ProtectedPlugins
 {
     public static readonly IReadOnlySet<string> VanillaMasters = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -19,10 +11,8 @@ public static class ProtectedPlugins
         "DLCUltraHighResolution.esm",
     };
 
-
     public static bool IsProtected(string? pluginFileName) =>
         !string.IsNullOrWhiteSpace(pluginFileName) && VanillaMasters.Contains(pluginFileName);
-
 
     public static bool PathIsProtected(string? path) =>
         !string.IsNullOrWhiteSpace(path) && IsProtected(Path.GetFileName(path));
@@ -35,12 +25,6 @@ public static class ProtectedPlugins
 
     private static readonly string[] AllowedExtensions = { ".esp", ".esm", ".esl" };
 
-
-
-
-
-
-
     public static string? ValidateSavePath(string path)
     {
         if (string.IsNullOrWhiteSpace(path)) return "Save path is empty.";
@@ -48,8 +32,6 @@ public static class ProtectedPlugins
         string full;
         try { full = Path.GetFullPath(path); }
         catch (Exception ex) { return $"Invalid save path '{path}': {ex.Message}"; }
-
-
 
         var fileName = Path.GetFileName(full);
         if (string.IsNullOrWhiteSpace(fileName))

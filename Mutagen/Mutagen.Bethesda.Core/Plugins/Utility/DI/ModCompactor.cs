@@ -25,13 +25,13 @@ public class ModCompactor : IModCompactor
 {
     private readonly IRecordCompactionCompatibilityDetector _compactionCompatibilityDetector;
     private readonly MethodInfo _methodInfo;
-    
+
     public ModCompactor(IRecordCompactionCompatibilityDetector compactionCompatibilityDetector)
     {
         _compactionCompatibilityDetector = compactionCompatibilityDetector;
         _methodInfo = typeof(ModCompactor).GetMethod(nameof(DoCompactingGeneric), BindingFlags.NonPublic | BindingFlags.Instance)!;
     }
-    
+
     public ModCompactionResults CompactToSmallMaster(IMod mod)
     {
         var range = _compactionCompatibilityDetector.GetSmallMasterRange(mod);
@@ -48,7 +48,7 @@ public class ModCompactor : IModCompactor
             ResultingStyle = MasterStyle.Small
         };
     }
-    
+
     public ModCompactionResults CompactToMediumMaster(IMod mod)
     {
         var range = _compactionCompatibilityDetector.GetMediumMasterRange(mod);
@@ -65,7 +65,7 @@ public class ModCompactor : IModCompactor
             ResultingStyle = MasterStyle.Medium
         };
     }
-    
+
     public ModCompactionResults CompactToFullMaster(IMod mod)
     {
         var range = _compactionCompatibilityDetector.GetFullMasterRange(mod, potential: false);
@@ -141,7 +141,7 @@ public class ModCompactor : IModCompactor
             {
             }
         }
-        
+
         return CompactToFullMaster(mod);
     }
 
@@ -153,7 +153,7 @@ public class ModCompactor : IModCompactor
             _methodInfo,
             new object[] { mod, range })!;
     }
-    
+
     private IReadOnlyDictionary<FormKey, FormKey> DoCompactingGeneric<TMod, TModGetter>(TMod mod, RangeUInt32 range)
         where TModGetter : IModGetter
         where TMod : IMod, TModGetter, IMajorRecordContextEnumerable<TMod, TModGetter>
@@ -168,7 +168,7 @@ public class ModCompactor : IModCompactor
             .ToList();
 
         if (outOfRange.Count == 0) return new Dictionary<FormKey, FormKey>();
-        
+
         if (originatingRecords.Count > range.Difference)
         {
             throw new FormIDCompactionOutOfBoundsException(
@@ -185,7 +185,7 @@ public class ModCompactor : IModCompactor
         foreach (var rec in outOfRange)
         {
             FormKey nextFormKey;
-            
+
             do
             {
                 if (nextId > range.Max)
@@ -201,7 +201,7 @@ public class ModCompactor : IModCompactor
 
             mod.Remove(rec.Record);
             rec.DuplicateIntoAsNewRecord(mod, nextFormKey);
-            
+
             remapped.Add(rec.Record.FormKey, nextFormKey);
         }
 

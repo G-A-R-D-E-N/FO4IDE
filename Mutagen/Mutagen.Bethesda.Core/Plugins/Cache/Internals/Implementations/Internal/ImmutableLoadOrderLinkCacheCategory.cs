@@ -99,7 +99,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
         {
             foreach (var record in mod.EnumerateMajorRecords(type, throwIfUnknown: throwIfUnknown)
 
-
                          .Catch((Exception ex) => { }))
             {
                 var key = _keyGetter(record);
@@ -107,7 +106,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                 cache.AddIfMissing(key.Value, LinkCacheItem.Factory(record, _simple));
             }
         }
-
 
         if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_gameCategory, type, out var objs))
         {
@@ -136,12 +134,10 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
 
         DepthCache<TKey, LinkCacheItem> cache = GetTypeCache(type);
 
-
         if (cache.Done)
         {
             return cache.TryGetValue(key, out majorRec);
         }
-
 
         lock (cache)
         {
@@ -159,7 +155,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             while (!InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache))
             {
                 FillNextCacheDepth(cache, type);
-
 
                 if (cache.TryGetValue(key, out majorRec))
                 {
@@ -182,13 +177,11 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             yield break;
         }
 
-
         DepthCache<TKey, ImmutableList<LinkCacheItem>> cache;
         lock (_allRecords)
         {
             cache = _allRecords.GetOrAdd(type, () => new DepthCache<TKey, ImmutableList<LinkCacheItem>>(_equalityComparer));
         }
-
 
         if (cache.Done)
         {
@@ -201,7 +194,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             }
             yield break;
         }
-
 
         ImmutableList<LinkCacheItem>? list;
         int consideredDepth;
@@ -219,12 +211,10 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
         }
 
-
         foreach (var item in list)
         {
             yield return item;
         }
-
 
         while (more)
         {
@@ -244,7 +234,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                     {
                         foreach (var item in mod.EnumerateMajorRecords(type, throwIfUnknown: throwIfUnknown)
 
-
                                      .Catch((Exception ex) => { }))
                         {
                             var iterKey = _keyGetter(item);
@@ -260,7 +249,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                             list = requeriedList;
                         }
                     }
-
 
                     if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_gameCategory, type, out var objs))
                     {
@@ -285,7 +273,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                 more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
             }
 
-
             for (int i = iteratedCount; i < list.Count; i++)
             {
                 yield return list[i];
@@ -307,12 +294,10 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
             return [];
         }
 
-
         if (cache.Done)
         {
             return cache.Values;
         }
-
 
         lock (cache)
         {
@@ -323,7 +308,6 @@ internal sealed class ImmutableLoadOrderLinkCacheCategory<TKey>
                 FillNextCacheDepth(cache, type);
             }
         }
-
 
         if (cancel?.IsCancellationRequested ?? false) return [];
         return cache.Values;

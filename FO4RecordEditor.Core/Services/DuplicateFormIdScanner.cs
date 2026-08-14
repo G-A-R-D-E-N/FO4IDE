@@ -4,12 +4,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 internal static class DuplicateFormIdScanner
 {
     internal sealed record Duplicate(uint RawFormId, int Count, IReadOnlyList<string> RecordTypes);
@@ -64,8 +58,6 @@ internal static class DuplicateFormIdScanner
         }
     }
 
-
-
     internal static void QueueScan(string path)
     {
         string fullPath;
@@ -81,7 +73,6 @@ internal static class DuplicateFormIdScanner
             try { Scan(fullPath); }
             finally
             {
-
 
                 if (PendingScans.TryGetValue(fullPath, out var pendingGeneration) &&
                     pendingGeneration == generation)
@@ -115,8 +106,6 @@ internal static class DuplicateFormIdScanner
                 cached.LastWriteUtcTicks == originalLastWriteUtcTicks &&
                 cached.Generation == generation)
                 return cached.Result;
-
-
 
             var firstTypes = new Dictionary<uint, string>();
             var duplicates = new Dictionary<uint, DuplicateAccumulator>();
@@ -153,7 +142,6 @@ internal static class DuplicateFormIdScanner
         catch (Exception ex)
         {
             var result = new Result([], $"{ex.GetType().Name}: {ex.Message}");
-
 
             try
             {
@@ -198,8 +186,6 @@ internal static class DuplicateFormIdScanner
         if (CurrentGeneration(fullPath) != entry.Generation) return false;
         Cache[fullPath] = entry;
         if (CurrentGeneration(fullPath) == entry.Generation) return true;
-
-
 
         ((ICollection<KeyValuePair<string, CacheEntry>>)Cache)
             .Remove(new KeyValuePair<string, CacheEntry>(fullPath, entry));

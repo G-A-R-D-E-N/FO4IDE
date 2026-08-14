@@ -35,7 +35,7 @@ public static class ObjectModProperty
             _ => throw new ArgumentOutOfRangeException(nameof(val), val, null)
         };
     }
-    
+
     public enum FloatFunctionType
     {
         Set,

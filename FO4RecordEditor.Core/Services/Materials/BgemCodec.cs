@@ -2,16 +2,6 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Materials;
 
-
-
-
-
-
-
-
-
-
-
 public static class BgemCodec
 {
     public const uint Signature = 0x4D454742;
@@ -161,11 +151,6 @@ public static class BgemCodec
     }
 }
 
-
-
-
-
-
 public static class MaterialCodec
 {
     public static IMaterialData Parse(byte[] data)
@@ -177,12 +162,6 @@ public static class MaterialCodec
         throw new InvalidDataException(
             $"Not a BGSM or BGEM material: magic 0x{sig:X8} (expected 0x{BgsmCodec.Signature:X8} or 0x{BgemCodec.Signature:X8}).");
     }
-
-
-
-
-
-
 
     public static byte[] Write(IMaterialData data)
     {

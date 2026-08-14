@@ -6,7 +6,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
 public sealed class SourceRoot : IDisposable
 {
     public SourceRoot()
@@ -64,7 +63,6 @@ public class PapyrusScriptIndexTests
     public void First_root_wins()
     {
 
-
         using var first = new SourceRoot();
         using var second = new SourceRoot();
         first.Write("Actor.psc", "ScriptName Actor\nFunction FromF4SE()\nEndFunction\n");
@@ -108,7 +106,6 @@ public class PapyrusScriptIndexTests
         var first = index.Resolve("A");
         ReferenceEquals(index.Resolve("A"), first).Should().BeTrue("an unchanged file must not re-parse");
 
-
         File.WriteAllText(file, "ScriptName A\nFunction One()\nEndFunction\nFunction Two()\nEndFunction\n");
         index.Resolve("A")!.Functions.Should().HaveCount(2);
     }
@@ -131,7 +128,6 @@ public class PapyrusScriptIndexTests
     [Fact]
     public void Base_chain_survives_a_cycle()
     {
-
 
         using var root = new SourceRoot();
         root.Write("A.psc", "ScriptName A extends B\n");

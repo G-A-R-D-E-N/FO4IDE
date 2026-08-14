@@ -6,9 +6,6 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace Mutagen.Bethesda.Plugins.Exceptions;
 
-
-
-
 public class RecordException : Exception
 {
     public ModKey? ModKey { get; private set; }
@@ -58,33 +55,15 @@ public class RecordException : Exception
 
     #region Enrich
 
-
-
-
-
     public static RecordException Enrich(Exception ex, IMajorRecordGetter? majorRec)
     {
         return Enrich(ex, majorRec?.FormKey, majorRec?.Registration.ClassType, majorRec?.EditorID);
     }
 
-
-
-
-
-
-
     public static RecordException Enrich(Exception ex, ModKey? modKey, IMajorRecordGetter? majorRec)
     {
         return Enrich(ex, majorRec?.FormKey, majorRec?.Registration.ClassType, majorRec?.EditorID, modKey);
     }
-
-
-
-
-
-
-
-
 
     public static RecordException Enrich(Exception ex, FormKey? formKey, Type? recordType, string? edid = null, ModKey? modKey = null)
     {
@@ -124,13 +103,6 @@ public class RecordException : Exception
         return t;
     }
 
-
-
-
-
-
-
-
     public static RecordException Enrich<TMajor>(Exception ex, FormKey? formKey, string? edid, ModKey? modKey = null)
         where TMajor : IMajorRecordGetter
     {
@@ -141,11 +113,6 @@ public class RecordException : Exception
             edid,
             modKey);
     }
-
-
-
-
-
 
     public static RecordException Enrich(Exception ex, ModKey modKey)
     {
@@ -165,20 +132,10 @@ public class RecordException : Exception
             innerException: ex);
     }
 
-
-
-
-
-
     public static RecordException Enrich(Exception ex, IModGetter mod)
     {
         return Enrich(ex, mod.ModKey);
     }
-
-
-
-
-
 
     public static RecordException Enrich<TMajor>(Exception ex, IModContext<TMajor> majorRecordContext)
         where TMajor : IMajorRecordGetter
@@ -190,35 +147,17 @@ public class RecordException : Exception
 
     #region EnrichAndThrow
 
-
-
-
-
     [DoesNotReturn]
     public static void EnrichAndThrow(Exception ex, IMajorRecordGetter? majorRec)
     {
         EnrichAndThrow(ex, majorRec?.FormKey, majorRec?.Registration.ClassType, majorRec?.EditorID);
     }
 
-
-
-
-
-
-
     [DoesNotReturn]
     public static void EnrichAndThrow(Exception ex, ModKey? modKey, IMajorRecordGetter? majorRec)
     {
         EnrichAndThrow(ex, majorRec?.FormKey, majorRec?.Registration.ClassType, majorRec?.EditorID, modKey);
     }
-
-
-
-
-
-
-
-
 
     [DoesNotReturn]
     public static void EnrichAndThrow(Exception ex, FormKey? formKey, Type? recordType, string? edid = null, ModKey? modKey = null)
@@ -249,13 +188,6 @@ public class RecordException : Exception
             innerException: ex);
     }
 
-
-
-
-
-
-
-
     [DoesNotReturn]
     public static void EnrichAndThrow<TMajor>(Exception ex, FormKey? formKey, string? edid, ModKey? modKey = null)
         where TMajor : IMajorRecordGetter
@@ -267,11 +199,6 @@ public class RecordException : Exception
             edid,
             modKey);
     }
-
-
-
-
-
 
     [DoesNotReturn]
     public static void EnrichAndThrow(Exception ex, ModKey modKey)
@@ -292,21 +219,11 @@ public class RecordException : Exception
             innerException: ex);
     }
 
-
-
-
-
-
     [DoesNotReturn]
     public static void EnrichAndThrow(Exception ex, IModGetter mod)
     {
         EnrichAndThrow(ex, mod.ModKey);
     }
-
-
-
-
-
 
     [DoesNotReturn]
     public static void EnrichAndThrow<TMajor>(Exception ex, IModContext<TMajor> majorRecordContext)
@@ -319,8 +236,6 @@ public class RecordException : Exception
 
     #region Create
 
-
-
     public static RecordException Create(string message, IMajorRecordGetter majorRec, Exception? innerException = null)
     {
         return new RecordException(
@@ -331,9 +246,6 @@ public class RecordException : Exception
             recordType: majorRec.Registration.ClassType,
             innerException: innerException);
     }
-
-
-
 
     public static RecordException Create(string message, ModKey? modKey, IMajorRecordGetter majorRec, Exception? innerException = null)
     {
@@ -346,9 +258,6 @@ public class RecordException : Exception
             innerException: innerException);
     }
 
-
-
-
     public static RecordException Create(string message, FormKey? formKey, Type? recordType, string? edid, ModKey? modKey = null, Exception? innerException = null)
     {
         return new RecordException(
@@ -360,9 +269,6 @@ public class RecordException : Exception
             innerException: innerException);
     }
 
-
-
-
     public static RecordException Create(string message, ModKey modKey, Exception? innerException = null)
     {
         return new RecordException(
@@ -373,9 +279,6 @@ public class RecordException : Exception
             message: message,
             innerException: innerException);
     }
-
-
-
 
     public static RecordException Create<TMajor>(string message, FormKey? formKey, string? edid, ModKey? modKey = null, Exception? innerException = null)
         where TMajor : IMajorRecordGetter

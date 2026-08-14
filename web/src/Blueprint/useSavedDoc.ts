@@ -1,21 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { BpDocument } from './graphModel';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export function useSavedDoc(doc: BpDocument) {
   const [saved, setSaved] = useState<BpDocument>(doc);
 

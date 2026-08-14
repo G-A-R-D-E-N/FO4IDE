@@ -28,7 +28,6 @@ public class PapyrusLexerTests
     public void Keyword_table_matches_the_language_reference_count()
     {
 
-
         PapyrusKeywords.All.Should().HaveCount(45);
     }
 

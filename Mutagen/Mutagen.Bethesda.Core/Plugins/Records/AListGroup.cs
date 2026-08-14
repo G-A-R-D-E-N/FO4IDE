@@ -39,12 +39,9 @@ public abstract class AListGroup<TObject> : IListGroup<TObject>
         set => ProtectedList[index] = value;
     }
 
-
     public ILoquiRegistration ContainedRecordRegistration => _registration;
 
-
     public Type ContainedRecordType => typeof(TObject);
-
 
     public void AddUntyped(IMajorRecord record) => Add(ConfirmCorrectType(record, nameof(record)));
 
@@ -61,45 +58,31 @@ public abstract class AListGroup<TObject> : IListGroup<TObject>
         return cast;
     }
 
-
     public int IndexOf(TObject item) => ProtectedList.IndexOf(item);
-
 
     public void Insert(int index, TObject item) => ProtectedList.Insert(index, item);
 
-
     public void RemoveAt(int index) => ProtectedList.RemoveAt(index);
-
 
     public void AddRange(IEnumerable<TObject> collection) => ProtectedList.AddRange(collection);
 
-
     public void InsertRange(IEnumerable<TObject> collection, int index) => ProtectedList.InsertRange(collection, index);
-
 
     public void RemoveRange(int index, int count) => ProtectedList.RemoveRange(index, count);
 
-
     public void Move(int original, int destination) => ProtectedList.Move(original, destination);
-
 
     public abstract void RemapListedAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping);
 
-
     public abstract void RemapAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping, AssetLinkQuery query, IAssetLinkCache? linkCache);
-
 
     public abstract IEnumerable<IAssetLink> EnumerateListedAssetLinks();
 
-
     public void Add(TObject item) => ProtectedList.Add(item);
-
 
     public bool Contains(TObject item) => ProtectedList.Contains(item);
 
-
     public void CopyTo(TObject[] array, int arrayIndex) => ProtectedList.CopyTo(array, arrayIndex);
-
 
     public void Clear() => InternalCache.Clear();
 
@@ -107,9 +90,7 @@ public abstract class AListGroup<TObject> : IListGroup<TObject>
 
     IEnumerator IEnumerable.GetEnumerator() => ProtectedList.GetEnumerator();
 
-
     public abstract IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true);
-
 
     public abstract IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(AssetLinkQuery queryCategories,
         IAssetLinkCache? linkCache = null,

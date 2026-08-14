@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -57,8 +53,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
 
-
-
         public Model? Model
         {
             get => _Model;
@@ -74,8 +68,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Icons
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Icons? _Icons;
-
-
 
         public Icons? Icons
         {
@@ -498,11 +490,7 @@ namespace Mutagen.Bethesda.Fallout4
         IModeled
     {
 
-
-
         new Model? Model { get; set; }
-
-
 
         new Icons? Icons { get; set; }
     }
@@ -524,13 +512,9 @@ namespace Mutagen.Bethesda.Fallout4
         static ILoquiRegistration StaticRegistration => ArmorModel_Registration.Instance;
         #region Model
 
-
-
         IModelGetter? Model { get; }
         #endregion
         #region Icons
-
-
 
         IIconsGetter? Icons { get; }
         #endregion
@@ -955,7 +939,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return ArmorModel.GetNew();
@@ -1252,7 +1235,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

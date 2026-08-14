@@ -6,14 +6,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
 internal sealed class GraphBuilder
 {
     private readonly GraphDocument _document = new();
@@ -35,13 +27,11 @@ internal sealed class GraphBuilder
         }
     }
 
-
     public GraphBuilder AutoState(string state)
     {
         _document.Header.AutoState = state;
         return this;
     }
-
 
     public GraphBuilder CustomEvent(string name)
     {
@@ -64,7 +54,6 @@ internal sealed class GraphBuilder
         return this;
     }
 
-
     public string Node(string definitionId, GraphNodeKind kind, params (string Key, string Value)[] config)
     {
         var id = "n" + (++_sequence);
@@ -75,14 +64,12 @@ internal sealed class GraphBuilder
         return id;
     }
 
-
     public string Node(NodePalette palette, string definitionId, params (string Key, string Value)[] config)
     {
         var definition = palette.Find(definitionId)
                          ?? throw new ArgumentException($"'{definitionId}' is not on the palette.");
         return Node(definitionId, definition.Kind, config);
     }
-
 
     public GraphBuilder Value(string nodeId, string pinId, string type, string value)
     {
@@ -101,7 +88,6 @@ internal sealed class GraphBuilder
         });
         return this;
     }
-
 
     public GraphBuilder Sequence(NodePalette palette, params string[] nodeIds)
     {
@@ -123,7 +109,6 @@ internal sealed class GraphBuilder
     }
 }
 
-
 internal static class GraphTestEnvironment
 {
 
@@ -133,7 +118,6 @@ internal static class GraphTestEnvironment
     public static NodePalette Palette() => new(Index());
 
     public static GraphCompiler Compiler() => new(Index());
-
 
     public static GraphCompileResult Compile(GraphDocument document, bool stopAfterSource = false) =>
         Compiler().Compile(document, new GraphCompileOptions

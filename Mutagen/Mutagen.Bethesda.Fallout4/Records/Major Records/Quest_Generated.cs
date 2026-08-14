@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -60,8 +56,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private QuestAdapter? _VirtualMachineAdapter;
 
-
-
         public QuestAdapter? VirtualMachineAdapter
         {
             get => _VirtualMachineAdapter;
@@ -75,8 +69,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1971,11 +1963,7 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new QuestAdapter? VirtualMachineAdapter { get; set; }
-
-
 
         new TranslatedString? Name { get; set; }
         new QuestData? Data { get; set; }
@@ -2027,13 +2015,9 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Quest_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         IQuestAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -3457,7 +3441,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public override object GetNew()
         {
@@ -5049,7 +5032,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

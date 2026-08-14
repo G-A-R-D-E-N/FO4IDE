@@ -5,7 +5,7 @@ namespace Mutagen.Bethesda.Plugins.Exceptions;
 public class TooManyMastersException : Exception
 {
     public ModKey CurrentMod { get; }
-    
+
     private readonly ModKey[] _masters;
 
     public IReadOnlyList<ModKey> Masters => _masters;

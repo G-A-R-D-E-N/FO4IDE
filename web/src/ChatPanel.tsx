@@ -8,9 +8,6 @@ import './ChatPanel.css';
 
 interface ChatMsg { role: 'system' | 'user' | 'assistant'; text: string; images?: string[] }
 
-
-
-
 const ACTIVITY = [
   { e: '🔧', kind: 'tool' as const },
   { e: '💭', kind: 'think' as const },
@@ -85,10 +82,8 @@ export default function ChatPanel() {
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-
   const pendingQueues = useRef<Record<string, Array<{ text: string; imgs: string[] }>>>({});
   const [queueCounts, setQueueCounts] = useState<Record<string, number>>({});
-
 
   const messages = buffers[currentId] ?? [GREETING];
   const busy = !!busyMap[currentId];
@@ -99,7 +94,6 @@ export default function ChatPanel() {
   const setBusyFor = (sid: string, v: boolean) => setBusyMap(b => ({ ...b, [sid]: v }));
   const dtoToMsgs = (dto: ChatSessionFull): ChatMsg[] =>
     dto.messages.length === 0 ? [GREETING] : dto.messages.map(m => ({ role: m.isUser ? 'user' : 'assistant', text: m.text } as ChatMsg));
-
 
   const addImageFiles = (files: FileList | File[] | null) => {
     if (!files) return;
@@ -130,7 +124,6 @@ export default function ChatPanel() {
     try { setSessions(JSON.parse(await c.ListSessions())); } catch {  }
   };
 
-
   const sendDirect = async (sid: string, text: string, imgs: string[]) => {
     const c = host();
     if (!c) return;
@@ -150,8 +143,6 @@ export default function ChatPanel() {
     refreshSessions();
   };
 
-
-
   const drainFnRef = useRef<(sid: string) => void>(() => {});
   drainFnRef.current = (sid: string) => {
     const q = pendingQueues.current[sid] ?? [];
@@ -161,7 +152,6 @@ export default function ChatPanel() {
     setQueueCounts(prev => ({ ...prev, [sid]: rest.length }));
     sendDirect(sid, next.text, next.imgs);
   };
-
 
   useEffect(() => {
     const onMessage = (e: any) => {
@@ -186,8 +176,6 @@ export default function ChatPanel() {
         case 'AiReload': if (data.Session) setBuffers(b => ({ ...b, [data.Session.id]: dtoToMsgs(data.Session) })); break;
         case 'McpLive':
 
-
-
           if (data.IsWrite) {
             const activeSid = sid ?? Object.entries(busyMapRef.current).find(([, v]) => v)?.[0];
             if (activeSid) setMsgs(activeSid, p => appendToLastAssistant(p, `\n✍️ ${data.Summary}\n`));
@@ -203,7 +191,6 @@ export default function ChatPanel() {
     return () => window.chrome?.webview?.removeEventListener('message', onMessage);
   }, []);
 
-
   useEffect(() => {
     (async () => {
       const c = host();
@@ -216,7 +203,6 @@ export default function ChatPanel() {
       } catch {  }
     })();
   }, []);
-
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -233,7 +219,6 @@ export default function ChatPanel() {
   const switchSession = async (id: string) => {
     if (id === currentId) return;
     setCurrentId(id);
-
 
     if (!buffers[id]) {
       const c = host();
@@ -311,8 +296,6 @@ export default function ChatPanel() {
     await sendDirect(sid, text, imgs);
   };
 
-
-
   const sendExternal = async (text: string) => {
     const sid = currentIdRef.current;
     if (!text.trim() || !sid || busyMapRef.current[sid]) return;
@@ -326,7 +309,6 @@ export default function ChatPanel() {
   };
 
   const stop = () => host()?.CancelMessage(currentId);
-
 
   const showCmd = input.startsWith('/') && !input.includes(' ');
   const filtered = showCmd ? commands.filter(c => c.name.startsWith(input.toLowerCase())) : [];

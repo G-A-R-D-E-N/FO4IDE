@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -41,8 +37,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public abstract partial class RegionData :
         IEquatable<IRegionDataGetter>,
         ILoquiObjectSetter<RegionData>,
@@ -65,8 +59,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Icons
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Icons? _Icons;
-
-
 
         public Icons? Icons
         {
@@ -481,8 +473,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IRegionData :
         IFormLinkContainer,
         IHasIcons,
@@ -492,13 +482,8 @@ namespace Mutagen.Bethesda.Fallout4
         new RegionData.RegionDataFlag Flags { get; set; }
         new Byte Priority { get; set; }
 
-
-
         new Icons? Icons { get; set; }
     }
-
-
-
 
     public partial interface IRegionDataGetter :
         ILoquiObject,
@@ -517,8 +502,6 @@ namespace Mutagen.Bethesda.Fallout4
         RegionData.RegionDataFlag Flags { get; }
         Byte Priority { get; }
         #region Icons
-
-
 
         IIconsGetter? Icons { get; }
         #endregion
@@ -944,7 +927,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return RegionData.GetNew();
@@ -1242,7 +1224,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1306,7 +1287,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         public virtual ParseResult FillRecordType(
             OverlayStream stream,

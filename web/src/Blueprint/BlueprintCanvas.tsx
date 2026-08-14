@@ -5,10 +5,6 @@ import Minimap from './Minimap';
 import type { GraphAction, BpSelection } from './graphReducer';
 import BlueprintNode from './BlueprintNode';
 
-
-
-
-
 interface Props {
   doc: BpDocument;
   defs: Record<string, BpNodeDef>;
@@ -18,7 +14,6 @@ interface Props {
   dispatch: (action: GraphAction) => void;
   onRequestNode: (worldX: number, worldY: number, from?: { node: string; pin: string }) => void;
   apiRef?: React.MutableRefObject<CanvasApi | null>;
-
 
   onContextMenu?: (event: React.MouseEvent) => void;
 }
@@ -33,7 +28,6 @@ const MIN_SCALE = 0.15;
 const MAX_SCALE = 2.5;
 const CLICK_SLOP = 4;
 
-
 const INITIAL_VIEW: BpViewport = { x: 60, y: 60, k: 1 };
 
 export default function BlueprintCanvas({
@@ -47,8 +41,6 @@ export default function BlueprintCanvas({
 
   const nodeElements = useRef(new Map<string, HTMLDivElement>());
   const wireElements = useRef(new Map<string, SVGPathElement>());
-
-
 
   const viewRef = useRef<BpViewport>({ ...INITIAL_VIEW });
   const [view, setView] = useState<BpViewport>({ ...INITIAL_VIEW });
@@ -82,8 +74,6 @@ export default function BlueprintCanvas({
       y: ((clientY - (rect?.top ?? 0)) - y) / k,
     };
   }, []);
-
-
 
   useEffect(() => {
     const element = canvasRef.current;
@@ -135,8 +125,6 @@ export default function BlueprintCanvas({
   }, [doc.wires, nodeById, defs]);
 
   const draggedOffsets = useRef<Map<string, { dx: number; dy: number }> | null>(null);
-
-
 
   const onCanvasPointerDown = (event: React.PointerEvent) => {
     const target = event.target as HTMLElement;
@@ -207,7 +195,6 @@ export default function BlueprintCanvas({
 
     const onCancel = () => {
 
-
       if (marqueeRef.current) marqueeRef.current.style.display = 'none';
       viewRef.current = { ...origin };
       applyTransform();
@@ -218,8 +205,6 @@ export default function BlueprintCanvas({
     element.addEventListener('pointerup', onUp);
     element.addEventListener('pointercancel', onCancel);
   };
-
-
 
   const onNodePointerDown = (event: React.PointerEvent, nodeId: string) => {
     const target = event.target as HTMLElement;
@@ -289,14 +274,10 @@ export default function BlueprintCanvas({
     element.addEventListener('pointercancel', onCancel);
   };
 
-
-
   const onPinPointerDown = (event: React.PointerEvent, nodeId: string, pin: BpPinDef) => {
     event.stopPropagation();
     const element = event.currentTarget as HTMLElement;
     element.setPointerCapture(event.pointerId);
-
-
 
     const compatible = new Set<string>();
     for (const other of doc.nodes) {
@@ -326,7 +307,6 @@ export default function BlueprintCanvas({
 
       if (!event2) return;
 
-
       const dropped = document.elementFromPoint(event2.clientX, event2.clientY) as HTMLElement | null;
       const pinElement = dropped?.closest('[data-pin]') as HTMLElement | null;
 
@@ -354,9 +334,6 @@ export default function BlueprintCanvas({
     element.addEventListener('pointercancel', onCancel);
   };
 
-
-
-
   const [stage, setStage] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -371,7 +348,6 @@ export default function BlueprintCanvas({
     return () => observer.disconnect();
   }, []);
 
-
   const centreOn = useCallback((worldX: number, worldY: number, minScale = 0) => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -381,8 +357,6 @@ export default function BlueprintCanvas({
     applyTransform();
     setView({ ...viewRef.current });
   }, [applyTransform]);
-
-
 
   useEffect(() => {
     if (!apiRef) return;
@@ -488,8 +462,6 @@ export default function BlueprintCanvas({
     </div>
   );
 }
-
-
 
 const shift = (
   node: BpNode,

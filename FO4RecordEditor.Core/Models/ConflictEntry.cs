@@ -1,6 +1,5 @@
 namespace FO4RecordEditor.Models;
 
-
 public sealed record ConflictEntry(
     string FormKey,
     string EditorID,

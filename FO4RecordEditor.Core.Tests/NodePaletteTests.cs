@@ -6,13 +6,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
 public class NodePaletteTests
 {
     private static NodePalette Palette() =>
@@ -24,8 +17,6 @@ public class NodePaletteTests
         definition.Should().NotBeNull($"{id} should resolve against the stub tree");
         return definition!;
     }
-
-
 
     [Fact]
     public void An_instance_function_gets_a_self_pin_and_an_argument_pin_per_parameter()
@@ -76,7 +67,6 @@ public class NodePaletteTests
     public void An_array_return_type_is_kept_as_an_array()
     {
 
-
         var definition = Definition("call:ScriptObject.CallFunction");
         definition.Pin("arg:aParams")!.Type!.IsArray.Should().BeTrue();
         definition.Pin("arg:aParams")!.Type!.TypeName.Should().BeEquivalentTo("Var");
@@ -107,7 +97,6 @@ public class NodePaletteTests
     public void A_property_yields_a_pure_getter_and_an_impure_setter()
     {
 
-
         var root = System.IO.Directory.CreateTempSubdirectory("fo4re-palette-");
         try
         {
@@ -133,12 +122,9 @@ public class NodePaletteTests
         }
     }
 
-
-
     [Fact]
     public void No_generated_call_is_ever_marked_pure()
     {
-
 
         var palette = Palette();
         foreach (var script in new[] { "ObjectReference", "Actor", "Game", "Utility", "Math" })
@@ -174,12 +160,9 @@ public class NodePaletteTests
         }
     }
 
-
-
     [Fact]
     public void The_array_builtins_match_what_the_resolver_actually_binds()
     {
-
 
         var root = System.IO.Directory.CreateTempSubdirectory("fo4re-arraymember-");
         try
@@ -245,8 +228,6 @@ public class NodePaletteTests
         BuiltinNodeDefinitions.OperatorToken("op.nonsense").Should().BeNull();
     }
 
-
-
     [Fact]
     public void Search_finds_a_member_by_name_and_reports_the_true_total()
     {
@@ -297,8 +278,6 @@ public class NodePaletteTests
         entry.Id.Should().Be("call:ObjectReference.AddItem");
     }
 
-
-
     [Theory]
     [InlineData("call:ObjectReference.AddItem", "ObjectReference", "AddItem")]
     [InlineData("global:Game.GetPlayer", "Game", "GetPlayer")]
@@ -321,7 +300,6 @@ public class NodePaletteTests
     [Fact]
     public void Definition_ids_are_stable_across_two_builds()
     {
-
 
         var first = Palette().ForScript("ObjectReference").Select(d => d.Id).OrderBy(x => x).ToList();
         var second = Palette().ForScript("ObjectReference").Select(d => d.Id).OrderBy(x => x).ToList();
@@ -356,8 +334,6 @@ public class NodePaletteTests
     {
         NodePalette.LocalNameHint(member).Should().Be(expected);
     }
-
-
 
     [Fact]
     public void A_palette_with_no_wiki_mirror_still_builds()

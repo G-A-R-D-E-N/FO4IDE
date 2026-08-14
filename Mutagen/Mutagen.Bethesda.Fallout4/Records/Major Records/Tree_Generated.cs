@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -60,8 +56,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private VirtualMachineAdapter? _VirtualMachineAdapter;
 
-
-
         public VirtualMachineAdapter? VirtualMachineAdapter
         {
             get => _VirtualMachineAdapter;
@@ -77,8 +71,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #endregion
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -99,8 +91,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -146,8 +136,6 @@ namespace Mutagen.Bethesda.Fallout4
         ISeasonalIngredientProductionGetter? ITreeGetter.Production => this.Production;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1217,22 +1205,14 @@ namespace Mutagen.Bethesda.Fallout4
         ITreeGetter
     {
 
-
-
         new VirtualMachineAdapter? VirtualMachineAdapter { get; set; }
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
-
-
 
         new Model? Model { get; set; }
         new IFormLinkNullable<IHarvestTargetGetter> Ingredient { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> HarvestSound { get; set; }
         new SeasonalIngredientProduction? Production { get; set; }
-
-
 
         new TranslatedString? Name { get; set; }
         new Single TrunkFlexibility { get; set; }
@@ -1284,19 +1264,13 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Tree_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         IVirtualMachineAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1304,8 +1278,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<ISoundDescriptorGetter> HarvestSound { get; }
         ISeasonalIngredientProductionGetter? Production { get; }
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -2105,7 +2077,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Tree.GetNew();
@@ -2797,7 +2768,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

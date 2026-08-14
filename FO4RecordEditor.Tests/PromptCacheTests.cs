@@ -16,12 +16,9 @@ public class PromptCacheTests
         var tools = PluginToolExecutor.ToolDefinitionsCached();
         var json = JsonSerializer.Serialize(tools, Opts);
 
-
-
         var occurrences = json.Split("cache_control").Length - 1;
         occurrences.Should().Be(1, "only the last tool carries a cache_control breakpoint");
         json.Should().Contain("\"type\":\"ephemeral\"");
-
 
         var lastName = PluginToolExecutor.ToolDefinitionsCached().Length;
         lastName.Should().BeGreaterThan(0);

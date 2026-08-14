@@ -4,7 +4,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
 public class ToolErrorTests
 {
     [Fact]
@@ -34,8 +33,6 @@ public class ToolErrorTests
         result.Text.Should().Be("Set EditorID = 'Foo'");
     }
 
-
-
     [Theory]
     [InlineData("No conflicts found")]
     [InlineData("No problems found for 000800:Foo.esp.")]
@@ -46,7 +43,6 @@ public class ToolErrorTests
     {
         ToolError.Unwrap(text).IsError.Should().BeFalse();
     }
-
 
     [Theory]
     [InlineData("Could not resolve 'Foo'.")]
@@ -60,8 +56,6 @@ public class ToolErrorTests
     {
         ToolError.Unwrap(text).IsError.Should().BeTrue();
     }
-
-
 
     [Fact]
     public void FailurePhraseLaterInBody_DoesNotFlipASuccessfulRead()

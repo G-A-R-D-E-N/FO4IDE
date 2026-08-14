@@ -4,13 +4,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
 public static class ToolPaths
 {
     private static AppSettings? _settings;
@@ -34,14 +27,7 @@ public static class ToolPaths
         }
     }
 
-
     public static void Invalidate() => _settings = null;
-
-
-
-
-
-
 
     public static bool ReadLargePluginsIntoMemory
     {
@@ -69,12 +55,6 @@ public static class ToolPaths
         return string.IsNullOrWhiteSpace(v) ? null : v.Trim().Trim('"');
     }
 
-
-
-
-
-
-
     private static string? WhichOnPath(params string[] exeNames)
     {
         var pathVar = Environment.GetEnvironmentVariable("PATH");
@@ -96,10 +76,6 @@ public static class ToolPaths
         return null;
     }
 
-
-
-
-
     public static string? Fallout4Root()
     {
         var s = Settings.Fallout4Path;
@@ -119,10 +95,6 @@ public static class ToolPaths
             }
             catch {  }
         }
-
-
-
-
 
         var relative = new[]
         {
@@ -157,7 +129,6 @@ public static class ToolPaths
         return null;
     }
 
-
     public static string? Niftool() => FirstFile(
         Env("NIFTOOL_PATH"),
         Settings.NiftoolPath,
@@ -165,7 +136,6 @@ public static class ToolPaths
         App("niftool", "niftool.exe"),
         WhichOnPath("niftool.exe"),
         @"E:\F4SE OG\Tools\PluginEditTool\tools\niftool\build\windows\x64\release\niftool.exe");
-
 
     public static string? Texconv() => FirstFile(
         Env("TEXCONV_PATH"),
@@ -175,10 +145,6 @@ public static class ToolPaths
         WhichOnPath("Texconvx64.exe", "Texconv.exe"),
         @"E:\F4SE OG\Tools\PluginEditTool\FO4RecordEditor\TES5Edit-dev-4.1.6\Build\Edit Scripts\Texconvx64.exe",
         @"E:\F4SE OG\Tools\PluginEditTool\FO4RecordEditor\TES5Edit-dev-4.1.6\Build\Edit Scripts\Texconv.exe");
-
-
-
-
 
     public static string? PapyrusCompiler()
     {
@@ -191,23 +157,6 @@ public static class ToolPaths
             @"E:\F4SE OG\Tools\PapyrusCompiler\Papyrus Compiler\PapyrusCompiler.exe");
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static string? Archive2()
     {
         var root = Fallout4Root();
@@ -218,15 +167,6 @@ public static class ToolPaths
             root == null ? null : Path.Combine(root, "Tools", "Archive2", "Archive2.exe"),
             @"E:\SteamLibrary\steamapps\common\Fallout 4 1946160\Tools\Archive2\Archive2.exe");
     }
-
-
-
-
-
-
-
-
-
 
     public static List<string> PapyrusBaseImports()
     {
@@ -265,21 +205,11 @@ public static class ToolPaths
         return roots;
     }
 
-
-
-
-
-
-
     public static string? CkWiki() => FirstDir(
         Env("CK_WIKI_PATH"),
         Settings.CkWikiPath,
         App("tools", "ckwiki", "fallout4"),
         @"E:\F4SE OG\docs\Knowledge Materials\Creation Kit Wiki\Fallout 4 Creation Kit Wiki-52183-21-05-20-1621512739\FO4CKWiki_210520\fallout4");
-
-
-
-
 
     public static string? Ffmpeg() => FirstFile(
         Env("FFMPEG_PATH"),
@@ -288,9 +218,6 @@ public static class ToolPaths
         WhichOnPath("ffmpeg.exe"),
         @"E:\F4SE OG\Tools\Audio Converter\bin\ffmpeg.exe");
 
-
-
-
     public static string? XwmaEncode() => FirstFile(
         Env("XWMAENCODE_PATH"),
         Settings.XwmaEncodePath,
@@ -298,20 +225,15 @@ public static class ToolPaths
         WhichOnPath("xWMAEncode.exe"),
         @"E:\F4SE OG\Tools\Audio Converter\bin\xWMAEncode.exe");
 
-
-
     public static string? BmlFuzEncode() => FirstFile(
         Env("BMLFUZENCODE_PATH"),
         App("tools", "audio", "BmlFuzEncode.exe"),
         @"E:\F4SE OG\Tools\Audio Converter\bin\BmlFuzEncode.exe");
 
-
-
     public static string? BmlFuzDecode() => FirstFile(
         Env("BMLFUZDECODE_PATH"),
         App("tools", "audio", "BmlFuzDecode.exe"),
         @"E:\F4SE OG\Tools\Audio Converter\bin\BmlFuzDecode.exe");
-
 
     public static string Describe(string tool) => tool switch
     {

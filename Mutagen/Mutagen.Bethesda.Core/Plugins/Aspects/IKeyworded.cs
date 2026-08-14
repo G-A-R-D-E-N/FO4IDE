@@ -10,24 +10,16 @@ namespace Mutagen.Bethesda
     namespace Plugins.Aspects
     {
 
-
-
         public interface IKeyworded<TKeyword> : IKeywordedGetter<TKeyword>, IMajorRecordQueryable
             where TKeyword : class, IKeywordCommonGetter
         {
             new ExtendedList<IFormLinkGetter<TKeyword>>? Keywords { get; set; }
         }
 
-
-
-
         public interface IKeywordedGetter : IMajorRecordQueryableGetter
         {
             IReadOnlyList<IFormLinkGetter<IKeywordCommonGetter>>? Keywords { get; }
         }
-
-
-
 
         public interface IKeywordedGetter<TKeyword> : IKeywordedGetter
             where TKeyword : class, IKeywordCommonGetter
@@ -39,13 +31,6 @@ namespace Mutagen.Bethesda
     public static class IKeywordedExt
     {
 
-
-
-
-
-
-
-
         public static bool HasKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
             FormKey keywordKey)
@@ -53,23 +38,6 @@ namespace Mutagen.Bethesda
         {
             return keyworded.Keywords?.Any(x => x.FormKey == keywordKey) ?? false;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public static bool TryResolveKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
@@ -86,14 +54,6 @@ namespace Mutagen.Bethesda
             return cache.TryResolve(keywordKey, out keyword);
         }
 
-
-
-
-
-
-
-
-
         public static bool HasKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
             IFormLinkGetter<TKeyword> keywordLink)
@@ -101,23 +61,6 @@ namespace Mutagen.Bethesda
         {
             return HasKeyword(keyworded, keywordLink.FormKey);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public static bool TryResolveKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
@@ -129,14 +72,6 @@ namespace Mutagen.Bethesda
             return TryResolveKeyword(keyworded, keywordLink.FormKey, cache, out keyword);
         }
 
-
-
-
-
-
-
-
-
         public static bool HasKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
             TKeyword keyword)
@@ -144,21 +79,6 @@ namespace Mutagen.Bethesda
         {
             return keyworded.HasKeyword(keyword.FormKey);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public static bool TryResolveKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
@@ -168,7 +88,6 @@ namespace Mutagen.Bethesda
             StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
             where TKeyword : class, IKeywordCommonGetter
         {
-
 
             if (keyworded.Keywords == null)
             {
@@ -188,19 +107,6 @@ namespace Mutagen.Bethesda
             return false;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         public static bool HasKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
             string editorID,
@@ -211,14 +117,6 @@ namespace Mutagen.Bethesda
             return TryResolveKeyword(keyworded, editorID, cache, out _, stringComparison);
         }
 
-
-
-
-
-
-
-
-
         public static bool HasAnyKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
             IEnumerable<FormKey> keywordKeys)
@@ -226,14 +124,6 @@ namespace Mutagen.Bethesda
         {
             return keyworded.Keywords?.IntersectBy(keywordKeys, x => x.FormKey).Any() ?? false;
         }
-
-
-
-
-
-
-
-
 
         public static bool HasAnyKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
@@ -243,14 +133,6 @@ namespace Mutagen.Bethesda
             return HasAnyKeyword(keyworded, keywordLink.Select(x => x.FormKey));
         }
 
-
-
-
-
-
-
-
-
         public static bool HasAnyKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
             IEnumerable<TKeyword> keywords)
@@ -259,19 +141,6 @@ namespace Mutagen.Bethesda
             return keyworded.HasAnyKeyword(keywords.Select(x => x.FormKey));
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         public static bool HasAnyKeyword<TKeyword>(
             this IKeywordedGetter<TKeyword> keyworded,
             IEnumerable<string> editorIDs,
@@ -279,7 +148,6 @@ namespace Mutagen.Bethesda
             StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
             where TKeyword : class, IKeywordCommonGetter
         {
-
 
             if (keyworded.Keywords == null)
             {

@@ -4,20 +4,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class PapyrusDuplicateDeclarationTests
 {
     private static PapyrusCompileResult Compile(string text)
@@ -183,7 +169,6 @@ public class PapyrusDuplicateDeclarationTests
     [Fact]
     public void A_local_override_beside_a_remote_handler_of_the_same_event_is_accepted()
     {
-
 
         Accepted("""
             Scriptname Fixture extends ObjectReference

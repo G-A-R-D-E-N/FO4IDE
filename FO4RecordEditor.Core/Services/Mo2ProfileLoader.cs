@@ -8,117 +8,23 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
 public static class Mo2ProfileLoader
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public sealed class Mo2GameEnvironment
     {
         public required ILoadOrderGetter<IModListingGetter<IFallout4ModGetter>> LoadOrder { get; init; }
 
-
-
-
-
-
-
         public required ILinkCache LinkCache { get; set; }
         public required DirectoryPath DataFolderPath { get; init; }
-
-
-
-
-
-
-
-
-
-
-
 
         public required IReadOnlyDictionary<string, string> PluginPaths { get; init; }
     }
 
     public sealed record Mo2Info(string InstancePath, string Profile, string GameDataFolder, string OverwriteFolder);
 
-
-
-
-
-
-
-
-
-
-
-
     public static IReadOnlyList<(string name, string reason)> FailedToLoad { get; private set; } =
         Array.Empty<(string, string)>();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReplaceLoadedPluginFile(
         object? env, string pluginName, string tempPath, string targetPath, out string error)
@@ -146,7 +52,6 @@ public static class Mo2ProfileLoader
             return false;
         }
 
-
         lo.Set(new ModListing<IFallout4ModGetter>(modKey, mod: null, enabled: existing.Enabled, ghostSuffix: existing.GhostSuffix));
         MutagenLoader.InvalidateModIndex(pluginName);
 
@@ -158,7 +63,6 @@ public static class Mo2ProfileLoader
         catch (Exception ex)
         {
             error = ex.Message;
-
 
             TryReopen(lo, modKey, targetPath, existing);
             RebuildLinkCache(mo2, lo);
@@ -182,8 +86,6 @@ public static class Mo2ProfileLoader
         catch
         {
 
-
-
         }
     }
 
@@ -193,7 +95,6 @@ public static class Mo2ProfileLoader
         mo2.LinkCache = rebuilt;
         MutagenLoader.LinkCache = rebuilt;
     }
-
 
     public static Mo2Info ReadInstanceInfo(string instancePath)
     {
@@ -212,11 +113,7 @@ public static class Mo2ProfileLoader
             }
         }
 
-
         var dataFolder = string.IsNullOrWhiteSpace(gamePath) ? "" : Path.Combine(gamePath, "Data");
-
-
-
 
         if (dataFolder.Length == 0 || !Directory.Exists(dataFolder))
         {
@@ -225,9 +122,6 @@ public static class Mo2ProfileLoader
         }
         return new Mo2Info(instancePath, profile, dataFolder, ResolveOverwriteFolder(instancePath));
     }
-
-
-
 
     public static string ResolveOverwriteFolder(string instancePath)
     {
@@ -257,7 +151,6 @@ public static class Mo2ProfileLoader
         try { return Path.GetFullPath(ow); } catch { return ow; }
     }
 
-
     private static string Unwrap(string line)
     {
         var v = line[(line.IndexOf('=') + 1)..].Trim();
@@ -266,17 +159,6 @@ public static class Mo2ProfileLoader
             v = v[prefix.Length..^1];
         return NativePath(v.Replace("\\\\", "\\"));
     }
-
-
-
-
-
-
-
-
-
-
-
 
     private static string NativePath(string p)
     {
@@ -294,10 +176,6 @@ public static class Mo2ProfileLoader
         return p.Replace('\\', '/');
     }
 
-
-
-
-
     public static (object env, List<string> plugins) Load(
         string instancePath, string profile, string gameDataFolder,
         IProgress<(string message, double? percent)>? progress = null)
@@ -310,7 +188,6 @@ public static class Mo2ProfileLoader
         if (!File.Exists(pluginsTxt))
             throw new FileNotFoundException($"plugins.txt not found for profile '{profile}'", pluginsTxt);
 
-
         var loadOrder = File.ReadAllLines(pluginsTxt)
             .Select(l => l.Trim())
             .Where(l => l.StartsWith('*'))
@@ -318,19 +195,12 @@ public static class Mo2ProfileLoader
             .Where(l => l.Length > 0)
             .ToList();
 
-
-
-
-
-
         var present = new HashSet<string>(loadOrder, StringComparer.OrdinalIgnoreCase);
         var implicitMasters = Mutagen.Bethesda.Plugins.Implicits.Get(GameRelease.Fallout4).Listings
             .Select(m => m.FileName.String)
             .Where(m => !present.Contains(m))
             .ToList();
         loadOrder = implicitMasters.Concat(loadOrder).ToList();
-
-
 
         var modsHighToLow = File.Exists(modlistTxt)
             ? File.ReadAllLines(modlistTxt)
@@ -342,9 +212,6 @@ public static class Mo2ProfileLoader
             : new List<string>();
 
         progress?.Report(($"Resolving {loadOrder.Count} plugins across {modsHighToLow.Count} mods...", 5));
-
-
-
 
         var resolved = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
@@ -367,14 +234,9 @@ public static class Mo2ProfileLoader
             Index(Path.Combine(modsDir, modsHighToLow[i]));
         Index(ResolveOverwriteFolder(instancePath));
 
-
-
-
-
         var listings = new List<IModListingGetter<IFallout4ModGetter>>();
         var loaded = new List<string>();
         var missing = new List<string>();
-
 
         var failedToLoad = new List<(string name, string reason)>();
         var pluginPaths = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -392,13 +254,6 @@ public static class Mo2ProfileLoader
                 long size = 0;
                 try { size = new FileInfo(path).Length; } catch { }
 
-
-
-
-
-
-
-
                 IFallout4ModGetter mod = ToolPaths.ReadLargePluginsIntoMemory
                     ? Fallout4Mod.CreateFromBinary(ModPath.FromPath(path), Fallout4Release.Fallout4)
                     : Fallout4Mod.CreateFromBinaryOverlay(ModPath.FromPath(path), Fallout4Release.Fallout4);
@@ -412,11 +267,6 @@ public static class Mo2ProfileLoader
             catch (Exception ex)
             {
 
-
-
-
-
-
                 failedToLoad.Add((name, $"{ex.GetType().Name}: {ex.Message.Split('\n')[0].Trim()}"));
             }
         }
@@ -424,8 +274,6 @@ public static class Mo2ProfileLoader
         var lo = new LoadOrder<IModListingGetter<IFallout4ModGetter>>(listings, disposeItems: true);
         var linkCache = lo.ToImmutableLinkCache<IFallout4Mod, IFallout4ModGetter>();
         MutagenLoader.LinkCache = linkCache;
-
-
 
         MutagenLoader.MasterIsEsl.Clear();
         foreach (var l in listings)
@@ -445,12 +293,7 @@ public static class Mo2ProfileLoader
         FailedToLoad = failedToLoad;
         progress?.Report((summary, 100));
 
-
-
         TextureService.SetSessionRoots(new[] { gameDataFolder, modsDir, ResolveOverwriteFolder(instancePath) });
-
-
-
 
         AssetResolver.SetSessionDataRoots(AssetResolver.Mo2DataRoots(
             instancePath, modsHighToLow, ResolveOverwriteFolder(instancePath), gameDataFolder));

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -40,8 +36,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class AStoryManagerNode :
         Fallout4MajorRecord,
@@ -603,8 +597,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAStoryManagerNode :
         IAStoryManagerNodeGetter,
         IFallout4MajorRecordInternal,
@@ -622,9 +614,6 @@ namespace Mutagen.Bethesda.Fallout4
         IAStoryManagerNodeGetter
     {
     }
-
-
-
 
     public partial interface IAStoryManagerNodeGetter :
         IFallout4MajorRecordGetter,
@@ -1194,7 +1183,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return AStoryManagerNode.GetNew();
@@ -1624,7 +1612,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1682,7 +1669,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         public override ParseResult FillRecordType(
             OverlayStream stream,

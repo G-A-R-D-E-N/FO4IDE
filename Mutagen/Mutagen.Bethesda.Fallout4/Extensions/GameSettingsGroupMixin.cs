@@ -22,7 +22,7 @@ public static class GameSettingGroupMixIn
         gameSettings.Add(ret);
         return ret;
     }
-    
+
     public static GameSettingFloat AddNewFloat(this IGroup<GameSetting> gameSettings)
     {
         var ret = new GameSettingFloat(

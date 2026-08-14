@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
 public sealed class PapyrusCompileResult
 {
     internal PapyrusCompileResult(
@@ -19,20 +18,9 @@ public sealed class PapyrusCompileResult
 
     public PapyrusScript? Script { get; }
 
-
     public PexFile? Pex { get; }
 
     public IReadOnlyList<PapyrusDiagnostic> Diagnostics { get; }
-
-
-
-
-
-
-
-
-
-
 
     public bool SourcesComplete { get; }
 
@@ -42,23 +30,16 @@ public sealed class PapyrusCompileResult
         Diagnostics.Where(d => d.Severity == PapyrusSeverity.Error);
 }
 
-
 public sealed class PapyrusCompileOptions
 {
 
     public IList<string> ImportRoots { get; } = new List<string>();
 
-
-
-
-
     public string? FlagFile { get; set; }
 
     public bool EmitDebugInfo { get; set; } = true;
 
-
     public bool EmitDebugOnlyCode { get; set; } = true;
-
 
     public bool EmitBetaOnlyCode { get; set; } = true;
 
@@ -66,26 +47,8 @@ public sealed class PapyrusCompileOptions
 
     public string ComputerName { get; set; } = "";
 
-
-
-
-
     public long CompilationTime { get; set; }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class PapyrusCompiler
 {
@@ -93,7 +56,6 @@ public sealed class PapyrusCompiler
 
     public PapyrusCompiler(PapyrusScriptIndex index) =>
         _index = index ?? throw new ArgumentNullException(nameof(index));
-
 
     public static PapyrusScriptIndex IndexFor(IEnumerable<string> roots)
     {
@@ -134,8 +96,6 @@ public sealed class PapyrusCompiler
         var diagnostics = new List<PapyrusDiagnostic>(script.Diagnostics);
         if (script.HasErrors) return new PapyrusCompileResult(script, null, diagnostics, sourcesComplete: false);
 
-
-
         diagnostics.AddRange(PapyrusDeclarationCheck.Check(script));
         if (diagnostics.Any(d => d.Severity == PapyrusSeverity.Error))
             return new PapyrusCompileResult(script, null, diagnostics, sourcesComplete: false);
@@ -170,7 +130,6 @@ public sealed class PapyrusCompiler
         diagnostics.AddRange(codegenDiagnostics);
         return new PapyrusCompileResult(script, pex, diagnostics, resolution.BaseChainComplete);
     }
-
 
     public PapyrusCompileResult CompileToFile(
         string sourcePath, string? outputPath = null, PapyrusCompileOptions? options = null)

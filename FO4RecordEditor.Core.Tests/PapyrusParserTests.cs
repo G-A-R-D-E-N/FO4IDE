@@ -16,10 +16,6 @@ public class PapyrusParserTests
         return script;
     }
 
-
-
-
-
     [Fact]
     public void Header_captures_name_parent_and_flags()
     {
@@ -49,10 +45,6 @@ public class PapyrusParserTests
             .Should().Contain(d => d.Code == PapyrusDiagnosticCodes.ExpectedScriptName);
     }
 
-
-
-
-
     [Fact]
     public void Imports_are_collected()
     {
@@ -68,7 +60,6 @@ public class PapyrusParserTests
         v.Name.Should().Be("myValue");
         v.Type.Name.Should().Be("int");
         v.Initializer.Should().BeOfType<PapyrusLiteralExpression>();
-
 
         v.Flags.Should().Equal("conditional");
     }
@@ -174,10 +165,6 @@ endStruct
             .CustomEvents.Single().Name.Should().Be("MyCustomEvent");
     }
 
-
-
-
-
     [Fact]
     public void Function_header_with_return_type_parameters_and_global_flag()
     {
@@ -260,10 +247,6 @@ endEvent
         fn.Parameters[1].Type.Name.Should().Be("scripteventname");
     }
 
-
-
-
-
     [Fact]
     public void Auto_state_with_an_override()
     {
@@ -285,10 +268,6 @@ EndState
 
         script.Functions.Should().BeEmpty();
     }
-
-
-
-
 
     private static List<PapyrusStatement> BodyOf(string statements) =>
         ParseClean("ScriptName S\nFunction F()\n" + statements + "\nEndFunction\n").Functions.Single().Body;
@@ -320,7 +299,6 @@ EndState
     [Fact]
     public void Indexed_assignment_is_not_mistaken_for_an_array_definition()
     {
-
 
         var assign = BodyOf("myArray[0] = 1").Single()
             .Should().BeOfType<PapyrusAssignStatement>().Subject;
@@ -386,10 +364,6 @@ endIf").Single().Should().BeOfType<PapyrusIfStatement>().Subject;
         loop.Body.Should().HaveCount(2);
         loop.Condition.Should().BeOfType<PapyrusBinaryExpression>();
     }
-
-
-
-
 
     private static PapyrusExpression ExprOf(string expression) =>
         BodyOf("x = " + expression).OfType<PapyrusAssignStatement>().Single().Value;
@@ -504,10 +478,6 @@ endIf").Single().Should().BeOfType<PapyrusIfStatement>().Subject;
         ExprOf("true").Should().BeOfType<PapyrusLiteralExpression>()
             .Which.Kind.Should().Be(PapyrusLiteralKind.Bool);
     }
-
-
-
-
 
     [Fact]
     public void A_broken_line_does_not_cost_the_declarations_after_it()

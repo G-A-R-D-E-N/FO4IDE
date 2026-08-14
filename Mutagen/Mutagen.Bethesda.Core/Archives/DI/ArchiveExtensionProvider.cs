@@ -5,9 +5,6 @@ namespace Mutagen.Bethesda.Archives.DI;
 public interface IArchiveExtensionProvider
 {
 
-
-
-
     string Get();
 }
 

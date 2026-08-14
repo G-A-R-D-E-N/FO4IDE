@@ -5,19 +5,19 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace Mutagen.Bethesda.Environments.DI;
 
-public interface IGameEnvironmentProvider<TModSetter, TModGetter> 
-    where TModSetter : class, IContextMod<TModSetter, TModGetter>, TModGetter 
+public interface IGameEnvironmentProvider<TModSetter, TModGetter>
+    where TModSetter : class, IContextMod<TModSetter, TModGetter>, TModGetter
     where TModGetter : class, IContextGetterMod<TModSetter, TModGetter>
 {
     IGameEnvironment<TModSetter, TModGetter> Construct(LinkCachePreferences? linkCachePrefs = null);
 }
-    
-public interface IGameEnvironmentProvider<TMod> 
+
+public interface IGameEnvironmentProvider<TMod>
     where TMod : class, IModGetter
 {
     IGameEnvironment<TMod> Construct(LinkCachePreferences? linkCachePrefs = null);
 }
-    
+
 public interface IGameEnvironmentProvider
 {
     IGameEnvironment Construct(LinkCachePreferences? linkCachePrefs = null);
@@ -48,7 +48,7 @@ public sealed class GameEnvironmentProvider : IGameEnvironmentProvider
         _assetProvider = assetProvider;
     }
 
-    public IGameEnvironment Construct(LinkCachePreferences? linkCachePrefs = null)        
+    public IGameEnvironment Construct(LinkCachePreferences? linkCachePrefs = null)
     {
         var loadOrder = _loadOrderImporter.Import();
 
@@ -90,7 +90,7 @@ public sealed class GameEnvironmentProvider<TMod> : IGameEnvironmentProvider<TMo
         _assetProvider = assetProvider;
     }
 
-    public IGameEnvironment<TMod> Construct(LinkCachePreferences? linkCachePrefs = null)        
+    public IGameEnvironment<TMod> Construct(LinkCachePreferences? linkCachePrefs = null)
     {
         var loadOrder = _loadOrderImporter.Import();
 
@@ -133,7 +133,7 @@ public sealed class GameEnvironmentProvider<TModSetter, TModGetter> : IGameEnvir
         _assetProvider = assetProvider;
     }
 
-    public IGameEnvironment<TModSetter, TModGetter> Construct(LinkCachePreferences? linkCachePrefs = null)        
+    public IGameEnvironment<TModSetter, TModGetter> Construct(LinkCachePreferences? linkCachePrefs = null)
     {
         var loadOrder = _loadOrderImporter.Import();
 

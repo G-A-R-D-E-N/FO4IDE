@@ -2,20 +2,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class PapyrusDecompiler
 {
     public static string Decompile(string pexPath, bool assembly)
@@ -23,7 +9,6 @@ public static class PapyrusDecompiler
         var pex = PexFile.ReadFile(pexPath);
         return assembly ? Disassemble(pex) : ToSource(pex);
     }
-
 
     private static string ToSource(PexFile pex)
     {
@@ -50,7 +35,6 @@ public static class PapyrusDecompiler
             if (!string.IsNullOrEmpty(obj.DocString)) sb.AppendLine($"{{ {obj.DocString} }}");
             sb.AppendLine();
 
-
             foreach (var st in obj.Structs)
             {
                 sb.AppendLine($"Struct {st.Name}");
@@ -66,7 +50,6 @@ public static class PapyrusDecompiler
                 sb.AppendLine("EndStruct");
                 sb.AppendLine();
             }
-
 
             foreach (var p in obj.Properties)
             {
@@ -92,7 +75,6 @@ public static class PapyrusDecompiler
                 sb.AppendLine();
             }
 
-
             bool anyVar = false;
             foreach (var v in obj.Variables)
             {
@@ -105,7 +87,6 @@ public static class PapyrusDecompiler
                 anyVar = true;
             }
             if (anyVar) sb.AppendLine();
-
 
             foreach (var state in obj.States)
             {
@@ -138,8 +119,6 @@ public static class PapyrusDecompiler
             return names.Count == 0 ? "" : " " + string.Join(" ", names);
         }
 
-
-
         bool isRemote = nameOverride == null && fn.Name.StartsWith("::remote_", StringComparison.OrdinalIgnoreCase);
         bool isEvent = nameOverride == null
             && fn.ReturnType.Equals("None", StringComparison.OrdinalIgnoreCase)
@@ -152,11 +131,6 @@ public static class PapyrusDecompiler
         else if (isRemote)
         {
 
-
-
-
-
-
             var rest = fn.Name.Substring("::remote_".Length);
             string type = fn.Params.Count > 0 ? fn.Params[0].Type : "";
             string ev = rest;
@@ -167,7 +141,6 @@ public static class PapyrusDecompiler
             }
             else
             {
-
 
                 int idx = rest.IndexOf("_On", StringComparison.OrdinalIgnoreCase);
                 type = idx > 0 ? rest.Substring(0, idx) : "";
@@ -196,8 +169,6 @@ public static class PapyrusDecompiler
         {
             body = DecompileBody(obj, fn, indent + "\t", inlineTemps: true);
 
-
-
             if (body.Contains("::")) body = DecompileBody(obj, fn, indent + "\t", inlineTemps: false);
         }
         catch (Exception ex) { body = $"{indent}\t; [decompile failed: {ex.Message}; assembly follows]\n" + AsmBody(fn, indent + "\t"); }
@@ -206,7 +177,6 @@ public static class PapyrusDecompiler
         string end = nameOverride == null && isEvent ? "EndEvent" : "EndFunction";
         sb.AppendLine(indent + end);
     }
-
 
     private enum JKind { JmpF, JmpT, Jmp }
     private sealed class JInfo { public JKind Kind; public int Target; public string Cond = ""; public string CondVar = ""; }
@@ -220,8 +190,6 @@ public static class PapyrusDecompiler
         foreach (var v in obj.Variables) types[v.Name] = v.Type;
         foreach (var pr in obj.Properties) types[pr.Name] = pr.Type;
 
-
-
         var backing = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var pr in obj.Properties)
             if (pr.IsAutoVar && !string.IsNullOrEmpty(pr.AutoVarName)) backing[pr.AutoVarName] = pr.Name;
@@ -232,7 +200,6 @@ public static class PapyrusDecompiler
         var jumps = new JInfo?[instrs.Count];
         var firstWrite = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-
         var tempDefinition = new Dictionary<string, int>();
         var tempExpression = new Dictionary<int, string>();
         var tempWasRead = new HashSet<int>();
@@ -241,7 +208,6 @@ public static class PapyrusDecompiler
 
         bool IsTemp(string n) => n.StartsWith("::temp", StringComparison.OrdinalIgnoreCase);
         string ResolveName(string n) => backing.TryGetValue(n, out var pn) ? pn : n;
-
 
         string San(string n) => n.StartsWith("::") ? "_" + n.Substring(2) : n;
 
@@ -259,7 +225,6 @@ public static class PapyrusDecompiler
         }
         string A(PexInstruction ins, int i) => Op(ins.Args[i]);
         string Dest(PexInstruction ins, int i) => ins.Args[i].Str;
-
 
         void Put(int idx, string dest, string expr)
         {
@@ -291,17 +256,11 @@ public static class PapyrusDecompiler
                 case "cast":
                 {
 
-
                     string src = A(ins, 1);
                     if (src == "None") { Put(i, Dest(ins, 0), "None"); break; }
                     string dt = TypeOf(Dest(ins,0));
 
-
-
                     if (dt.Equals("ScriptObject", StringComparison.OrdinalIgnoreCase)) { Put(i, Dest(ins, 0), src); break; }
-
-
-
 
                     if (ins.Args[1].Type == PexValueType.Identifier
                         && TypeOf(ins.Args[1].Str).Equals(dt, StringComparison.OrdinalIgnoreCase))
@@ -370,11 +329,6 @@ public static class PapyrusDecompiler
             }
         }
 
-
-
-
-
-
         for (bool folding = true; folding;)
         {
             folding = false;
@@ -386,8 +340,6 @@ public static class PapyrusDecompiler
 
                 var second = jumps[first.Target];
                 if (second == null || !second.CondVar.Equals(first.CondVar, StringComparison.OrdinalIgnoreCase)) continue;
-
-
 
                 bool clear = true;
                 for (int k = i + 1; k < first.Target && clear; k++) clear = stmt[k] == null && jumps[k] == null;
@@ -401,22 +353,12 @@ public static class PapyrusDecompiler
             }
         }
 
-
-
-
-
         foreach (var (idx, expression) in tempExpression)
         {
             if (tempWasRead.Contains(idx)) continue;
             if (instrs[idx].Mnemonic is not ("callmethod" or "callstatic" or "callparent")) continue;
             stmt[idx] = expression;
         }
-
-
-
-
-
-
 
         var declaredAt = new Dictionary<int, string>();
         var zeroedByDeclaration = new HashSet<int>();
@@ -433,16 +375,10 @@ public static class PapyrusDecompiler
                 && IsZeroFor(l.Type, instrs[at].Args[1]))
             {
 
-
                 zeroedByDeclaration.Add(at);
                 hoisted.Add(l);
                 continue;
             }
-
-
-
-
-
 
             if (firstWrite.TryGetValue(l.Name, out at)
                 && stmt[at] != null
@@ -458,14 +394,10 @@ public static class PapyrusDecompiler
 
         var sb = new StringBuilder();
 
-
-
         foreach (var l in hoisted) sb.AppendLine($"{indent}{l.Type} {San(l.Name)}");
 
         Structure(0, instrs.Count, indent);
         return sb.ToString();
-
-
 
         bool RunsUnconditionally(int idx)
         {
@@ -478,7 +410,6 @@ public static class PapyrusDecompiler
             }
             return true;
         }
-
 
         void Structure(int start, int end, string ind)
         {
@@ -543,7 +474,6 @@ public static class PapyrusDecompiler
         }
     }
 
-
     private static bool IsZeroFor(string type, PexValue value) => type.ToLowerInvariant() switch
     {
         "bool" => value.Type == PexValueType.Bool && !value.Bool,
@@ -562,7 +492,6 @@ public static class PapyrusDecompiler
 
     private static string ElemType(string arrayType) =>
         arrayType.EndsWith("[]") ? arrayType[..^2] : arrayType;
-
 
     private static string Disassemble(PexFile pex)
     {

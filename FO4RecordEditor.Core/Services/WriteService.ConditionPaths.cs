@@ -6,13 +6,6 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
 public static partial class WriteService
 {
 
@@ -31,10 +24,6 @@ public static partial class WriteService
             if (item is IConditionGetter c) outp.Add(DescribeCondition(c));
         return JsonSerializer.Serialize(outp);
     }
-
-
-
-
 
     public static string SetConditionsAtPath(string plugin, string recordId, string path, string conditionsJson, object? env)
     {
@@ -73,8 +62,6 @@ public static partial class WriteService
         return msg + " save_plugin to persist.";
     }
 
-
-
     private static IMajorRecordGetter? FindReadableRecord(object? env, string plugin, string recordId)
     {
         if (!string.IsNullOrWhiteSpace(plugin))
@@ -89,11 +76,6 @@ public static partial class WriteService
             ? MutagenLoader.GetRecordContexts(env, fk).LastOrDefault().rec
             : null;
     }
-
-
-
-
-
 
     private static bool TryResolveConditionList(object record, string path, out IList? list, out string error)
     {
@@ -119,19 +101,15 @@ public static partial class WriteService
             }
         }
 
-
         if (cur is IList target && ElementIsCondition(target)) { list = target; return true; }
 
-
         if (cur is IConditionGetter && lastList != null) { list = lastList; return true; }
-
 
         if (cur is IPerkConditionGetter)
         {
             var inner = cur.GetType().GetProperty("Conditions")?.GetValue(cur);
             if (inner is IList il2) { list = il2; return true; }
         }
-
 
         if (cur is IList wrappers && wrappers.Count >= 0 && ElementIs<IPerkConditionGetter>(wrappers))
         {
@@ -157,8 +135,6 @@ public static partial class WriteService
         }
     }
 
-
-
     private static bool ElementIsCondition(IList list) => ElementIs<IConditionGetter>(list);
 
     private static bool ElementIs<T>(IList list)
@@ -170,24 +146,15 @@ public static partial class WriteService
         return list.Count > 0 && list[0] is T;
     }
 
-
-
-
-
-
     public static Mutagen.Bethesda.Fallout4.IFallout4Mod? GetMutableFor(string plugin, object? env, out string msg) =>
         EnsureOpen(plugin, env, out msg);
-
 
     public static Mutagen.Bethesda.Fallout4.IFallout4MajorRecord? FindRecordIn(
         Mutagen.Bethesda.Fallout4.IFallout4Mod mod, string recordId) => FindMutableRecord(mod, recordId);
 
-
     public static (string name, string? path) SplitPlugin(string plugin) => NormalizePlugin(plugin);
 
-
     public static void RaiseChanged(string name) => NotifyChanged(name);
-
 
     public static bool TryResolveFormKey(object? env, string value, out Mutagen.Bethesda.Plugins.FormKey fk) =>
         ResolveFk(env, value, out fk);

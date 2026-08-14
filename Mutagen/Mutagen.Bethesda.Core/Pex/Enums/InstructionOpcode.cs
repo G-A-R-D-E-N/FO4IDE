@@ -43,7 +43,6 @@ public enum InstructionOpcode
     ARRAY_FINDELEMENT = 0x22,
     ARRAY_RFINDELEMENT = 0x23,
 
-
     IS = 0x24,
     STRUCT_CREATE = 0x25,
     STRUCT_GET = 0x26,

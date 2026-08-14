@@ -7,45 +7,10 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class PapyrusAnalysisService
 {
 
     private const int MaxReportedFiles = 200;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string AnalyzeJson(string text, string? filePath = null)
     {
@@ -56,7 +21,6 @@ public static class PapyrusAnalysisService
         }
         catch (Exception ex)
         {
-
 
             return JsonConvert.SerializeObject(new { error = ex.Message });
         }
@@ -94,18 +58,6 @@ public static class PapyrusAnalysisService
         return JsonConvert.SerializeObject(payload);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static string SymbolAtJson(string text, string? filePath, int offset, string? imports = null)
     {
         PapyrusScript script;
@@ -117,9 +69,6 @@ public static class PapyrusAnalysisService
         {
             return JsonConvert.SerializeObject(new { error = ex.Message });
         }
-
-
-
 
         var index = string.IsNullOrWhiteSpace(filePath)
             ? new PapyrusScriptIndex()
@@ -150,25 +99,6 @@ public static class PapyrusAnalysisService
             length = symbol.NameSpan.Length,
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string Check(string source, bool all = true, bool semantic = true, string? imports = null)
     {
@@ -231,9 +161,6 @@ public static class PapyrusAnalysisService
 
             if (resolver == null) { clean++; continue; }
 
-
-
-
             List<PapyrusDiagnostic> found;
             bool sourcesComplete;
             try
@@ -285,31 +212,6 @@ public static class PapyrusAnalysisService
             ? summary.ToString().TrimEnd()
             : summary.ToString().TrimEnd() + Environment.NewLine + Environment.NewLine + detail;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string Compile(
         string source,
@@ -380,8 +282,6 @@ public static class PapyrusAnalysisService
                 continue;
             }
 
-
-
             var target = Path.Combine(
                 outputFolder,
                 Path.Combine(result.Script!.Name.Split(':', StringSplitOptions.RemoveEmptyEntries)) + ".pex");
@@ -412,12 +312,6 @@ public static class PapyrusAnalysisService
                 + "refuses rather than guessing: an unresolved callee has unknown arity once optional "
                 + "parameters exist. Add the missing source root with 'imports' (semicolon-separated).");
 
-
-
-
-
-
-
             if (baseRoots == 0)
             {
                 summary.AppendLine(
@@ -434,7 +328,6 @@ public static class PapyrusAnalysisService
             ? summary.ToString().TrimEnd()
             : summary.ToString().TrimEnd() + Environment.NewLine + Environment.NewLine + detail;
     }
-
 
     public static string Outline(string source)
     {
@@ -466,16 +359,6 @@ public static class PapyrusAnalysisService
         }
         return sb.ToString().TrimEnd();
     }
-
-
-
-
-
-
-
-
-
-
 
     public static string Definition(string source, int line, int column, string? imports = null)
     {
@@ -521,20 +404,6 @@ public static class PapyrusAnalysisService
         return sb.ToString().TrimEnd();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static PapyrusScriptIndex BuildIndex(string sourceFile, string? imports)
     {
         var index = new PapyrusScriptIndex();
@@ -555,26 +424,8 @@ public static class PapyrusAnalysisService
         return index;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<string> NaturalRootsFor(string folder)
     {
-
-
 
         var full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
         yield return full;
@@ -591,12 +442,6 @@ public static class PapyrusAnalysisService
             yield break;
         }
     }
-
-
-
-
-
-
 
     public static int OffsetOf(string text, int line, int column)
     {
@@ -640,14 +485,6 @@ public static class PapyrusAnalysisService
             error = $"Not found: '{source}'.";
             return files;
         }
-
-
-
-
-
-
-
-
 
         files.AddRange(PapyrusFileWalk.EnumerateFiles(source, "*.psc"));
         files.Sort(StringComparer.OrdinalIgnoreCase);

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -61,8 +57,6 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedStringGetter IMessageGetter.Description => this.Description;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -873,8 +867,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new TranslatedString Description { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
         new Int32 INAM { get; set; }
         new IFormLinkNullable<IQuestGetter> OwnerQuest { get; set; }
@@ -907,8 +899,6 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Message_Registration.Instance;
         ITranslatedStringGetter Description { get; }
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -1562,7 +1552,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Message.GetNew();
@@ -2104,7 +2093,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2138,7 +2126,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IMessageGetter);
-
 
         #region Description
         private int? _DescriptionLocation;

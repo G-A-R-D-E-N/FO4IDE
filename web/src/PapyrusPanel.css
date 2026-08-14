@@ -129,14 +129,10 @@
 .papyrus-run:hover:not(:disabled) { background: rgba(78, 201, 176, 0.24); }
 .papyrus-run:disabled { opacity: 0.5; cursor: default; }
 
-
-
-
 .papyrus-drop { border: 1px dashed transparent; border-radius: 6px; transition: border-color .12s, background .12s; }
 .papyrus-drop.over { border-color: var(--accent-color, #4ec9b0); background: rgba(78, 201, 176, 0.08); }
 
 .papyrus-output { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
-
 
 .papyrus-banner {
   display: flex; align-items: center; gap: 8px;
@@ -153,7 +149,6 @@
   color: inherit; font-size: 11px; padding: 3px 9px; cursor: pointer; opacity: 0.9;
 }
 .papyrus-openfolder:hover { opacity: 1; background: rgba(255,255,255,0.06); }
-
 
 .papyrus-output-body .tk-key { color: #c586c0; }
 .papyrus-output-body .tk-type { color: #4ec9b0; }
@@ -223,12 +218,6 @@
 .papyrus-log-row { white-space: pre-wrap; word-break: break-all; }
 .papyrus-log-row.ok { color: #6bbf59; }
 .papyrus-log-row.err { color: #f44747; }
-
-
-
-
-
-
 
 .papyrus-analyze .papyrus-output-head { justify-content: space-between; }
 .papyrus-status { font-size: 11px; }

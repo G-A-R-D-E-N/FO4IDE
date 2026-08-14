@@ -4,15 +4,6 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class GraphLocalTests
 {
     private static string Source(GraphDocument document)
@@ -99,7 +90,6 @@ public class GraphLocalTests
     [Fact]
     public void A_local_survives_being_declared_inside_a_loop_body()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");

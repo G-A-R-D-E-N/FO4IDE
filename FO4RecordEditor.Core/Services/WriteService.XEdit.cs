@@ -7,21 +7,8 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
 public static partial class WriteService
 {
-
-
-
-
-
-
 
     public static string CopyAsNewRecord(object? env, string sourcePlugin, string id, string targetPlugin, string? newEditorId)
     {
@@ -62,8 +49,6 @@ public static partial class WriteService
         return $"Copied {fk} into {name} as NEW record {newFk} ('{dup.EditorID}'). save_plugin to persist.";
     }
 
-
-
     private static bool TryAddToGroup(IFallout4Mod mod, Type getterType, IMajorRecord rec, out string err)
     {
         foreach (var prop in mod.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -87,20 +72,6 @@ public static partial class WriteService
         err = $"no group in the mod holds {getterType.Name}";
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string RemoveIdenticalToMaster(object? env, string plugin, bool apply, int limit = 2000)
     {
@@ -152,9 +123,6 @@ public static partial class WriteService
         return msg;
     }
 
-
-
-
     private static bool RecordsAreIdentical(IMajorRecordGetter a, IMajorRecordGetter b)
     {
         if (ReferenceEquals(a, b)) return true;
@@ -162,7 +130,6 @@ public static partial class WriteService
         try { return a.Equals(b); }
         catch { return false; }
     }
-
 
     private static bool TryRemoveRecord(IFallout4Mod mod, FormKey fk, out string err)
     {
@@ -177,16 +144,6 @@ public static partial class WriteService
         err = "could not locate the group holding it";
         return false;
     }
-
-
-
-
-
-
-
-
-
-
 
     public static string CreateMergedPatch(object? env, string plugins, string patchPlugin, bool apply, int limit = 5000)
     {
@@ -206,7 +163,6 @@ public static partial class WriteService
 
         if (order.Count < 2)
             return ToolError.Fail($"A merged patch needs at least two source plugins; matched {order.Count}.");
-
 
         var owner = new Dictionary<FormKey, string>();
         var winner = new Dictionary<FormKey, string>();
@@ -254,8 +210,6 @@ public static partial class WriteService
         if (failures.Count > 0) result += $" {failures.Count} failed: {string.Join("; ", failures.Take(5))}.";
         return result;
     }
-
-
 
     private static List<(string name, IFallout4ModGetter mod)> LoadOrderMods(object? env)
     {

@@ -80,7 +80,7 @@ partial class NavigationMapInfoBinaryOverlay
     public partial IANavigationMapInfoParentGetter GetParentCustom(int location)
     {
         var worldspace = FormKey.Factory(
-            _package.MetaData.MasterReferences, 
+            _package.MetaData.MasterReferences,
             new FormID(BinaryPrimitives.ReadUInt32LittleEndian(_structData.Span.Slice(IslandEndingPos + 0x4, 0x4))),
             reference: true);
         if (worldspace.IsNull)
@@ -88,7 +88,7 @@ partial class NavigationMapInfoBinaryOverlay
             return new NavigationMapInfoCellParent()
             {
                 Cell = FormKey.Factory(
-                    _package.MetaData.MasterReferences, 
+                    _package.MetaData.MasterReferences,
                     new FormID(BinaryPrimitives.ReadUInt32LittleEndian(_structData.Span.Slice(IslandEndingPos + 0x8, 0x4))),
                     reference: true).ToLink<ICellGetter>()
             };

@@ -8,11 +8,6 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
 public static partial class MutagenLoader
 {
     public sealed record ActivePluginDto(string Name, string Kind, int LoadOrder, bool Editable, long Size);
@@ -28,17 +23,12 @@ public static partial class MutagenLoader
     public sealed record HistoryEntryDto(string Plugin, int LoadOrder, string Action, int ChangedFields, string LastModified);
     public sealed record LoadOrderSummaryDto(int TotalRecords, int PluginCount, IReadOnlyList<string> Plugins);
 
-
-
-
-
     private static string PluginKind(object? mod, string name)
     {
         try
         {
             dynamic m = mod!;
             bool master = (bool)m.ModHeader.Flags.HasFlag(Mutagen.Bethesda.Fallout4.Fallout4ModHeader.HeaderFlag.Master);
-
 
             bool light = (bool)m.ModHeader.Flags.HasFlag(Mutagen.Bethesda.Fallout4.Fallout4ModHeader.HeaderFlag.Small);
             if (light) return "light";
@@ -48,7 +38,6 @@ public static partial class MutagenLoader
         var ext = Path.GetExtension(name).ToLowerInvariant();
         return ext == ".esm" ? "master" : ext == ".esl" ? "light" : "plugin";
     }
-
 
     public static List<ActivePluginDto> GetActivePlugins(object? envObj)
     {
@@ -67,11 +56,6 @@ public static partial class MutagenLoader
         return result;
     }
 
-
-
-
-
-
     public static List<RecordTypeDto> GetRecordTypeIndex(object? envObj)
     {
         var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -87,11 +71,6 @@ public static partial class MutagenLoader
             .OrderBy(t => t.FriendlyName, StringComparer.OrdinalIgnoreCase)
             .ToList();
     }
-
-
-
-
-
 
     public static List<SearchHit> GetRecordsOfTypeAcrossLoadOrder(
         object? envObj, string sig, string filter, int limit = 500, int offset = 0)
@@ -126,11 +105,6 @@ public static partial class MutagenLoader
         return hits;
     }
 
-
-
-
-
-
     public static List<BreadcrumbNodeDto> GetContainmentPath(object? envObj, string formKeyStr)
     {
         var path = new List<BreadcrumbNodeDto>();
@@ -142,7 +116,6 @@ public static partial class MutagenLoader
         try
         {
             var lc = (Mutagen.Bethesda.Plugins.Cache.ILinkCache)((dynamic)envObj).LinkCache;
-
 
             var ctx = lc.ResolveAllSimpleContexts<IMajorRecordGetter>(fk).FirstOrDefault();
             var chain = new List<BreadcrumbNodeDto>();
@@ -171,7 +144,6 @@ public static partial class MutagenLoader
         return string.IsNullOrWhiteSpace(eid) ? id : $"{id} <{eid}>";
     }
 
-
     public static RecordDetailsDto? GetRecordDetails(object? envObj, string formKeyStr)
     {
         if (!FormKey.TryFactory(formKeyStr, out var fk)) return null;
@@ -180,8 +152,6 @@ public static partial class MutagenLoader
 
         var (winnerPlugin, winner) = contexts[^1];
         var sig = SignatureOf(winner);
-
-
 
         string baseLabel = "", baseKey = "";
         try
@@ -210,22 +180,11 @@ public static partial class MutagenLoader
             OverrideCount: Math.Max(0, contexts.Count - 1));
     }
 
-
-
-
-
-
-
     private static string SignatureOf(IMajorRecordGetter r)
     {
         try { return (string)((dynamic)r).Registration.Name; }
         catch { return r.GetType().Name.Replace("BinaryOverlay", "").Replace("Binary", ""); }
     }
-
-
-
-
-
 
     public static List<PluginMatrixRowDto> GetRecordPluginMatrix(object? envObj, string formKeyStr)
     {
@@ -236,9 +195,6 @@ public static partial class MutagenLoader
         for (int col = 0; col < matrix.Plugins.Count; col++)
         {
             var plugin = matrix.Plugins[col];
-
-
-
 
             int winnerCol = matrix.Plugins.Count - 1;
             int changes = 0, conflicts = 0;
@@ -272,11 +228,6 @@ public static partial class MutagenLoader
         return rows;
     }
 
-
-
-
-
-
     public static List<DependencyDto> GetDependencies(object? envObj, string formKeyStr, int cap = 300)
     {
         var deps = new List<DependencyDto>();
@@ -304,11 +255,6 @@ public static partial class MutagenLoader
         return deps;
     }
 
-
-
-
-
-
     public static List<HistoryEntryDto> GetHistory(object? envObj, string formKeyStr)
     {
         var entries = new List<HistoryEntryDto>();
@@ -323,7 +269,6 @@ public static partial class MutagenLoader
         }
         return entries;
     }
-
 
     public static LoadOrderSummaryDto GetLoadOrderSummary(object? envObj)
     {

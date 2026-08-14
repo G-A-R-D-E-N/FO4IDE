@@ -8,7 +8,7 @@ internal sealed class RecordTriggerSpecs
     public bool AllAreTriggers { get; }
 
     public RecordTriggerSpecs(
-        IReadOnlyRecordCollection allRecordTypes, 
+        IReadOnlyRecordCollection allRecordTypes,
         IReadOnlyRecordCollection triggeringRecordTypes,
         IReadOnlyRecordCollection endRecordTypes)
     {

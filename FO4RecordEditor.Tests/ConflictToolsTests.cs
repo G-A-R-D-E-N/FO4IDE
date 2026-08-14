@@ -9,8 +9,6 @@ public class ConflictToolsTests : IDisposable
     private const string Instance = @"D:\Games\ModlistDownloads";
     private static bool Available => Directory.Exists(Path.Combine(Instance, "profiles"));
 
-
-
     private readonly GlobalStateIsolation _state = new();
     public void Dispose() => _state.Dispose();
 
@@ -22,16 +20,12 @@ public class ConflictToolsTests : IDisposable
         return new PluginToolExecutor(() => captured, () => Instance);
     }
 
-
-
-
     [Fact]
     public void BuildConflictMatrix_DrillsIntoComponentsAndConditions()
     {
         if (!Available) return;
         MakeExecutor(out var env);
         var cache = MutagenLoader.LinkCache!;
-
 
         var cobj = cache.PriorityOrder
             .SelectMany(m => m.EnumerateMajorRecords())
@@ -43,10 +37,8 @@ public class ConflictToolsTests : IDisposable
         matrix.Should().NotBeNull();
         var fields = matrix!.Rows.Select(r => r.Field).ToList();
 
-
         fields.Should().Contain(f => f.StartsWith("Components["));
         fields.Should().Contain(f => f.StartsWith("Conditions["));
-
 
         fields.Should().Contain(f => f.StartsWith("Components[") && f.Contains("]."));
         fields.Should().Contain(f => f.StartsWith("Conditions[") && f.Contains("]."));
@@ -59,7 +51,6 @@ public class ConflictToolsTests : IDisposable
     {
         if (!Available) return;
         var exec = MakeExecutor(out _);
-
 
         var result = exec.Execute("get_conflicts", """{"id":"054C84:Fallout4.esm"}""");
         result.Should().Contain("workshopScrapRecipe_Bush")
@@ -82,7 +73,6 @@ public class ConflictToolsTests : IDisposable
     {
         if (!Available) return;
         var exec = MakeExecutor(out _);
-
 
         var result = exec.Execute("search_robco_configs", """{"query":"filterByKeyword"}""");
         result.Should().Contain("RobCo Patcher matches").And.Contain(".ini");

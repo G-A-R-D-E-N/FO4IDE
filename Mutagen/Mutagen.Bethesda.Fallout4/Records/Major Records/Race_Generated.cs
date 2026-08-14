@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -67,8 +63,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IAnimationSoundTagSetGetter> IRaceGetter.AnimationSound => this.AnimationSound;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -144,8 +138,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
@@ -4702,15 +4694,11 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new IFormLinkNullable<IAnimationSoundTagSetGetter> AnimationSound { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
         new TranslatedString Description { get; set; }
         new ExtendedList<IFormLinkGetter<ISpellRecordGetter>>? ActorEffect { get; set; }
         new IFormLinkNullable<IArmorGetter> Skin { get; set; }
         new BipedBodyTemplate? BipedBodyTemplate { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new ExtendedList<ObjectProperty>? Properties { get; set; }
@@ -4834,8 +4822,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IAnimationSoundTagSetGetter> AnimationSound { get; }
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         ITranslatedStringGetter Description { get; }
@@ -4843,8 +4829,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<IArmorGetter> Skin { get; }
         IBipedBodyTemplateGetter? BipedBodyTemplate { get; }
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
@@ -6901,7 +6885,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public override object GetNew()
         {
@@ -9303,7 +9286,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -9337,7 +9319,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IRaceGetter);
-
 
         #region AnimationSound
         private int? _AnimationSoundLocation;

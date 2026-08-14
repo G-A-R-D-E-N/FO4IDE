@@ -23,7 +23,7 @@ public sealed class CreationClubLiveLoadOrderFolderWatcher : ICreationClubLiveLo
         _fileSystem = fileSystem;
         DataDirectory = dataDirectory;
     }
-        
+
     public IObservable<IChangeSet<ModKey, ModKey>> Get()
     {
         if (!_fileSystem.Directory.Exists(DataDirectory.Path))

@@ -9,28 +9,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 [Collection("MutagenLoaderCache")]
 public class TypeScopedIndexTests : IDisposable
 {
@@ -56,7 +34,6 @@ public class TypeScopedIndexTests : IDisposable
         TestDataRoots.FixturesRequired.Should().BeFalse("FO4RE_REQUIRE_FIXTURES=1 but Fallout4.esm was not found");
         return true;
     }
-
 
     private static (Dictionary<string, int> counts, Dictionary<string, List<string>> firstRows) Truth(string path)
     {
@@ -98,7 +75,6 @@ public class TypeScopedIndexTests : IDisposable
 
     [Theory]
 
-
     [InlineData("Weapon")]
     [InlineData("PlacedObject")]
     [InlineData("GameSettingFloat")]
@@ -124,9 +100,6 @@ public class TypeScopedIndexTests : IDisposable
     {
         if (Skip()) return;
         Install();
-
-
-
 
         MutagenLoader.QueryRecordsOfType(null, ModName, "Weapon", limit: 25, offset: 0).Should().NotBeEmpty();
 

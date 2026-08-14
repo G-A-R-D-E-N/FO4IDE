@@ -3,9 +3,6 @@ import { act, renderHook } from '@testing-library/react';
 import { emptyDocument, type BpDocument } from './graphModel';
 import { useSavedDoc } from './useSavedDoc';
 
-
-
-
 const edit = (doc: BpDocument): BpDocument => ({ ...doc, nodes: [...doc.nodes] });
 
 describe('useSavedDoc', () => {
@@ -45,7 +42,6 @@ describe('useSavedDoc', () => {
 
   it('stays dirty when what was written is not what is on screen', () => {
 
-
     const doc = emptyDocument('Fixture');
     const written = edit(doc);
     const editedSince = edit(written);
@@ -76,7 +72,6 @@ describe('useSavedDoc', () => {
 
   it('compares by identity, not by value', () => {
 
-
     const doc = emptyDocument('Fixture');
     const clone = structuredClone(doc);
 
@@ -90,7 +85,6 @@ describe('useSavedDoc', () => {
   });
 
   it('keeps the same markSaved across renders', () => {
-
 
     const doc = emptyDocument('Fixture');
     const { result, rerender } = renderHook(({ d }) => useSavedDoc(d), {

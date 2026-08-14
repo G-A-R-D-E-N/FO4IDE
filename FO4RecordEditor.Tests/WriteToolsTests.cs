@@ -8,9 +8,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class WriteToolsTests
 {
     [Fact]
@@ -74,8 +71,6 @@ public class WriteToolsTests
             """[{"function":"GetGlobalValue","param1":"000126:MAIM.esp","operator":"==","value":0}]""", env: null);
         WriteService.SetField(name, "FWTest_Readable", "Description", "Filled with essentials.", env: null);
 
-
-
         var dump = MutagenLoader.QueryRecordFields(null, name, "FWTest_Readable");
 
         dump.Should().Contain("x3");
@@ -83,7 +78,6 @@ public class WriteToolsTests
         dump.Should().NotContain("ParameterOneNumber");
         dump.Should().NotContain("RunOnType");
         dump.Should().NotContain(".Data[10]");
-
 
         dump.Should().Contain("Filled with essentials.");
         dump.Should().NotContain("Description[0]");
@@ -98,15 +92,12 @@ public class WriteToolsTests
         WriteService.SetComponents(name, "FWTest_Idx",
             """[{"component":"01FAA5:Fallout4.esm","count":1}]""", env: null);
 
-
-
         WriteService.SetField(name, "FWTest_Idx", "Components[0].Count", "9", env: null).Should().Contain("Set");
         WriteService.SetField(name, "FWTest_Idx", "Components[0].Component", "1223C7:Fallout4.esm", env: null).Should().Contain("Set");
 
         var cobj = WriteService.GetMutable(name)!.ConstructibleObjects.Single();
         cobj.Components![0].Count.Should().Be(9u);
         cobj.Components![0].Component.FormKey.Should().Be(FormKey.Factory("1223C7:Fallout4.esm"));
-
 
         WriteService.SetField(name, "FWTest_Idx", "Components[5].Count", "1", env: null).Should().Contain("out of range");
     }
@@ -121,16 +112,12 @@ public class WriteToolsTests
         WriteService.GetMutable(name)!.ConstructibleObjects.Should().BeEmpty();
     }
 
-
-
-
     [Fact]
     public void CopyAsOverrideMany_ReportsStructuredCounts()
     {
         var source = $"BatchSrc_{Guid.NewGuid():N}.esp";
         WriteService.CreatePlugin(source);
         WriteService.CreateRecord(source, "KYWD", "FWTest_BatchKw", env: null);
-
 
         var dump = MutagenLoader.QueryRecordFields(null, source, "FWTest_BatchKw");
         var validFk = dump.Split('\n').First(l => l.TrimStart().StartsWith("FormKey:")).Split(':', 2)[1].Trim();

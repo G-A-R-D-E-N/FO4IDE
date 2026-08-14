@@ -9,9 +9,7 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
 public sealed record WikiParameterDoc(string? Description, string? DocumentedDefault);
-
 
 public sealed record WikiFunctionDoc
 {
@@ -25,9 +23,7 @@ public sealed record WikiFunctionDoc
         new Dictionary<string, WikiParameterDoc>(StringComparer.OrdinalIgnoreCase);
 }
 
-
 public sealed record WikiScriptDoc(string? Summary);
-
 
 public sealed record WikiDocStats(int PagesIndexed, int PagesParsed, int PagesFailed)
 {
@@ -35,7 +31,6 @@ public sealed record WikiDocStats(int PagesIndexed, int PagesParsed, int PagesFa
 
     public bool Available => PagesIndexed > 0;
 }
-
 
 public interface IWikiDocProvider
 {
@@ -45,11 +40,6 @@ public interface IWikiDocProvider
 
     WikiDocStats Stats { get; }
 }
-
-
-
-
-
 
 public sealed class NullWikiDocProvider : IWikiDocProvider
 {
@@ -63,23 +53,6 @@ public sealed class NullWikiDocProvider : IWikiDocProvider
 
     public WikiDocStats Stats => WikiDocStats.Empty;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class CkWikiDocProvider : IWikiDocProvider
 {
@@ -161,7 +134,6 @@ public sealed class CkWikiDocProvider : IWikiDocProvider
     }
 
     private IEnumerable<string> EnumerateHtml() =>
-
 
         _root == null ? Array.Empty<string>() : PapyrusFileWalk.EnumerateFiles(_root, "*.html");
 

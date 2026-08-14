@@ -8,32 +8,24 @@ public enum PapyrusBindingKind
     Local,
     Parameter,
 
-
     ScriptVariable,
     Property,
     Function,
     Event,
     CustomEvent,
 
-
     Struct,
-
 
     StructMember,
 
-
     Script,
-
 
     ArrayMember,
 
-
     SelfKeyword,
-
 
     ParentKeyword,
 }
-
 
 public sealed class PapyrusBinding
 {
@@ -55,30 +47,14 @@ public sealed class PapyrusBinding
 
     public string Name { get; }
 
-
-
-
-
     public PapyrusType Type { get; }
 
-
     public PapyrusDeclaration? Declaration { get; }
-
 
     public PapyrusScript? Owner { get; }
 
     public override string ToString() => $"{Kind} {Name} : {Type}";
 }
-
-
-
-
-
-
-
-
-
-
 
 public sealed class PapyrusResolution
 {
@@ -103,17 +79,6 @@ public sealed class PapyrusResolution
 
     public IReadOnlyList<PapyrusDiagnostic> Diagnostics { get; }
 
-
-
-
-
-
-
-
-
-
-
-
     public bool BaseChainComplete { get; }
 
     public PapyrusBinding? BindingFor(PapyrusNode node) =>
@@ -121,7 +86,6 @@ public sealed class PapyrusResolution
 
     public PapyrusType TypeOf(PapyrusNode node) =>
         node != null && _types.TryGetValue(node, out var t) ? t : PapyrusType.Error;
-
 
     public IReadOnlyDictionary<PapyrusNode, PapyrusBinding> Bindings => _bindings;
 }

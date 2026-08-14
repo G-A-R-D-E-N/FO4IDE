@@ -4,13 +4,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
 public static class ModInspectService
 {
     private static readonly (string Category, string[] Extensions)[] ExtensionCategories =
@@ -53,7 +46,6 @@ public static class ModInspectService
 
             var relPath = Path.GetRelativePath(modPath, fullPath);
             var relParts = relPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-
 
             if (relParts.Length >= 2 &&
                 string.Equals(relParts[0], "SCRIPTS", StringComparison.OrdinalIgnoreCase) &&

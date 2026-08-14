@@ -16,7 +16,6 @@ export default function RecordPicker(
 
   const activeFilter = filterOn && refTypes ? refTypes : '';
 
-
   useEffect(() => {
     const b = back();
     if (!b) return;

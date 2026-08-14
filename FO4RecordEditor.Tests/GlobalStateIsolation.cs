@@ -2,25 +2,6 @@ using FO4RecordEditor.Services;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class GlobalStateIsolation : IDisposable
 {
     private readonly Mutagen.Bethesda.Plugins.Cache.ILinkCache? _linkCache;
@@ -57,7 +38,6 @@ public sealed class GlobalStateIsolation : IDisposable
         MutagenLoader.ClearModIndexCacheForTest();
         ConflictScanner.InvalidateCache();
     }
-
 
     private static void Restore<TKey, TValue>(
         IDictionary<TKey, TValue> dict,

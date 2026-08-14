@@ -15,7 +15,7 @@ public partial interface IGlobalGetter
 public partial class Global : GlobalCustomParsing.IGlobalCommon
 {
     public abstract float? RawFloat { get; set; }
-    
+
     char IGlobalGetter.TypeChar => throw new NotImplementedException();
 
     [Flags]
@@ -52,7 +52,6 @@ public partial class Global : GlobalCustomParsing.IGlobalCommon
             });
     }
 }
-
 
 partial class GlobalBinaryCreateTranslation
 {

@@ -9,21 +9,12 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
 public sealed class PatchScriptHost
 {
     private readonly object? _env;
     private readonly string _patchPlugin;
     private readonly StringBuilder _log = new();
     private readonly HashSet<FormKey> _touched = new();
-
 
     public int Applied { get; private set; }
 
@@ -40,28 +31,16 @@ public sealed class PatchScriptHost
 
     internal string LogText => _log.ToString();
 
-
-
     public IEnumerable<IConstructibleObjectGetter> Cobjs(string plugin) =>
         MutagenLoader.GetRecordsForBatch(_env, plugin, "ConstructibleObject").OfType<IConstructibleObjectGetter>();
-
 
     public IEnumerable<IMajorRecordGetter> Records(string type, string plugin) =>
         MutagenLoader.GetRecordsForBatch(_env, plugin, type);
 
-
     public IReadOnlyList<string> AllPlugins() => MutagenLoader.QueryLoadedPlugins(_env);
-
-
-
 
     public bool DeleteOverride(IConstructibleObjectGetter getter) =>
         MutagenLoader.RemoveFromEditableMod(_patchPlugin, getter.FormKey);
-
-
-
-
-
 
     public IFallout4MajorRecord New(string sig, string editorId)
     {
@@ -71,14 +50,10 @@ public sealed class PatchScriptHost
         return rec;
     }
 
-
     public T New<T>(string sig, string editorId) where T : class, IFallout4MajorRecord =>
         (T)New(sig, editorId);
 
-
-
     public ConstructibleObject Cobj(IConstructibleObjectGetter getter) => (ConstructibleObject)OverrideRec(getter);
-
 
     public IFallout4MajorRecord Override(IMajorRecordGetter getter) => OverrideRec(getter);
 
@@ -92,15 +67,12 @@ public sealed class PatchScriptHost
         return rec;
     }
 
-
-
     public bool HasComponent(IConstructibleObjectGetter rec, string component)
     {
         if (rec.Components == null || !Resolve(component, out var fk)) return false;
         foreach (var c in rec.Components) if (c.Component.FormKey == fk) return true;
         return false;
     }
-
 
     public void AddComponent(ConstructibleObject rec, string component, int count = 1)
     {
@@ -112,7 +84,6 @@ public sealed class PatchScriptHost
         Edits++;
     }
 
-
     public int RemoveComponent(ConstructibleObject rec, string component)
     {
         if (rec.Components == null || !Resolve(component, out var fk)) return 0;
@@ -123,7 +94,6 @@ public sealed class PatchScriptHost
         return removed;
     }
 
-
     public bool SetCount(ConstructibleObject rec, string component, int count)
     {
         if (rec.Components == null || !Resolve(component, out var fk)) return false;
@@ -133,8 +103,6 @@ public sealed class PatchScriptHost
         if (any) Edits++;
         return any;
     }
-
-
 
     public bool Swap(ConstructibleObject rec, string oldComponent, string newComponent, int count = -1)
     {
@@ -147,14 +115,7 @@ public sealed class PatchScriptHost
         return any;
     }
 
-
     public void ClearComponents(ConstructibleObject rec) { rec.Components?.Clear(); Edits++; }
-
-
-
-
-
-
 
     public void AddCondition(ConstructibleObject rec, string function, string? param1 = null, string? param2 = null,
         string op = "==", float value = 1f, string? runOn = null, string? reference = null,
@@ -165,8 +126,6 @@ public sealed class PatchScriptHost
         rec.Conditions.Add(cond);
         Edits++;
     }
-
-
 
     public int RemoveConditions(ConstructibleObject rec, string function, string? param1 = null)
     {
@@ -192,10 +151,7 @@ public sealed class PatchScriptHost
         return removed;
     }
 
-
     public void ClearConditions(ConstructibleObject rec) { rec.Conditions.Clear(); Edits++; }
-
-
 
     public bool Set(IFallout4MajorRecord rec, string field, string value)
     {
@@ -203,19 +159,6 @@ public sealed class PatchScriptHost
         if (ok) Edits++; else _log.AppendLine($"  ! Set {field}: {msg}");
         return ok;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public IConstructibleObjectGetter GetBestBase(IConstructibleObjectGetter fallback, params string[] skipPlugins)
     {
@@ -234,11 +177,6 @@ public sealed class PatchScriptHost
         return fallback;
     }
 
-
-
-
-
-
     public bool CnamIsResolvable(IConstructibleObjectGetter cobj)
     {
         if (cobj.CreatedObject.FormKey.IsNull) return false;
@@ -246,28 +184,12 @@ public sealed class PatchScriptHost
         return cache != null && cache.TryResolve<IMajorRecordGetter>(cobj.CreatedObject.FormKey, out _);
     }
 
-
-
-
-
-
-
-
-
     public bool RecordIsUsable(IConstructibleObjectGetter cobj)
     {
         if (!CnamIsResolvable(cobj)) return false;
         return !cobj.WorkbenchKeyword.FormKey.IsNull
             || (cobj.Components != null && cobj.Components.Count > 0);
     }
-
-
-
-
-
-
-
-
 
     public IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? GetCategoriesFromChain(
         IConstructibleObjectGetter cobj, params string[] skipPlugins)
@@ -288,12 +210,6 @@ public sealed class PatchScriptHost
         return null;
     }
 
-
-
-
-
-
-
     public void CopyCategories(ConstructibleObject target,
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? categories)
     {
@@ -305,10 +221,7 @@ public sealed class PatchScriptHost
         Edits++;
     }
 
-
-
     public string? Resolve(string idOrEditorId) => Resolve(idOrEditorId, out var fk) ? fk.ToString() : null;
-
 
     public void Log(string message) => _log.AppendLine(message);
 
@@ -322,12 +235,10 @@ public sealed class PatchScriptHost
     }
 }
 
-
 public sealed class PatchScriptGlobals
 {
     public PatchScriptHost host { get; set; } = null!;
 }
-
 
 public static class PatchScriptRunner
 {
@@ -348,25 +259,12 @@ public static class PatchScriptRunner
             typeof(ExtendedList<>).Assembly,
             typeof(Enumerable).Assembly);
 
-
     internal static TimeSpan ScriptTimeout { get; set; } = TimeSpan.FromMinutes(2);
-
-
-
-
-
-
-
-
-
-
-
 
     public static string Run(string code, object? env, string patchPlugin, bool dryRun)
     {
         if (string.IsNullOrWhiteSpace(code)) return "Provide a script in 'script'.";
         if (string.IsNullOrWhiteSpace(patchPlugin)) return "Provide 'patch_plugin' (the plugin to write overrides into).";
-
 
         var target = dryRun ? AddPreviewSuffix(patchPlugin) : patchPlugin;
         var host = new PatchScriptHost(env, target, dryRun);
@@ -375,10 +273,6 @@ public static class PatchScriptRunner
         string? error = null;
         try
         {
-
-
-
-
 
             using var cts = new CancellationTokenSource(ScriptTimeout);
             Exception? threadError = null;
@@ -441,8 +335,6 @@ public static class PatchScriptRunner
         if (dryRun)
         {
             WriteService.DiscardScriptPatch(target);
-
-
 
             sb.AppendLine($"No plugin records were written -- the preview patch was discarded. " +
                           $"Re-run with dry_run=false to apply into '{patchPlugin}'. " +

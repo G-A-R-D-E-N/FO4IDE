@@ -14,15 +14,15 @@ public interface IFormLinkOrIndexGetter<TMajorGetter> : IFormLinkContainerGetter
     where TMajorGetter : class, IMajorRecordGetter
 {
     IFormLinkNullableGetter<TMajorGetter> Link { get; }
-    
-    uint? Index { get; } 
-    
+
+    uint? Index { get; }
+
     [MemberNotNullWhen(false, nameof(Index))]
     bool UsesLink();
-    
+
     [MemberNotNullWhen(true, nameof(Index))]
     bool UsesAlias();
-    
+
     [MemberNotNullWhen(true, nameof(Index))]
     bool UsesPackageData();
 }

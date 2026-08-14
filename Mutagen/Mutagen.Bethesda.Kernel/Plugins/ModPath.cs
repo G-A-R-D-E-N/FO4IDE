@@ -16,32 +16,17 @@ public sealed record ModPath : IModKeyed
         Path = path;
     }
 
-
-
-
-
-
     public ModPath(FilePath path)
     {
         ModKey = ModKey.FromFileName(path.Name);
         Path = path;
     }
 
-
-
-
-
-
     public ModPath(string path)
     {
         ModKey = ModKey.FromFileName(System.IO.Path.GetFileName(path));
         Path = path;
     }
-
-
-
-
-
 
     public static ModPath FromPath(FilePath path) => new(path);
 

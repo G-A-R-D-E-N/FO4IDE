@@ -43,13 +43,6 @@ public class AssetTypeLocator
 		}
 	}
 
-
-
-
-
-
-
-
 	public static IAssetType GetAssetType(GameCategory gameCategory, DataRelativePath assetPath) {
 		var assetType = TryGetGetAssetType(gameCategory, assetPath);
 
@@ -60,20 +53,12 @@ public class AssetTypeLocator
 		return assetType;
 	}
 
-
-
-
-
-
-
 	public static IAssetType? TryGetGetAssetType(GameCategory gameCategory, DataRelativePath assetPath)
 	{
 
 		if (!Types.TryGetValue(gameCategory, out var gameTypes)) return null;
 
-
 		if (!gameTypes.TryGetValue(assetPath.Extension, out var folders)) return null;
-
 
 		var dataRelativePath = assetPath.Path;
 		foreach (var (baseFolder, assetType) in folders)

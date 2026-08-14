@@ -86,8 +86,6 @@ internal sealed class SubgroupsBinaryTranslation<T>
             return false;
         }
 
-
-
         var formId = new FormID(BinaryPrimitives.ReadUInt32LittleEndian(group.ContainedRecordTypeData));
         byte[] bytes = new byte[package.MetaData.Constants.MajorConstants.HeaderLength + group.TotalLength];
         MajorRecordHeaderWritable majorWritable = new MajorRecordHeaderWritable(package.MetaData, bytes);

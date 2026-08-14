@@ -174,6 +174,6 @@ public partial class Weapon
         HasChargingAttack = 93,
         ActorValues = 94,
     }
-    
+
     IFormLinkNullableGetter<IObjectEffectGetter> IEnchantableGetter.ObjectEffect => this.ObjectEffect;
 }

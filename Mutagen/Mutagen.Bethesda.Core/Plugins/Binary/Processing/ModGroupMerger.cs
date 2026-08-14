@@ -89,14 +89,12 @@ public static class ModGroupMerger
                 continue;
             }
 
-
             var readPos = inputStream.Position;
             var writePos = writer.BaseStream.Position;
             long totalLen = groupMeta.HeaderLength;
 
             inputStream.Position = groupLocations.Last().Location.Min;
             inputStream.WriteTo(writer.BaseStream, groupMeta.HeaderLength);
-
 
             foreach (var groupLoc in groupLocations)
             {
@@ -106,10 +104,8 @@ public static class ModGroupMerger
                 writer.BaseStream.Write(targetGroupMeta.Content);
             }
 
-
             writer.BaseStream.Position = writePos + 4;
             writer.Write(checked((uint)totalLen));
-
 
             writer.BaseStream.Position = writePos + totalLen;
             inputStream.Position = readPos + groupMeta.TotalLength;

@@ -20,7 +20,6 @@ function doc(nodes: BpNode[], wires: BpWire[]): BpDocument {
   return d;
 }
 
-
 function mount(nodes: BpNode[], wires: BpWire[], selected: string[]) {
   return renderHook(() => {
     const [state, dispatch] = useReducer(graphReducer, {
@@ -64,8 +63,6 @@ describe('copySelection', () => {
 
 describe('keyboard wiring', () => {
 
-
-
   it('Ctrl+C then Ctrl+V adds a copy', () => {
     const { result } = mount([node('a')], [], ['a']);
 
@@ -92,7 +89,6 @@ describe('keyboard wiring', () => {
     press('c');
     press('d');
     expect(result.current.state.doc.nodes).toHaveLength(2);
-
 
     press('v');
     expect(result.current.state.doc.nodes).toHaveLength(3);

@@ -533,7 +533,6 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                 else
                 {
 
-
                     break;
                 }
             }
@@ -552,7 +551,6 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                         stream.Position += (int)varMeta.TotalLength;
                         continue;
                     }
-
 
                     if (trigger.AllAreTriggers
                         || trigger.TriggeringRecordTypes.Contains(recType))
@@ -573,7 +571,6 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                     else if (lastWasEnder)
                     {
 
-
                         break;
                     }
                     else
@@ -590,7 +587,6 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
                 }
                 else
                 {
-
 
                     break;
                 }
@@ -652,19 +648,6 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
         return ret;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static IReadOnlyList<int> ParseRecordLocationsByCount(
         OverlayStream stream,
         uint count,
@@ -677,15 +660,6 @@ internal abstract class PluginBinaryOverlay : ILoquiObject
     {
         return ParseRecordLocationsInternal(stream, count, trigger, constants, skipHeader, triggersAlwaysAreNewRecords, translationParams, endMarker);
     }
-
-
-
-
-
-
-
-
-
 
     public static IReadOnlyList<int> ParseRecordLocations(
         OverlayStream stream,

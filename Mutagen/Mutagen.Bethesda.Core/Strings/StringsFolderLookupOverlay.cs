@@ -75,8 +75,6 @@ public sealed class StringsFolderLookupOverlay : IStringsFolderLookup
         ModKey = modKey;
     }
 
-
-
     public static StringsFolderLookupOverlay TypicalFactory(
         GameRelease release,
         ModKey modKey,
@@ -87,7 +85,6 @@ public sealed class StringsFolderLookupOverlay : IStringsFolderLookup
         return new StringsFolderLookupOverlayFactoryContainer(release, fileSystem, dataPath, instructions).Resolve().Value
             .InternalFactory(modKey);
     }
-
 
     public bool TryLookup(StringsSource source, Language language, uint key, [MaybeNullWhen(false)] out string str)
     {

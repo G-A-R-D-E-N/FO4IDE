@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -71,8 +67,6 @@ namespace Mutagen.Bethesda.Fallout4
         public CollisionLayer.Flag Flags { get; set; } = default(CollisionLayer.Flag);
         #endregion
         #region Name
-
-
 
         public String Name { get; set; } = string.Empty;
         #endregion
@@ -734,8 +728,6 @@ namespace Mutagen.Bethesda.Fallout4
         new Color DebugColor { get; set; }
         new CollisionLayer.Flag Flags { get; set; }
 
-
-
         new String Name { get; set; }
         new ExtendedList<IFormLinkGetter<ICollisionLayerGetter>>? CollidesWith { get; set; }
     }
@@ -762,8 +754,6 @@ namespace Mutagen.Bethesda.Fallout4
         Color DebugColor { get; }
         CollisionLayer.Flag Flags { get; }
         #region Name
-
-
 
         String Name { get; }
         #endregion
@@ -1354,7 +1344,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return CollisionLayer.GetNew();
@@ -1846,7 +1835,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1880,7 +1868,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ICollisionLayerGetter);
-
 
         #region Description
         private int? _DescriptionLocation;

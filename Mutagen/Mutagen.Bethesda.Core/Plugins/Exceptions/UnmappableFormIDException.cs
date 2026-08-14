@@ -13,7 +13,7 @@ public class UnmappableFormIDException : Exception
     public IReadOnlySeparatedMasterPackage MasterPackage { get; }
 
     public UnmappableFormIDException(
-        IFormLinkIdentifier unmappableFormKey, 
+        IFormLinkIdentifier unmappableFormKey,
         IReadOnlySeparatedMasterPackage masterPackage)
         : base("Could not map FormKey to a master index")
     {

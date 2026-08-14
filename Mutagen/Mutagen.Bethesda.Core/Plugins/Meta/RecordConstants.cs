@@ -4,51 +4,22 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Meta;
 
-
-
-
 public record RecordHeaderConstants
 {
 
-
-
     public ObjectType ObjectType { get; }
-
-
-
 
     public byte HeaderLength { get; }
 
-
-
-
     public byte LengthLength { get; }
-
-
-
 
     public byte LengthAfterLength { get; }
 
-
-
-
     public byte LengthAfterType { get; }
-
-
-
 
     public byte TypeAndLengthLength { get; }
 
-
-
-
     public bool HeaderIncludedInLength { get; }
-
-
-
-
-
-
 
     public RecordHeaderConstants(
         ObjectType type,

@@ -11,13 +11,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class ChatInterop
@@ -25,8 +18,6 @@ public class ChatInterop
     private readonly ShellViewModel _shell;
     private readonly Action<object> _post;
     private readonly ChatHistoryService _history = new();
-
-
 
     private readonly Dictionary<Guid, ChatSession> _live = new();
     private readonly Dictionary<Guid, CancellationTokenSource> _running = new();
@@ -40,7 +31,6 @@ public class ChatInterop
         _live[_current.Id] = _current;
     }
 
-
     private ChatSession Live(ChatSession s) { _live[s.Id] = s; return s; }
     private ChatSession? ResolveLive(string id)
     {
@@ -53,22 +43,14 @@ public class ChatInterop
 
     public bool IsAgentReady() => _shell.Agent != null;
 
-
-
-
     public string ListSessions() => JsonConvert.SerializeObject(
         _history.LoadAll().Select(SessionMeta).ToArray());
-
-
 
     public string NewSession()
     {
         _current = Live(new ChatSession());
         return JsonConvert.SerializeObject(SessionDto(_current));
     }
-
-
-
 
     public string LoadSession(string id)
     {
@@ -77,9 +59,6 @@ public class ChatInterop
         _current = session;
         return JsonConvert.SerializeObject(SessionDto(session));
     }
-
-
-
 
     public string ForkSession(string id)
     {
@@ -145,8 +124,6 @@ public class ChatInterop
         messages = s.Messages.Select(m => new { isUser = m.IsUser, text = m.Text }).ToArray(),
     };
 
-
-
     private static readonly (string Name, string Args, string Help)[] _commands =
     {
         ("/help",    "",     "List these commands."),
@@ -158,10 +135,8 @@ public class ChatInterop
         ("/stop",    "",     "Stop the current response."),
     };
 
-
     public string GetCommands() => JsonConvert.SerializeObject(
         _commands.Select(c => new { name = c.Name, args = c.Args, help = c.Help }).ToArray());
-
 
     public void CancelMessage(string sessionId)
     {
@@ -170,14 +145,6 @@ public class ChatInterop
     }
 
     public void ResetChat() => NewSession();
-
-
-
-
-
-
-
-
 
     public async Task SendMessage(string sessionId, string text, string imagesJson)
     {
@@ -192,7 +159,6 @@ public class ChatInterop
             return;
         }
 
-
         if (session.Messages.Count == 0 && text.Length > 2)
         {
             session.Name = text.Length > 30 ? text[..30] + "…" : text;
@@ -202,8 +168,6 @@ public class ChatInterop
         session.Messages.Add(new SessionMessage { IsUser = true, Text = text });
         _history.Save(session);
 
-
-
         var prompt = text;
         if (imagePaths.Count > 0)
             prompt = (text.Length > 0 ? text + "\n\n" : "") +
@@ -212,7 +176,6 @@ public class ChatInterop
 
         await RunForSession(session, prompt);
     }
-
 
     private static System.Collections.Generic.List<string> SaveAttachedImages(string? imagesJson)
     {
@@ -242,8 +205,6 @@ public class ChatInterop
         return paths;
     }
 
-
-
     private async Task RunForSession(ChatSession session, string prompt)
     {
         var sid = session.Id.ToString();
@@ -262,7 +223,6 @@ public class ChatInterop
             if (_shell.Agent != null)
             {
 
-
                 await _agentGate.WaitAsync(ct);
                 try
                 {
@@ -278,7 +238,6 @@ public class ChatInterop
             }
             else
             {
-
 
                 await _shell.Chat.StreamOneShot(BuildMessages(session, ctx, prompt),
                     token => { full.Append(token); _post(new { Type = "AiToken", SessionId = sid, Text = token }); }, ct);
@@ -305,8 +264,6 @@ public class ChatInterop
             if (_running.TryGetValue(session.Id, out var c) && ReferenceEquals(c, cts)) _running.Remove(session.Id);
         }
     }
-
-
 
     private static List<ChatMessage> BuildMessages(ChatSession session, string systemCtx, string promptOverride)
     {
@@ -396,8 +353,6 @@ public class ChatInterop
         await RunForSession(session, lastUser.Text);
     }
 
-
-
     private const int AutoCompactBudgetChars = 80_000;
 
     private async Task MaybeAutoCompact(ChatSession session)
@@ -442,7 +397,6 @@ public class ChatInterop
             session.Messages.Add(summaryMsg);
             session.Messages.AddRange(recent);
             _history.Save(session);
-
 
             _post(new { Type = "AiReload", SessionId = sid, Session = SessionDto(session) });
         }

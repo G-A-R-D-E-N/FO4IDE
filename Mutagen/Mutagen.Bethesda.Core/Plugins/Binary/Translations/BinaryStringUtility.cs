@@ -4,26 +4,13 @@ using Mutagen.Bethesda.Strings;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Translations;
 
-
-
-
 public static class BinaryStringUtility
 {
-
-
-
-
-
 
     public static string ToZString(ReadOnlySpan<byte> bytes, IMutagenEncoding encoding)
     {
         return encoding.GetString(bytes);
     }
-
-
-
-
-
 
     public static ReadOnlySpan<byte> ProcessNullTermination(ReadOnlySpan<byte> bytes)
     {
@@ -35,24 +22,11 @@ public static class BinaryStringUtility
         return bytes.Slice(0, nullTerm);
     }
 
-
-
-
-
-
-
     public static string ProcessWholeToZString(ReadOnlySpan<byte> bytes, IMutagenEncoding encoding)
     {
         bytes = ProcessNullTermination(bytes);
         return ToZString(bytes, encoding);
     }
-
-
-
-
-
-
-
 
     public static string ParseUnknownLengthString<TReader>(TReader stream, IMutagenEncoding encoding)
         where TReader : IBinaryReadStream
@@ -68,22 +42,10 @@ public static class BinaryStringUtility
         return ret;
     }
 
-
-
-
-
-
-
-
     public static string ParseUnknownLengthString(ReadOnlySpan<byte> bytes, IMutagenEncoding encoding)
     {
         return ToZString(ExtractUnknownLengthString(bytes), encoding);
     }
-
-
-
-
-
 
     public static ReadOnlySpan<byte> ExtractUnknownLengthString(ReadOnlySpan<byte> bytes)
     {
@@ -95,25 +57,10 @@ public static class BinaryStringUtility
         return bytes[..index];
     }
 
-
-
-
-
-
-
-
-
     public static string ParsePrependedString(ReadOnlySpan<byte> span, byte lengthLength, IMutagenEncoding encoding)
     {
         return ProcessWholeToZString(ExtractPrependedString(span, lengthLength), encoding);
     }
-
-
-
-
-
-
-
 
     public static ReadOnlySpan<byte> ExtractPrependedString(ReadOnlySpan<byte> span, byte lengthLength)
     {
@@ -143,14 +90,6 @@ public static class BinaryStringUtility
                 throw new NotImplementedException();
         }
     }
-
-
-
-
-
-
-
-
 
     public static string ReadPrependedString<TStream>(this TStream stream, byte lengthLength, IMutagenEncoding encoding)
         where TStream : IBinaryReadStream

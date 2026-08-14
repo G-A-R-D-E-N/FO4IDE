@@ -11,7 +11,6 @@ namespace FO4RecordEditor.Tests;
 public sealed class ArchiveWindowsAclReviewTests
 {
 
-
     private static bool IsRealWindows() =>
         OperatingSystem.IsWindows()
         && Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wine") is null;

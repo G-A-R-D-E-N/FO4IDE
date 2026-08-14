@@ -7,17 +7,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
 [Collection("MutagenLoaderCache")]
 public class RecordCountCacheTests : IDisposable
 {
@@ -79,13 +68,11 @@ public class RecordCountCacheTests : IDisposable
         RecordCountCache.Put(path, Counts(("Weapon", 7)));
         RecordCountCache.Flush();
 
-
         RecordCountCache.ResetInMemoryForTest();
 
         RecordCountCache.TryGet(path, out var got).Should().BeTrue("the whole point is surviving a restart");
         got["Weapon"].Should().Be(7);
     }
-
 
     [Fact]
     public void A_plugin_whose_size_changed_is_a_miss()
@@ -97,8 +84,6 @@ public class RecordCountCacheTests : IDisposable
 
         RecordCountCache.TryGet(path, out _).Should().BeFalse();
     }
-
-
 
     [Fact]
     public void A_plugin_rewritten_to_the_same_size_is_still_a_miss()
@@ -130,7 +115,6 @@ public class RecordCountCacheTests : IDisposable
     {
         RecordCountCache.TryGet(MakePlugin("Unknown.esp"), out _).Should().BeFalse();
     }
-
 
     [Fact]
     public void Storing_counts_for_a_missing_file_stores_nothing()
@@ -179,11 +163,6 @@ public class RecordCountCacheTests : IDisposable
         finally { RecordCountCache.Enabled = true; }
     }
 
-
-
-
-
-
     [Fact]
     public void An_actively_edited_plugin_is_never_cached()
     {
@@ -201,8 +180,6 @@ public class RecordCountCacheTests : IDisposable
 
         MutagenLoader.CountsCacheKeyFor("Loose.esp").Should().Be(loose);
     }
-
-
 
     [Fact]
     public void A_load_order_plugin_is_keyed_by_where_the_loader_read_it()

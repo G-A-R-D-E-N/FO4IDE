@@ -5,16 +5,6 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
 public class GraphBreakContinueTests
 {
     private static string Source(GraphDocument document)
@@ -23,7 +13,6 @@ public class GraphBreakContinueTests
         result.Success.Should().BeTrue(GraphTestEnvironment.Describe(result.Diagnostics));
         return result.Source!;
     }
-
 
     private static GraphBuilder LoopWithExit(NodePalette palette, string exitKind, out string exitNode)
     {
@@ -123,7 +112,6 @@ public class GraphBreakContinueTests
     public void A_break_in_the_inner_loop_leaves_only_the_inner_loop()
     {
 
-
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -149,7 +137,6 @@ public class GraphBreakContinueTests
         graph.Wire(inner, PinIds.Completed, outer, PinIds.Exec);
 
         var source = Source(graph.Document);
-
 
         var lines = source.Split('\n').Select(l => l.Trim()).ToList();
         var outerLine = lines.FindIndex(l => l == "While (enabled)");
@@ -196,7 +183,6 @@ public class GraphBreakContinueTests
     public void A_break_does_not_count_as_leaving_the_function()
     {
 
-
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -233,7 +219,6 @@ public class GraphBreakContinueTests
     [Fact]
     public void A_loop_whose_only_exit_is_a_break_still_has_to_return()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");

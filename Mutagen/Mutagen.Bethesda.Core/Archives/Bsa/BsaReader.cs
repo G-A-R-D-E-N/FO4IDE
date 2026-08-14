@@ -108,7 +108,6 @@ class BsaReader : IArchiveReader
         for (var idx = 0; idx < FolderCount; idx += 1)
             ret[idx] = new BsaFolderRecord(this, folderHeaderData.Slice(idx * folderHeaderLength, folderHeaderLength), idx);
 
-
         int fileCountTally = 0;
         foreach (var folder in ret)
         {

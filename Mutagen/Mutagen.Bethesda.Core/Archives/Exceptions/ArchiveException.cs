@@ -10,7 +10,6 @@ public class ArchiveException : Exception
     public string? InternalFolderAccessed { get; set; }
     public string? InternalFileAccessed { get; set; }
 
-
     public ArchiveException(FilePath? archiveFilePath, string? folderAccessed, string? fileAccessed)
     {
         ArchiveFilePath = archiveFilePath;
@@ -193,7 +192,7 @@ public class ArchiveException : Exception
     #endregion
 
     #region EnrichAndThrow
-    
+
     [DoesNotReturn]
     public static void EnrichWithFileAccessedAndThrow(Exception ex, string fileAccessed)
     {

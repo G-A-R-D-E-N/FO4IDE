@@ -4,15 +4,8 @@ using Path = System.IO.Path;
 
 namespace Mutagen.Bethesda.Plugins.Order.DI;
 
-
-
-
 public interface ICreationClubListingsProvider : IListingsProvider
 {
-
-
-
-
 
     public IEnumerable<IModListingGetter> Get(bool throwIfMissing);
 }

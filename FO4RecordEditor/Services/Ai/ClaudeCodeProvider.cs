@@ -7,11 +7,6 @@ using FO4RecordEditor.Models;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
 public sealed class ClaudeCodeProvider : IAIProvider
 {
     private readonly string _exePath;
@@ -38,7 +33,6 @@ public sealed class ClaudeCodeProvider : IAIProvider
         if (_mcpUrl != null)
         {
 
-
             prompt.AppendLine($"Your plugin tools are exposed as mcp__{_mcpServerName}__<name> " +
                               $"(e.g. mcp__{_mcpServerName}__scan_conflicts).\n");
             prompt.AppendLine(AiGuidance.System);
@@ -54,8 +48,6 @@ public sealed class ClaudeCodeProvider : IAIProvider
             }
         }
 
-
-
         var psi = new ProcessStartInfo
         {
             FileName = "cmd.exe",
@@ -66,7 +58,6 @@ public sealed class ClaudeCodeProvider : IAIProvider
             CreateNoWindow = true,
             WorkingDirectory = Path.GetTempPath(),
 
-
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8,
             StandardInputEncoding = Encoding.UTF8,
@@ -74,8 +65,6 @@ public sealed class ClaudeCodeProvider : IAIProvider
         psi.ArgumentList.Add("/c");
         psi.ArgumentList.Add(_exePath);
         psi.ArgumentList.Add("-p");
-
-
 
         psi.ArgumentList.Add("--output-format");
         psi.ArgumentList.Add("stream-json");
@@ -85,7 +74,6 @@ public sealed class ClaudeCodeProvider : IAIProvider
             psi.ArgumentList.Add("--model");
             psi.ArgumentList.Add(_model);
         }
-
 
         if (_mcpUrl != null)
         {
@@ -116,24 +104,16 @@ public sealed class ClaudeCodeProvider : IAIProvider
             yield break;
         }
 
-
         using var killReg = ct.Register(() => { try { proc.Kill(entireProcessTree: true); } catch { } });
 
         using (proc)
         {
-
-
-
 
             var writeTask = Task.Run(async () =>
             {
                 try { await proc.StandardInput.WriteAsync(prompt.ToString()); proc.StandardInput.Close(); }
                 catch {  }
             });
-
-
-
-
 
             var errTask = proc.StandardError.ReadToEndAsync(ct);
 
@@ -154,12 +134,6 @@ public sealed class ClaudeCodeProvider : IAIProvider
             }
         }
     }
-
-
-
-
-
-
 
     internal static IEnumerable<string> ParseStreamLine(string line)
     {
@@ -231,14 +205,12 @@ public sealed class ClaudeCodeProvider : IAIProvider
                content.ValueKind == JsonValueKind.Array;
     }
 
-
     private static string ShortToolName(string? name)
     {
         if (string.IsNullOrEmpty(name)) return "tool";
         var i = name.LastIndexOf("__", StringComparison.Ordinal);
         return i >= 0 ? name[(i + 2)..] : name;
     }
-
 
     private static string FormatArgs(JsonElement input)
     {

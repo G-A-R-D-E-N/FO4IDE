@@ -20,7 +20,6 @@ public partial class ArmorAddon
     IGenderedItemGetter<Boolean> IArmorAddonGetter.WeightSliderEnabled => this.WeightSliderEnabled;
 }
 
-
 partial class ArmorAddonBinaryCreateTranslation
 {
     public static bool IsEnabled(byte b) => Enums.HasFlag(b, (byte)2);
@@ -91,7 +90,7 @@ internal partial class ArmorAddonBinaryOverlay
     public partial IGenderedItemGetter<Boolean> GetWeightSliderEnabledCustom();
     public IGenderedItemGetter<Boolean> WeightSliderEnabled => GetWeightSliderEnabledCustom();
     #endregion
-    
+
     public partial IGenderedItemGetter<Boolean> GetWeightSliderEnabledCustom() => new GenderedItem<bool>(
         _recordData.Slice(_DNAMLocation!.Value.Min + 2)[0] >= 2,
         _recordData.Slice(_DNAMLocation!.Value.Min + 3)[0] >= 2);

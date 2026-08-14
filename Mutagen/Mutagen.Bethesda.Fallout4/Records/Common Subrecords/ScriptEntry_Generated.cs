@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -54,8 +50,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public String Name { get; set; } = string.Empty;
         #endregion
@@ -569,8 +563,6 @@ namespace Mutagen.Bethesda.Fallout4
         IScriptEntryGetter
     {
 
-
-
         new String Name { get; set; }
         new ScriptEntry.Flag Flags { get; set; }
         new ExtendedList<ScriptProperty> Properties { get; }
@@ -591,8 +583,6 @@ namespace Mutagen.Bethesda.Fallout4
         object CommonSetterTranslationInstance();
         static ILoquiRegistration StaticRegistration => ScriptEntry_Registration.Instance;
         #region Name
-
-
 
         String Name { get; }
         #endregion
@@ -1008,7 +998,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return ScriptEntry.GetNew();
@@ -1236,7 +1225,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

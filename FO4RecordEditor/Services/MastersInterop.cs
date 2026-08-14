@@ -8,10 +8,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class MastersInterop
@@ -20,15 +16,12 @@ public class MastersInterop
     public MastersInterop(ShellViewModel shell) => _shell = shell;
     private object? Env => _shell.GameEnvironment;
 
-
-
     public Task<string> GetPlugins() =>
         Task.Run(() =>
         {
             try { return JsonConvert.SerializeObject(MutagenLoader.QueryLoadedPlugins(Env)); }
             catch (Exception ex) { DebugLog.Exception("Masters.GetPlugins", ex); return "[]"; }
         });
-
 
     public Task<string> List(string plugin) =>
         Task.Run(() =>
@@ -41,9 +34,6 @@ public class MastersInterop
             }
         });
 
-
-
-
     public Task<string> Reorder(string plugin, string orderJson) =>
         Task.Run(() =>
         {
@@ -55,14 +45,12 @@ public class MastersInterop
             catch (Exception ex) { DebugLog.Exception("Masters.Reorder", ex); return "Error: " + ex.Message; }
         });
 
-
     public Task<string> SetLight(string plugin, bool light) =>
         Task.Run(() =>
         {
             try { return WriteService.SetLightFlag(plugin, light, Env); }
             catch (Exception ex) { DebugLog.Exception("Masters.SetLight", ex); return "Error: " + ex.Message; }
         });
-
 
     public Task<string> SavePlugin(string plugin) =>
         Task.Run(() =>

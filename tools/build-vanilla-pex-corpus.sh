@@ -1,26 +1,5 @@
 #!/usr/bin/env bash
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 set -euo pipefail
 
 DATA=${1:-}
@@ -56,9 +35,6 @@ for _ in $(seq 1 60); do
     sleep 1
 done
 curl -sf --max-time 2 "http://127.0.0.1:$PORT/api/health" >/dev/null || { echo "server did not start" >&2; exit 1; }
-
-
-
 
 echo "extracting..."
 jq -n --arg a "$BA2" --arg o "$OUT" \

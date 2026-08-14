@@ -16,7 +16,7 @@ public sealed class CreationClubEnabledProvider : ICreationClubEnabledProvider
     {
         _category = category;
     }
-        
+
     public bool Used
     {
         get

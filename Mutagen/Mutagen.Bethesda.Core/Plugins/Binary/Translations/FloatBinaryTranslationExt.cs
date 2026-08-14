@@ -11,7 +11,7 @@ public static class FloatBinaryTranslationExt
         MutagenWriter writer,
         float item,
         RecordType header,
-        float? divisor, 
+        float? divisor,
         float? multiplier)
         where TReader : IMutagenReadStream
     {
@@ -20,7 +20,7 @@ public static class FloatBinaryTranslationExt
             using (HeaderExport.Subrecord(writer, header))
             {
                 FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
-                    writer, item, 
+                    writer, item,
                     multiplier: multiplier, divisor: divisor);
             }
         }
@@ -36,7 +36,7 @@ public static class FloatBinaryTranslationExt
         MutagenWriter writer,
         float? item,
         RecordType header,
-        float? divisor, 
+        float? divisor,
         float? multiplier)
         where TReader : IMutagenReadStream
     {
@@ -46,7 +46,7 @@ public static class FloatBinaryTranslationExt
             using (HeaderExport.Subrecord(writer, header))
             {
                 FloatBinaryTranslation<MutagenFrame, MutagenWriter>.Instance.Write(
-                    writer, item.Value, 
+                    writer, item.Value,
                     multiplier: multiplier, divisor: divisor);
             }
         }
@@ -63,7 +63,7 @@ public static class FloatBinaryTranslationExt
         float? item,
         RecordType header,
         FloatIntegerType integerType,
-        float? divisor = null, 
+        float? divisor = null,
         float? multiplier = null)
         where TReader : IMutagenReadStream
     {

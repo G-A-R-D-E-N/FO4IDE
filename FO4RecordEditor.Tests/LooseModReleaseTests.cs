@@ -5,13 +5,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
 public class LooseModReleaseTests
 {
     private sealed class FakeMod : IDisposable

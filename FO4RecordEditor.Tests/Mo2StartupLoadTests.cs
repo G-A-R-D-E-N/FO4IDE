@@ -7,15 +7,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
 public class Mo2StartupLoadTests : IDisposable
 {
     private readonly string _root = Path.Combine(Path.GetTempPath(), "fo4re-mo2-" + Guid.NewGuid().ToString("N")[..8]);
@@ -27,13 +18,6 @@ public class Mo2StartupLoadTests : IDisposable
         _state.Dispose();
         try { Directory.Delete(_root, recursive: true); } catch { }
     }
-
-
-
-
-
-
-
 
     private static string? FindSmallPlugin()
     {
@@ -73,9 +57,6 @@ public class Mo2StartupLoadTests : IDisposable
         WriteProfile(good, corrupt);
         File.Copy(source, ModFile(good), overwrite: true);
 
-
-
-
         var bytes = File.ReadAllBytes(source);
         for (int i = 256; i < bytes.Length; i++) bytes[i] = 0xFF;
         File.WriteAllBytes(ModFile(corrupt), bytes);
@@ -110,21 +91,6 @@ public class Mo2StartupLoadTests : IDisposable
         Mo2ProfileLoader.FailedToLoad.Should().BeEmpty();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     [Fact]
     public void Saving_over_a_plugin_the_environment_holds_open_replaces_it_in_place()
     {
@@ -154,8 +120,6 @@ public class Mo2StartupLoadTests : IDisposable
         File.Exists(ModFile(name)).Should().BeTrue();
         Directory.EnumerateFiles(Path.GetDirectoryName(ModFile(name))!, "*.tmp").Should().BeEmpty("the temp file must be consumed");
 
-
-
         var modKey = Mutagen.Bethesda.Plugins.ModKey.FromNameAndExtension(name);
         var listing = mo2.LoadOrder.ListedOrder.SingleOrDefault(l => l.ModKey == modKey);
         listing.Should().NotBeNull("the plugin must still be in the load order after the swap");
@@ -163,15 +127,10 @@ public class Mo2StartupLoadTests : IDisposable
         mo2.LinkCache.Should().NotBeSameAs(cacheBefore, "a stale link cache would be reading a disposed overlay");
         MutagenLoader.LinkCache.Should().BeSameAs(mo2.LinkCache, "both holders must be updated together");
 
-
         using var reread = Mutagen.Bethesda.Fallout4.Fallout4Mod.CreateFromBinaryOverlay(
             ModFile(name), Mutagen.Bethesda.Fallout4.Fallout4Release.Fallout4);
         reread.ModKey.FileName.String.Should().Be(name);
     }
-
-
-
-
 
     [Fact]
     public void A_missing_plugin_is_not_reported_as_a_load_failure()

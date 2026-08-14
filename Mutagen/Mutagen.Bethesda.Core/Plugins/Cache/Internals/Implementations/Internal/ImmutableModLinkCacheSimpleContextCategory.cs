@@ -164,7 +164,6 @@ internal sealed class ImmutableModLinkCacheSimpleContextCategory<TKey> : IImmuta
     {
         var cache = new Cache<IModContext<IMajorRecordGetter>, TKey>(x => _keyGetter(x.Record).Value);
 
-
         foreach (var majorRec in _contextEnumerable.EnumerateMajorRecordSimpleContexts(type))
         {
             var key = _keyGetter(majorRec.Record);

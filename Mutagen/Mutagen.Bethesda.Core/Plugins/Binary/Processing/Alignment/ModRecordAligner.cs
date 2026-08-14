@@ -82,7 +82,6 @@ public static class ModRecordAligner
                     var noRecordLength = grup - mutaReader.Position;
                     mutaReader.WriteTo(writer.BaseStream, (int)noRecordLength);
 
-
                     if (mutaReader.Complete) break;
 
                     var nextGrup = mutaReader.GetGroupHeader();
@@ -111,7 +110,6 @@ public static class ModRecordAligner
                     if (grup <= mutaReader.Position) continue;
                     var noRecordLength = grup - mutaReader.Position;
                     mutaReader.WriteTo(writer.BaseStream, (int)noRecordLength);
-
 
                     if (mutaReader.Complete) break;
 
@@ -165,7 +163,6 @@ public static class ModRecordAligner
             }
             inputStream.WriteTo(writer.BaseStream, (int)noRecordLength);
 
-
             if (inputStream.Complete) break;
 
             var majorHeader = inputStream.GetMajorRecordHeader();
@@ -198,7 +195,6 @@ public static class ModRecordAligner
             var dataDict = new Dictionary<RecordType, List<ReadOnlyMemorySlice<byte>>>();
             ReadOnlyMemorySlice<byte>? rest = null;
             RecordType? last = null;
-
 
             while (inputStream.Position < endPos)
             {
@@ -328,7 +324,6 @@ public static class ModRecordAligner
             }
             inputStream.WriteTo(writer.BaseStream, (int)noRecordLength);
 
-
             if (inputStream.Complete) break;
             var groupMeta = inputStream.GetGroupHeader();
             if (!groupMeta.IsGroup)
@@ -395,7 +390,6 @@ public static class ModRecordAligner
         var tes4Header = inputStream.GetMajorRecordHeader();
         inputStream.WriteTo(writer.BaseStream, checked((int)tes4Header.TotalLength));
 
-
         var groups = new Dictionary<RecordType, List<ReadOnlyMemorySlice<byte>>>();
         var ungroupedOrder = new List<RecordType>();
         while (!inputStream.Complete)
@@ -414,7 +408,6 @@ public static class ModRecordAligner
             groups[containedType].Add(bytes);
         }
 
-
         foreach (var type in topLevelOrder)
         {
             if (groups.TryGetValue(type, out var entries))
@@ -426,7 +419,6 @@ public static class ModRecordAligner
                 groups.Remove(type);
             }
         }
-
 
         foreach (var type in ungroupedOrder)
         {

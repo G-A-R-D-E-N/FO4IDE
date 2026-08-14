@@ -12,69 +12,22 @@ namespace Mutagen.Bethesda;
 public static class IModExt
 {
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static IGroupGetter<TMajor> GetTopLevelGroup<TMajor>(this IModGetter mod)
         where TMajor : IMajorRecordGetter
     {
         return mod.TryGetTopLevelGroup<TMajor>() ?? throw new ArgumentException($"Unknown major record type: {typeof(TMajor)}");
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static IGroupGetter GetTopLevelGroup(this IModGetter mod, Type type)
     {
         return mod.TryGetTopLevelGroup(type) ?? throw new ArgumentException($"Unknown major record type: {type}");
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static IGroup<TMajor> GetTopLevelGroup<TMajor>(this IMod mod)
         where TMajor : IMajorRecord
     {
         return mod.TryGetTopLevelGroup<TMajor>() ?? throw new ArgumentException($"Unknown major record type: {typeof(TMajor)}");
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static IGroup GetTopLevelGroup(this IMod mod, Type type)
     {
@@ -96,13 +49,6 @@ public static class IModExt
         return MasterStyle.Full;
     }
 
-
-
-
-
-
-
-
     public static IMod Duplicate(this IModGetter mod, ModKey newModKey)
     {
         if (mod.ModKey.Type != newModKey.Type) throw new ArgumentException("ModKey types must match");
@@ -113,16 +59,13 @@ public static class IModExt
         var fileSystemRoot = tmp.Dir;
         var oldModPath = new ModPath(oldModKey, fileSystem.Path.Combine(fileSystemRoot, oldModKey.FileName.String));
 
-
         mod.WriteToBinary(oldModPath, BinaryWriteParameters.Default with
         {
             FileSystem = fileSystem
         });
 
-
         var newModPath = new ModPath(newModKey, fileSystem.Path.Combine(fileSystemRoot, newModKey.FileName.String));
         fileSystem.File.Move(oldModPath, newModPath);
-
 
         var stringsDir = fileSystem.Path.Combine(fileSystemRoot, "Strings");
         if (fileSystem.Directory.Exists(stringsDir))
@@ -137,30 +80,12 @@ public static class IModExt
             }
         }
 
-
         var duplicateInto = ModFactory.ImportSetter(newModPath, mod.GameRelease, BinaryReadParameters.Default with
         {
             FileSystem = fileSystem
         });
         return duplicateInto;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static FormID GetFormID(
         this IModGetter mod,

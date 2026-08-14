@@ -3,10 +3,5 @@
 public interface IListingsProvider
 {
 
-
-
-
-
-
     public IEnumerable<ILoadOrderListingGetter> Get();
 }

@@ -64,17 +64,6 @@ namespace Mutagen.Bethesda.Plugins.Cache
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public sealed class ModContext<TMod, TModGetter, TTarget, TTargetGetter> : IModContext<TMod, TModGetter, TTarget, TTargetGetter>
         where TModGetter : IModGetter
         where TMod : TModGetter, IMod
@@ -84,29 +73,12 @@ namespace Mutagen.Bethesda.Plugins.Cache
         private readonly Func<TMod, TTargetGetter, TTarget> _getOrAddAsOverride;
         private readonly Func<TMod, TTargetGetter, string?, FormKey?, TTarget> _duplicateInto;
 
-
-
-
         public TTargetGetter Record { get; }
         object IModContext.Record => Record;
 
-
-
-
         public ModKey ModKey { get; }
 
-
-
-
         public IModContext? Parent { get; }
-
-
-
-
-
-
-
-
 
         public ModContext(
             ModKey modKey,
@@ -126,13 +98,6 @@ namespace Mutagen.Bethesda.Plugins.Cache
         {
             return context.Record;
         }
-
-
-
-
-
-
-
 
         public TTarget GetOrAddAsOverride(TMod mod)
         {

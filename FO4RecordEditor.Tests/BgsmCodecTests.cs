@@ -5,12 +5,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
 public class BgsmCodecTests
 {
     private static void WriteBgsmStr(BinaryWriter bw, string s)
@@ -26,7 +20,6 @@ public class BgsmCodecTests
         var ms = new MemoryStream();
         using var bw = new BinaryWriter(ms);
 
-
         bw.Write((uint)0x4D534742);
         bw.Write((uint)2);
         bw.Write((uint)2);
@@ -40,8 +33,6 @@ public class BgsmCodecTests
         bw.Write((byte)0); bw.Write((byte)0); bw.Write(0f);
         bw.Write((byte)0); bw.Write(0f);
         bw.Write((byte)0);
-
-
 
         WriteBgsmStr(bw, "tex\\d.dds");
         WriteBgsmStr(bw, "tex\\n.dds");
@@ -66,7 +57,6 @@ public class BgsmCodecTests
         bw.Write(1f);
         bw.Write(1f); bw.Write(0f);
 
-
         WriteBgsmStr(bw, "");
         bw.Write((byte)0);
         bw.Write((byte)0);
@@ -90,7 +80,6 @@ public class BgsmCodecTests
         bw.Write(0f);
         bw.Write((byte)0);
 
-
         return ms.ToArray();
     }
 
@@ -111,7 +100,6 @@ public class BgsmCodecTests
         d.CastShadows.Should().BeTrue();
         d.HideSecret.Should().BeFalse();
 
-
         d.Pbr.Should().BeNull();
         d.CustomPorosity.Should().BeNull();
         d.Terrain.Should().BeNull();
@@ -129,10 +117,6 @@ public class BgsmCodecTests
         var rewritten = BgsmCodec.Write(parsed);
         rewritten.Should().Equal(reference);
     }
-
-
-
-
 
     [Fact]
     public void RoundTrip_Version13_ExercisesHighVersionBranches()
@@ -192,7 +176,6 @@ public class BgsmCodecTests
         reparsed.UnkInt1.Should().BeNull("UnkInt1 only exists at exactly version 3");
         reparsed.TerrainRotationAngle.Should().Be(45f);
         reparsed.EmittanceColor.Should().Equal(1f, 0.5f, 0f);
-
 
         BgsmCodec.Write(reparsed).Should().Equal(bytes);
     }

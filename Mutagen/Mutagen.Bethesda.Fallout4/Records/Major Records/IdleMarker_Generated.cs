@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -57,8 +53,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #region ObjectBounds
 
-
-
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IObjectBoundsGetter IIdleMarkerGetter.ObjectBounds => ObjectBounds;
@@ -78,8 +72,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
@@ -133,8 +125,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -906,19 +896,13 @@ namespace Mutagen.Bethesda.Fallout4
         IReferenceableObject
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new IdleMarker.Flag? Flags { get; set; }
         new Single? IdleTimer { get; set; }
         new ExtendedList<IFormLinkGetter<IIdleAnimationGetter>>? Animations { get; set; }
         new IFormLinkNullable<IKeywordGetter> Unknown { get; set; }
-
-
 
         new Model? Model { get; set; }
         #region Mutagen
@@ -952,13 +936,9 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => IdleMarker_Registration.Instance;
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
@@ -967,8 +947,6 @@ namespace Mutagen.Bethesda.Fallout4
         IReadOnlyList<IFormLinkGetter<IIdleAnimationGetter>>? Animations { get; }
         IFormLinkNullableGetter<IKeywordGetter> Unknown { get; }
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1620,7 +1598,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return IdleMarker.GetNew();
@@ -2247,7 +2224,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

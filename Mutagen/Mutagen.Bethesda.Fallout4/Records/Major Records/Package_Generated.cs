@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region VirtualMachineAdapter
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private PackageAdapter? _VirtualMachineAdapter;
-
-
 
         public PackageAdapter? VirtualMachineAdapter
         {
@@ -1711,8 +1705,6 @@ namespace Mutagen.Bethesda.Fallout4
         IPackageGetter
     {
 
-
-
         new PackageAdapter? VirtualMachineAdapter { get; set; }
         new Package.Flag Flags { get; set; }
         new Package.Types Type { get; set; }
@@ -1761,8 +1753,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => Package_Registration.Instance;
         #region VirtualMachineAdapter
-
-
 
         IPackageAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
@@ -2745,7 +2735,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Package.GetNew();
@@ -3706,7 +3695,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -3740,7 +3728,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IPackageGetter);
-
 
         #region VirtualMachineAdapter
         private int? _VirtualMachineAdapterLengthOverride;

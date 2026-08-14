@@ -10,28 +10,11 @@ namespace Mutagen.Bethesda.Archives.DI;
 public interface IGetArchiveIniListings
 {
 
-
-
-
     IEnumerable<FileName>? TryGet();
-
-
-
-
 
     IEnumerable<FileName> Get();
 
-
-
-
-
-
     IEnumerable<FileName> Get(FilePath path);
-
-
-
-
-
 
     IEnumerable<FileName> Get(Stream iniStream);
 }
@@ -59,7 +42,6 @@ public sealed class GetArchiveIniListings : IGetArchiveIniListings
         _iniPathProvider = iniPathProvider;
     }
 
-
     public IEnumerable<FileName>? TryGet()
     {
         var path = _iniPathProvider.TryGetPath();
@@ -71,12 +53,10 @@ public sealed class GetArchiveIniListings : IGetArchiveIniListings
         return Get();
     }
 
-
     public IEnumerable<FileName> Get()
     {
         return Get(_iniPathProvider.Path);
     }
-
 
     public IEnumerable<FileName> Get(FilePath path)
     {
@@ -86,7 +66,6 @@ public sealed class GetArchiveIniListings : IGetArchiveIniListings
         }
         return Get(_fileSystem.File.OpenRead(path.Path));
     }
-
 
     public IEnumerable<FileName> Get(Stream iniStream)
     {

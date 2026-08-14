@@ -7,7 +7,7 @@ public interface IModActivator
     TMod Activate<TMod>(ModKey modKey, float? headerVersion = null, bool? forceUseLowerFormIDRanges = false)
         where TMod : IModGetter;
 }
-    
+
 public interface IModActivator<TMod>
     where TMod : IModGetter
 {

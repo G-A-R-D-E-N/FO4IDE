@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -59,8 +55,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -2663,8 +2657,6 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new TranslatedString? Name { get; set; }
         new Cell.Flag Flags { get; set; }
         new UInt16? PreVisFilesTimestamp { get; set; }
@@ -2737,8 +2729,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => Cell_Registration.Instance;
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -4508,7 +4498,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public override object GetNew()
         {
@@ -6540,7 +6529,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

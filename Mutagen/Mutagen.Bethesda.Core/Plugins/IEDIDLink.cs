@@ -3,13 +3,8 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
 public interface IEDIDLinkGetter : ILink
 {
-
-
 
     RecordType EDID { get; }
 }
@@ -17,14 +12,8 @@ public interface IEDIDLinkGetter : ILink
 public interface IEDIDLink : IEDIDLinkGetter
 {
 
-
-
     new RecordType EDID { get; set; }
 }
-
-
-
-
 
 public interface IEDIDLinkGetter<out TMajor> : ILink<TMajor>, IEDIDLinkGetter
     where TMajor : IMajorRecordGetter
@@ -38,13 +27,8 @@ public interface IEDIDLink<TMajor> : IEDIDLinkGetter<TMajor>, IEDIDLink, ICleara
     void SetTo(IEDIDLinkGetter<TMajor> rhsLink);
 }
 
-
-
-
 public static class IEDIDLinkExt
 {
-
-
 
     public static IEDIDLink<TMajor> AsSetter<TMajor>(this IEDIDLinkGetter<TMajor> link)
         where TMajor : class, IMajorRecordGetter

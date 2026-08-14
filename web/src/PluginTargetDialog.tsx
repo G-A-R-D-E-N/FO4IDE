@@ -1,13 +1,4 @@
 
-
-
-
-
-
-
-
-
-
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { X, Check } from 'lucide-react';
 import type { ActivePlugin } from './backend';
@@ -23,7 +14,6 @@ export interface TargetRequest {
 }
 
 export interface TargetResult { target: string; extra: string }
-
 
 type NewKind = 'esp' | 'esl';
 const NEW_ROWS: { kind: NewKind; label: string; hint: string }[] = [

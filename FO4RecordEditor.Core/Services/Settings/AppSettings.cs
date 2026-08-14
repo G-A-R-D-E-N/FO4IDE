@@ -4,7 +4,6 @@ public sealed class AppSettings
 {
     public string AnthropicApiKey { get; set; } = "";
 
-
     public string Model { get; set; } = "claude-opus-4-8";
     public string AiProvider { get; set; } = "anthropic";
     public string GeminiApiKey { get; set; } = "";
@@ -26,15 +25,6 @@ public sealed class AppSettings
     public string FfmpegPath { get; set; } = "";
     public string XwmaEncodePath { get; set; } = "";
     public string Archive2Path { get; set; } = "";
-
-
-
-
-
-
-
-
-
 
     public bool ReadLargePluginsIntoMemory { get; set; } = false;
 

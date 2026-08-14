@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -57,8 +53,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #region ObjectBounds
 
-
-
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IObjectBoundsGetter IArtObjectGetter.ObjectBounds => ObjectBounds;
@@ -89,8 +83,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
 
-
-
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
             get => this._Keywords;
@@ -109,8 +101,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -754,16 +744,10 @@ namespace Mutagen.Bethesda.Fallout4
         IReferenceableObject
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
         new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
 
-
-
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
-
-
 
         new Model? Model { get; set; }
         new ArtObject.TypeEnum? Type { get; set; }
@@ -793,20 +777,14 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => ArtObject_Registration.Instance;
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         IFormLinkNullableGetter<ITransformGetter> PreviewTransform { get; }
         #region Keywords
 
-
-
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1409,7 +1387,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return ArtObject.GetNew();
@@ -1932,7 +1909,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1966,7 +1942,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IArtObjectGetter);
-
 
         #region ObjectBounds
         private RangeInt32? _ObjectBoundsLocation;

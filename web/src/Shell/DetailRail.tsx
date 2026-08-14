@@ -58,7 +58,6 @@ export default function DetailRail({
   const isFavourite = favourites.some(f => f.formKey === formKey);
   const flash = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 1600); };
 
-
   useEffect(() => {
     const sync = () => setFavourites(readFavourites());
     window.addEventListener(FAVOURITES_CHANGED, sync);

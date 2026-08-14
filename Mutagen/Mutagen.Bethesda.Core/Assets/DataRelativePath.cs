@@ -15,9 +15,6 @@ public readonly struct DataRelativePath : IEquatable<DataRelativePath>, ICompara
 
     public string Path { get; }
 
-
-
-
     public string Extension => System.IO.Path.GetExtension(Path);
 
     public bool IsNull => Path == NullPath;
@@ -62,7 +59,6 @@ public readonly struct DataRelativePath : IEquatable<DataRelativePath>, ICompara
         IFileSystemExt.CleanDirectorySeparators(mySpan);
 
         ReadOnlySpan<char> path = mySpan;
-
 
         if (path.Contains(System.IO.Path.VolumeSeparatorChar))
         {

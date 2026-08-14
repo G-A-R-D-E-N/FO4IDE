@@ -1,10 +1,5 @@
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
 public sealed class EnvironmentLoadException : System.Exception
 {
     public EnvironmentLoadException(string message, System.Exception? inner = null) : base(message, inner) { }
@@ -12,20 +7,6 @@ public sealed class EnvironmentLoadException : System.Exception
 
 public static partial class MutagenLoader
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static System.Exception TranslateEnvironmentError(System.Exception ex)
     {

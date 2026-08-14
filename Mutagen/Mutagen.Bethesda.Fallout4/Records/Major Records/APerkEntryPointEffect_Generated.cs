@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -39,8 +35,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class APerkEntryPointEffect :
         APerkEffect,
@@ -426,8 +420,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAPerkEntryPointEffect :
         IAPerkEffect,
         IAPerkEntryPointEffectGetter,
@@ -437,9 +429,6 @@ namespace Mutagen.Bethesda.Fallout4
         new APerkEntryPointEffect.EntryType EntryPoint { get; set; }
         new Byte PerkConditionTabCount { get; set; }
     }
-
-
-
 
     public partial interface IAPerkEntryPointEffectGetter :
         IAPerkEffectGetter,
@@ -885,7 +874,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return APerkEntryPointEffect.GetNew();
@@ -1121,7 +1109,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1172,7 +1159,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

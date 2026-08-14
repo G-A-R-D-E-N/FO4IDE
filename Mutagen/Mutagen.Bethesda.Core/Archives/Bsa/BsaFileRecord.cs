@@ -43,7 +43,6 @@ class BsaFileRecord : IArchiveFile
         Folder = folderRecord;
         _name = new Lazy<FileName?>(GetName, LazyThreadSafetyMode.PublicationOnly);
 
-
         _size = new Lazy<(uint Size, uint OnDisk, uint Original)>(
             mode: LazyThreadSafetyMode.ExecutionAndPublication,
             valueFactory: () =>

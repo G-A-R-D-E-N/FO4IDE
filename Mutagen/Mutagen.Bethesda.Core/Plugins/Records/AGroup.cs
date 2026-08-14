@@ -13,9 +13,6 @@ using Mutagen.Bethesda.Plugins.Binary.Streams;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-
-
-
 public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
     where TMajor : class, IMajorRecordInternal
 {
@@ -27,9 +24,6 @@ public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     internal ICache<TMajor, FormKey> InternalCache => ProtectedCache;
 
-
-
-
     public IEnumerable<TMajor> Records => ProtectedCache.Items;
 
     IEnumerable<IMajorRecordGetter> IGroupGetter.Records => Records;
@@ -37,27 +31,18 @@ public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
     IEnumerable<IMajorRecord> IGroup.Records => Records;
     IEnumerable<IMajorRecord> IGroup<TMajor>.Records => Records;
 
-
-
-
     public int Count => ProtectedCache.Count;
-
-
-
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     public IMod SourceMod { get; private set; }
 
     IReadOnlyCache<TMajor, FormKey> IGroupGetter<TMajor>.RecordCache => InternalCache;
 
-
     public ICache<TMajor, FormKey> RecordCache => InternalCache;
 
     IReadOnlyCache<IMajorRecordGetter, FormKey> IGroupGetter.RecordCache => RecordCache;
 
-
     public IEnumerable<FormKey> FormKeys => InternalCache.Keys;
-
 
     public TMajor this[FormKey key] => InternalCache[key];
 
@@ -75,38 +60,27 @@ public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
         SourceMod = null!;
     }
 
-
-
-
     public AGroup(IMod mod)
     {
         SourceMod = mod;
     }
-
-
-
-
 
     public override string ToString()
     {
         return $"Group<{typeof(TMajor).Name}>({InternalCache.Count})";
     }
 
-
     public IEnumerator<TMajor> GetEnumerator()
     {
         return InternalCache.Items.GetEnumerator();
     }
-
 
     IEnumerator IEnumerable.GetEnumerator()
     {
         return InternalCache.GetEnumerator();
     }
 
-
     public void Add(TMajor record) => InternalCache.Add(record);
-
 
     public TMajor AddReturn(TMajor record)
     {
@@ -132,41 +106,29 @@ public abstract class AGroup<TMajor> : IEnumerable<TMajor>, IGroup<TMajor>
         Add(ConfirmCorrectType(record, nameof(record)));
     }
 
-
     public void Set(TMajor record) => InternalCache.Set(record);
-
 
     public void SetUntyped(IMajorRecord record) => Set(ConfirmCorrectType(record, nameof(record)));
 
-
     public void Set(IEnumerable<TMajor> records) => InternalCache.Set(records);
-
 
     public void SetUntyped(IEnumerable<IMajorRecord> records) => SetUntyped(records.Select(r => ConfirmCorrectType(r, nameof(records))));
 
-
     public bool Remove(FormKey key) => InternalCache.Remove(key);
-
 
     public void Remove(IEnumerable<FormKey> keys) => InternalCache.Remove(keys);
 
-
     public void Clear() => InternalCache.Clear();
-
 
     public bool ContainsKey(FormKey key) => InternalCache.ContainsKey(key);
 
     public ILoquiRegistration ContainedRecordRegistration => _registration;
 
-
     public abstract IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true);
-
 
     public abstract IEnumerable<IAssetLink> EnumerateListedAssetLinks();
 
-
     public abstract void RemapListedAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping);
-
 
     public abstract void RemapAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping, AssetLinkQuery query, IAssetLinkCache? linkCache);
 
@@ -331,17 +293,6 @@ internal sealed class GroupMajorRecordCacheWrapper<T> : IReadOnlyCache<T, FormKe
                 {
                     throw new RecordException(formKey: formKey, recordType: null, modKey: package.MetaData.ModKey, edid: null, message: "Unexpected type encountered when parsing MajorRecord locations: " + majorMeta.RecordType);
                 }
-
-
-
-
-
-
-
-
-
-
-
 
                 locationDict[formKey] = checked((int)(stream.Position - offset));
                 stream.Position += checked((int)majorMeta.TotalLength);

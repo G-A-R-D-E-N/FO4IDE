@@ -17,20 +17,12 @@ interface Props {
   onGoTo: (x: number, y: number) => void;
 }
 
-
-
-
-
-
-
-
 export default function Minimap({ doc, defs, selection, view, stage, onGoTo }: Props) {
   const bounds = useMemo(() => graphBounds(doc, defs), [doc, defs]);
   const fit = useMemo(() => minimapFit(bounds, WIDTH, HEIGHT), [bounds]);
   const selected = useMemo(() => new Set(selection), [selection]);
 
   if (!bounds) return null;
-
 
   const visible = {
     x: -view.x / view.k,

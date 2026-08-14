@@ -2,9 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { emptyDocument, type BpNode, type BpWire } from './graphModel';
 import { graphReducer, initialState, type GraphState } from './graphReducer';
 
-
-
-
 const node = (id: string, x = 0, y = 0): BpNode => ({
   id,
   def: 'branch',
@@ -48,7 +45,6 @@ describe('PASTE', () => {
   });
 
   it('rewires a pasted wire to the copies, not to the originals', () => {
-
 
     const state = withGraph([node('a'), node('b')], [wire('w1', 'a', 'b')]);
 

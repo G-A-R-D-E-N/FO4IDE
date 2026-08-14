@@ -3,17 +3,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
 public class PexComparerTests
 {
     private static PexValue Id(string name) => new() { Type = PexValueType.Identifier, Str = name };
@@ -23,7 +12,6 @@ public class PexComparerTests
 
     private static PexInstruction Op(string mnemonic, params PexValue[] args) =>
         new() { Mnemonic = mnemonic, FixedArgCount = args.Length, Args = new(args) };
-
 
     private static PexFile File(string name, params PexInstruction[] instructions)
     {
@@ -36,8 +24,6 @@ public class PexComparerTests
         return pex;
     }
 
-
-
     [Fact]
     public void Two_identical_objects_report_no_difference()
     {
@@ -46,8 +32,6 @@ public class PexComparerTests
 
         PexComparer.FirstDifference(a, b).Should().BeNull();
     }
-
-
 
     [Fact]
     public void Temporary_numbering_is_not_a_difference()
@@ -82,7 +66,6 @@ public class PexComparerTests
     public void Float_formatting_below_the_compared_precision_is_not_a_difference()
     {
 
-
         const float coarse = 1.5f, fine = 1.5000001f;
         fine.Should().NotBe(coarse);
 
@@ -116,8 +99,6 @@ public class PexComparerTests
             "the Creation Kit writes members in a hash order that differs between compiles, so "
             + "functions are matched by name rather than position");
     }
-
-
 
     [Fact]
     public void A_different_mnemonic_is_a_difference()
@@ -160,7 +141,6 @@ public class PexComparerTests
     [Fact]
     public void A_longer_instruction_sequence_is_a_difference()
     {
-
 
         var a = File("Run", Op("assign", Id("x"), Int(1)));
         var b = File("Run", Op("assign", Id("x"), Int(1)), Op("return", Id("::NoneVar")));
@@ -232,8 +212,6 @@ public class PexComparerTests
 
         PexComparer.FirstDifference(a, b).Should().Contain("missing state 'Busy'");
     }
-
-
 
     [Fact]
     public void The_reported_difference_names_both_sides_with_the_given_labels()

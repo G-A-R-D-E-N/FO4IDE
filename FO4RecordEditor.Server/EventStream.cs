@@ -4,11 +4,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Server;
 
-
-
-
-
-
 public sealed class EventStream
 {
     private readonly ConcurrentDictionary<Channel<string>, byte> _subscribers = new();

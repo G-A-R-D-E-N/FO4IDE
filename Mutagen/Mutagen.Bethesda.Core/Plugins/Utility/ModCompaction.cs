@@ -8,17 +8,17 @@ public static class ModCompaction
 {
     private static readonly ModCompactor _compactor = new(
         new RecordCompactionCompatibilityDetector());
-    
+
     public static void CompactToSmallMaster(IMod mod)
     {
         _compactor.CompactToSmallMaster(mod);
     }
-    
+
     public static void CompactToMediumMaster(IMod mod)
     {
         _compactor.CompactToMediumMaster(mod);
     }
-    
+
     public static void CompactToFullMaster(IMod mod)
     {
         _compactor.CompactToFullMaster(mod);

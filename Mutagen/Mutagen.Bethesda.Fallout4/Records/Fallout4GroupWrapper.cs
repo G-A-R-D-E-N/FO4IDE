@@ -31,7 +31,7 @@ internal class Fallout4GroupWrapper<TMajor> : IFallout4GroupGetter<TMajor>
     public IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true) => _groupMerge.EnumerateFormLinks(iterateNestedRecords);
 
     public IMod SourceMod => _groupMerge.SourceMod;
-    
+
     IReadOnlyCache<TMajor, FormKey> IGroupGetter<TMajor>.RecordCache => _groupMerge.RecordCache;
 
     public TMajor this[FormKey key] => _groupMerge[key];
@@ -49,7 +49,7 @@ internal class Fallout4GroupWrapper<TMajor> : IFallout4GroupGetter<TMajor>
     public IEnumerable<FormKey> FormKeys => _groupMerge.FormKeys;
 
     IEnumerable<IMajorRecordGetter> IGroupGetter.Records => ((IGroupGetter)_groupMerge).Records;
-    
+
     public Type ContainedRecordType => typeof(TMajor);
 
     public bool ContainsKey(FormKey key)
@@ -68,7 +68,7 @@ internal class Fallout4GroupWrapper<TMajor> : IFallout4GroupGetter<TMajor>
     }
 
     #endregion
-    
+
     #region Common Routing
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -95,18 +95,18 @@ internal class Fallout4GroupWrapper<TMajor> : IFallout4GroupGetter<TMajor>
     #endregion
 
     public IReadOnlyCache<TMajor, FormKey> RecordCache => _groupMerge.RecordCache;
-    
+
     public GroupTypeEnum Type => _groupMerge.SubGroups[^1].Type;
-    
+
     public int LastModified => _groupMerge.SubGroups[^1].LastModified;
 
     public int Unknown => _groupMerge.SubGroups[^1].Unknown;
-    
+
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     protected object BinaryWriteTranslator => Fallout4GroupBinaryWriteTranslation.Instance;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     object IBinaryItem.BinaryWriteTranslator => this.BinaryWriteTranslator;
-    
+
     void IBinaryItem.WriteToBinary(
         MutagenWriter writer,
         TypedWriteParams translationParams = default)
@@ -133,8 +133,8 @@ internal class Fallout4GroupWrapper<TMajor> : IFallout4GroupGetter<TMajor>
     public ILoquiRegistration ContainedRecordRegistration => _groupMerge.ContainedRecordRegistration;
 
     public IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(
-        AssetLinkQuery queryCategories = AssetLinkQuery.Listed, 
-        IAssetLinkCache? linkCache = null, 
+        AssetLinkQuery queryCategories = AssetLinkQuery.Listed,
+        IAssetLinkCache? linkCache = null,
         Type? assetType = null)
     {
         return _groupMerge.EnumerateAssetLinks(queryCategories, linkCache, assetType);

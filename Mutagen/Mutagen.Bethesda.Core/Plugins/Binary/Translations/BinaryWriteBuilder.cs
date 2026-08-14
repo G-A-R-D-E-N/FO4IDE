@@ -12,12 +12,7 @@ using Mutagen.Bethesda.Strings;
 using Mutagen.Bethesda.Strings.DI;
 using Noggog;
 
-
-
 namespace Mutagen.Bethesda.Plugins.Binary.Translations;
-
-
-
 
 internal record BinaryWriteBuilderParams<TModGetter>
     where TModGetter : class, IModGetter
@@ -35,9 +30,6 @@ internal record BinaryWriteBuilderParams<TModGetter>
     internal bool _autoSplit { get; init; } = false;
 }
 
-
-
-
 internal interface IBinaryWriteBuilderWriter<TModGetter>
     where TModGetter : class, IModGetter
 {
@@ -48,18 +40,7 @@ internal interface IBinaryWriteBuilderWriter<TModGetter>
 public interface IBinaryModdedWriteBuilderTargetChoice
 {
 
-
-
-
-
-
     public IBinaryModdedWriteBuilderLoadOrderChoice ToPath(FilePath path, IFileSystem? fileSystem = null);
-
-
-
-
-
-
 
     public IBinaryModdedWriteBuilderLoadOrderChoice IntoFolder(DirectoryPath folderPath, IFileSystem? fileSystem = null);
 }
@@ -82,12 +63,6 @@ public record BinaryModdedWriteBuilderTargetChoice<TModGetter> : IBinaryModdedWr
         };
     }
 
-
-
-
-
-
-
     public BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> ToPath(FilePath path, IFileSystem? fileSystem = null)
     {
         return new BinaryModdedWriteBuilderLoadOrderChoice<TModGetter>(_mod, _params with
@@ -99,12 +74,6 @@ public record BinaryModdedWriteBuilderTargetChoice<TModGetter> : IBinaryModdedWr
             }
         });
     }
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> IntoFolder(DirectoryPath folderPath, IFileSystem? fileSystem = null)
     {
@@ -134,12 +103,6 @@ public record BinaryWriteBuilderTargetChoice<TModGetter>
         };
     }
 
-
-
-
-
-
-
     public BinaryWriteBuilderLoadOrderChoice<TModGetter> ToPath(FilePath path, IFileSystem? fileSystem = null)
     {
         return new BinaryWriteBuilderLoadOrderChoice<TModGetter>(_params with
@@ -156,88 +119,33 @@ public record BinaryWriteBuilderTargetChoice<TModGetter>
 public interface IBinaryModdedWriteBuilderLoadOrderChoice
 {
 
-
-
-
-
-
-
-
     public IBinaryModdedWriteBuilder WithNoLoadOrder();
-
-
-
-
-
 
     public IBinaryModdedWriteBuilder WithLoadOrder(
         ILoadOrderGetter<IModListingGetter<IModGetter>> loadOrder);
 
-
-
-
-
-
     public IBinaryModdedWriteBuilder WithLoadOrder(
         ILoadOrderGetter<IModListingGetter<IModMasterStyledGetter>> loadOrder);
-
-
-
-
-
 
     public IBinaryModdedWriteBuilder WithLoadOrder(
         ILoadOrderGetter<IModMasterStyledGetter> loadOrder);
 
-
-
-
-
-
     public IBinaryModdedWriteBuilderDataFolderChoice WithLoadOrder(
         ILoadOrderGetter<ModKey> loadOrder);
-
-
-
-
-
 
     public IBinaryModdedWriteBuilder WithLoadOrder(
         IEnumerable<IModMasterStyledGetter> loadOrder);
 
-
-
-
-
-
     public IBinaryModdedWriteBuilder WithLoadOrder(
         params IModMasterStyledGetter[] loadOrder);
 
-
-
-
-
     public IBinaryModdedWriteBuilder WithDefaultLoadOrder();
-
-
-
-
-
 
     public IBinaryModdedWriteBuilderDataFolderChoice WithLoadOrder(
         IEnumerable<ModKey> loadOrder);
 
-
-
-
-
-
     public IBinaryModdedWriteBuilderDataFolderChoice WithLoadOrder(
         params ModKey[] loadOrder);
-
-
-
-
 
     public IBinaryModdedWriteBuilderDataFolderChoice WithLoadOrderFromHeaderMasters();
 }
@@ -255,14 +163,6 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
         _mod = mod;
         _params = @params;
     }
-
-
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithNoLoadOrder()
     {
@@ -289,11 +189,6 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
         });
     }
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<IModListingGetter<IModMasterStyledGetter>> loadOrder)
     {
@@ -314,11 +209,6 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilderLoadOrderChoice.WithLoadOrder(ILoadOrderGetter<IModListingGetter<IModMasterStyledGetter>> loadOrder) => WithLoadOrder(loadOrder);
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<IModMasterStyledGetter> loadOrder)
     {
@@ -338,22 +228,12 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilderLoadOrderChoice.WithLoadOrder(ILoadOrderGetter<IModMasterStyledGetter> loadOrder) => WithLoadOrder(loadOrder);
 
-
-
-
-
-
     public BinaryModdedWriteBuilderDataFolderChoice<TModGetter> WithLoadOrder(
         ILoadOrderGetter<ModKey> loadOrder)
     {
         return WithLoadOrder(loadOrder.ListedOrder);
     }
     IBinaryModdedWriteBuilderDataFolderChoice IBinaryModdedWriteBuilderLoadOrderChoice.WithLoadOrder(ILoadOrderGetter<ModKey> loadOrder) => WithLoadOrder(loadOrder);
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         params IModMasterStyledGetter[] loadOrder)
@@ -362,23 +242,12 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilderLoadOrderChoice.WithLoadOrder(params IModMasterStyledGetter[] loadOrder) => WithLoadOrder(loadOrder);
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         IEnumerable<IModMasterStyledGetter> loadOrder)
     {
         return WithLoadOrder(new LoadOrder<IModMasterStyledGetter>(loadOrder, disposeItems: false));
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilderLoadOrderChoice.WithLoadOrder(IEnumerable<IModMasterStyledGetter> loadOrder) => WithLoadOrder(loadOrder);
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<IModListingGetter<TModGetter>> loadOrder)
@@ -400,11 +269,6 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
         });
     }
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<TModGetter> loadOrder)
     {
@@ -424,31 +288,17 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
         });
     }
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         params TModGetter[] loadOrder)
     {
         return WithLoadOrder(new LoadOrder<TModGetter>(loadOrder, disposeItems: false));
     }
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithLoadOrder(
         IEnumerable<TModGetter> loadOrder)
     {
         return WithLoadOrder(new LoadOrder<TModGetter>(loadOrder, disposeItems: false));
     }
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithDefaultLoadOrder()
     {
@@ -480,11 +330,6 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
         });
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilderLoadOrderChoice.WithDefaultLoadOrder() => WithDefaultLoadOrder();
-
-
-
-
-
 
     public BinaryModdedWriteBuilderDataFolderChoice<TModGetter> WithLoadOrder(
         IEnumerable<ModKey> loadOrder)
@@ -524,11 +369,6 @@ public record BinaryModdedWriteBuilderLoadOrderChoice<TModGetter> : IBinaryModde
         });
     }
     IBinaryModdedWriteBuilderDataFolderChoice IBinaryModdedWriteBuilderLoadOrderChoice.WithLoadOrder(IEnumerable<ModKey> loadOrder) => WithLoadOrder(loadOrder);
-
-
-
-
-
 
     public BinaryModdedWriteBuilderDataFolderChoice<TModGetter> WithLoadOrder(
         params ModKey[] loadOrder)
@@ -588,23 +428,10 @@ public record BinaryWriteBuilderLoadOrderChoice<TModGetter>
         _params = @params;
     }
 
-
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithNoLoadOrder()
     {
         return new BinaryWriteBuilder<TModGetter>(_params);
     }
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<IModListingGetter<IModMasterStyledGetter>> loadOrder)
@@ -625,11 +452,6 @@ public record BinaryWriteBuilderLoadOrderChoice<TModGetter>
         });
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<IModMasterStyledGetter> loadOrder)
     {
@@ -648,32 +470,17 @@ public record BinaryWriteBuilderLoadOrderChoice<TModGetter>
         });
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         params IModMasterStyledGetter[] loadOrder)
     {
         return WithLoadOrder(new LoadOrder<IModMasterStyledGetter>(loadOrder, disposeItems: false));
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         IEnumerable<IModMasterStyledGetter> loadOrder)
     {
         return WithLoadOrder(new LoadOrder<IModMasterStyledGetter>(loadOrder, disposeItems: false));
     }
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<IModListingGetter<TModGetter>> loadOrder)
@@ -695,11 +502,6 @@ public record BinaryWriteBuilderLoadOrderChoice<TModGetter>
         });
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         ILoadOrderGetter<TModGetter> loadOrder)
     {
@@ -719,31 +521,17 @@ public record BinaryWriteBuilderLoadOrderChoice<TModGetter>
         });
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         params TModGetter[] loadOrder)
     {
         return WithLoadOrder(new LoadOrder<TModGetter>(loadOrder, disposeItems: false));
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithLoadOrder(
         IEnumerable<TModGetter> loadOrder)
     {
         return WithLoadOrder(new LoadOrder<TModGetter>(loadOrder, disposeItems: false));
     }
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithDefaultLoadOrder()
     {
@@ -770,11 +558,6 @@ public record BinaryWriteBuilderLoadOrderChoice<TModGetter>
         });
     }
 
-
-
-
-
-
     public BinaryWriteBuilderDataFolderChoice<TModGetter> WithLoadOrder(
         IEnumerable<ModKey> loadOrder)
     {
@@ -799,11 +582,6 @@ public record BinaryWriteBuilderLoadOrderChoice<TModGetter>
             }
         });
     }
-
-
-
-
-
 
     public BinaryWriteBuilderDataFolderChoice<TModGetter> WithLoadOrder(
         params ModKey[] loadOrder)
@@ -867,13 +645,6 @@ public record BinaryWriteBuilderDataFolderChoice<TModGetter>
         });
     }
 
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithKnownMasters(params IModMasterStyledGetter[] knownMasters)
     {
         var match = _param.KnownMasters.FirstOrDefault(existingKnownMaster =>
@@ -888,13 +659,6 @@ public record BinaryWriteBuilderDataFolderChoice<TModGetter>
             KnownMasters = _param.KnownMasters.And(knownMasters).ToArray()
         });
     }
-
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithKnownMasters(params KeyedMasterStyle[] knownMasters)
     {
@@ -957,13 +721,6 @@ public record BinaryModdedWriteBuilderDataFolderChoice<TModGetter> : IBinaryModd
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilderDataFolderChoice.WithNoDataFolder() =>
         WithNoDataFolder();
 
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithKnownMasters(params IModMasterStyledGetter[] knownMasters)
     {
         var match = _param.KnownMasters.FirstOrDefault(existingKnownMaster =>
@@ -981,13 +738,6 @@ public record BinaryModdedWriteBuilderDataFolderChoice<TModGetter> : IBinaryModd
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilderDataFolderChoice.WithKnownMasters(params IModMasterStyledGetter[] knownMasters) =>
         WithKnownMasters(knownMasters);
 
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithKnownMasters(params KeyedMasterStyle[] knownMasters)
     {
         return WithKnownMasters(knownMasters.Cast<IModMasterStyledGetter>().ToArray());
@@ -999,275 +749,77 @@ public record BinaryModdedWriteBuilderDataFolderChoice<TModGetter> : IBinaryModd
 public interface IBinaryModdedWriteBuilder
 {
 
-
-
-
     IBinaryModdedWriteBuilder WithModKeySync(ModKeyOption option);
-
-
-
-
 
     IBinaryModdedWriteBuilder NoModKeySync();
 
-
-
-
-
-
     IBinaryModdedWriteBuilder WithFileSystem(IFileSystem? fileSystem);
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithMastersListContent(MastersListContentOption option);
 
-
-
-
-
-
     IBinaryModdedWriteBuilder NoMastersListContentCheck();
 
-
-
-
-
     IBinaryModdedWriteBuilder WithRecordCount(RecordCountOption option);
-
-
-
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithMastersListOrdering(
         MastersListOrderingOption option);
 
-
-
-
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithMastersListOrdering(
         IEnumerable<ModKey> loadOrder);
-
-
-
-
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithMastersListOrdering(
         ILoadOrderGetter loadOrder);
 
-
-
-
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithMastersListOrdering(
         IReadOnlyMasterReferenceCollection otherMasters);
 
-
-
-
-
     IBinaryModdedWriteBuilder NoNextFormIDProcessing();
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithForcedLowerFormIdRangeUsage(bool? useLowerRange);
 
-
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithAutoSplit();
-
-
-
-
 
     IBinaryModdedWriteBuilder NoFormIDUniquenessCheck();
 
-
-
-
-
     IBinaryModdedWriteBuilder NoFormIDCompactnessCheck();
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithFormIDCompactnessCheck(FormIDCompactionOption option);
 
-
-
-
-
-
     IBinaryModdedWriteBuilder WithStringsWriter(StringsWriter? stringsWriter);
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithTargetLanguage(Language language);
 
-
-
-
-
     IBinaryModdedWriteBuilder NoNullFormIDStandardization();
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithEmbeddedEncodings(EncodingBundle? encodingBundle);
 
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithUtf8Encoding(bool on = true);
-
-
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithPlaceholderMasterIfLowerRangeDisallowed(ModKey placeholder);
 
-
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithPlaceholderMasterIfLowerRangeDisallowed(ILoadOrderGetter loadOrder);
-
-
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithPlaceholderMasterIfLowerRangeDisallowed(IEnumerable<ModKey> loadOrder);
 
-
-
-
-
-
     IBinaryModdedWriteBuilder ThrowIfLowerRangeDisallowed();
-
-
-
-
 
     IBinaryModdedWriteBuilder NoCheckIfLowerRangeDisallowed();
 
-
-
-
-
-
     IBinaryModdedWriteBuilder WithParallelWriteParameters(ParallelWriteParameters parameters);
-
-
-
-
 
     IBinaryModdedWriteBuilder SingleThread();
 
-
-
-
-
-
     IBinaryModdedWriteBuilder WithExtraIncludedMasters(IEnumerable<ModKey> modKeys);
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithExtraIncludedMasters(params ModKey[] modKeys);
 
-
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithExplicitOverridingMasterList(IEnumerable<ModKey> modKeys);
-
-
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithExplicitOverridingMasterList(params ModKey[] modKeys);
 
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithAllParentMasters();
 
-
-
-
-
-
-
-
     IBinaryModdedWriteBuilder WithKnownMasters(params IModMasterStyledGetter[] knownMasters);
-
-
-
-
-
-
-
 
     IBinaryModdedWriteBuilder WithKnownMasters(params KeyedMasterStyle[] knownMasters);
 
@@ -1275,14 +827,7 @@ public interface IBinaryModdedWriteBuilder
 
     public IBinaryModdedWriteBuilder WithDataFolder(DirectoryPath? dataFolder);
 
-
-
-
     void Write();
-
-
-
-
 
     Task WriteAsync();
 }
@@ -1301,10 +846,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         _params = @params;
     }
 
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithModKeySync(ModKeyOption option)
     {
         return this with
@@ -1321,10 +862,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
 
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithModKeySync(ModKeyOption option) => WithModKeySync(option);
 
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> NoModKeySync()
     {
         return this with
@@ -1339,11 +876,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.NoModKeySync() => NoModKeySync();
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithFileSystem(IFileSystem? fileSystem)
     {
@@ -1360,11 +892,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithFileSystem(IFileSystem? fileSystem) => WithFileSystem(fileSystem);
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithMastersListContent(MastersListContentOption option)
     {
         return this with
@@ -1379,11 +906,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithMastersListContent(MastersListContentOption option) => WithMastersListContent(option);
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> NoMastersListContentCheck()
     {
@@ -1400,10 +922,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.NoMastersListContentCheck() => NoMastersListContentCheck();
 
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithRecordCount(RecordCountOption option)
     {
         return this with
@@ -1418,15 +936,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithRecordCount(RecordCountOption option) => WithRecordCount(option);
-
-
-
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithMastersListOrdering(
         MastersListOrderingOption option)
@@ -1447,15 +956,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithMastersListOrdering(MastersListOrderingOption option) => WithMastersListOrdering(option);
 
-
-
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithMastersListOrdering(
         IEnumerable<ModKey> loadOrder)
     {
@@ -1472,15 +972,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithMastersListOrdering(IEnumerable<ModKey> loadOrder) => WithMastersListOrdering(loadOrder);
 
-
-
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithMastersListOrdering(
         ILoadOrderGetter loadOrder)
     {
@@ -1496,15 +987,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithMastersListOrdering(ILoadOrderGetter loadOrder) => WithMastersListOrdering(loadOrder);
-
-
-
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithMastersListOrdering(
         IReadOnlyMasterReferenceCollection otherMasters)
@@ -1523,10 +1005,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithMastersListOrdering(IReadOnlyMasterReferenceCollection otherMasters) => WithMastersListOrdering(otherMasters);
 
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> NoNextFormIDProcessing()
     {
         return this with
@@ -1541,11 +1019,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.NoNextFormIDProcessing() => NoNextFormIDProcessing();
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithForcedLowerFormIdRangeUsage(bool? useLowerRange)
     {
@@ -1562,15 +1035,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithForcedLowerFormIdRangeUsage(bool? useLowerRange) => WithForcedLowerFormIdRangeUsage(useLowerRange);
 
-
-
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithAutoSplit()
     {
         return this with
@@ -1582,10 +1046,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithAutoSplit() => WithAutoSplit();
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> NoFormIDUniquenessCheck()
     {
@@ -1602,20 +1062,11 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.NoFormIDUniquenessCheck() => NoFormIDUniquenessCheck();
 
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> NoFormIDCompactnessCheck()
     {
         return WithFormIDCompactnessCheck(FormIDCompactionOption.NoCheck);
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.NoFormIDCompactnessCheck() => NoFormIDCompactnessCheck();
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithFormIDCompactnessCheck(FormIDCompactionOption option)
     {
@@ -1632,11 +1083,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithFormIDCompactnessCheck(FormIDCompactionOption option) => WithFormIDCompactnessCheck(option);
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithStringsWriter(StringsWriter? stringsWriter)
     {
         return this with
@@ -1651,11 +1097,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithStringsWriter(StringsWriter? stringsWriter) => WithStringsWriter(stringsWriter);
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithTargetLanguage(Language language)
     {
@@ -1672,10 +1113,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithTargetLanguage(Language language) => WithTargetLanguage(language);
 
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> NoNullFormIDStandardization()
     {
         return this with
@@ -1691,11 +1128,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.NoNullFormIDStandardization() => NoNullFormIDStandardization();
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithEmbeddedEncodings(EncodingBundle? encodingBundle)
     {
         return this with
@@ -1710,12 +1142,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithEmbeddedEncodings(EncodingBundle? encodingBundle) => WithEmbeddedEncodings(encodingBundle);
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithUtf8Encoding(bool on = true)
     {
@@ -1734,13 +1160,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithUtf8Encoding(bool on) => WithUtf8Encoding(on);
 
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithPlaceholderMasterIfLowerRangeDisallowed(ModKey placeholder)
     {
         return this with
@@ -1755,13 +1174,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithPlaceholderMasterIfLowerRangeDisallowed(ModKey placeholder) => WithPlaceholderMasterIfLowerRangeDisallowed(placeholder);
-
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithPlaceholderMasterIfLowerRangeDisallowed(ILoadOrderGetter loadOrder)
     {
@@ -1778,13 +1190,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithPlaceholderMasterIfLowerRangeDisallowed(ILoadOrderGetter loadOrder) => WithPlaceholderMasterIfLowerRangeDisallowed(loadOrder);
 
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithPlaceholderMasterIfLowerRangeDisallowed(IEnumerable<ModKey> loadOrder)
     {
         return this with
@@ -1799,11 +1204,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithPlaceholderMasterIfLowerRangeDisallowed(IEnumerable<ModKey> loadOrder) => WithPlaceholderMasterIfLowerRangeDisallowed(loadOrder);
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> ThrowIfLowerRangeDisallowed()
     {
@@ -1820,10 +1220,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.ThrowIfLowerRangeDisallowed() => ThrowIfLowerRangeDisallowed();
 
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> NoCheckIfLowerRangeDisallowed()
     {
         return this with
@@ -1839,11 +1235,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.NoCheckIfLowerRangeDisallowed() => NoCheckIfLowerRangeDisallowed();
 
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithParallelWriteParameters(ParallelWriteParameters parameters)
     {
         return this with
@@ -1858,10 +1249,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithParallelWriteParameters(ParallelWriteParameters parameters) => WithParallelWriteParameters(parameters);
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> SingleThread()
     {
@@ -1881,23 +1268,11 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.SingleThread() => SingleThread();
 
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithExtraIncludedMasters(IEnumerable<ModKey> modKeys)
     {
         return WithExtraIncludedMasters(modKeys.ToArray());
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithExtraIncludedMasters(IEnumerable<ModKey> modKeys) => WithExtraIncludedMasters(modKeys);
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithExtraIncludedMasters(params ModKey[] modKeys)
     {
@@ -1920,13 +1295,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithExtraIncludedMasters(params ModKey[] modKeys) => WithExtraIncludedMasters(modKeys);
 
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithExplicitOverridingMasterList(IEnumerable<ModKey> modKeys)
     {
         return this with
@@ -1945,24 +1313,11 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithExplicitOverridingMasterList(IEnumerable<ModKey> modKeys) => WithExplicitOverridingMasterList(modKeys);
 
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithExplicitOverridingMasterList(params ModKey[] modKeys)
     {
         return WithExplicitOverridingMasterList((IEnumerable<ModKey>)modKeys);
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithExplicitOverridingMasterList(params ModKey[] modKeys) => WithExplicitOverridingMasterList(modKeys);
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithAllParentMasters()
     {
@@ -1994,13 +1349,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithAllParentMasters() => WithAllParentMasters();
 
-
-
-
-
-
-
-
     public BinaryModdedWriteBuilder<TModGetter> WithKnownMasters(params IModMasterStyledGetter[] knownMasters)
     {
         var match = _params.KnownMasters.FirstOrDefault(existingKnownMaster =>
@@ -2019,13 +1367,6 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
         };
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithKnownMasters(params IModMasterStyledGetter[] knownMasters) => WithKnownMasters(knownMasters);
-
-
-
-
-
-
-
 
     public BinaryModdedWriteBuilder<TModGetter> WithKnownMasters(params KeyedMasterStyle[] knownMasters)
     {
@@ -2062,20 +1403,12 @@ public record BinaryModdedWriteBuilder<TModGetter> : IBinaryModdedWriteBuilder
     }
     IBinaryModdedWriteBuilder IBinaryModdedWriteBuilder.WithDataFolder(DirectoryPath? dataFolder) => WithDataFolder(dataFolder);
 
-
-
-
-
     public async Task WriteAsync()
     {
         await _params._writer.WriteAsync(
             _mod,
             BinaryWriteBuilderHelper.RunPreWriteSetters<TModGetter>(_mod, _params));
     }
-
-
-
-
 
     public void Write()
     {
@@ -2096,10 +1429,6 @@ public record BinaryWriteBuilder<TModGetter>
         _params = @params;
     }
 
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithModKeySync(ModKeyOption option)
     {
         return this with
@@ -2113,10 +1442,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> NoModKeySync()
     {
@@ -2132,11 +1457,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithFileSystem(IFileSystem fileSystem)
     {
         return this with
@@ -2150,11 +1470,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithMastersListContent(MastersListContentOption option)
     {
@@ -2170,11 +1485,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> NoMastersListContentCheck()
     {
         return this with
@@ -2189,10 +1499,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithRecordCount(RecordCountOption option)
     {
         return this with
@@ -2206,15 +1512,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithMastersListOrdering(
         MastersListOrderingOption option)
@@ -2234,15 +1531,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithMastersListOrdering(
         IEnumerable<ModKey> loadOrder)
     {
@@ -2258,15 +1546,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithMastersListOrdering(
         ILoadOrderGetter loadOrder)
     {
@@ -2281,15 +1560,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithMastersListOrdering(
         IReadOnlyMasterReferenceCollection otherMasters)
@@ -2307,10 +1577,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
     public BinaryWriteBuilder<TModGetter> NoNextFormIDProcessing()
     {
         return this with
@@ -2324,11 +1590,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithForcedLowerFormIdRangeUsage(bool? useLowerRange)
     {
@@ -2344,15 +1605,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithAutoSplit()
     {
         return this with
@@ -2363,10 +1615,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> NoFormIDUniquenessCheck()
     {
@@ -2382,19 +1630,10 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
     public BinaryWriteBuilder<TModGetter> NoFormIDCompactnessCheck()
     {
         return WithFormIDCompactnessCheck(FormIDCompactionOption.NoCheck);
     }
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithFormIDCompactnessCheck(FormIDCompactionOption option)
     {
@@ -2410,11 +1649,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithStringsWriter(StringsWriter stringsWriter)
     {
         return this with
@@ -2428,11 +1662,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithTargetLanguage(Language language)
     {
@@ -2448,10 +1677,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
     public BinaryWriteBuilder<TModGetter> NoNullFormIDStandardization()
     {
         return this with
@@ -2466,11 +1691,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithEmbeddedEncodings(EncodingBundle? encodingBundle)
     {
         return this with
@@ -2484,12 +1704,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithUtf8Encoding(bool on = true)
     {
@@ -2507,13 +1721,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithPlaceholderMasterIfLowerRangeDisallowed(ModKey placeholder)
     {
         return this with
@@ -2527,13 +1734,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithPlaceholderMasterIfLowerRangeDisallowed(ILoadOrderGetter loadOrder)
     {
@@ -2549,13 +1749,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithPlaceholderMasterIfLowerRangeDisallowed(IEnumerable<ModKey> loadOrder)
     {
         return this with
@@ -2569,11 +1762,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> ThrowIfLowerRangeDisallowed()
     {
@@ -2589,10 +1777,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
     public BinaryWriteBuilder<TModGetter> NoCheckIfLowerRangeDisallowed()
     {
         return this with
@@ -2607,11 +1791,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithParallelWriteParameters(ParallelWriteParameters parameters)
     {
         return this with
@@ -2625,10 +1804,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> SingleThread()
     {
@@ -2647,22 +1822,10 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithExtraIncludedMasters(IEnumerable<ModKey> modKeys)
     {
         return WithExtraIncludedMasters(modKeys.ToArray());
     }
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithExtraIncludedMasters(params ModKey[] modKeys)
     {
@@ -2684,13 +1847,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithExplicitOverridingMasterList(IEnumerable<ModKey> modKeys)
     {
         return this with
@@ -2708,23 +1864,10 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithExplicitOverridingMasterList(params ModKey[] modKeys)
     {
         return WithExplicitOverridingMasterList((IEnumerable<ModKey>)modKeys);
     }
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithAllParentMasters()
     {
@@ -2755,13 +1898,6 @@ public record BinaryWriteBuilder<TModGetter>
         };
     }
 
-
-
-
-
-
-
-
     public BinaryWriteBuilder<TModGetter> WithKnownMasters(params IModMasterStyledGetter[] knownMasters)
     {
         var match = _params.KnownMasters.FirstOrDefault(existingKnownMaster =>
@@ -2779,13 +1915,6 @@ public record BinaryWriteBuilder<TModGetter>
             }
         };
     }
-
-
-
-
-
-
-
 
     public BinaryWriteBuilder<TModGetter> WithKnownMasters(params KeyedMasterStyle[] knownMasters)
     {
@@ -2818,21 +1947,12 @@ public record BinaryWriteBuilder<TModGetter>
         });
     }
 
-
-
-
-
-
     public async Task WriteAsync(TModGetter mod)
     {
         await _params._writer.WriteAsync(
             mod,
             BinaryWriteBuilderHelper.RunPreWriteSetters<TModGetter>(mod, _params));
     }
-
-
-
-
 
     public void Write(TModGetter mod)
     {
@@ -2861,7 +1981,6 @@ internal static class BinaryWriteBuilderHelper
                 _param = p._loadOrderSetter(mod, p, knownSet)
             };
         }
-
 
         if (p._param.MasterFlagsLookup != null)
         {

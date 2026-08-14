@@ -5,11 +5,6 @@ namespace Mutagen.Bethesda.Pex;
 public static class PexMixIn
 {
 
-
-
-
-
-
     public static void WritePexFile(this PexFile pexFile, string outputPath, GameCategory gameCategory)
     {
         var dirName = Path.GetDirectoryName(outputPath);

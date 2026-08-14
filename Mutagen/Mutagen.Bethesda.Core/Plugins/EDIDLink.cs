@@ -4,21 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
-
 public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<TMajor>>
     where TMajor : class, IMajorRecordGetter
 {
 
-
-
     public static readonly IEDIDLinkGetter<TMajor> Null = new EDIDLink<TMajor>();
-
-
-
 
     public RecordType EDID { get; set; }
 
@@ -28,9 +18,6 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
     {
         EDID = RecordType.Null;
     }
-
-
-
 
     public EDIDLink(RecordType edid)
         : this()
@@ -44,22 +31,9 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         return Equals(rhs);
     }
 
-
-
-
-
-
     public bool Equals(IEDIDLink<TMajor>? other) => EDID.Equals(other?.EDID);
 
-
-
-
-
     public override int GetHashCode() => EDID.GetHashCode();
-
-
-
-
 
     public override string ToString() => EDID.ToString();
 
@@ -72,7 +46,6 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
             item = default;
             return false;
         }
-
 
         var group = mod.TryGetTopLevelGroup<TMajor>();
         if (group == null)
@@ -92,12 +65,6 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         return false;
     }
 
-
-
-
-
-
-
     public bool TryResolve(ILinkCache cache, out TMajor major)
     {
         if (EDID == RecordType.Null)
@@ -116,12 +83,6 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         major = default!;
         return false;
     }
-
-
-
-
-
-
 
     public bool TryResolveFormKey(ILinkCache cache, [MaybeNullWhen(false)]out FormKey formKey)
     {
@@ -144,11 +105,6 @@ public sealed class EDIDLink<TMajor> : IEDIDLink<TMajor>, IEquatable<IEDIDLink<T
         formKey = default!;
         return false;
     }
-
-
-
-
-
 
     public TMajor? TryResolve(ILinkCache cache)
     {

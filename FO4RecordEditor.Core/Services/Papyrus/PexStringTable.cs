@@ -2,16 +2,6 @@ using System.Collections.Generic;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
 public sealed partial class PexFile
 {
 

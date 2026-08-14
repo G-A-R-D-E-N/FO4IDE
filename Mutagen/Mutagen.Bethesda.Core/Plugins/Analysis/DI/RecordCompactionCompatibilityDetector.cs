@@ -16,7 +16,7 @@ public interface IRecordCompactionCompatibilityDetector
     RangeUInt32? GetAllowedRange(IModGetter mod, bool potential);
     void IterateAndThrowIfIncompatible(IModGetter mod, bool potential);
     void ThrowIfIncompatible(
-        IModGetter mod, 
+        IModGetter mod,
         RangeUInt32 range,
         IMajorRecordGetter rec);
 }
@@ -30,7 +30,7 @@ public class RecordCompactionCompatibilityDetector : IRecordCompactionCompatibil
 
         return IterateToCheckCompatibility(mod, range.Value);
     }
-    
+
     public bool CouldBeSmallMasterCompatible(IModGetter mod)
     {
         var range = GetSmallMasterRange(mod);
@@ -38,7 +38,7 @@ public class RecordCompactionCompatibilityDetector : IRecordCompactionCompatibil
 
         return IterateToCheckCouldBeCompatible(mod, range.Value);
     }
-    
+
     public bool IsMediumMasterCompatible(IModGetter mod)
     {
         var range = GetMediumMasterRange(mod);
@@ -46,7 +46,7 @@ public class RecordCompactionCompatibilityDetector : IRecordCompactionCompatibil
 
         return IterateToCheckCompatibility(mod, range.Value);
     }
-    
+
     public bool CouldBeMediumMasterCompatible(IModGetter mod)
     {
         var range = GetMediumMasterRange(mod);
@@ -99,11 +99,11 @@ public class RecordCompactionCompatibilityDetector : IRecordCompactionCompatibil
 
         return GetFullMasterRange(mod, masterCount, potential);
     }
-    
+
     private bool IterateToCheckCompatibility(IModGetter modGetter, RangeUInt32 range)
     {
         ModKey patchModKey = modGetter.ModKey;
-        
+
         foreach (var rec in modGetter.EnumerateMajorRecords())
         {
             if (!rec.FormKey.ModKey.Equals(patchModKey)) continue;
@@ -112,7 +112,7 @@ public class RecordCompactionCompatibilityDetector : IRecordCompactionCompatibil
 
         return true;
     }
-    
+
     private bool IterateToCheckCouldBeCompatible(IModGetter modGetter, RangeUInt32 range)
     {
         var rangeSize = range.Difference;
@@ -122,26 +122,26 @@ public class RecordCompactionCompatibilityDetector : IRecordCompactionCompatibil
             .Count(x => x.FormKey.ModKey.Equals(patchModKey));
         return rangeSize >= numOriginating;
     }
-    
+
     public void IterateAndThrowIfIncompatible(IModGetter mod, bool potential)
     {
         RangeUInt32? formIdRange = GetAllowedRange(mod, potential);
 
         if (formIdRange == null) return;
-        
+
         foreach (var rec in mod.EnumerateMajorRecords())
         {
             ThrowIfIncompatible(mod, formIdRange.Value, rec);
         }
     }
-    
+
     public void ThrowIfIncompatible(
-        IModGetter mod, 
+        IModGetter mod,
         RangeUInt32 range,
         IMajorRecordGetter rec)
     {
         ModKey patchModKey = mod.ModKey;
-        
+
         if (!rec.FormKey.ModKey.Equals(patchModKey)) return;
         if (!range.IsInRange(rec.FormKey.ID))
         {

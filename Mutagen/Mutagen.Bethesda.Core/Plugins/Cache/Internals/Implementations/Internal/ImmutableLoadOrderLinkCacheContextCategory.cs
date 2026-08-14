@@ -124,12 +124,10 @@ internal sealed class ImmutableLoadOrderLinkCacheContextCategory<TMod, TModGette
             }
         }
 
-
         if (cache.Done)
         {
             return cache.TryGetValue(key, out majorRec);
         }
-
 
         lock (cache)
         {
@@ -170,7 +168,6 @@ internal sealed class ImmutableLoadOrderLinkCacheContextCategory<TMod, TModGette
                     }
                 }
 
-
                 if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_category, type, out var objs))
                 {
                     foreach (var regis in objs.Registrations)
@@ -204,13 +201,11 @@ internal sealed class ImmutableLoadOrderLinkCacheContextCategory<TMod, TModGette
             yield break;
         }
 
-
         DepthCache<TKey, ImmutableList<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>>> cache;
         lock (_allContexts)
         {
             cache = _allContexts.GetOrAdd(type, () => new DepthCache<TKey, ImmutableList<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>>>(_equalityComparer));
         }
-
 
         ImmutableList<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>>? list;
         int consideredDepth;
@@ -228,12 +223,10 @@ internal sealed class ImmutableLoadOrderLinkCacheContextCategory<TMod, TModGette
             more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
         }
 
-
         foreach (var item in list)
         {
             yield return item;
         }
-
 
         while (more)
         {
@@ -275,7 +268,6 @@ internal sealed class ImmutableLoadOrderLinkCacheContextCategory<TMod, TModGette
                         }
                     }
 
-
                     if (_metaInterfaceMapGetter.TryGetRegistrationsForInterface(_category, type, out var objs))
                     {
                         foreach (var regis in objs.Registrations)
@@ -298,7 +290,6 @@ internal sealed class ImmutableLoadOrderLinkCacheContextCategory<TMod, TModGette
                 consideredDepth = cache.Depth;
                 more = !InternalImmutableLoadOrderLinkCache.ShouldStopQuery(modKey, _listedOrder.Count, cache);
             }
-
 
             for (int i = iteratedCount; i < list.Count; i++)
             {

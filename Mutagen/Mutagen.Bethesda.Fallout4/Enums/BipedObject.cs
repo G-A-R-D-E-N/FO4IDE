@@ -112,13 +112,6 @@ public static class BipedObjectConverter
         { 61, (BipedObject.FX, BipedObjectFlag.FX) }
     };
 
-
-
-
-
-
-
-
     public static BipedObject BipedObjectBySlot(int slot)
     {
         if (slot == -1)
@@ -129,12 +122,6 @@ public static class BipedObjectConverter
 
         return result.Item1;
     }
-
-
-
-
-
-
 
     public static BipedObjectFlag BipedObjectFlagBySlot(int slot)
     {
@@ -148,21 +135,12 @@ public static class BipedObjectConverter
 public static class BipedObjectExtensions
 {
 
-
-
-
-
     public static BipedObjectFlag ToFlagEnum(this BipedObject bipedObject)
     {
         if (bipedObject == BipedObject.None)
             throw new ArgumentException("Object enum 'None' does not exist as flag enum");
         return (BipedObjectFlag)Enum.Parse(typeof(BipedObjectFlag), bipedObject.ToString());
     }
-
-
-
-
-
 
     public static int ToSlot(this BipedObject bipedObject)
     {
@@ -175,19 +153,10 @@ public static class BipedObjectExtensions
 public static class BipedObjectFlagExtensions
 {
 
-
-
-
-
     public static BipedObject ToObjectEnum(this BipedObjectFlag bipedObjectFlag)
     {
         return (BipedObject)Enum.Parse(typeof(BipedObject), bipedObjectFlag.ToString());
     }
-
-
-
-
-
 
     public static int ToSlot(this BipedObjectFlag bipedObjectFlag)
     {

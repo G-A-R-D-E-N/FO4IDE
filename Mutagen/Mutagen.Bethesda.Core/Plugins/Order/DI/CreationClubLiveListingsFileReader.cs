@@ -26,7 +26,7 @@ public sealed class CreationClubLiveListingsFileReader : ICreationClubLiveListin
         ListingsReader = listingsReader;
         ListingsPathProvider = listingsPathProvider;
     }
-        
+
     public IObservable<IChangeSet<ILoadOrderListingGetter>> Get(out IObservable<ErrorResponse> state)
     {
         var path = ListingsPathProvider.Path;

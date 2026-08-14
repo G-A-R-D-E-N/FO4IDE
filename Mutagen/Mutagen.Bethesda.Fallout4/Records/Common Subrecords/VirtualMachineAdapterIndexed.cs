@@ -37,7 +37,7 @@ partial class VirtualMachineAdapterIndexedBinaryWriteTranslation
         WriteEntry(writer, frags.Script, item.ObjectFormat);
         ListBinaryTranslation<MutagenWriter, MutagenFrame, IScriptFragmentIndexedGetter>.Instance.Write(
             writer,
-            frags.Fragments, 
+            frags.Fragments,
             countLengthLength: 2,
             (w, i) =>
             {

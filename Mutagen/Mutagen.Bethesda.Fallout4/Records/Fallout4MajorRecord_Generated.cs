@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -41,8 +37,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class Fallout4MajorRecord :
         MajorRecord,
@@ -547,8 +541,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IFallout4MajorRecord :
         IAssetLinkContainer,
         IFallout4MajorRecordGetter,
@@ -568,9 +560,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFallout4MajorRecordGetter
     {
     }
-
-
-
 
     public partial interface IFallout4MajorRecordGetter :
         IMajorRecordGetter,
@@ -1368,7 +1357,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Fallout4MajorRecord.GetNew();
@@ -1737,7 +1725,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1795,7 +1782,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

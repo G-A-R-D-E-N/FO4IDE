@@ -7,11 +7,6 @@ import './ArchivePanel.css';
 const LS = (k: string, d: string) => localStorage.getItem('archive.' + k) ?? d;
 const setLS = (k: string, v: string) => localStorage.setItem('archive.' + k, v);
 
-
-
-
-
-
 export default function ArchivePanel({ onClose }: { onClose: () => void }) {
   const [archivePath, setArchivePath] = useState(() => LS('archivePath', ''));
   const [filter, setFilter] = useState('');
@@ -24,13 +19,11 @@ export default function ArchivePanel({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState('');
   const [lastOutDir, setLastOutDir] = useState('');
 
-
   const [compareOpen, setCompareOpen] = useState(false);
   const [compareB, setCompareB] = useState('');
   const [compareBusy, setCompareBusy] = useState(false);
   const [compareResult, setCompareResult] = useState<ArchiveCompareResult | null>(null);
   const [compareError, setCompareError] = useState('');
-
 
   const [packOpen, setPackOpen] = useState(false);
   const [packSources, setPackSources] = useState<string[]>(() => {

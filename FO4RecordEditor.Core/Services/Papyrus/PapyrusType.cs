@@ -12,30 +12,14 @@ public enum PapyrusTypeKind
     String,
     Var,
 
-
     Object,
-
 
     Struct,
 
-
     Array,
-
 
     Error,
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class PapyrusType : IEquatable<PapyrusType>
 {
@@ -56,14 +40,11 @@ public sealed class PapyrusType : IEquatable<PapyrusType>
 
     public PapyrusTypeKind Kind { get; }
 
-
     public string Name { get; }
-
 
     public PapyrusType? ElementType { get; }
 
     public bool IsArray => Kind == PapyrusTypeKind.Array;
-
 
     public bool IsReference =>
         Kind is PapyrusTypeKind.Object or PapyrusTypeKind.Struct or PapyrusTypeKind.Array;
@@ -71,13 +52,11 @@ public sealed class PapyrusType : IEquatable<PapyrusType>
     public static PapyrusType Object(string scriptName) =>
         new(PapyrusTypeKind.Object, scriptName);
 
-
     public static PapyrusType StructOf(string owningScript, string structName) =>
         new(PapyrusTypeKind.Struct, owningScript + ":" + structName);
 
     public static PapyrusType ArrayOf(PapyrusType element) =>
         new(PapyrusTypeKind.Array, element.Name, element);
-
 
     public static PapyrusType? Primitive(string name) => name.ToLowerInvariant() switch
     {
@@ -104,32 +83,12 @@ public sealed class PapyrusType : IEquatable<PapyrusType>
         HashCode.Combine(Kind, Name.ToLowerInvariant(), ElementType);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class PapyrusConversions
 {
 
     public delegate bool InheritsFrom(string child, string ancestor);
 
     private static bool AlwaysFalse(string a, string b) => false;
-
 
     public static bool IsImplicit(PapyrusType from, PapyrusType to, InheritsFrom? inherits = null)
     {
@@ -144,23 +103,18 @@ public static class PapyrusConversions
             case PapyrusTypeKind.String:
                 return true;
 
-
             case PapyrusTypeKind.Float:
                 return from.Kind == PapyrusTypeKind.Int;
-
 
             case PapyrusTypeKind.Int:
                 return false;
 
-
             case PapyrusTypeKind.Var:
                 return !from.IsArray;
-
 
             case PapyrusTypeKind.Object:
                 if (from.Kind == PapyrusTypeKind.None) return true;
                 return from.Kind == PapyrusTypeKind.Object && inherits(from.Name, to.Name);
-
 
             case PapyrusTypeKind.Struct:
             case PapyrusTypeKind.Array:
@@ -174,7 +128,6 @@ public static class PapyrusConversions
         }
     }
 
-
     public static bool IsExplicit(PapyrusType from, PapyrusType to, InheritsFrom? inherits = null)
     {
         inherits ??= AlwaysFalse;
@@ -184,26 +137,16 @@ public static class PapyrusConversions
         switch (to.Kind)
         {
 
-
-
-
-
-
-
-
             case PapyrusTypeKind.Int:
             case PapyrusTypeKind.Float:
                 return from.Kind is PapyrusTypeKind.Int or PapyrusTypeKind.Float
                     or PapyrusTypeKind.String or PapyrusTypeKind.Bool;
 
-
             case PapyrusTypeKind.Object:
                 return from.Kind == PapyrusTypeKind.Object && inherits(to.Name, from.Name);
 
-
             case PapyrusTypeKind.Array:
                 return from.IsArray && IsExplicit(from.ElementType!, to.ElementType!, inherits);
-
 
             case PapyrusTypeKind.Struct:
                 return false;

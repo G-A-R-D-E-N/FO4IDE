@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #region ObjectBounds
 
-
-
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IObjectBoundsGetter IAmmunitionGetter.ObjectBounds => ObjectBounds;
@@ -87,8 +81,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<ITransformGetter> IAmmunitionGetter.PreviewTransform => this.PreviewTransform;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -126,8 +118,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
 
-
-
         public Model? Model
         {
             get => _Model;
@@ -143,8 +133,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Destructible
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Destructible? _Destructible;
-
-
 
         public Destructible? Destructible
         {
@@ -186,8 +174,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>>? _Keywords;
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords
         {
@@ -1286,27 +1272,17 @@ namespace Mutagen.Bethesda.Fallout4
         IWeightValue
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
         new IFormLinkNullable<ITransformGetter> PreviewTransform { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
 
-
-
         new Model? Model { get; set; }
-
-
 
         new Destructible? Destructible { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> PickUpSound { get; set; }
         new IFormLinkNullable<ISoundDescriptorGetter> PutDownSound { get; set; }
         new TranslatedString? Description { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; set; }
         new UInt32 Value { get; set; }
@@ -1359,26 +1335,18 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Ammunition_Registration.Instance;
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         IFormLinkNullableGetter<ITransformGetter> PreviewTransform { get; }
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         #region Model
 
-
-
         IModelGetter? Model { get; }
         #endregion
         #region Destructible
-
-
 
         IDestructibleGetter? Destructible { get; }
         #endregion
@@ -1386,8 +1354,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<ISoundDescriptorGetter> PutDownSound { get; }
         ITranslatedStringGetter? Description { get; }
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>>? Keywords { get; }
         #endregion
@@ -2201,7 +2167,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Ammunition.GetNew();
@@ -2965,7 +2930,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

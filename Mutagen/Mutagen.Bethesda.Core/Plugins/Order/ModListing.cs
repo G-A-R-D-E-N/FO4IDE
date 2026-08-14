@@ -3,29 +3,22 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace Mutagen.Bethesda.Plugins.Order;
 
-
 [DebuggerDisplay("{ToString()}")]
 public sealed record ModListing : IModListingGetter
 {
 
     public ModKey ModKey { get; init; }
 
-
     public bool Enabled { get; init; }
 
-
     public bool ModExists { get; init; } = true;
-
 
     [Obsolete("Use ModExists instead")]
     public bool ExistsOnDisk => ModExists;
 
-
     public bool Ghosted => !string.IsNullOrWhiteSpace(GhostSuffix);
 
-
     public string FileName => OrderUtility.GetListingFilename(ModKey, GhostSuffix);
-
 
     public string GhostSuffix { get; init; } = string.Empty;
 
@@ -56,7 +49,6 @@ public sealed record ModListing : IModListingGetter
     }
 }
 
-
 [DebuggerDisplay("{ToString()}")]
 public sealed record ModListing<TMod> : IModListing<TMod>
     where TMod : class, IModKeyed
@@ -64,25 +56,18 @@ public sealed record ModListing<TMod> : IModListing<TMod>
 
     public ModKey ModKey { get; init; }
 
-
     public bool Enabled { get; init; }
 
-
     public bool ModExists => Mod != null;
-
 
     [Obsolete("Use ModExists instead")]
     public bool ExistsOnDisk => ModExists;
 
-
     public bool Ghosted => !string.IsNullOrWhiteSpace(GhostSuffix);
-
 
     public string GhostSuffix { get; init; } = string.Empty;
 
-
     public string FileName => OrderUtility.GetListingFilename(ModKey, GhostSuffix);
-
 
     public TMod? Mod { get; set; }
 
@@ -94,9 +79,6 @@ public sealed record ModListing<TMod> : IModListing<TMod>
         GhostSuffix = ghostSuffix;
     }
 
-
-
-
     public ModListing(TMod mod, bool enabled = true, string ghostSuffix = "")
     {
         ModKey = mod.ModKey;
@@ -105,22 +87,10 @@ public sealed record ModListing<TMod> : IModListing<TMod>
         GhostSuffix = ghostSuffix;
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static ModListing<TMod> CreateUnloaded(ModKey key, bool enabled, string ghostSuffix = "")
     {
         return new ModListing<TMod>(key, default, enabled: enabled, ghostSuffix: ghostSuffix);
     }
-
 
     public override string ToString()
     {
@@ -136,34 +106,19 @@ public sealed record ModListing<TMod> : IModListing<TMod>
     }
 }
 
-
-
-
-
-
-
 public interface IModListingGetter<out TMod> : IModListingGetter, IDisposable
     where TMod : class, IModKeyed
 {
 
-
-
     TMod? Mod { get; }
 }
-
 
 public interface IModListing<TMod> : IModListingGetter<TMod>
     where TMod : class, IModKeyed
 {
 
-
-
     new TMod? Mod { get; set; }
 }
-
-
-
-
 
 public interface IModListingGetter : ILoadOrderListingGetter
 {
@@ -178,18 +133,10 @@ public interface IModListingGetter : ILoadOrderListingGetter
     }
 }
 
-
 public interface IModListing : IModListingGetter
 {
 
-
-
     new bool Enabled { get; set; }
-
-
-
-
-
 
     new string GhostSuffix { get; set; }
 }

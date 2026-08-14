@@ -8,16 +8,9 @@ using Mutagen.Bethesda.Plugins.Binary.Parameters;
 using Mutagen.Bethesda.Plugins.Records;
 using Mutagen.Bethesda.Strings;
 
-
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace FO4RecordEditor.Services;
-
-
-
-
-
-
 
 public static partial class WriteService
 {
@@ -27,7 +20,6 @@ public static partial class WriteService
 
     private static readonly Dictionary<string, string> _sourcePath = new(StringComparer.OrdinalIgnoreCase);
 
-
     public static string? OutputFolderOverride { get; set; }
 
     public static string DefaultOutputDir =>
@@ -35,11 +27,7 @@ public static partial class WriteService
             ? OutputFolderOverride!
             : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Output");
 
-
-
     public static string? Mo2OverwriteFolder { get; set; }
-
-
 
     public static string NewPatchDir =>
         !string.IsNullOrWhiteSpace(Mo2OverwriteFolder) ? Mo2OverwriteFolder! : DefaultOutputDir;
@@ -55,12 +43,8 @@ public static partial class WriteService
         _mutable[name] = mod;
         MutagenLoader.EditableMods[name] = mod;
 
-
-
         MutagenLoader.ReplaceLooseMod(name, mod);
     }
-
-
 
     private static (string name, string? explicitPath) NormalizePlugin(string plugin)
     {
@@ -74,7 +58,6 @@ public static partial class WriteService
     {
         if (string.IsNullOrWhiteSpace(plugin)) return "Provide a plugin name.";
         var (name, explicitPath) = NormalizePlugin(plugin);
-
 
         if (ProtectedPlugins.IsProtected(name)) return ToolError.Fail(ProtectedPlugins.RefusalMessage(name));
         if (_mutable.ContainsKey(name)) return $"'{name}' is already open for editing.";
@@ -108,12 +91,6 @@ public static partial class WriteService
         if (env != null)
         {
 
-
-
-
-
-
-
             try
             {
                 dynamic dynEnv = env;
@@ -121,8 +98,6 @@ public static partial class WriteService
                 if (pluginPaths.TryGetValue(plugin, out var mo2Path)) return mo2Path;
             }
             catch { }
-
-
 
             try
             {
@@ -166,14 +141,8 @@ public static partial class WriteService
         return $"Created new plugin '{fileName}'. Add records with create_record, then call save_plugin to write it.";
     }
 
-
-
     public static event Action<string>? PluginChanged;
     private static void NotifyChanged(string name) => PluginChanged?.Invoke(name);
-
-
-
-
 
     public static void NotifyPluginChanged(string name) => NotifyChanged(name);
 
@@ -214,9 +183,6 @@ public static partial class WriteService
         return msg;
     }
 
-
-
-
     private static IFallout4Mod? EnsureOpen(string plugin, object? env, out string msg)
     {
         msg = "";
@@ -244,15 +210,11 @@ public static partial class WriteService
         return $"Added {value} to {field} on {recordId} in {plugin} ({msg}).";
     }
 
-
-
-
     private static bool AddListItemToRecord(object rec, string field, string value, object? env, out string msg)
     {
         var prop = rec.GetType().GetProperty(field,
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
         if (prop == null) { msg = $"No field '{field}' on {rec.GetType().Name}."; return false; }
-
 
         var listObj = prop.CanRead ? prop.GetValue(rec) : null;
         if (listObj == null)
@@ -264,7 +226,6 @@ public static partial class WriteService
             prop.SetValue(rec, listObj);
         }
         if (listObj is not System.Collections.IList list) { msg = $"Field '{field}' is not a list."; return false; }
-
 
         var elemType = prop.PropertyType.IsGenericType ? prop.PropertyType.GetGenericArguments().FirstOrDefault() : null;
         Type? linkTarget = null;
@@ -302,12 +263,9 @@ public static partial class WriteService
         }
     }
 
-
-
     public static string CompactToEsl(string plugin, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var msg); if (mod == null) return msg;
-
 
         var native = mod.EnumerateMajorRecords().Where(r => r.FormKey.ModKey == mod.ModKey).ToList();
         var inRange = new HashSet<uint>(native.Select(r => r.FormKey.ID).Where(id => id is >= 0x800 and <= 0xFFF));
@@ -338,13 +296,6 @@ public static partial class WriteService
                $"This is in memory until you save.";
     }
 
-
-
-
-
-
-
-
     public static string CheckEslEligibility(string plugin, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var msg); if (mod == null) return msg;
@@ -361,8 +312,6 @@ public static partial class WriteService
         if (native.Count > capacity)
             return $"'{plugin}' CANNOT fit the ESL range: {native.Count} native record(s) exceed the " +
                    $"{capacity}-slot capacity (0x800-0xFFF). compact_to_esl would refuse this plugin.";
-
-
 
         var topLevelGroups = mod.GetType().GetProperties()
             .Where(p => typeof(Mutagen.Bethesda.Plugins.Records.IGroup).IsAssignableFrom(p.PropertyType))
@@ -386,19 +335,6 @@ public static partial class WriteService
                $"0x800-0xFFF and would be remapped by compact_to_esl (dry, no failure modes detected). " +
                "Run compact_to_esl to actually perform the remap.";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static bool TryRekeyRecords(IFallout4Mod mod, Dictionary<FormKey, FormKey> remap,
         string opName, string plugin, string refusalHint, out string error)
@@ -454,14 +390,6 @@ public static partial class WriteService
         return true;
     }
 
-
-
-
-
-
-
-
-
     public static string SetLightFlag(string plugin, bool light, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var msg); if (mod == null) return msg;
@@ -473,7 +401,6 @@ public static partial class WriteService
 
         if (light)
         {
-
 
             var outOfRange = mod.EnumerateMajorRecords()
                 .Count(r => r.FormKey.ModKey == mod.ModKey && r.FormKey.ID > 0xFFF);
@@ -491,15 +418,6 @@ public static partial class WriteService
         MutagenLoader.InvalidateModIndex(name); NotifyChanged(name);
         return $"Cleared the ESL (Small) flag on '{name}'. In memory until save_plugin.";
     }
-
-
-
-
-
-
-
-
-
 
     public static string SetLocalizedFlag(string plugin, bool localized, object? env)
     {
@@ -531,18 +449,6 @@ public static partial class WriteService
                "Strings files. In memory until save_plugin.";
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static string RenumberFormId(string plugin, string recordId, string newIdHex, object? env,
         bool repointRefs = true)
     {
@@ -561,8 +467,6 @@ public static partial class WriteService
         if (newFk == oldFk) return "The new FormID is the same as the current one.";
         if (mod.EnumerateMajorRecords().Any(r => r.FormKey == newFk))
             return $"FormID {newId:X6} is already used by another record in {plugin}. Pick a free id.";
-
-
 
         bool rekeyed = false;
         foreach (var groupProp in mod.GetType().GetProperties()
@@ -586,8 +490,6 @@ public static partial class WriteService
         if (!rekeyed)
             return ToolError.Fail($"Could not locate the group holding {oldFk} ({rec.GetType().Name}) in {plugin}.");
 
-
-
         if (repointRefs)
             mod.RemapLinks(new Dictionary<FormKey, FormKey> { [oldFk] = newFk });
         MutagenLoader.InvalidateModIndex(plugin);
@@ -602,9 +504,6 @@ public static partial class WriteService
                "save_plugin to persist.";
     }
 
-
-
-
     private const int InitiallyDisabledFlag = 0x0000_0800;
 
     public static string CleanPlugin(string plugin, object? env)
@@ -618,7 +517,6 @@ public static partial class WriteService
             if (recG is IFallout4MajorRecord rec)
             {
 
-
                 rec.IsDeleted = false;
                 try { rec.MajorRecordFlagsRaw |= InitiallyDisabledFlag; } catch { }
                 undeleted++;
@@ -631,8 +529,6 @@ public static partial class WriteService
                (skipped > 0 ? $"; {skipped} deleted record(s) could not be processed" : "") +
                ". Call save_plugin to persist.";
     }
-
-
 
     public static string AttachScript(string plugin, string recordId, string scriptName, object? env)
     {
@@ -682,9 +578,6 @@ public static partial class WriteService
                     var op = new ScriptObjectProperty { Name = propName };
                     var link = op.GetType().GetProperty("Object")!.GetValue(op)!;
                     var setTo = link.GetType().GetMethod("SetTo", new[] { typeof(FormKey) })!;
-
-
-
 
                     if (string.IsNullOrWhiteSpace(value) ||
                         value.Equals("none", StringComparison.OrdinalIgnoreCase) ||
@@ -744,10 +637,6 @@ public static partial class WriteService
         return "string";
     }
 
-
-
-
-
     public static string BackupPlugin(string plugin)
     {
         var (name, _) = NormalizePlugin(plugin);
@@ -768,16 +657,6 @@ public static partial class WriteService
         }
     }
 
-
-
-
-
-
-
-
-
-
-
     private static string DescribeSave(string name, string path, string? orderingUnavailable)
     {
         var inOverwrite = !string.IsNullOrWhiteSpace(Mo2OverwriteFolder) &&
@@ -787,8 +666,6 @@ public static partial class WriteService
               "priority -- just enable it in the plugin list if it isn't already checked, and place it " +
               "after the plugins it patches."
             : $"Saved {name} to {path}.";
-
-
 
         if (orderingUnavailable != null && ReadMasterNames(path).Count > 1)
             baseMsg += $" WARNING: master order was NOT set from the load order ({orderingUnavailable}), " +
@@ -806,23 +683,11 @@ public static partial class WriteService
         var mod = GetMutable(name);
         if (mod == null) return ToolError.Fail($"Plugin '{name}' is not open for editing.");
 
-
-
-
-
         if (string.IsNullOrWhiteSpace(path))
             path = explicitPath ?? (_sourcePath.TryGetValue(name, out var sp) ? sp : Path.Combine(NewPatchDir, name));
 
-
-
-
         var pathProblem = ProtectedPlugins.ValidateSavePath(path);
         if (pathProblem != null) return ToolError.Fail(pathProblem);
-
-
-
-
-
 
         var loOrdering = TryGetLoadOrderOrdering(env, out var orderingUnavailable);
 
@@ -831,20 +696,12 @@ public static partial class WriteService
 
             MastersListContent = MastersListContentOption.Iterate,
 
-
             ModKey = ModKeyOption.NoCheck,
             MastersListOrdering = loOrdering,
         };
         try { Directory.CreateDirectory(Path.GetDirectoryName(path)!); } catch { }
 
-
-
-
-
         var writeParams = prms;
-
-
-
 
         var tmp = path + "." + Guid.NewGuid().ToString("N")[..8] + ".tmp";
         try { mod.WriteToBinary(tmp, writeParams); }
@@ -852,10 +709,6 @@ public static partial class WriteService
 
         try { EnsureFallout4MasterWritten(mod, tmp, loOrdering); }
         catch (Exception ex) { try { File.Delete(tmp); } catch { } return ToolError.Fail($"Save failed while enforcing the Fallout4.esm master: {ex.Message}"); }
-
-
-
-
 
         if (Mo2ProfileLoader.TryReplaceLoadedPluginFile(env, name, tmp, path, out var swapError))
         {
@@ -876,7 +729,6 @@ public static partial class WriteService
         catch (Exception)
         {
 
-
             var sideways = path + ".new";
             try { if (File.Exists(sideways)) File.Delete(sideways); File.Move(tmp, sideways); }
             catch { sideways = tmp; }
@@ -887,24 +739,6 @@ public static partial class WriteService
                    $"NEW plugin name that isn't in the loaded list.";
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static void EnsureFallout4MasterWritten(IFallout4Mod mod, string writtenPath, AMastersListOrderingOption? loOrdering)
     {
@@ -932,20 +766,11 @@ public static partial class WriteService
             written = ReadMasterNames(writtenPath);
         }
 
-
-
-
-
         mod.MasterReferences.Clear();
         foreach (var master in written)
             mod.MasterReferences.Add(new Mutagen.Bethesda.Plugins.Records.MasterReference
             { Master = ModKey.FromNameAndExtension(master) });
     }
-
-
-
-
-
 
     public static string ReloadPlugin(string plugin, object? env)
     {
@@ -956,16 +781,9 @@ public static partial class WriteService
         _sourcePath.Remove(name);
         MutagenLoader.EditableMods.TryRemove(name, out _);
 
-
         MutagenLoader.ReleaseLooseMod(name);
         return OpenPlugin(path, env);
     }
-
-
-
-
-
-
 
     public static string StripMastersClean(string sourcePath, string[] mastersToStrip, string outputPath, bool dryRun, object? env)
     {
@@ -989,13 +807,6 @@ public static partial class WriteService
             touched++;
         }
 
-
-
-
-
-
-
-
         var presentTargets = mod.ModHeader.MasterReferences
             .Where(m => stripSet.Contains(m.Master.FileName.String))
             .ToList();
@@ -1003,9 +814,6 @@ public static partial class WriteService
             mod.ModHeader.MasterReferences.Remove(m);
 
         var targetNames = string.Join(", ", presentTargets.Select(m => m.Master.FileName.String));
-
-
-
 
         var linkers = FindRecordsLinkingTo(mod, stripSet);
         var linkReport = linkers.Count == 0
@@ -1029,9 +837,6 @@ public static partial class WriteService
             outputPath = sourcePath;
         try { Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!); } catch { }
 
-
-
-
         var prms = new BinaryWriteParameters
         {
             MastersListContent = MastersListContentOption.Iterate,
@@ -1041,8 +846,6 @@ public static partial class WriteService
         var tmp = outputPath + "." + Guid.NewGuid().ToString("N")[..8] + ".tmp";
         try { mod.WriteToBinary(tmp, prms); }
         catch (Exception ex) { try { File.Delete(tmp); } catch { } return $"Write failed: {ex.Message}"; }
-
-
 
         var written = ReadMasterNames(tmp);
         var survivors = written.Where(w => stripSet.Contains(w)).ToList();
@@ -1065,14 +868,6 @@ public static partial class WriteService
                       "verify the MAST order before loading the game.";
         return result;
     }
-
-
-
-
-
-
-
-
 
     public static string ListMasters(string plugin, object? env)
     {
@@ -1104,9 +899,6 @@ public static partial class WriteService
         return $"Masters of '{name}' ({masters.Count}):\n" + string.Join("\n", lines);
     }
 
-
-
-
     public static string ListMastersJson(string plugin, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var msg);
@@ -1137,20 +929,6 @@ public static partial class WriteService
         var light = mod.ModHeader.Flags.HasFlag(Fallout4ModHeader.HeaderFlag.Small);
         return JsonConvert.SerializeObject(new { pluginName = name, masters = rows, light });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string ReorderMasters(string plugin, string[] order, object? env)
     {
@@ -1223,16 +1001,6 @@ public static partial class WriteService
                "depends on it). A later save_plugin call will re-derive and overwrite this order.";
     }
 
-
-
-
-
-
-
-
-
-
-
     private static bool TryRemoveFromGroup(
         Mutagen.Bethesda.Plugins.Records.IGroup group, FormKey fk, out string error)
     {
@@ -1268,12 +1036,6 @@ public static partial class WriteService
         return true;
     }
 
-
-
-
-
-
-
     private static AMastersListOrderingOption? TryGetLoadOrderOrdering(object? env, out string? unavailableReason)
     {
         if (env == null)
@@ -1297,17 +1059,11 @@ public static partial class WriteService
         catch (Exception ex)
         {
 
-
             DebugLog.Exception("SavePlugin master ordering", ex);
             unavailableReason = $"reading the load order failed ({ex.Message})";
             return null;
         }
     }
-
-
-
-
-
 
     private static List<string> FindRecordsLinkingTo(IFallout4Mod mod, HashSet<string> stripSet)
     {
@@ -1327,12 +1083,6 @@ public static partial class WriteService
         }
         return found;
     }
-
-
-
-
-
-
 
     public static List<string> ReadMasterNames(string path)
     {
@@ -1365,18 +1115,7 @@ public static partial class WriteService
         return false;
     }
 
-
-
-
-
-
-
-
     public const string OverwritePrompt = "EXISTS:";
-
-
-
-
 
     private static int LoadOrderIndexOf(object? env, string pluginName)
     {
@@ -1395,11 +1134,6 @@ public static partial class WriteService
         return -1;
     }
 
-
-
-
-
-
     private static bool EnsureMaster(IFallout4Mod mod, string master, string selfName)
     {
         if (string.IsNullOrWhiteSpace(master)) return false;
@@ -1411,11 +1145,6 @@ public static partial class WriteService
             new Mutagen.Bethesda.Plugins.Records.MasterReference { Master = master });
         return true;
     }
-
-
-
-
-
 
     private static bool TryFindExistingOverrides(
         object? env,
@@ -1467,11 +1196,6 @@ public static partial class WriteService
     public static string ResolveConflict(object? env, string formKeyStr, string sourceName, string patchPlugin)
         => ResolveConflict(env, formKeyStr, sourceName, patchPlugin, overwrite: false);
 
-
-
-
-
-
     public static string ResolveConflict(object? env, string formKeyStr, string winningPlugin, string patchPlugin,
         bool overwrite)
     {
@@ -1488,8 +1212,6 @@ public static partial class WriteService
         var src = MutagenLoader.GetRecordVersion(env, sourceName, fk);
         if (src == null) return $"Could not find {fk} in '{sourceName}'.";
 
-
-
         if (GetMutable(patchName) == null)
         {
             bool existsOnDisk = (patchPath != null && File.Exists(patchPath))
@@ -1503,10 +1225,6 @@ public static partial class WriteService
 
         if (src is not IMajorRecordGetter getter)
             return $"{fk} is not an overridable record.";
-
-
-
-
 
         var masterPlugin = fk.ModKey.FileName;
         var masterRec = MutagenLoader.GetRecordVersion(env, masterPlugin, fk);
@@ -1523,10 +1241,6 @@ public static partial class WriteService
                        $"Check which mod owns this FormID in xEdit before proceeding.";
             }
         }
-
-
-
-
 
         var recordMaster = fk.ModKey.FileName.String;
         int targetIdx = LoadOrderIndexOf(env, patchName);
@@ -1546,9 +1260,6 @@ public static partial class WriteService
                     $"load order, or copy into a plugin that already loads after '{mustFollow}'.");
             }
         }
-
-
-
 
         bool alreadyPresent;
         try { alreadyPresent = patch.EnumerateMajorRecords().Any(r => r.FormKey == fk); }
@@ -1574,9 +1285,6 @@ public static partial class WriteService
                     ? $"Could not replace the existing {getter.Registration.Name} override; the original was left unchanged."
                     : $"This record type ({getter.Registration.Name}) cannot be overridden yet.";
 
-
-
-
             var added = new List<string>();
             if (EnsureMaster(patch, recordMaster, patchName)) added.Add(recordMaster);
             if (EnsureMaster(patch, sourceName, patchName)) added.Add(sourceName);
@@ -1594,9 +1302,6 @@ public static partial class WriteService
         }
     }
 
-
-
-
     private static readonly MethodInfo? _groupOverrideMixin = typeof(GetOrAddAsOverrideMixIns)
         .GetMethods(BindingFlags.Public | BindingFlags.Static)
         .FirstOrDefault(m => m.Name == "GetOrAddAsOverride"
@@ -1607,15 +1312,9 @@ public static partial class WriteService
     private static bool AddOverride(IFallout4Mod mod, IMajorRecordGetter getter) =>
         AddOverrideReturning(mod, getter) != null;
 
-
-
-
     private static IFallout4MajorRecord? AddOverrideReturning(IFallout4Mod mod, IMajorRecordGetter getter)
     {
         if (_groupOverrideMixin == null) return null;
-
-
-
 
         var getterType = getter.Registration.GetterType;
 
@@ -1644,13 +1343,6 @@ public static partial class WriteService
 
     private static bool ReplaceOverride(IFallout4Mod mod, IMajorRecordGetter getter) =>
         ReplaceOverrideReturning(mod, getter) != null;
-
-
-
-
-
-
-
 
     private static IFallout4MajorRecord? ReplaceOverrideReturning(IFallout4Mod mod, IMajorRecordGetter getter)
     {
@@ -1688,15 +1380,7 @@ public static partial class WriteService
         return null;
     }
 
-
     public static IReadOnlyList<string> EditablePlugins() => _mutable.Keys.ToList();
-
-
-
-
-
-
-
 
     public static string CopyAsOverride(object? env, string sourcePlugin, string id, string patchPlugin,
         bool overwrite = false)
@@ -1705,12 +1389,6 @@ public static partial class WriteService
             return $"'{id}' is not a FormKey and no loaded record has that EditorID.";
         return ResolveConflict(env, fk.ToString(), sourcePlugin, patchPlugin, overwrite);
     }
-
-
-
-
-
-
 
     public static string CopyAsOverrideMany(object? env, string itemsJson, string patchPlugin,
         bool overwrite = false)
@@ -1741,10 +1419,6 @@ public static partial class WriteService
             });
         }
 
-
-
-
-
         var parsedKeys = items
             .Select(i => FormKey.TryFactory(i.formKey, out var fk) ? fk : default)
             .Where(fk => !fk.IsNull)
@@ -1771,8 +1445,6 @@ public static partial class WriteService
                 }).ToArray(),
             });
         }
-
-
 
         if (!overwrite)
         {
@@ -1826,8 +1498,6 @@ public static partial class WriteService
         });
     }
 
-
-
     public static string DeleteRecord(string plugin, string recordId, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -1849,8 +1519,6 @@ public static partial class WriteService
         return ToolError.Fail($"Could not locate the group holding {fk} in {plugin}.");
     }
 
-
-
     public static string RemoveListItem(string plugin, string recordId, string field, string value, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
@@ -1860,7 +1528,6 @@ public static partial class WriteService
         MutagenLoader.InvalidateModIndex(plugin); NotifyChanged(plugin);
         return $"{msg} on {recordId}. save_plugin to persist.";
     }
-
 
     private static bool RemoveListItemFromRecord(object rec, string field, string value, object? env, out string msg)
     {
@@ -1880,15 +1547,12 @@ public static partial class WriteService
         return true;
     }
 
-
-
     public static string SetComponents(string plugin, string recordId, string componentsJson, object? env)
     {
         var mod = EnsureOpen(plugin, env, out var openMsg); if (mod == null) return openMsg;
         var rec = FindMutableRecord(mod, recordId); if (rec == null) return ToolError.Fail($"Record '{recordId}' not found in {plugin}.");
         if (rec is not ConstructibleObject && rec is not MiscItem)
             return $"set_components applies to COBJ (recipe inputs) and MISC (scrap components); {recordId} is {rec.GetType().Name}.";
-
 
         var parsed = new List<(Mutagen.Bethesda.Plugins.FormKey fk, uint count)>();
         var failures = new List<string>();
@@ -1925,13 +1589,6 @@ public static partial class WriteService
         if (failures.Count > 0) msg += $" Skipped {failures.Count}: {string.Join("; ", failures)}.";
         return msg + " save_plugin to persist.";
     }
-
-
-
-
-
-
-
 
     public static string SetConditions(string plugin, string recordId, string conditionsJson, object? env)
     {
@@ -2000,7 +1657,6 @@ public static partial class WriteService
         return msg + " save_plugin to persist.";
     }
 
-
     private static void ApplyParam(JsonElement el, string key, object? env, Action<FormKey> setRecord, Action<int> setNumber)
     {
         if (!el.TryGetProperty(key, out var p)) return;
@@ -2023,8 +1679,6 @@ public static partial class WriteService
         _ => CompareOperator.EqualTo,
     };
 
-
-
     private static bool ResolveFk(object? env, string value, out FormKey fk)
     {
         if (FormKey.TryFactory(value, out fk)) return true;
@@ -2033,16 +1687,6 @@ public static partial class WriteService
         fk = MutagenLoader.ResolveEditorIdToFormKey(env, value);
         return !fk.IsNull;
     }
-
-
-
-
-
-
-
-
-
-
 
     public static string RevertOverridesFrom(object? env, string badPlugin, string patchPlugin,
         string? sig, string? containsComponent, bool apply, int limit)
@@ -2066,12 +1710,8 @@ public static partial class WriteService
         {
             if (string.IsNullOrWhiteSpace(patchPlugin)) return "Provide a patch plugin to write the reverts into.";
 
-
             if (ProtectedPlugins.IsProtected(NormalizePlugin(patchPlugin).name))
                 return ToolError.Fail(ProtectedPlugins.RefusalMessage(NormalizePlugin(patchPlugin).name));
-
-
-
 
             bool patchExisted = GetMutable(patchPlugin) != null ||
                                 MutagenLoader.LooseModPaths.ContainsKey(patchPlugin) ||
@@ -2131,13 +1771,6 @@ public static partial class WriteService
         return sb.ToString();
     }
 
-
-
-
-
-
-
-
     public static string BatchPatchRecords(
         object? env, string patchPlugin, string sourcePlugin, string sig,
         string operationsJson, string? filterField, string? filterValue,
@@ -2146,7 +1779,6 @@ public static partial class WriteService
         if (string.IsNullOrWhiteSpace(sig))         return "Provide record type, e.g. 'ConstructibleObject'.";
         if (string.IsNullOrWhiteSpace(sourcePlugin)) return "Provide source_plugin.";
         if (string.IsNullOrWhiteSpace(patchPlugin))  return "Provide patch_plugin.";
-
 
         List<(string op, string field, string val)> ops;
         try
@@ -2162,7 +1794,6 @@ public static partial class WriteService
 
         if (ops.Count == 0 && !dryRun)
             return "Provide at least one operation in 'operations' (or use dry_run=true to preview).";
-
 
         var allRecs = MutagenLoader.GetRecordsForBatch(env, sourcePlugin, sig);
         if (allRecs.Count == 0)
@@ -2180,7 +1811,6 @@ public static partial class WriteService
             return $"No {sig} records in '{sourcePlugin}' match the filter " +
                    $"({filterField}={filterValue}). Adjust the filter or check field names.";
 
-
         if (dryRun)
         {
             var sb = new System.Text.StringBuilder();
@@ -2196,7 +1826,6 @@ public static partial class WriteService
             return sb.ToString();
         }
 
-
         var (patchName, patchPath) = NormalizePlugin(patchPlugin);
         if (GetMutable(patchName) == null)
         {
@@ -2211,11 +1840,6 @@ public static partial class WriteService
 
         int done = 0, failed = 0, opsApplied = 0;
         var errors = new List<string>();
-
-
-
-
-
 
         foreach (var rec in matched)
         {
@@ -2252,8 +1876,6 @@ public static partial class WriteService
 
         var msg = new System.Text.StringBuilder();
 
-
-
         if (ops.Count > 0 && opsApplied == 0)
         {
             msg.AppendLine($"ABORTED -- overrode {done} record(s) but NOT ONE operation succeeded " +
@@ -2278,17 +1900,11 @@ public static partial class WriteService
         return msg.ToString();
     }
 
-
     private static bool Fail(ref List<string> errors, Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec, string m)
     {
         if (errors.Count < 20) errors.Add($"{rec.EditorID ?? rec.FormKey.ToString()}: {m}");
         return false;
     }
-
-
-
-
-
 
     public static IFallout4MajorRecord? OverrideForScript(string patchPlugin, object? env, IMajorRecordGetter getter)
     {
@@ -2305,7 +1921,6 @@ public static partial class WriteService
         return patch == null ? null : AddOverrideReturning(patch, getter);
     }
 
-
     public static string SaveScriptPatch(string patchPlugin, object? env)
     {
         var (name, _) = NormalizePlugin(patchPlugin);
@@ -2314,8 +1929,6 @@ public static partial class WriteService
         return SavePlugin(name, null, env);
     }
 
-
-
     public static void DiscardScriptPatch(string patchPlugin)
     {
         var (name, _) = NormalizePlugin(patchPlugin);
@@ -2323,16 +1936,12 @@ public static partial class WriteService
         _sourcePath.Remove(name);
         MutagenLoader.EditableMods.TryRemove(name, out _);
 
-
         MutagenLoader.ReleaseLooseMod(name);
         NotifyChanged(name);
     }
 
-
     public static bool TrySetField(object rec, string field, string value, object? env, out string msg) =>
         TrySet(rec, field, value, env, out msg);
-
-
 
     public static Condition? BuildConditionTyped(
         object? env, string function, string? param1, string? param2,
@@ -2372,16 +1981,12 @@ public static partial class WriteService
         }
     }
 
-
     private static void ApplyParamStr(string? s, object? env, Action<FormKey> setRecord, Action<int> setNumber)
     {
         if (string.IsNullOrWhiteSpace(s)) return;
         if (int.TryParse(s, out var ni)) setNumber(ni);
         else if (ResolveFk(env, s!, out var fk)) setRecord(fk);
     }
-
-
-
 
     private static bool BatchMatchesFilter(
         Mutagen.Bethesda.Plugins.Records.IMajorRecordGetter rec, string? filterField, string? filterValue)
@@ -2402,13 +2007,10 @@ public static partial class WriteService
                valStr.Contains(filterValue, StringComparison.OrdinalIgnoreCase);
     }
 
-
-
     private const string SupportedTypes =
         "BOOK/HOLOTAPE, TERM, WEAP, ARMO, ARMA, ANIO, IDLE, MISC, COBJ, KYWD, AMMO, ALCH, ACTI, CONT, " +
         "FLST, MGEF, PERK, NPC_, QUST, MESG, GLOB (GLOBFLOAT/GLOBINT/GLOBSHORT/GLOBBOOL), AVIF, " +
         "LVLI, LVLN, SPEL, ENCH, FURN, IMAD, LIGH, STAT.";
-
 
     private static bool IsEsl(IFallout4Mod mod)
     {
@@ -2422,7 +2024,6 @@ public static partial class WriteService
         catch { return false; }
     }
 
-
     private static FormKey? NextFreeFormKey(IFallout4Mod mod)
     {
         uint end = IsEsl(mod) ? 0xFFFu : 0xFFFFFFu;
@@ -2431,9 +2032,6 @@ public static partial class WriteService
             if (!used.Contains(id)) return new FormKey(mod.ModKey, id);
         return null;
     }
-
-
-
 
     private static IFallout4MajorRecord? AddNewBySig(IFallout4Mod mod, string sig, string editorId, FormKey fk)
     {
@@ -2444,8 +2042,6 @@ public static partial class WriteService
             case "TERM":                  { var x = new Terminal(fk, r) { EditorID = editorId };           mod.Terminals.Add(x);            return x; }
             case "WEAP":                  { var x = new Weapon(fk, r) { EditorID = editorId };             mod.Weapons.Add(x);              return x; }
             case "ARMO":                  { var x = new Armor(fk, r) { EditorID = editorId };              mod.Armors.Add(x);               return x; }
-
-
 
             case "ARMA":                  { var x = new ArmorAddon(fk, r) { EditorID = editorId };         mod.ArmorAddons.Add(x);          return x; }
             case "ANIO":                  { var x = new AnimatedObject(fk, r) { EditorID = editorId };     mod.AnimatedObjects.Add(x);      return x; }
@@ -2464,16 +2060,12 @@ public static partial class WriteService
             case "QUST":                  { var x = new Quest(fk, r) { EditorID = editorId };              mod.Quests.Add(x);               return x; }
             case "MESG":                  { var x = new Message(fk, r) { EditorID = editorId };            mod.Messages.Add(x);             return x; }
 
-
-
             case "GLOB": case "GLOBFLOAT": { var x = new GlobalFloat(fk, r) { EditorID = editorId, Data = 0 };   mod.Globals.Add(x);          return x; }
             case "GLOBINT":               { var x = new GlobalInt(fk, r) { EditorID = editorId, Data = 0 };     mod.Globals.Add(x);          return x; }
             case "GLOBSHORT":             { var x = new GlobalShort(fk, r) { EditorID = editorId, Data = 0 };   mod.Globals.Add(x);          return x; }
             case "GLOBBOOL":              { var x = new GlobalBool(fk, r) { EditorID = editorId, Data = false };mod.Globals.Add(x);          return x; }
 
-
             case "AVIF":                  { var x = new ActorValueInformation(fk, r) { EditorID = editorId }; mod.ActorValueInformation.Add(x); return x; }
-
 
             case "LVLI":                  { var x = new LeveledItem(fk, r) { EditorID = editorId };          mod.LeveledItems.Add(x);         return x; }
             case "LVLN":                  { var x = new LeveledNpc(fk, r) { EditorID = editorId };           mod.LeveledNpcs.Add(x);          return x; }
@@ -2484,10 +2076,7 @@ public static partial class WriteService
             case "FURN":                  { var x = new Furniture(fk, r) { EditorID = editorId };           mod.Furniture.Add(x);            return x; }
             case "IMAD":                  { var x = new ImageSpaceAdapter(fk, r) { EditorID = editorId };   mod.ImageSpaceAdapters.Add(x);   return x; }
 
-
-
             case "LIGH":                  { var x = new Light(fk, r) { EditorID = editorId };               mod.Lights.Add(x);               return x; }
-
 
             case "STAT":                  { var x = new Static(fk, r) { EditorID = editorId };              mod.Statics.Add(x);              return x; }
             default:                      return null;
@@ -2511,16 +2100,8 @@ public static partial class WriteService
             string.Equals(field, "nif", StringComparison.OrdinalIgnoreCase))
             field = "Model.File";
 
-
-
-
         var segments = SplitFieldPath(field);
         if (segments.Count == 0) { msg = "Empty field path."; return false; }
-
-
-
-
-
 
         var hops = new List<(object Owner, PropertyInfo? Prop, System.Collections.IList? List, int Idx)>();
 
@@ -2562,7 +2143,6 @@ public static partial class WriteService
         }
         if (!SetLeaf(cur, last, value, env, out msg)) return false;
 
-
         for (int i = hops.Count - 1; i >= 0 && cur.GetType().IsValueType; i--)
         {
             var (owner, prop, list, idx) = hops[i];
@@ -2581,13 +2161,11 @@ public static partial class WriteService
         return true;
     }
 
-
     private static bool TryIndex(string seg, out int idx)
     {
         idx = -1;
         return seg.Length >= 3 && seg[0] == '[' && seg[^1] == ']' && int.TryParse(seg[1..^1], out idx);
     }
-
 
     private static List<string> SplitFieldPath(string field)
     {
@@ -2615,7 +2193,6 @@ public static partial class WriteService
         var prop = rec.GetType().GetProperty(field,
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
         if (prop == null) { msg = $"No field '{field}' on {rec.GetType().Name}."; return false; }
-
 
         var current = prop.CanRead ? prop.GetValue(rec) : null;
         if (current != null)
@@ -2654,7 +2231,6 @@ public static partial class WriteService
                     .Invoke(null, new object[] { value })!;
             else if (t.IsEnum) converted = Enum.Parse(t, value, ignoreCase: true);
 
-
             else if (t == typeof(bool)) converted = bool.Parse(value);
             else if (t == typeof(float)) converted = float.Parse(value, Inv);
             else if (t == typeof(double)) converted = double.Parse(value, Inv);
@@ -2664,8 +2240,6 @@ public static partial class WriteService
             else if (t == typeof(ushort)) converted = ushort.Parse(value, Inv);
             else if (t == typeof(byte)) converted = byte.Parse(value, Inv);
             else if (t == typeof(long)) converted = long.Parse(value, Inv);
-
-
 
             else if (t == typeof(System.Drawing.Color)) converted = ParseColor(value);
             else { msg = $"Field '{field}' has type {t.Name}, which set_field can't set yet (scalar/text only)."; return false; }
@@ -2679,8 +2253,6 @@ public static partial class WriteService
             return false;
         }
     }
-
-
 
     private static System.Drawing.Color ParseColor(string value)
     {

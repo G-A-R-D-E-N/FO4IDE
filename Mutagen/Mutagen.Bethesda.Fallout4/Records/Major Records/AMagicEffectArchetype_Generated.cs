@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -38,8 +34,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class AMagicEffectArchetype :
         IAMagicEffectArchetype,
@@ -386,8 +380,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAMagicEffectArchetype :
         IAMagicEffectArchetypeGetter,
         IFormLinkContainer,
@@ -395,9 +387,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new IFormLink<IActorValueInformationGetter> ActorValue { get; set; }
     }
-
-
-
 
     public partial interface IAMagicEffectArchetypeGetter :
         ILoquiObject,
@@ -786,7 +775,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return AMagicEffectArchetype.GetNew();
@@ -983,7 +971,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1040,7 +1027,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

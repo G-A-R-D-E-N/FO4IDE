@@ -3,26 +3,7 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
 public sealed record ModGroup(string Name, List<string> Plugins);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public static class ModGroupsService
 {
@@ -88,7 +69,6 @@ public static class ModGroupsService
             var idx = _groups!.IndexOf(g);
             var finalName = string.IsNullOrWhiteSpace(newName) ? g.Name : newName.Trim();
 
-
             if (!string.Equals(finalName, g.Name, StringComparison.OrdinalIgnoreCase) &&
                 _groups.Any(o => !ReferenceEquals(o, g) && string.Equals(o.Name, finalName, StringComparison.OrdinalIgnoreCase)))
                 return ToolError.Fail($"A ModGroup named '{finalName}' already exists.");
@@ -115,10 +95,7 @@ public static class ModGroupsService
         }
     }
 
-
-
     public static void Reload() { lock (_lock) { _groups = null; EnsureLoaded(); } }
-
 
     public static bool IsSuppressed(IReadOnlyCollection<string> plugins)
     {

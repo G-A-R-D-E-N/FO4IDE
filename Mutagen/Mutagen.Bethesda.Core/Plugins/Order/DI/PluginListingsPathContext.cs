@@ -7,16 +7,7 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 public interface IPluginListingsPathContext
 {
 
-
-
-
-
-
     FilePath Path { get; }
-
-
-
-
 
     FilePath? TryGetPath();
 }
@@ -34,7 +25,6 @@ public sealed class PluginListingsPathContext : IPluginListingsPathContext
         _gameReleaseContext = gameReleaseContext;
     }
 
-
     public FilePath Path
     {
         get
@@ -49,7 +39,6 @@ public sealed class PluginListingsPathContext : IPluginListingsPathContext
             return path.Value;
         }
     }
-
 
     public FilePath? TryGetPath()
     {

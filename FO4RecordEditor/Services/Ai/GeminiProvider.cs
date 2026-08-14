@@ -7,12 +7,6 @@ using FO4RecordEditor.Models;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 public sealed class GeminiProvider : IAIProvider
 {
     private static readonly JsonSerializerOptions JsonOpts = new()
@@ -43,7 +37,6 @@ public sealed class GeminiProvider : IAIProvider
             yield return "[Gemini: no API key. Set it in Settings → AI Provider → Gemini.]";
             yield break;
         }
-
 
         var sys = string.Join("\n\n", messages.Where(m => m.Role == ChatRole.System).Select(m => m.Content));
         var contents = new List<object>();

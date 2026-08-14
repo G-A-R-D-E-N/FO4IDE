@@ -9,25 +9,12 @@ using Mutagen.Bethesda.Plugins.Masters;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Headers;
 
-
-
-
 public readonly struct MajorRecordHeader
 {
 
-
-
     public GameConstants Meta { get; }
 
-
-
-
     public ReadOnlyMemorySlice<byte> HeaderData { get; }
-
-
-
-
-
 
     public MajorRecordHeader(GameConstants meta, ReadOnlyMemorySlice<byte> span)
     {
@@ -35,60 +22,25 @@ public readonly struct MajorRecordHeader
         HeaderData = span.Slice(0, meta.MajorConstants.HeaderLength);
     }
 
-
-
-
     public GameRelease Release => Meta.Release;
-
-
-
 
     public byte HeaderLength => Meta.MajorConstants.HeaderLength;
 
-
-
-
     public RecordType RecordType => new(BinaryPrimitives.ReadInt32LittleEndian(HeaderData.Slice(0, 4)));
-
-
-
 
     public uint ContentLength => BinaryPrimitives.ReadUInt32LittleEndian(HeaderData.Slice(4, Meta.MajorConstants.LengthLength));
 
-
-
-
-
-
     public int MajorRecordFlags => BinaryPrimitives.ReadInt32LittleEndian(HeaderData.Slice(8, 4));
-
-
-
 
     public FormID FormID => FormID.Factory(BinaryPrimitives.ReadUInt32LittleEndian(HeaderData.Slice(12, 4)));
 
-
-
-
     public int VersionControl => BinaryPrimitives.ReadInt32LittleEndian(HeaderData.Slice(16, 4));
-
-
-
 
     public long TotalLength => HeaderLength + ContentLength;
 
-
-
-
     public bool IsCompressed => (MajorRecordFlags & Constants.CompressedFlag) > 0;
 
-
-
-
     public bool IsDeleted => (MajorRecordFlags & Constants.DeletedFlag) > 0;
-
-
-
 
     public short? FormVersion
     {
@@ -100,9 +52,6 @@ public readonly struct MajorRecordHeader
         }
     }
 
-
-
-
     public short? VersionControl2
     {
         get
@@ -113,39 +62,19 @@ public readonly struct MajorRecordHeader
         }
     }
 
-
     public override string ToString() => $"{RecordType} ({FormID}) [0x{ContentLength:X}]";
 
     public MajorRecordPinHeader Pin(int loc) => new(this, loc);
 }
 
-
-
-
-
 public readonly struct MajorRecordPinHeader
 {
 
-
-
     public GameConstants Meta { get; }
-
-
-
 
     public ReadOnlyMemorySlice<byte> HeaderData { get; }
 
-
-
-
-
     public int Location { get; }
-
-
-
-
-
-
 
     public MajorRecordPinHeader(GameConstants meta, ReadOnlyMemorySlice<byte> span, int pinLocation)
     {
@@ -154,11 +83,6 @@ public readonly struct MajorRecordPinHeader
         Location = pinLocation;
     }
 
-
-
-
-
-
     public MajorRecordPinHeader(MajorRecordHeader header, int pinLocation)
     {
         Meta = header.Meta;
@@ -166,55 +90,23 @@ public readonly struct MajorRecordPinHeader
         Location = pinLocation;
     }
 
-
-
-
     public GameRelease Release => Meta.Release;
-
-
-
 
     public byte HeaderLength => Meta.MajorConstants.HeaderLength;
 
-
-
-
     public RecordType RecordType => new(BinaryPrimitives.ReadInt32LittleEndian(HeaderData.Slice(0, 4)));
-
-
-
 
     public uint ContentLength => BinaryPrimitives.ReadUInt32LittleEndian(HeaderData.Slice(4, Meta.MajorConstants.LengthLength));
 
-
-
-
-
-
     public int MajorRecordFlags => BinaryPrimitives.ReadInt32LittleEndian(HeaderData.Slice(8, 4));
-
-
-
 
     public FormID FormID => FormID.Factory(BinaryPrimitives.ReadUInt32LittleEndian(HeaderData.Slice(12, 4)));
 
-
-
-
     public int VersionControl => BinaryPrimitives.ReadInt32LittleEndian(HeaderData.Slice(16, 4));
-
-
-
 
     public long TotalLength => HeaderLength + ContentLength;
 
-
-
-
     public bool IsCompressed => (MajorRecordFlags & Constants.CompressedFlag) > 0;
-
-
-
 
     public short? FormVersion
     {
@@ -226,9 +118,6 @@ public readonly struct MajorRecordPinHeader
         }
     }
 
-
-
-
     public short? VersionControl2
     {
         get
@@ -239,30 +128,15 @@ public readonly struct MajorRecordPinHeader
         }
     }
 
-
     public override string ToString() => $"{RecordType} ({FormID}) [0x{ContentLength:X}] @ 0x{Location:X}";
 }
-
-
-
-
 
 public ref struct MajorRecordHeaderWritable
 {
 
-
-
     public GameConstants Meta { get; }
 
-
-
-
     public Span<byte> HeaderData { get; }
-
-
-
-
-
 
     public MajorRecordHeaderWritable(GameConstants meta, Span<byte> span)
     {
@@ -270,18 +144,9 @@ public ref struct MajorRecordHeaderWritable
         HeaderData = span.Slice(0, meta.MajorConstants.HeaderLength);
     }
 
-
-
-
     public GameRelease Release => Meta.Release;
 
-
-
-
     public byte HeaderLength => Meta.MajorConstants.HeaderLength;
-
-
-
 
     public RecordType RecordType
     {
@@ -289,19 +154,11 @@ public ref struct MajorRecordHeaderWritable
         set => BinaryPrimitives.WriteInt32LittleEndian(HeaderData.Slice(0, 4), value.TypeInt);
     }
 
-
-
-
     public uint ContentLength
     {
         get => BinaryPrimitives.ReadUInt32LittleEndian(HeaderData.Slice(4, 4));
         set => BinaryPrimitives.WriteUInt32LittleEndian(HeaderData.Slice(4, 4), value);
     }
-
-
-
-
-
 
     public int MajorRecordFlags
     {
@@ -309,17 +166,11 @@ public ref struct MajorRecordHeaderWritable
         set => BinaryPrimitives.WriteInt32LittleEndian(HeaderData.Slice(8, 4), value);
     }
 
-
-
-
     public FormID FormID
     {
         get => FormID.Factory(BinaryPrimitives.ReadUInt32LittleEndian(HeaderData.Slice(12, 4)));
         set => BinaryPrimitives.WriteUInt32LittleEndian(HeaderData.Slice(12, 4), value.Raw);
     }
-
-
-
 
     public int VersionControl
     {
@@ -327,13 +178,7 @@ public ref struct MajorRecordHeaderWritable
         set => BinaryPrimitives.WriteInt32LittleEndian(HeaderData.Slice(16, 4), value);
     }
 
-
-
-
     public long TotalLength => HeaderLength + ContentLength;
-
-
-
 
     [DisallowNull]
     public ushort? FormVersion
@@ -356,9 +201,6 @@ public ref struct MajorRecordHeaderWritable
         }
     }
 
-
-
-
     [DisallowNull]
     public short? VersionControl2
     {
@@ -380,9 +222,6 @@ public ref struct MajorRecordHeaderWritable
         }
     }
 
-
-
-
     public bool IsCompressed
     {
         get => (MajorRecordFlags & Constants.CompressedFlag) > 0;
@@ -399,36 +238,18 @@ public ref struct MajorRecordHeaderWritable
         }
     }
 
-
     public override string ToString() => $"{RecordType} ({FormID}) [0x{ContentLength:X}]";
 }
-
-
-
 
 public readonly struct MajorRecordFrame : IEnumerable<SubrecordPinFrame>
 {
     public readonly MajorRecordHeader Header;
 
-
-
-
     public ReadOnlyMemorySlice<byte> HeaderAndContentData { get; }
-
-
-
 
     public ReadOnlyMemorySlice<byte> Content => HeaderAndContentData.Slice(Header.HeaderLength, checked((int)Header.ContentLength));
 
-
-
-
     public long TotalLength => HeaderAndContentData.Length;
-
-
-
-
-
 
     public MajorRecordFrame(GameConstants meta, ReadOnlyMemorySlice<byte> span)
     {
@@ -436,20 +257,13 @@ public readonly struct MajorRecordFrame : IEnumerable<SubrecordPinFrame>
         HeaderAndContentData = span.Slice(0, checked((int)Header.TotalLength));
     }
 
-
-
-
-
-
     public MajorRecordFrame(MajorRecordHeader header, ReadOnlyMemorySlice<byte> span)
     {
         Header = header;
         HeaderAndContentData = span.Slice(0, checked((int)Header.TotalLength));
     }
 
-
     public override string ToString() => Header.ToString();
-
 
     public IEnumerator<SubrecordPinFrame> GetEnumerator() => HeaderExt.EnumerateSubrecords(this).GetEnumerator();
 
@@ -472,96 +286,40 @@ public readonly struct MajorRecordFrame : IEnumerable<SubrecordPinFrame>
 
     #region Header Forwarding
 
-
-
     public ReadOnlyMemorySlice<byte> HeaderData => Header.HeaderData;
-
-
-
 
     public GameConstants Meta => Header.Meta;
 
-
-
-
     public GameRelease Release => Header.Release;
-
-
-
 
     public byte HeaderLength => Header.HeaderLength;
 
-
-
-
     public RecordType RecordType => Header.RecordType;
-
-
-
 
     public uint ContentLength => (uint)Content.Length;
 
-
-
-
-
-
     public int MajorRecordFlags => Header.MajorRecordFlags;
-
-
-
 
     public FormID FormID => Header.FormID;
 
-
-
-
     public int VersionControl => Header.VersionControl;
-
-
-
 
     public bool IsCompressed => Header.IsCompressed;
 
-
-
-
     public bool IsDeleted => Header.IsDeleted;
 
-
-
-
     public short? FormVersion => Header.FormVersion;
-
-
-
 
     public short? VersionControl2 => Header.VersionControl2;
     #endregion
 }
 
-
-
-
-
 public readonly struct MajorRecordPinFrame
 {
 
-
-
     public MajorRecordFrame Frame { get; }
 
-
-
-
-
     public int Location { get; }
-
-
-
-
-
-
 
     public MajorRecordPinFrame(GameConstants meta, ReadOnlyMemorySlice<byte> span, int pinLocation)
     {
@@ -569,91 +327,41 @@ public readonly struct MajorRecordPinFrame
         Location = pinLocation;
     }
 
-
-
-
-
-
-
     public MajorRecordPinFrame(MajorRecordHeader header, ReadOnlyMemorySlice<byte> span, int pinLocation)
     {
         Frame = new MajorRecordFrame(header, span);
         Location = pinLocation;
     }
 
-
     public override string ToString() => $"{Frame} @ 0x{Location:X}";
 
     #region Header Forwarding
 
-
-
     public MajorRecordHeader Header => Frame.Header;
-
-
-
 
     public long TotalLength => Header.TotalLength;
 
-
-
-
     public ReadOnlyMemorySlice<byte> HeaderData => Header.HeaderData;
-
-
-
 
     public GameConstants Meta => Header.Meta;
 
-
-
-
     public GameRelease Release => Header.Release;
-
-
-
 
     public byte HeaderLength => Header.HeaderLength;
 
-
-
-
     public RecordType RecordType => Header.RecordType;
-
-
-
 
     public uint ContentLength => Frame.ContentLength;
 
-
-
-
-
-
     public int MajorRecordFlags => Header.MajorRecordFlags;
-
-
-
 
     public FormID FormID => Header.FormID;
 
-
-
-
     public int VersionControl => Header.VersionControl;
-
-
-
 
     public bool IsCompressed => Header.IsCompressed;
 
-
-
-
     public short? FormVersion => Header.FormVersion;
-
-
-
 
     public short? VersionControl2 => Header.VersionControl2;
     #endregion

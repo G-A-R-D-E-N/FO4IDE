@@ -4,10 +4,6 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
 public interface IFormLinkIdentifier : IFormKeyGetter, ILinkIdentifier
 {
     static IFormLinkIdentifier()
@@ -46,35 +42,17 @@ public interface IFormLinkIdentifier : IFormKeyGetter, ILinkIdentifier
     }
 }
 
-
-
-
-
 public interface IFormLinkGetter : ILink, IFormLinkIdentifier
 {
 
-
-
     FormKey? FormKeyNullable { get; }
-
-
-
 
     bool IsNull { get; }
 }
 
-
-
-
-
 public interface IFormLinkGetter<out TMajorGetter> : ILink<TMajorGetter>, IFormLinkGetter
     where TMajorGetter : class, IMajorRecordGetter
 {
-
-
-
-
-
 
     IFormLink<TMajorRet> Cast<TMajorRet>()
         where TMajorRet : class, IMajorRecordGetter;
@@ -84,12 +62,7 @@ public interface IFormLink<out TMajorGetter> : IFormLinkGetter<TMajorGetter>, IC
     where TMajorGetter : class, IMajorRecordGetter
 {
 
-
-
     new FormKey? FormKeyNullable { get; set; }
-
-
-
 
     new FormKey FormKey { get; set; }
 
@@ -98,22 +71,12 @@ public interface IFormLink<out TMajorGetter> : IFormLinkGetter<TMajorGetter>, IC
     void SetToNull();
 }
 
-
-
-
-
-
 public interface IFormLinkNullableGetter<out TMajorGetter> :
     ILink<TMajorGetter>,
     IFormLinkGetter,
     IFormLinkGetter<TMajorGetter>
     where TMajorGetter : class, IMajorRecordGetter
 {
-
-
-
-
-
 
     new IFormLinkNullable<TMajorRet> Cast<TMajorRet>()
         where TMajorRet : class, IMajorRecordGetter;

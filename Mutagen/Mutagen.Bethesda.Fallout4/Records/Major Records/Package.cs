@@ -144,7 +144,6 @@ partial class PackageBinaryCreateTranslation
         }
     done_types:
 
-
         APackageData? lastPackage = null;
         int itemIndex = 0;
         var packages = new List<APackageData>(expectedCount);
@@ -202,9 +201,7 @@ partial class PackageBinaryCreateTranslation
     done_indexes:
         var actualCount = packages.Count;
 
-
         var end = stream.Position;
-
 
         stream.Position = valuesPosition;
         itemIndex = -1;

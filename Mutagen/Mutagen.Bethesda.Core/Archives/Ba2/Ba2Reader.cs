@@ -45,11 +45,6 @@ class Ba2Reader : IArchiveReader
         var numFiles = reader.ReadUInt32();
         _nameTableOffset = reader.ReadUInt64();
 
-
-
-
-
-
         if (Version > 1 && Version < 7)
         {
             var unknown = reader.ReadUInt32();
@@ -128,11 +123,6 @@ class BA2DX10Entry : IArchiveFile
         _nameHash = reader.ReadUInt32();
         Path = _nameHash.ToString("X");
 
-
-
-
-
-
         if (version > 1 && version < 7)
         {
             var unknown = reader.ReadUInt32();
@@ -166,7 +156,6 @@ class BA2DX10Entry : IArchiveFile
 
     public Stream AsStream()
     {
-
 
         var ret = new byte[Size];
         var memStream = new MemoryStream(ret);
@@ -349,7 +338,6 @@ class BA2TextureChunk
         _packSz = rdr.ReadUInt32();
         _fullSz = rdr.ReadUInt32();
 
-
         if (version <= 1 || version == 7)
         {
             _startMip = rdr.ReadUInt16();
@@ -383,14 +371,6 @@ class BA2FileEntry : IArchiveFile
         _nameHash = reader.ReadUInt32();
         Path = _nameHash.ToString("X");
 
-
-
-
-
-
-
-
-
         if (version > 1 && version < 7)
         {
             var unknown = reader.ReadUInt32();
@@ -400,16 +380,6 @@ class BA2FileEntry : IArchiveFile
         _dirHash = reader.ReadUInt32();
         _flags = reader.ReadUInt32();
         _offset = reader.ReadUInt64();
-
-
-
-
-
-
-
-
-
-
 
         uint packedSize = 0;
         if (version > 7)
@@ -431,9 +401,6 @@ class BA2FileEntry : IArchiveFile
         }
         else
         {
-
-
-
 
             Compressed = _size != 0;
         }

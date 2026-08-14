@@ -1,9 +1,5 @@
 namespace Mutagen.Bethesda.WPF.Reflection.Attributes;
 
-
-
-
-
 [AttributeUsage(
     AttributeTargets.Class,
     AllowMultiple = true)]

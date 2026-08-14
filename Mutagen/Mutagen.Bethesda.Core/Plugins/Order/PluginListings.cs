@@ -26,23 +26,11 @@ public static class PluginListings
             gameReleaseInjection).Path;
     }
 
-
-
-
-
-
-
     public static bool TryGetListingsFile(GameRelease game, out FilePath path)
     {
         path = GetListingsPath(game);
         return File.Exists(path);
     }
-
-
-
-
-
-
 
     public static FilePath GetListingsFile(GameRelease game)
     {
@@ -55,13 +43,6 @@ public static class PluginListings
             $"Could not locate load order automatically.  Expected a file at: {path.Path}");
     }
 
-
-
-
-
-
-
-
     public static IEnumerable<ILoadOrderListingGetter> LoadOrderListingsFromStream(Stream stream, GameRelease game)
     {
         return new PluginListingsParser(
@@ -71,7 +52,6 @@ public static class PluginListings
                         new GameReleaseInjection(game))))
             .Parse(stream);
     }
-
 
     public static IEnumerable<ILoadOrderListingGetter> LoadOrderListings(
         GameRelease game,
@@ -93,7 +73,6 @@ public static class PluginListings
             throwOnMissingMods);
     }
 
-
     public static IEnumerable<ILoadOrderListingGetter> LoadOrderListingsFromPath(
         FilePath pluginTextPath,
         GameRelease game,
@@ -109,7 +88,6 @@ public static class PluginListings
             fileSystem ?? IFileSystemExt.DefaultFilesystem).Get();
     }
 
-
     public static IEnumerable<ILoadOrderListingGetter> RawLoadOrderListingsFromPath(
         FilePath pluginTextPath,
         GameRelease game)
@@ -117,7 +95,6 @@ public static class PluginListings
         using var fs = new FileStream(pluginTextPath.Path, FileMode.Open, FileAccess.Read, FileShare.Read);
         return LoadOrderListingsFromStream(fs, game).ToList();
     }
-
 
     public static IObservable<IChangeSet<ILoadOrderListingGetter>> GetLiveLoadOrder(
         GameRelease game,
@@ -142,12 +119,10 @@ public static class PluginListings
             pluginPath).Get(out state, scheduler);
     }
 
-
     public static IObservable<Unit> GetLoadOrderChanged(FilePath loadOrderFilePath)
     {
         return ObservableExt.WatchFile(loadOrderFilePath.Path);
     }
-
 
     public static IObservable<Unit> GetLoadOrderChanged(GameRelease game)
     {

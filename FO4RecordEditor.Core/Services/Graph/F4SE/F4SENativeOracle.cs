@@ -6,7 +6,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
 public sealed record OracleNative(
     string Script,
     string Name,
@@ -20,26 +19,6 @@ public sealed record OracleNative(
 
     public override string ToString() => $"{ReturnType} {Script}.{Name}/{Arity}";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class F4SENativeOracle
 {
@@ -59,14 +38,6 @@ public sealed class F4SENativeOracle
 
     public int ScriptsRead { get; }
 
-
-
-
-
-
-
-
-
     public int FragmentsRepaired { get; }
 
     public IReadOnlyList<string> Problems { get; }
@@ -75,14 +46,6 @@ public sealed class F4SENativeOracle
         Natives.FirstOrDefault(n =>
             n.Script.Equals(script, StringComparison.OrdinalIgnoreCase)
             && n.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-
-
-
-
-
-
-
-
 
     public static F4SENativeOracle Build(string mergedRoot, string? vanillaRoot)
     {
@@ -129,9 +92,6 @@ public sealed class F4SENativeOracle
 
         return new F4SENativeOracle(natives, scripts, repaired, problems);
     }
-
-
-
 
     private static PapyrusScript? ParseRepaired(string path, List<string> problems, ref int repaired)
     {

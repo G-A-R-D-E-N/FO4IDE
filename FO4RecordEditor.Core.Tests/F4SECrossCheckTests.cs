@@ -6,9 +6,6 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
 public class F4SECrossCheckTests
 {
     private static NativeBinding Binding(
@@ -48,8 +45,6 @@ public class F4SECrossCheckTests
     [Fact]
     public void An_owner_qualified_struct_name_matches_the_bare_cpp_typedef()
     {
-
-
 
         var result = F4SECrossCheck.Compare(
             new[] { Binding("ObjectReference", "ApplyMaterialSwap", "RemapData[]") },
@@ -102,7 +97,6 @@ public class F4SECrossCheckTests
     public void A_registration_with_no_declaration_is_reported_as_cpp_only()
     {
 
-
         var result = F4SECrossCheck.Compare(
             new[] { Binding("F4SE", "TestInventoryFunc", "None", F4SETypeMap.StaticFunctionTag, "ObjectReference") },
             OracleOf(Native("F4SE", "GetVersion", "int", global: true)));
@@ -116,10 +110,8 @@ public class F4SECrossCheckTests
     public void Latency_and_no_wait_are_counted_but_never_compared()
     {
 
-
         var latent = Binding("UI", "Set", "bool", F4SETypeMap.StaticFunctionTag, "string")
             with { IsLatent = true, NoWait = true };
-
 
         var result = F4SECrossCheck.Compare(
             new[] { latent },

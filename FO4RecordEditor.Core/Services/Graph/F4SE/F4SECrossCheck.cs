@@ -4,12 +4,10 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
 public sealed record CrossCheckMismatch(string Class, string Function, string What, string Cpp, string Psc)
 {
     public override string ToString() => $"{Class}.{Function} {What}: cpp={Cpp} psc={Psc}";
 }
-
 
 public sealed record CrossCheckResult
 {
@@ -17,45 +15,24 @@ public sealed record CrossCheckResult
     public required int Declared { get; init; }
     public required int Matched { get; init; }
 
-
     public IReadOnlyList<NativeBinding> CppOnly { get; init; } = Array.Empty<NativeBinding>();
-
 
     public IReadOnlyList<OracleNative> PscOnly { get; init; } = Array.Empty<OracleNative>();
 
     public IReadOnlyList<CrossCheckMismatch> Mismatches { get; init; } = Array.Empty<CrossCheckMismatch>();
 
-
     public int LatentOnlyInCpp { get; init; }
-
 
     public int NoWaitOnlyInCpp { get; init; }
 
     public bool Agrees => CppOnly.Count == 0 && PscOnly.Count == 0 && Mismatches.Count == 0;
 }
 
-
-
-
-
-
-
-
-
-
 public static class F4SECrossCheck
 {
 
     public static CrossCheckResult Compare(IEnumerable<NativeBinding> recovered, F4SENativeOracle oracle) =>
         Compare(recovered, oracle.Natives);
-
-
-
-
-
-
-
-
 
     public static CrossCheckResult Compare(
         IEnumerable<NativeBinding> recovered, IEnumerable<OracleNative> declarations)
@@ -131,19 +108,6 @@ public static class F4SECrossCheck
         };
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static bool SameType(PapyrusTypeText a, PapyrusTypeText b)
     {
         if (a.IsArray != b.IsArray) return false;
@@ -151,8 +115,6 @@ public static class F4SECrossCheck
 
         bool aQualified = a.Name.Contains(':');
         bool bQualified = b.Name.Contains(':');
-
-
 
         if (aQualified == bQualified) return false;
 

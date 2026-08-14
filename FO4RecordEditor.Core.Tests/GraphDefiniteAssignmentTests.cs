@@ -4,14 +4,6 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
 public class GraphDefiniteAssignmentTests
 {
     private static GraphDiagnostic Refused(GraphDocument document, string expectedCode)
@@ -39,7 +31,6 @@ public class GraphDefiniteAssignmentTests
     [Fact]
     public void A_value_produced_on_one_arm_and_read_after_the_merge_is_refused()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
@@ -133,7 +124,6 @@ public class GraphDefiniteAssignmentTests
     [Fact]
     public void A_loop_condition_fed_from_the_loop_body_is_refused_by_name()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");

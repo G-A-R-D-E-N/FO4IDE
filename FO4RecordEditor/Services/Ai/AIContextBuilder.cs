@@ -14,8 +14,6 @@ public sealed class AIContextBuilder
         "keywords, leveled lists, OMODs, conditions (CTDA), and crafting (COBJ). When asked to " +
         "modify records, respond with a concrete change plan the user can approve. Be concise.";
 
-
-
     private const int MaxFieldLines = 200;
 
     public string BuildForRecord(RecordEntry rec)
@@ -31,8 +29,6 @@ public sealed class AIContextBuilder
     {
         var sb = new StringBuilder();
         sb.AppendLine(SystemPreamble);
-
-
 
         sb.AppendLine();
         if (loadedPlugins != null && loadedPlugins.Count > 0)

@@ -10,12 +10,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
 public class GlobalStateIsolationTests
 {
     private static Mo2ProfileLoader.Mo2GameEnvironment BuildEnv(string modName, string editorId, out FormKey fk)
@@ -54,11 +48,8 @@ public class GlobalStateIsolationTests
                 var leaked = BuildEnv("Leak.esp", editorId: "LeakWeapon", out leakFk);
                 MutagenLoader.LinkCache = leaked.LinkCache;
 
-
-
                 MutagenLoader.DescribeFormKey(null, leakFk.ToString()).Should().Contain("LeakWeapon");
             }
-
 
             MutagenLoader.DescribeFormKey(null, prevFk.ToString()).Should().Contain("PrevWeapon");
             MutagenLoader.DescribeFormKey(null, leakFk.ToString()).Should().NotContain("LeakWeapon");
@@ -68,10 +59,6 @@ public class GlobalStateIsolationTests
             MutagenLoader.LinkCache = null;
         }
     }
-
-
-
-
 
     [Fact]
     public void Dispose_RestoresTheRegistryDictionariesCapsAndCaches()
@@ -106,8 +93,6 @@ public class GlobalStateIsolationTests
                 MutagenLoader.SeedModIndexForTest("B.esp", new object());
                 ConflictScanner.ScanCached(BuildEnv("Prev.esp", "PrevWeapon", out _));
 
-
-
                 MutagenLoader.LooseMods.Keys.Should().BeEquivalentTo("B.esp");
                 MutagenLoader.LooseModPaths.Keys.Should().BeEquivalentTo("B.esp");
                 MutagenLoader.PluginSourcePaths.Keys.Should().BeEquivalentTo("B.esp");
@@ -118,7 +103,6 @@ public class GlobalStateIsolationTests
                 MutagenLoader.ModIndexCacheCount.Should().BeGreaterThan(0);
                 ConflictScanner.HasCache.Should().BeTrue();
             }
-
 
             MutagenLoader.LooseMods.Should().BeEquivalentTo(new[] { new KeyValuePair<string, object>("A.esp", "loose-mod") });
             MutagenLoader.LooseModPaths.Should().BeEquivalentTo(new[] { new KeyValuePair<string, string>("A.esp", @"C:\mods\A.esp") });

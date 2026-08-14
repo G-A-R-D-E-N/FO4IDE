@@ -11,12 +11,6 @@ namespace Mutagen.Bethesda;
 public static class GetOrAddAsOverrideMixIns
 {
 
-
-
-
-
-
-
     public static TMajor GetOrAddAsOverride<TMajor, TMajorGetter>(this IGroup<TMajor> group, TMajorGetter major)
         where TMajor : IMajorRecordInternal, TMajorGetter
         where TMajorGetter : IMajorRecordGetter
@@ -44,15 +38,6 @@ public static class GetOrAddAsOverrideMixIns
         }
     }
 
-
-
-
-
-
-
-
-
-
     public static bool TryGetOrAddAsOverride<TMajor, TMajorGetter>(this IGroup<TMajor> group, IFormLinkGetter<TMajorGetter> link, ILinkCache cache, [MaybeNullWhen(false)] out TMajor rec)
         where TMajor : class, IMajorRecordInternal, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
@@ -78,14 +63,6 @@ public static class GetOrAddAsOverrideMixIns
         }
     }
 
-
-
-
-
-
-
-
-
     public static TMajor GetOrAddAsOverride<TMajor, TMajorGetter>(this IGroup<TMajor> group, IFormLinkGetter<TMajorGetter> link, ILinkCache cache)
         where TMajor : class, IMajorRecordInternal, TMajorGetter
         where TMajorGetter : class, IMajorRecordGetter
@@ -96,15 +73,6 @@ public static class GetOrAddAsOverrideMixIns
         }
         throw new MissingRecordException(link.FormKey, link.Type);
     }
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetOrAddAsOverrideUntyped(
         this IGroup group,
@@ -120,7 +88,6 @@ public static class GetOrAddAsOverrideMixIns
                 return false;
             }
 
-
             if (group.RecordCache.TryGetValue(major.FormKey, out var existingMajor))
             {
                 if (existingMajor is IMajorRecord existingRecord)
@@ -132,9 +99,7 @@ public static class GetOrAddAsOverrideMixIns
                 return false;
             }
 
-
             var mask = OverrideMaskRegistrations.Get(major.GetType());
-
 
             var copy = major.DeepCopy(mask as MajorRecord.TranslationMask);
             if (copy is not IMajorRecord rhs)
@@ -142,7 +107,6 @@ public static class GetOrAddAsOverrideMixIns
                 result = null;
                 return false;
             }
-
 
             group.SetUntyped(rhs);
             result = rhs;

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -38,8 +34,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class APackageTarget :
         IAPackageTarget,
@@ -387,8 +381,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAPackageTarget :
         IAPackageTargetGetter,
         IFormLinkContainer,
@@ -396,9 +388,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new Int32 CountOrDistance { get; set; }
     }
-
-
-
 
     public partial interface IAPackageTargetGetter :
         ILoquiObject,
@@ -786,7 +775,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return APackageTarget.GetNew();
@@ -1007,7 +995,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1070,7 +1057,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

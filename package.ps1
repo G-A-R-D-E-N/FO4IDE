@@ -66,8 +66,6 @@ $AudioToolsDir = 'E:\F4SE OG\Tools\Audio Converter\bin'
 function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function Warn($msg) { Write-Host "    ! $msg" -ForegroundColor Yellow }
 
-
-
 Step 'Stopping any running FO4RecordEditor.exe'
 Get-Process FO4RecordEditor -ErrorAction SilentlyContinue | Stop-Process -Force
 Start-Sleep -Milliseconds 300
@@ -99,7 +97,6 @@ if (Test-Path $Staging) { Remove-Item $Staging -Recurse -Force }
 New-Item -ItemType Directory -Path $Staging -Force | Out-Null
 
 Copy-Item "$PublishIn\*" $Staging -Recurse -Force
-
 
 Get-ChildItem $Staging -Include '*.pdb', '*.startup.log', 'settings.json' -Recurse -File |
     Remove-Item -Force -ErrorAction SilentlyContinue
@@ -171,11 +168,6 @@ foreach ($f in 'README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md') {
     Copy-Item (Join-Path $Root $f) $Staging -Force
 }
 
-
-
-
-
-
 $ShippedDocs = 'MCP_SETUP.md'
 $DocsDest = New-Item -ItemType Directory -Path (Join-Path $Staging 'docs') -Force
 foreach ($d in $ShippedDocs) {
@@ -183,8 +175,6 @@ foreach ($d in $ShippedDocs) {
     if (-not (Test-Path $src)) { throw "Shipped doc missing: $src" }
     Copy-Item $src $DocsDest -Force
 }
-
-
 
 @'
 {

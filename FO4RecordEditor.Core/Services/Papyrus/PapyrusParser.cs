@@ -5,30 +5,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class PapyrusParser
 {
     private readonly IReadOnlyList<PapyrusToken> _tokens;
@@ -41,9 +17,6 @@ public sealed class PapyrusParser
         _diagnostics = diagnostics;
     }
 
-
-
-
     public static PapyrusScript Parse(string text, string? filePath = null)
     {
         var bag = new DiagnosticBag();
@@ -55,12 +28,7 @@ public sealed class PapyrusParser
         return script;
     }
 
-
     public static PapyrusScript ParseFile(string path) => Parse(File.ReadAllText(path), path);
-
-
-
-
 
     private PapyrusToken Current => _tokens[_index];
 
@@ -96,7 +64,6 @@ public sealed class PapyrusParser
             $"Expected {what}, found '{Describe(Current)}'.",
             Current.Span);
 
-
         return new PapyrusToken(kind, string.Empty, new PapyrusSpan(Current.Span.Start, 0, Current.Span.Line, Current.Span.Column));
     }
 
@@ -111,7 +78,6 @@ public sealed class PapyrusParser
     {
         while (Kind == PapyrusTokenKind.Newline) Advance();
     }
-
 
     private void ExpectEndOfLine()
     {
@@ -133,14 +99,6 @@ public sealed class PapyrusParser
         Match(PapyrusTokenKind.Newline);
     }
 
-
-
-
-
-
-
-
-
     private string? TakeDocComment()
     {
         var save = _index;
@@ -149,14 +107,6 @@ public sealed class PapyrusParser
         _index = save;
         return null;
     }
-
-
-
-
-
-
-
-
 
     private void ParseFlags(List<string> into)
     {
@@ -180,14 +130,6 @@ public sealed class PapyrusParser
         }
     }
 
-
-
-
-
-
-
-
-
     private PapyrusScript ParseScript()
     {
         var script = new PapyrusScript();
@@ -201,7 +143,6 @@ public sealed class PapyrusParser
             var before = _index;
             ParseScriptMember(script);
 
-
             if (_index == before) Advance();
         }
 
@@ -211,13 +152,9 @@ public sealed class PapyrusParser
         return script;
     }
 
-
-
-
     private void ParseHeader(PapyrusScript script)
     {
         SkipNewlines();
-
 
         while (Kind == PapyrusTokenKind.DocComment)
         {
@@ -251,16 +188,6 @@ public sealed class PapyrusParser
         ExpectEndOfLine();
         script.Documentation ??= TakeDocComment();
     }
-
-
-
-
-
-
-
-
-
-
 
     private string ParseQualifiedName(out PapyrusSpan span)
     {
@@ -314,8 +241,6 @@ public sealed class PapyrusParser
                 return;
         }
 
-
-
         if (!TryParseType(out var type))
         {
             _diagnostics.Report(
@@ -347,7 +272,6 @@ public sealed class PapyrusParser
         }
     }
 
-
     private void ParseImport(PapyrusScript script)
     {
         var keyword = Advance();
@@ -356,7 +280,6 @@ public sealed class PapyrusParser
         script.Imports.Add(import);
         ExpectEndOfLine();
     }
-
 
     private void ParseCustomEvent(PapyrusScript script)
     {
@@ -371,18 +294,6 @@ public sealed class PapyrusParser
         ExpectEndOfLine();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     private static bool IsTypeStart(PapyrusTokenKind kind) => kind switch
     {
         PapyrusTokenKind.Int or PapyrusTokenKind.Float or PapyrusTokenKind.Bool
@@ -391,7 +302,6 @@ public sealed class PapyrusParser
             or PapyrusTokenKind.StructVarName => true,
         _ => false,
     };
-
 
     private bool TryParseType(out PapyrusTypeRef type)
     {
@@ -442,13 +352,6 @@ public sealed class PapyrusParser
         return new PapyrusTypeRef(name, isArray, start);
     }
 
-
-
-
-
-
-
-
     private PapyrusVariableDecl ParseVariable(PapyrusTypeRef type, bool allowDocumentation)
     {
         var name = Expect(PapyrusTokenKind.Identifier, "a variable name");
@@ -468,9 +371,6 @@ public sealed class PapyrusParser
         if (allowDocumentation) decl.Documentation = TakeDocComment();
         return decl;
     }
-
-
-
 
     private PapyrusStructDecl ParseStruct()
     {
@@ -513,13 +413,6 @@ public sealed class PapyrusParser
         return decl;
     }
 
-
-
-
-
-
-
-
     private PapyrusPropertyDecl ParseProperty(PapyrusTypeRef type, string? groupName)
     {
         var keyword = Advance();
@@ -542,11 +435,6 @@ public sealed class PapyrusParser
         decl.Span = type.Span.To(_tokens[Math.Max(0, _index - 1)].Span);
         ExpectEndOfLine();
         decl.Documentation = TakeDocComment();
-
-
-
-
-
 
         if (decl.Kind != PapyrusPropertyKind.Full || name.Text.Length == 0) return decl;
 
@@ -588,9 +476,6 @@ public sealed class PapyrusParser
         return decl;
     }
 
-
-
-
     private void ParseGroup(PapyrusScript script)
     {
         var keyword = Advance();
@@ -611,7 +496,6 @@ public sealed class PapyrusParser
                 var property = ParseProperty(type, group.Name);
                 group.Properties.Add(property);
 
-
                 script.Properties.Add(property);
             }
             else
@@ -629,9 +513,6 @@ public sealed class PapyrusParser
         group.Span = keyword.Span.To(end);
         script.Groups.Add(group);
     }
-
-
-
 
     private PapyrusStateDecl ParseState()
     {
@@ -691,14 +572,6 @@ public sealed class PapyrusParser
         return Current.Span;
     }
 
-
-
-
-
-
-
-
-
     private PapyrusFunctionDecl ParseFunction(PapyrusTypeRef? returnType, string? stateName)
     {
         var keyword = Advance();
@@ -718,7 +591,6 @@ public sealed class PapyrusParser
         fn.IsNative = fn.HasFlag("native");
         ExpectEndOfLine();
         fn.Documentation = TakeDocComment();
-
 
         if (fn.IsNative)
         {
@@ -771,10 +643,6 @@ public sealed class PapyrusParser
         return evt;
     }
 
-
-
-
-
     private void ParseParameterList(List<PapyrusParameter> into)
     {
         Expect(PapyrusTokenKind.LParen, "'('");
@@ -818,10 +686,6 @@ public sealed class PapyrusParser
         Expect(PapyrusTokenKind.RParen, "')'");
     }
 
-
-
-
-
     private static bool IsBlockTerminator(PapyrusTokenKind kind) => kind switch
     {
         PapyrusTokenKind.EndFunction or PapyrusTokenKind.EndEvent or PapyrusTokenKind.EndIf
@@ -861,9 +725,6 @@ public sealed class PapyrusParser
 
         if (TryParseDefine(out var define)) return define;
 
-
-
-
         var expression = ParseExpression();
         if (IsAssignmentOperator(Kind))
         {
@@ -892,17 +753,6 @@ public sealed class PapyrusParser
             or PapyrusTokenKind.PercentAssign => true,
         _ => false,
     };
-
-
-
-
-
-
-
-
-
-
-
 
     private bool TryParseDefine(out PapyrusStatement? statement)
     {
@@ -938,10 +788,6 @@ public sealed class PapyrusParser
         statement = define;
         return true;
     }
-
-
-
-
 
     private PapyrusStatement ParseIf()
     {
@@ -980,7 +826,6 @@ public sealed class PapyrusParser
         return statement;
     }
 
-
     private PapyrusStatement ParseWhile()
     {
         var keyword = Advance();
@@ -991,7 +836,6 @@ public sealed class PapyrusParser
         statement.Span = keyword.Span.To(end);
         return statement;
     }
-
 
     private PapyrusStatement ParseReturn()
     {
@@ -1005,11 +849,6 @@ public sealed class PapyrusParser
         ExpectEndOfLine();
         return statement;
     }
-
-
-
-
-
 
     private PapyrusExpression ParseExpression() => ParseOr();
 
@@ -1048,7 +887,6 @@ public sealed class PapyrusParser
         return left;
     }
 
-
     private PapyrusExpression ParseUnary()
     {
         if (Kind == PapyrusTokenKind.Minus || Kind == PapyrusTokenKind.Not)
@@ -1065,7 +903,6 @@ public sealed class PapyrusParser
         return ParseCast();
     }
 
-
     private PapyrusExpression ParseCast()
     {
         var expression = ParseDotChain();
@@ -1080,9 +917,6 @@ public sealed class PapyrusParser
         return expression;
     }
 
-
-
-
     private PapyrusExpression ParseDotChain()
     {
         var expression = ParsePostfix(ParseAtom());
@@ -1090,7 +924,6 @@ public sealed class PapyrusParser
         while (Kind == PapyrusTokenKind.Dot)
         {
             Advance();
-
 
             PapyrusToken name;
             if (Kind == PapyrusTokenKind.Identifier || Kind == PapyrusTokenKind.Length)
@@ -1118,7 +951,6 @@ public sealed class PapyrusParser
 
         return expression;
     }
-
 
     private PapyrusExpression ParsePostfix(PapyrusExpression expression)
     {
@@ -1151,7 +983,6 @@ public sealed class PapyrusParser
         }
     }
 
-
     private void ParseArgumentList(List<PapyrusArgument> into, out PapyrusSpan closeSpan)
     {
         var open = Expect(PapyrusTokenKind.LParen, "'('");
@@ -1167,8 +998,6 @@ public sealed class PapyrusParser
         {
             var before = _index;
             var argument = new PapyrusArgument();
-
-
 
             if (Kind == PapyrusTokenKind.Identifier && Peek(1).Kind == PapyrusTokenKind.Assign)
             {
@@ -1194,10 +1023,6 @@ public sealed class PapyrusParser
         closeSpan = close.Span;
     }
 
-
-
-
-
     private PapyrusExpression ParseAtom()
     {
         var token = Current;
@@ -1208,7 +1033,6 @@ public sealed class PapyrusParser
                 Advance();
                 var inner = ParseExpression();
                 Expect(PapyrusTokenKind.RParen, "')'");
-
 
                 return inner;
             }
@@ -1261,19 +1085,13 @@ public sealed class PapyrusParser
             case PapyrusTokenKind.Identifier:
             {
 
-
-
                 var name = ParseQualifiedName(out var span);
                 return new PapyrusIdentifierExpression { Name = name, Span = span };
             }
 
-
-
             case PapyrusTokenKind.Length:
                 Advance();
                 return new PapyrusIdentifierExpression { Name = token.Text, Span = token.Span };
-
-
 
             case PapyrusTokenKind.ScriptEventName:
             case PapyrusTokenKind.CustomEventName:
@@ -1286,7 +1104,6 @@ public sealed class PapyrusParser
                     PapyrusDiagnosticCodes.ExpectedExpression,
                     $"Expected an expression, found '{Describe(Current)}'.",
                     Current.Span);
-
 
                 return new PapyrusErrorExpression { Span = new PapyrusSpan(token.Span.Start, 0, token.Span.Line, token.Span.Column) };
         }

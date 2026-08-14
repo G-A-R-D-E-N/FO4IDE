@@ -8,11 +8,6 @@ namespace Mutagen.Bethesda.Plugins.Binary.Processing;
 public static class ModTrimmer
 {
 
-
-
-
-
-
     public static void TrimGroups(
         Func<IMutagenReadStream> streamCreator,
         Stream outputStream,

@@ -7,15 +7,6 @@ using FO4RecordEditor.ViewModels;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class PapyrusInterop
@@ -32,14 +23,6 @@ public class PapyrusInterop
     {
         return HostServices.PickFolder(title);
     }
-
-
-
-
-
-
-
-
 
     public Task<string> Compile(string source, string output, string imports, string flags,
         bool all, bool optimize, bool release, string compilerPath, string engine) =>
@@ -60,8 +43,6 @@ public class PapyrusInterop
             catch (Exception ex) { DebugLog.Exception("Papyrus.Decompile", ex); return "Error: " + ex.Message; }
         });
 
-
-
     public Task<string> LookupFunction(string script, string functionName) =>
         Task.Run(() =>
         {
@@ -69,23 +50,12 @@ public class PapyrusInterop
             catch (Exception ex) { DebugLog.Exception("Papyrus.LookupFunction", ex); return "Error: " + ex.Message; }
         });
 
-
-
     public Task<string> LookupScriptInfo(string script) =>
         Task.Run(() =>
         {
             try { return PapyrusWikiService.LookupScriptInfo(ToolPaths.CkWiki() ?? "", script); }
             catch (Exception ex) { DebugLog.Exception("Papyrus.LookupScriptInfo", ex); return "Error: " + ex.Message; }
         });
-
-
-
-
-
-
-
-
-
 
     public Task<string> Analyze(string text, string path) =>
         Task.Run(() =>
@@ -98,7 +68,6 @@ public class PapyrusInterop
             }
         });
 
-
     public Task<string> SymbolAt(string text, string path, int offset, string imports) =>
         Task.Run(() =>
         {
@@ -109,7 +78,6 @@ public class PapyrusInterop
                 return "{\"error\":" + Newtonsoft.Json.JsonConvert.ToString(ex.Message) + "}";
             }
         });
-
 
     public Task<string> ReadScript(string path) =>
         Task.Run(() =>
@@ -122,15 +90,6 @@ public class PapyrusInterop
             }
             catch (Exception ex) { DebugLog.Exception("Papyrus.ReadScript", ex); return "ERR:" + ex.Message; }
         });
-
-
-
-
-
-
-
-
-
 
     public Task<string> WriteScript(string path, string text) =>
         Task.Run(() =>
@@ -148,7 +107,6 @@ public class PapyrusInterop
             catch (Exception ex) { DebugLog.Exception("Papyrus.WriteScript", ex); return "ERR:" + ex.Message; }
         });
 
-
     public string OpenFolder(string path)
     {
         try
@@ -162,9 +120,6 @@ public class PapyrusInterop
         }
         catch (Exception ex) { return "Error: " + ex.Message; }
     }
-
-
-
 
     public string StageDroppedFile(string name, string base64)
     {

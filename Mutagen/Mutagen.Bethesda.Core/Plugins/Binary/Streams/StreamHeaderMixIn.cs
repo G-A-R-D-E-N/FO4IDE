@@ -8,22 +8,9 @@ using Noggog;
 
 namespace Mutagen.Bethesda;
 
-
-
-
 public static class StreamHeaderMixIn
 {
     #region Normal Stream
-
-
-
-
-
-
-
-
-
-
 
     public static ModHeader GetModHeader<TStream>(this TStream stream, GameConstants constants, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -44,17 +31,6 @@ public static class StreamHeaderMixIn
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static ModHeader ReadModHeader<TStream>(this TStream stream, GameConstants constants, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -74,18 +50,6 @@ public static class StreamHeaderMixIn
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetModHeader<TStream>(this TStream stream, GameConstants constants, out ModHeader header, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -98,18 +62,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadModHeader<TStream>(this TStream stream, GameConstants constants, out ModHeader header, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -121,16 +73,6 @@ public static class StreamHeaderMixIn
         header = new ModHeader(constants, stream.ReadMemory(constants.ModHeaderLength, readSafe: readSafe));
         return true;
     }
-
-
-
-
-
-
-
-
-
-
 
     public static ModHeaderFrame GetModHeaderFrame<TStream>(this TStream stream, GameConstants constants, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -152,17 +94,6 @@ public static class StreamHeaderMixIn
             throw new MalformedDataException($"Could not read enough data to parse a Mod Header Frame from stream.  Position: {initialPos}.  {remaining} remaining < {expected ?? constants.ModHeaderLength} expected.");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static ModHeaderFrame ReadModHeaderFrame<TStream>(this TStream stream, GameConstants constants, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -186,18 +117,6 @@ public static class StreamHeaderMixIn
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetModHeaderFrame<TStream>(this TStream stream, GameConstants constants, out ModHeaderFrame frame, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -209,18 +128,6 @@ public static class StreamHeaderMixIn
         frame = new ModHeaderFrame(meta, stream.GetMemory(checked((int)meta.TotalLength), readSafe: readSafe));
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadModHeaderFrame<TStream>(this TStream stream, GameConstants constants, out ModHeaderFrame frame, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -234,20 +141,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static GroupPinHeader GetGroupHeader<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
     {
@@ -258,20 +151,6 @@ public static class StreamHeaderMixIn
         }
         return ret;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static GroupPinHeader ReadGroupHeader<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
@@ -285,20 +164,6 @@ public static class StreamHeaderMixIn
         return ret;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetGroupHeader<TStream>(this TStream stream, GameConstants constants, out GroupPinHeader header, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
     {
@@ -311,20 +176,6 @@ public static class StreamHeaderMixIn
         return !checkIsGroup || header.IsGroup;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static GroupPinFrame GetGroup<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
     {
@@ -333,20 +184,6 @@ public static class StreamHeaderMixIn
             new GroupFrame(meta, stream.GetMemory(checked((int)meta.TotalLength), offset: offset, readSafe: readSafe)),
             pinLocation: stream.Position);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetGroup<TStream>(this TStream stream, GameConstants constants, out GroupPinFrame frame, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
@@ -361,20 +198,6 @@ public static class StreamHeaderMixIn
             pinLocation: stream.Position);
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadGroupHeader<TStream>(this TStream stream, GameConstants constants, out GroupPinHeader header, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
@@ -393,19 +216,6 @@ public static class StreamHeaderMixIn
         return ret;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static GroupPinFrame ReadGroup<TStream>(this TStream stream, GameConstants constants, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
     {
@@ -415,19 +225,6 @@ public static class StreamHeaderMixIn
             new GroupFrame(meta, stream.ReadMemory(checked((int)meta.TotalLength), readSafe: readSafe)),
             pinLocation: loc);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadGroup<TStream>(this TStream stream, GameConstants constants, out GroupPinFrame frame, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IBinaryReadStream
@@ -445,36 +242,11 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static MajorRecordHeader GetMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
         return new MajorRecordHeader(constants, stream.GetMemory(constants.MajorConstants.HeaderLength, offset, readSafe: readSafe));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -488,20 +260,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, RecordType targetType, out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -513,20 +271,6 @@ public static class StreamHeaderMixIn
         header = GetMajorRecordHeader(stream, constants, offset: offset, readSafe: readSafe);
         return header.RecordType == targetType;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, IReadOnlyCollection<RecordType> targetRecords, out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -540,19 +284,6 @@ public static class StreamHeaderMixIn
         return targetRecords.Contains(header.RecordType);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -564,20 +295,6 @@ public static class StreamHeaderMixIn
         header = ReadMajorRecordHeader(stream, constants, offset: offset, readSafe: readSafe);
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, RecordType targetType,  out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -596,20 +313,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, IReadOnlyCollection<RecordType> targetRecords,  out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -626,19 +329,6 @@ public static class StreamHeaderMixIn
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static MajorRecordFrame GetMajorRecord<TStream>(
         this TStream stream,
@@ -658,35 +348,11 @@ public static class StreamHeaderMixIn
         return ret;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static MajorRecordHeader ReadMajorRecordHeader<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
         return new MajorRecordHeader(constants, stream.ReadMemory(constants.MajorConstants.HeaderLength, offset: offset, readSafe: readSafe));
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static MajorRecordFrame ReadMajorRecord<TStream>(
         this TStream stream,
@@ -705,36 +371,11 @@ public static class StreamHeaderMixIn
         return ret;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static SubrecordHeader GetSubrecordHeader<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
         return new SubrecordHeader(constants, stream.GetMemory(constants.SubConstants.HeaderLength, offset, readSafe: readSafe));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetSubrecordHeader<TStream>(this TStream stream, GameConstants constants, out SubrecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -748,20 +389,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetSubrecordHeader<TStream>(this TStream stream, GameConstants constants, RecordType targetType, out SubrecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -773,20 +400,6 @@ public static class StreamHeaderMixIn
         header = GetSubrecordHeader(stream, constants, offset: offset, readSafe: readSafe);
         return targetType == header.RecordType;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetSubrecordHeader<TStream>(this TStream stream, GameConstants constants, IReadOnlyCollection<RecordType> targetRecords, out SubrecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -800,19 +413,6 @@ public static class StreamHeaderMixIn
         return targetRecords.Contains(header.RecordType);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetSubrecord<TStream>(this TStream stream, GameConstants constants, IReadOnlyCollection<RecordType> targetRecords, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -825,35 +425,11 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetSubrecord<TStream>(this TStream stream, IReadOnlyCollection<RecordType> targetRecords, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryGetSubrecord(stream, stream.MetaData.Constants, targetRecords, out frame, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static SubrecordFrame GetSubrecord<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -861,19 +437,6 @@ public static class StreamHeaderMixIn
         var meta = GetSubrecordHeader(stream, constants, offset, readSafe: readSafe);
         return SubrecordFrame.FactoryNoTrim(meta, stream.GetMemory(meta.TotalLength, offset: offset, readSafe: readSafe));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetSubrecord<TStream>(this TStream stream, GameConstants constants, out SubrecordFrame frame, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -887,20 +450,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetSubrecord<TStream>(this TStream stream, GameConstants constants, RecordType targetType, out SubrecordFrame frame, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -913,37 +462,11 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static SubrecordHeader ReadSubrecordHeader<TStream>(this TStream stream, GameConstants constants, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
         return new SubrecordHeader(constants, stream.ReadMemory(constants.SubConstants.HeaderLength, offset: offset, readSafe: readSafe));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static SubrecordHeader ReadSubrecordHeader<TStream>(this TStream stream, GameConstants constants, RecordType targetType, int offset = 0, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -956,18 +479,6 @@ public static class StreamHeaderMixIn
         return meta;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadSubrecordHeader<TStream>(this TStream stream, GameConstants constants, out SubrecordHeader header, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -979,19 +490,6 @@ public static class StreamHeaderMixIn
         header = ReadSubrecordHeader(stream, constants, readSafe: readSafe);
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadSubrecordHeader<TStream>(this TStream stream, GameConstants constants, RecordType targetType, out SubrecordHeader header, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -1010,19 +508,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadSubrecordHeader<TStream>(this TStream stream, GameConstants constants, IReadOnlyCollection<RecordType> targetRecords, out SubrecordHeader header, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -1040,37 +525,12 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static SubrecordFrame ReadSubrecord<TStream>(this TStream stream, GameConstants constants, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
         var meta = GetSubrecordHeader(stream, constants, readSafe: readSafe, offset: 0);
         return SubrecordFrame.FactoryNoTrim(meta, stream.ReadMemory(meta.TotalLength, readSafe: readSafe));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static SubrecordFrame ReadSubrecord<TStream>(this TStream stream, GameConstants constants, RecordType targetType, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -1082,18 +542,6 @@ public static class StreamHeaderMixIn
         }
         return SubrecordFrame.FactoryNoTrim(meta, stream.ReadMemory(meta.TotalLength, readSafe: readSafe));
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadSubrecord<TStream>(this TStream stream, GameConstants constants, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -1107,19 +555,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadSubrecord<TStream>(this TStream stream, GameConstants constants, RecordType targetType, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -1132,19 +567,6 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadSubrecord<TStream>(this TStream stream, GameConstants constants, IReadOnlyCollection<RecordType> targetRecords, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IBinaryReadStream
     {
@@ -1156,18 +578,6 @@ public static class StreamHeaderMixIn
         frame = SubrecordFrame.FactoryNoTrim(meta, stream.ReadMemory(meta.TotalLength, readSafe: readSafe));
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static VariableHeader GetVariableHeader<TStream>(this TStream stream, GameConstants constants, bool subRecords, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -1186,18 +596,6 @@ public static class StreamHeaderMixIn
             return constants.VariableHeader(stream.GetMemory(constants.MajorConstants.HeaderLength, readSafe: readSafe), ObjectType.Record);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static VariableHeader ReadVariableHeader<TStream>(this TStream stream, GameConstants constants, bool subRecords, bool readSafe = true)
         where TStream : IBinaryReadStream
@@ -1220,30 +618,11 @@ public static class StreamHeaderMixIn
 
     #region Mutagen Stream
 
-
-
-
-
-
-
-
-
-
     public static ModHeader GetModHeader<TStream>(this TStream stream, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return GetModHeader(stream, stream.MetaData.Constants, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static ModHeader ReadModHeader<TStream>(this TStream stream, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1251,33 +630,11 @@ public static class StreamHeaderMixIn
         return ReadModHeader(stream, stream.MetaData.Constants, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetModHeader<TStream>(this TStream stream, out ModHeader header, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryGetModHeader(stream, stream.MetaData.Constants, out header, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadModHeader<TStream>(this TStream stream, out ModHeader header, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1285,31 +642,11 @@ public static class StreamHeaderMixIn
         return TryReadModHeader(stream, stream.MetaData.Constants, out header, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
     public static ModHeaderFrame GetModHeaderFrame<TStream>(this TStream stream, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return GetModHeaderFrame(stream, stream.MetaData.Constants, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static ModHeaderFrame ReadModHeaderFrame<TStream>(this TStream stream, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1317,33 +654,11 @@ public static class StreamHeaderMixIn
         return ReadModHeaderFrame(stream, stream.MetaData.Constants, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetModHeaderFrame<TStream>(this TStream stream, out ModHeaderFrame frame, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryGetModHeaderFrame(stream, stream.MetaData.Constants, out frame, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadModHeaderFrame<TStream>(this TStream stream, out ModHeaderFrame header, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1351,37 +666,11 @@ public static class StreamHeaderMixIn
         return TryReadModHeaderFrame(stream, stream.MetaData.Constants, out header, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static GroupPinHeader GetGroupHeader<TStream>(this TStream stream, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
     {
         return GetGroupHeader(stream, stream.MetaData.Constants, offset: offset, readSafe: readSafe, checkIsGroup: checkIsGroup);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetGroupHeader<TStream>(this TStream stream, out GroupPinHeader header, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
@@ -1389,37 +678,11 @@ public static class StreamHeaderMixIn
         return TryGetGroupHeader(stream, stream.MetaData.Constants, out header, offset: offset, checkIsGroup: checkIsGroup, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static GroupPinFrame GetGroup<TStream>(this TStream stream, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
     {
         return GetGroup(stream, stream.MetaData.Constants, offset: offset, checkIsGroup: checkIsGroup, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetGroup<TStream>(this TStream stream, out GroupPinFrame frame, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
@@ -1427,37 +690,11 @@ public static class StreamHeaderMixIn
         return TryGetGroup(stream, stream.MetaData.Constants, out frame, offset: offset, checkIsGroup: checkIsGroup, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static GroupPinHeader ReadGroupHeader<TStream>(this TStream stream, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
     {
         return ReadGroupHeader(stream, stream.MetaData.Constants, offset: offset, checkIsGroup: checkIsGroup, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadGroupHeader<TStream>(this TStream stream, out GroupPinHeader header, int offset = 0, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
@@ -1465,35 +702,11 @@ public static class StreamHeaderMixIn
         return TryReadGroupHeader(stream, stream.MetaData.Constants, out header, offset: offset, checkIsGroup: checkIsGroup, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static GroupPinFrame ReadGroup<TStream>(this TStream stream, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
     {
         return ReadGroup(stream, stream.MetaData.Constants, checkIsGroup: checkIsGroup, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadGroup<TStream>(this TStream stream, out GroupPinFrame frame, bool readSafe = true, bool checkIsGroup = true)
         where TStream : IMutagenReadStream
@@ -1501,34 +714,11 @@ public static class StreamHeaderMixIn
         return TryReadGroup(stream, stream.MetaData.Constants, out frame, checkIsGroup: checkIsGroup, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static MajorRecordHeader GetMajorRecordHeader<TStream>(this TStream stream, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return GetMajorRecordHeader(stream, stream.MetaData.Constants, offset: offset, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetMajorRecordHeader<TStream>(this TStream stream, out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1542,35 +732,11 @@ public static class StreamHeaderMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetMajorRecordHeader<TStream>(this TStream stream, RecordType targetType, out MajorRecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryGetMajorRecordHeader(stream, stream.MetaData.Constants, targetType, out header, offset: offset, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static MajorRecordHeader ReadMajorRecordHeader<TStream>(this TStream stream, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1578,34 +744,11 @@ public static class StreamHeaderMixIn
         return ReadMajorRecordHeader(stream, stream.MetaData.Constants, offset: offset, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadMajorRecordHeader<TStream>(this TStream stream, out MajorRecordHeader header, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryReadMajorRecordHeader(stream, stream.MetaData.Constants, out header, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadMajorRecordHeader<TStream>(this TStream stream, RecordType targetType, out MajorRecordHeader header, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1613,35 +756,11 @@ public static class StreamHeaderMixIn
         return TryReadMajorRecordHeader(stream, stream.MetaData.Constants, targetType, out header, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadMajorRecordHeader<TStream>(this TStream stream, IReadOnlyCollection<RecordType> targetRecords, out MajorRecordHeader header, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryReadMajorRecordHeader(stream, stream.MetaData.Constants, targetRecords, out header, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static MajorRecordFrame GetMajorRecord<TStream>(
         this TStream stream,
@@ -1653,17 +772,6 @@ public static class StreamHeaderMixIn
         return GetMajorRecord(stream, stream.MetaData.Constants, offset: offset, readSafe: readSafe, automaticallyDecompress: automaticallyDecompress);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static MajorRecordFrame ReadMajorRecord<TStream>(
         this TStream stream,
         bool readSafe = true,
@@ -1673,34 +781,11 @@ public static class StreamHeaderMixIn
         return ReadMajorRecord(stream, stream.MetaData.Constants, readSafe: readSafe, automaticallyDecompress: automaticallyDecompress);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static SubrecordHeader GetSubrecordHeader<TStream>(this TStream stream, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return GetSubrecordHeader(stream, stream.MetaData.Constants, offset: offset, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetSubrecordHeader<TStream>(this TStream stream, out SubrecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1708,52 +793,17 @@ public static class StreamHeaderMixIn
         return TryGetSubrecordHeader(stream, stream.MetaData.Constants, out header, offset: offset, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetSubrecordHeader<TStream>(this TStream stream, RecordType targetType, out SubrecordHeader header, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryGetSubrecordHeader(stream, stream.MetaData.Constants, targetType, out header, offset: offset, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static SubrecordFrame GetSubrecord<TStream>(this TStream stream, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return GetSubrecord(stream, stream.MetaData.Constants, offset: offset, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static SubrecordFrame GetSubrecord<TStream>(this TStream stream, RecordType targetType, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1767,36 +817,11 @@ public static class StreamHeaderMixIn
         return SubrecordFrame.FactoryNoTrim(meta, stream.ReadMemory(meta.TotalLength, readSafe: readSafe));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryGetSubrecord<TStream>(this TStream stream, out SubrecordFrame frame, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryGetSubrecord(stream, stream.MetaData.Constants, out frame, offset: offset, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryGetSubrecord<TStream>(this TStream stream, RecordType targetType, out SubrecordFrame frame, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1804,35 +829,11 @@ public static class StreamHeaderMixIn
         return TryGetSubrecord(stream, stream.MetaData.Constants, targetType, out frame, offset: offset, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static SubrecordHeader ReadSubrecordHeader<TStream>(this TStream stream, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return ReadSubrecordHeader(stream, stream.MetaData.Constants, offset: offset, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static SubrecordHeader ReadSubrecordHeader<TStream>(this TStream stream, RecordType targetType, int offset = 0, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1840,34 +841,11 @@ public static class StreamHeaderMixIn
         return ReadSubrecordHeader(stream, stream.MetaData.Constants, targetType, offset: offset, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadSubrecordHeader<TStream>(this TStream stream, out SubrecordHeader header, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryReadSubrecordHeader(stream, stream.MetaData.Constants, out header, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadSubrecordHeader<TStream>(this TStream stream, RecordType targetType, out SubrecordHeader header, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1875,34 +853,11 @@ public static class StreamHeaderMixIn
         return TryReadSubrecordHeader(stream, stream.MetaData.Constants, targetType, out header, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static SubrecordFrame ReadSubrecord<TStream>(this TStream stream, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return ReadSubrecord(stream, stream.MetaData.Constants, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static SubrecordFrame ReadSubrecord<TStream>(this TStream stream, RecordType targetType, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1910,34 +865,11 @@ public static class StreamHeaderMixIn
         return ReadSubrecord(stream, stream.MetaData.Constants, targetType, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadSubrecord<TStream>(this TStream stream, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryReadSubrecord(stream, stream.MetaData.Constants, out frame, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryReadSubrecord<TStream>(this TStream stream, RecordType targetType, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IMutagenReadStream
@@ -1945,51 +877,17 @@ public static class StreamHeaderMixIn
         return TryReadSubrecord(stream, stream.MetaData.Constants, targetType, out frame, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryReadSubrecord<TStream>(this TStream stream, IReadOnlyCollection<RecordType> targetRecords, out SubrecordFrame frame, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return TryReadSubrecord(stream, stream.MetaData.Constants, targetRecords, out frame, readSafe: readSafe);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static VariableHeader GetVariableHeader<TStream>(this TStream stream, bool subRecords, bool readSafe = true)
         where TStream : IMutagenReadStream
     {
         return GetVariableHeader(stream, stream.MetaData.Constants, subRecords: subRecords, readSafe: readSafe);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static VariableHeader ReadVariableHeader<TStream>(this TStream stream, bool subRecords, bool readSafe = true)
         where TStream : IMutagenReadStream

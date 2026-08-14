@@ -3,27 +3,12 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Assets;
 
-
-
-
 public interface IAssetLinkContainer : IAssetLinkContainerGetter
 {
 
-
-
-
-
-
     void RemapAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping, AssetLinkQuery query, IAssetLinkCache? linkCache);
 
-
-
-
-
     void RemapListedAssetLinks(IReadOnlyDictionary<IAssetLinkGetter, string> mapping);
-
-
-
 
     new IEnumerable<IAssetLink> EnumerateListedAssetLinks();
 }
@@ -53,9 +38,6 @@ public static class AssetLinkContainerExt
         assetLinkContainerGetter.RemapAssetLinks(mapping, AssetLinkQuery.Listed | AssetLinkQuery.Inferred | AssetLinkQuery.Resolved, linkCache);
     }
 }
-
-
-
 
 public interface IAssetLinkContainerGetter
 {

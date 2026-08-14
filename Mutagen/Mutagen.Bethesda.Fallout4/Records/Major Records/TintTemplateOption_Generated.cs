@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -61,8 +57,6 @@ namespace Mutagen.Bethesda.Fallout4
         public UInt16 Index { get; set; } = default(UInt16);
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -963,8 +957,6 @@ namespace Mutagen.Bethesda.Fallout4
         new TintTemplateOption.TintSlot Slot { get; set; }
         new UInt16 Index { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
         new TintTemplateOption.Flag? Flags { get; set; }
         new ExtendedList<Condition> Conditions { get; }
@@ -994,8 +986,6 @@ namespace Mutagen.Bethesda.Fallout4
         TintTemplateOption.TintSlot Slot { get; }
         UInt16 Index { get; }
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -1551,7 +1541,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return TintTemplateOption.GetNew();
@@ -1995,7 +1984,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

@@ -18,15 +18,12 @@ import sys
 import urllib.parse
 from pathlib import Path
 
-
 def fail_usage() -> None:
     print("Usage: check-wiki-links.py <path-to-wiki-checkout> [<repo-checkout>]")
     sys.exit(2)
 
-
 if len(sys.argv) < 2:
     fail_usage()
-
 
 ROOT = Path(sys.argv[1])
 REPO_ROOT = Path(sys.argv[2]) if len(sys.argv) > 2 else None
@@ -34,12 +31,10 @@ REPO_ROOT = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 pages = {p.name for p in ROOT.iterdir() if p.is_file() and p.suffix.lower() in {".md", ".markdown"}}
 pages_lower = {p.lower() for p in pages}
 
-
 def norm(name: str) -> str:
     """GitHub-wiki-like normalization: strip .md, fold case and separators."""
     name = os.path.splitext(os.path.basename(name))[0]
     return re.sub(r"[^a-z0-9]+", " ", name.lower()).strip()
-
 
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 broken = []
@@ -77,7 +72,6 @@ def map_section(contents: str, heading_prefix: str) -> str:
         raise ValueError(f"missing '{heading_prefix}' section")
     return match.group(1)
 
-
 def parse_wiki_map(map_path: Path) -> tuple[dict[str, str], dict[str, str | None], set[str]]:
     contents = map_path.read_text(encoding="utf-8")
     paired_section = map_section(contents, "Paired")
@@ -105,7 +99,6 @@ def parse_wiki_map(map_path: Path) -> tuple[dict[str, str], dict[str, str | None
         raise ValueError("internal-only section has no entries")
 
     return paired, wiki_only, internal_only
-
 
 def check_wiki_map(repo_root: Path, wiki_pages: set[str]) -> list[str]:
     map_path = repo_root / "docs" / "internal" / "WIKI_MAP.md"
@@ -143,7 +136,6 @@ def check_wiki_map(repo_root: Path, wiki_pages: set[str]) -> list[str]:
             errors.append(f"wiki-only source is missing: {source} (for {page})")
 
     return errors
-
 
 manifest_errors = check_wiki_map(REPO_ROOT, pages) if REPO_ROOT else []
 

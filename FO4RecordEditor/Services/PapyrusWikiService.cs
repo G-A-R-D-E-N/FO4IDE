@@ -5,16 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
 public static class PapyrusWikiService
 {
     public static string LookupFunction(string wikiRoot, string script, string function)
@@ -67,7 +57,6 @@ public static class PapyrusWikiService
             return ToolError.Fail(NotConfiguredMessage);
         script = (script ?? "").Trim();
 
-
         script = Regex.Replace(script, @"[_ ]?Script$", "", RegexOptions.IgnoreCase);
         if (script.Length == 0) return ToolError.Fail("Provide a script name, e.g. 'ActiveMagicEffect' or 'ObjectReference'.");
 
@@ -113,9 +102,6 @@ public static class PapyrusWikiService
         var m = Regex.Match(html, $@"<{tag}[^>]*>(.*?)</{tag}>", RegexOptions.Singleline);
         return m.Success ? StripTags(m.Groups[1].Value) : null;
     }
-
-
-
 
     private static string ExtractSection(string html, string sectionId)
     {

@@ -11,54 +11,30 @@ namespace Mutagen.Bethesda.Plugins.Records
         Female,
     }
 
-
-
-
     public interface IGenderedItemGetter<out T> : IEnumerable<T>, IPrintable
     {
 
-
-
         T Male { get; }
-
-
-
 
         T Female { get; }
 
         T this[MaleFemaleGender gender] { get; }
     }
 
-
-
-
     public interface IGenderedItem<T> : IGenderedItemGetter<T>
     {
 
-
-
         new T Male { set; get; }
-
-
-
 
         new T Female { set; get; }
 
         new T this[MaleFemaleGender gender] { get; set; }
     }
 
-
-
-
     public sealed class GenderedItem<T> : IGenderedItem<T>
     {
 
-
-
         public T Male { get; set; }
-
-
-
 
         public T Female { get; set; }
 
@@ -78,17 +54,11 @@ namespace Mutagen.Bethesda.Plugins.Records
             }
         }
 
-
-
-
         public GenderedItem(T male, T female)
         {
             Male = male;
             Female = female;
         }
-
-
-
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -97,11 +67,6 @@ namespace Mutagen.Bethesda.Plugins.Records
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-
-
-
-
 
         public void Print(StructuredStringBuilder sb, string? name)
         {

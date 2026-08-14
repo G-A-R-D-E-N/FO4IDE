@@ -7,22 +7,8 @@ using System.IO.Abstractions;
 
 namespace Mutagen.Bethesda.Plugins.Analysis.DI;
 
-
-
-
-
 public interface IMultiModFileReader
 {
-
-
-
-
-
-
-
-
-
-
 
     TModGetter Read<TModGetter>(
         DirectoryPath folder,
@@ -32,10 +18,6 @@ public interface IMultiModFileReader
         BinaryReadParameters readParams)
         where TModGetter : class, IModDisposeGetter;
 }
-
-
-
-
 
 public class MultiModFileReader : IMultiModFileReader
 {
@@ -50,7 +32,6 @@ public class MultiModFileReader : IMultiModFileReader
     {
         var fileSystem = readParams.FileSystem.GetOrDefault();
 
-
         var modPath = new ModPath(modKey, Path.Combine(folder.Path, modKey.FileName));
         var splitFiles = MultiModFileAnalysis.GetSplitModFiles(modPath, fileSystem);
 
@@ -59,10 +40,8 @@ public class MultiModFileReader : IMultiModFileReader
             throw new SplitModException($"No split files found for {modKey} in {folder}");
         }
 
-
         var gameReleaseContext = new GameReleaseInjection(gameRelease);
         var modImporter = new Records.DI.ModImporter(fileSystem, gameReleaseContext);
-
 
         return modImporter.ImportMultiFile<TModGetter>(modKey, splitFiles.Select(f => (ModPath)f.Path), loadOrder, readParams);
     }

@@ -3,26 +3,9 @@ using System.Collections.Generic;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public enum PapyrusTokenKind
 {
     EndOfFile,
-
 
     Newline,
 
@@ -31,9 +14,7 @@ public enum PapyrusTokenKind
     FloatLiteral,
     StringLiteral,
 
-
     DocComment,
-
 
     As,
     Auto,
@@ -81,7 +62,6 @@ public enum PapyrusTokenKind
     Var,
     While,
 
-
     LParen,
     RParen,
     LBracket,
@@ -111,14 +91,6 @@ public enum PapyrusTokenKind
     Percent,
 }
 
-
-
-
-
-
-
-
-
 public readonly struct PapyrusToken
 {
     public PapyrusToken(PapyrusTokenKind kind, string text, PapyrusSpan span)
@@ -136,7 +108,6 @@ public readonly struct PapyrusToken
 
     public override string ToString() => $"{Kind} '{Text}' {Span}";
 }
-
 
 public static class PapyrusKeywords
 {
@@ -189,7 +160,6 @@ public static class PapyrusKeywords
             ["var"] = PapyrusTokenKind.Var,
             ["while"] = PapyrusTokenKind.While,
         };
-
 
     public static IReadOnlyCollection<string> All => Map.Keys;
 

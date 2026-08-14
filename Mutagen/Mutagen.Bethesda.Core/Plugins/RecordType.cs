@@ -3,52 +3,25 @@ using System.Diagnostics;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
 [DebuggerDisplay("{Type}")]
 public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
 {
 
-
-
     public const byte Length = 4;
-
-
-
 
     public static readonly RecordType Null = new RecordType("\0\0\0\0");
 
-
-
-
     public readonly int TypeInt;
-
-
-
 
     public string Type => GetStringType(TypeInt);
 
-
-
-
     public string CheckedType => GetCheckedStringType(TypeInt);
-
-
-
 
     [DebuggerStepThrough]
     public RecordType (int type)
     {
         TypeInt = type;
     }
-
-
-
-
-
-
 
     [DebuggerStepThrough]
     public RecordType(ReadOnlySpan<char> typeStr)
@@ -59,13 +32,6 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         }
         TypeInt = GetTypeInt(typeStr);
     }
-
-
-
-
-
-
-
 
     public static bool TryFactory(ReadOnlySpan<char> str, out RecordType recType)
     {
@@ -78,31 +44,16 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         return true;
     }
 
-
-
-
-
-
     public override bool Equals(object? other)
     {
         if (other is not RecordType rhs) return false;
         return Equals(rhs);
     }
 
-
-
-
-
-
     public bool Equals(RecordType other)
     {
         return TypeInt == other.TypeInt;
     }
-
-
-
-
-
 
     public bool Equals(string? other)
     {
@@ -121,28 +72,15 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         return !r1.Equals(r2);
     }
 
-
-
-
-
     public override int GetHashCode()
     {
         return HashCode.Combine(TypeInt);
     }
 
-
-
-
-
     public override string ToString()
     {
         return Type;
     }
-
-
-
-
-
 
     [DebuggerStepThrough]
     public static string GetStringType(int typeInt)
@@ -156,12 +94,6 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         });
     }
 
-
-
-
-
-
-
     public static string GetCheckedStringType(int typeInt)
     {
         var ret = GetStringType(typeInt);
@@ -174,12 +106,6 @@ public readonly struct RecordType : IEquatable<RecordType>, IEquatable<string>
         }
         return ret;
     }
-
-
-
-
-
-
 
     [DebuggerStepThrough]
     public static int GetTypeInt(ReadOnlySpan<char> typeStr)

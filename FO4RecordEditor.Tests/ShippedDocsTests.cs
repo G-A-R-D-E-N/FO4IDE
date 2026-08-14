@@ -8,17 +8,10 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class ShippedDocsTests
 {
     private readonly ITestOutputHelper _out;
     public ShippedDocsTests(ITestOutputHelper o) => _out = o;
-
-
-
-
 
     private static string RepoRoot()
     {
@@ -49,10 +42,6 @@ public class ShippedDocsTests
         var text = File.ReadAllText(path);
         var expected = ToolNames().Length;
 
-
-
-
-
         var counts = Regex.Matches(text, @"\*{0,2}(\d{2,3})\*{0,2}\s+(?:tools|operations)\b")
             .Select(m => int.Parse(m.Groups[1].Value))
             .Distinct()
@@ -64,7 +53,6 @@ public class ShippedDocsTests
         counts.Should().AllSatisfy(c => c.Should().Be(expected),
             $"{relative} states a tool count that no longer matches the registered tools");
     }
-
 
     [Fact]
     public void McpSetupDocumentsEveryTool()
@@ -78,8 +66,6 @@ public class ShippedDocsTests
 
         missing.Should().BeEmpty("every tool must appear in the public MCP tool reference");
     }
-
-
 
     [Fact]
     public void McpSetupDoesNotPresentPingAsATool()

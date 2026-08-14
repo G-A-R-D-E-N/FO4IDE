@@ -22,7 +22,7 @@ internal partial class DistantLodBinaryCreateTranslation
 public partial class DistantLodBinaryWriteTranslation
 {
     private const uint DataLength = 260;
-    
+
     public static partial void WriteBinaryMeshCustom(MutagenWriter writer, IDistantLodGetter item)
     {
         var mesh = item.Mesh;

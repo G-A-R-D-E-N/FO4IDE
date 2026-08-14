@@ -50,7 +50,7 @@ partial class RegionBinaryCreateTranslation
         RegionData.RegionDataType dataType = (RegionData.RegionDataType)BinaryPrimitives.ReadUInt32LittleEndian(rdatFrame.Content);
 
         frame = frame.SpawnAll();
-        
+
         switch (dataType)
         {
             case RegionData.RegionDataType.Object:
@@ -128,10 +128,10 @@ partial class RegionBinaryOverlay
 
     private void ParseRegionData(OverlayStream stream, int offset)
     {
-        int loc = stream.Position - offset; 
+        int loc = stream.Position - offset;
         var rdatFrame = stream.ReadSubrecord();
         RegionData.RegionDataType dataType = (RegionData.RegionDataType)BinaryPrimitives.ReadUInt32LittleEndian(rdatFrame.Content);
-        
+
         switch (dataType)
         {
             case RegionData.RegionDataType.Object:

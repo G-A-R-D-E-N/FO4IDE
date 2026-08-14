@@ -6,37 +6,19 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
 public sealed class GraphCompileOptions
 {
     public PapyrusCompileOptions Papyrus { get; } = new();
 
     public PapyrusSourceWriterOptions Writer { get; } = new();
 
-
     public bool StopAfterSource { get; set; }
-
-
-
-
-
-
-
-
-
 
     public bool TreatPapyrusErrorsAsInternalFaults { get; set; }
 }
 
-
 public sealed record GraphCompileResult
 {
-
-
-
-
-
-
 
     public string? Source { get; init; }
 
@@ -48,7 +30,6 @@ public sealed record GraphCompileResult
 
     public IReadOnlyList<GraphDiagnostic> Diagnostics { get; init; } = Array.Empty<GraphDiagnostic>();
 
-
     public IReadOnlyList<PapyrusDiagnostic> PapyrusDiagnostics { get; init; } =
         Array.Empty<PapyrusDiagnostic>();
 
@@ -59,14 +40,6 @@ public sealed record GraphCompileResult
     public IEnumerable<GraphDiagnostic> Errors =>
         Diagnostics.Where(d => d.Severity == GraphSeverity.Error);
 }
-
-
-
-
-
-
-
-
 
 public sealed class GraphCompiler
 {
@@ -83,13 +56,6 @@ public sealed class GraphCompiler
         PapyrusCompiler.IndexFor(roots);
 
     public NodePalette Palette => _palette;
-
-
-
-
-
-
-
 
     public GraphValidation Validate(GraphDocument document) =>
         new GraphValidator(_index, _palette).Validate(document);
@@ -162,7 +128,6 @@ public sealed class GraphCompiler
         return Compile(document!, options);
     }
 
-
     public GraphCompileResult CompileToFile(
         GraphDocument document, string pscPath, string? pexPath = null, GraphCompileOptions? options = null)
     {
@@ -180,26 +145,6 @@ public sealed class GraphCompiler
 
     private readonly Dictionary<string, string> _scratchRoots =
         new(StringComparer.OrdinalIgnoreCase);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private void PublishForSelfReference(string scriptName, string source)
     {
@@ -230,7 +175,6 @@ public sealed class GraphCompiler
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
 
-
         }
     }
 
@@ -245,14 +189,6 @@ public sealed class GraphCompiler
         var imports = string.Concat(document.Header.Imports.Select(i => "\nImport " + i));
         return PapyrusParser.Parse(header + imports + "\n", document.Header.ScriptName + ".psc");
     }
-
-
-
-
-
-
-
-
 
     private static GraphDiagnostic MapBack(
         PapyrusDiagnostic diagnostic, GraphSourceMap map, GraphCompileOptions options)

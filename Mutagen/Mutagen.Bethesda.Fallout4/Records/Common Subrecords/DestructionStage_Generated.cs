@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -99,8 +95,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -766,8 +760,6 @@ namespace Mutagen.Bethesda.Fallout4
         new Int32 DebrisCount { get; set; }
         new String? SequenceName { get; set; }
 
-
-
         new Model? Model { get; set; }
     }
 
@@ -795,8 +787,6 @@ namespace Mutagen.Bethesda.Fallout4
         Int32 DebrisCount { get; }
         String? SequenceName { get; }
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1331,7 +1321,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return DestructionStage.GetNew();
@@ -1686,7 +1675,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

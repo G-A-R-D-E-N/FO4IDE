@@ -8,16 +8,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
 public static class MaterialService
 {
     public static string Inspect(string path)
@@ -67,9 +57,6 @@ public static class MaterialService
         return $"Set {field} = {value} in '{Path.GetFileName(path)}', wrote to '{dest}'.";
     }
 
-
-
-
     public static string InspectJson(string path)
     {
         var (data, err) = LoadMaterial(path);
@@ -87,9 +74,6 @@ public static class MaterialService
             fields,
         });
     }
-
-
-
 
     public static string SetFields(string path, Dictionary<string, string> fields, string? outPath)
     {
@@ -185,8 +169,6 @@ public static class MaterialService
         float f => f.ToString("0.###", CultureInfo.InvariantCulture),
         _ => val.ToString() ?? "",
     };
-
-
 
     private static (object target, PropertyInfo? prop) ResolveField(IMaterialData data, string field)
     {

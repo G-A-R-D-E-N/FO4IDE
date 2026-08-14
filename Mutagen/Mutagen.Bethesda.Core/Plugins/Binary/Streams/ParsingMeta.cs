@@ -11,53 +11,24 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Streams;
 
-
-
-
 public sealed class ParsingMeta
 {
 
-
-
     public GameConstants Constants { get; }
-
-
-
 
     public IReadOnlySeparatedMasterPackage MasterReferences { get; set; }
 
-
-
-
     public RecordTypeInfoCacheReader? RecordInfoCache { get; set; }
-
-
-
 
     public ILinkCache? LinkCache { get; set; }
 
-
-
-
     public IStringsFolderLookup? StringsLookup { get; set; }
-
-
-
 
     public bool Parallel { get; set; }
 
-
-
-
     public bool InWorldspace { get; set; }
 
-
-
-
     public ushort? FormVersion { get; set; }
-
-
-
 
     public ModKey ModKey { get; }
 

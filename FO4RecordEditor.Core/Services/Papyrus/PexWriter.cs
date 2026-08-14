@@ -3,26 +3,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed partial class PexFile
 {
     public void WriteFile(string path)
@@ -41,7 +21,6 @@ public sealed partial class PexFile
     public void Write(Stream stream)
     {
         using var w = new BinaryWriter(stream, Encoding.Latin1, leaveOpen: true);
-
 
         var index = new Dictionary<string, ushort>(StringTable.Count, StringComparer.Ordinal);
         for (int i = 0; i < StringTable.Count; i++)
@@ -118,8 +97,6 @@ public sealed partial class PexFile
         foreach (var obj in Objects)
         {
             w.Write(Idx(obj.Name));
-
-
 
             var body = new MemoryStream();
             using (var bw = new BinaryWriter(body, Encoding.Latin1, leaveOpen: true))

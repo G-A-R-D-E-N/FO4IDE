@@ -34,27 +34,19 @@ public class FontProvider : IFontProvider
 			if (line.StartsWith("map", StringComparison.OrdinalIgnoreCase))
 			{
 
-
-
 				var span = line.AsSpan();
 
-
 				span = span[5..];
-
 
 				var aliasEnd = span.IndexOf('"');
 				var alias = span[..aliasEnd].ToString();
 
-
 				span = span[(aliasEnd + 5)..];
-
 
 				var fonIdEnd = span.IndexOf('"');
 				var fontId = span[..fonIdEnd].ToString();
 
-
 				span = span[(fonIdEnd + 2)..];
-
 
 				var fontWeight = span.ToString();
 
@@ -63,9 +55,7 @@ public class FontProvider : IFontProvider
 			else if (line.StartsWith("fontlib", StringComparison.OrdinalIgnoreCase))
 			{
 
-
 				var lib = line[9..^1];
-
 
 				if (!lib.StartsWith("Interface", StringComparison.OrdinalIgnoreCase))
 				{

@@ -1,23 +1,9 @@
 namespace FO4RecordEditor.Services.Rendering;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class FriendlyNames
 {
     private static readonly Dictionary<string, string> _overrides = new(StringComparer.Ordinal)
     {
-
 
         ["TitleString"]              = "Name",
 
@@ -26,10 +12,8 @@ public static class FriendlyNames
         ["VirtualMachineAdapter"]    = "Scripts",
         ["VMAD"]                     = "Scripts",
 
-
         ["PickUpSound"]              = "Pick-Up Sound",
         ["PutDownSound"]             = "Put-Down Sound",
-
 
         ["CompareOperator"]          = "Operator",
         ["ParameterOneRecord"]       = "Parameter 1",
@@ -39,22 +23,14 @@ public static class FriendlyNames
         ["RunOnType"]                = "Run On",
         ["ComparisonValue"]          = "Comparison Value",
 
-
         ["CreatedObject"]            = "Created Object",
         ["CreatedObjectCount"]       = "Crafted Count",
         ["WorkbenchKeyword"]         = "Workbench",
 
-
         ["MenuDisplayObject"]        = "Menu Display Object",
-
 
         ["NPCOwner"]                 = "NPC Owner",
     };
-
-
-
-
-
 
     public static string Label(string raw)
     {
@@ -62,11 +38,6 @@ public static class FriendlyNames
         var s = raw.Length > 0 && raw[0] == '_' ? raw[1..] : raw;
         return SplitCamelCase(s);
     }
-
-
-
-
-
 
     public static string Singular(string plural)
     {
@@ -76,25 +47,11 @@ public static class FriendlyNames
         return friendly;
     }
 
-
-
     public static string LabelPath(string path)
     {
         if (path.Contains('.') || path.Contains('[')) return path;
         return Label(path);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static string SplitCamelCase(string s)
     {
@@ -109,10 +66,6 @@ public static class FriendlyNames
                 char next = i + 1 < s.Length ? s[i + 1] : '\0';
 
                 bool case_a = char.IsLower(prev);
-
-
-
-
 
                 bool case_b = char.IsUpper(prev)
                            && next != '\0' && char.IsLower(next)

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -38,8 +34,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public abstract partial class AColorRecordData :
         IAColorRecordData,
         IEquatable<IAColorRecordDataGetter>,
@@ -52,7 +46,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
         partial void CustomCtor();
         #endregion
-
 
         #region To String
 
@@ -93,7 +86,6 @@ namespace Mutagen.Bethesda.Fallout4
             public Mask(TItem initialValue)
             {
             }
-
 
             #pragma warning disable CS8618
             protected Mask()
@@ -348,16 +340,11 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAColorRecordData :
         IAColorRecordDataGetter,
         ILoquiObjectSetter<IAColorRecordData>
     {
     }
-
-
-
 
     public partial interface IAColorRecordDataGetter :
         ILoquiObject,
@@ -726,7 +713,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return AColorRecordData.GetNew();
@@ -903,7 +889,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -959,7 +944,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         #region To String
 

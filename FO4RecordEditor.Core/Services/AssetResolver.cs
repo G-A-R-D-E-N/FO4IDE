@@ -6,50 +6,17 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
 public sealed record AssetHit(string Kind, string Container, string Path, string InnerPath, long Size);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public static class AssetResolver
 {
     private static readonly object _lock = new();
-
 
     private static readonly Dictionary<string, Dictionary<string, string>> _archiveIndex =
         new(StringComparer.OrdinalIgnoreCase);
     private static string[]? _sessionRoots;
 
     private static string Norm(string p) => (p ?? "").Replace('/', '\\').Trim().Trim('"').TrimStart('\\');
-
-
-
 
     public static void SetSessionDataRoots(IEnumerable<string> rootsHighToLow)
     {
@@ -62,9 +29,6 @@ public static class AssetResolver
             _archiveIndex.Clear();
         }
     }
-
-
-
 
     public static List<string> Mo2DataRoots(string instancePath, IReadOnlyList<string> modsHighToLow,
                                             string overwriteFolder, string gameDataFolder)
@@ -83,8 +47,6 @@ public static class AssetResolver
         {
             if (_sessionRoots != null) return _sessionRoots;
         }
-
-
 
         var roots = new List<string>();
         try
@@ -137,8 +99,6 @@ public static class AssetResolver
         }
     }
 
-
-
     public static List<AssetHit> ResolveAll(string relPath, int limit = 25)
     {
         var rel = Norm(relPath);
@@ -172,14 +132,9 @@ public static class AssetResolver
         return hits;
     }
 
-
     public static AssetHit? Resolve(string relPath) => ResolveAll(relPath, 1).FirstOrDefault();
 
     public static bool Exists(string relPath) => Resolve(relPath) != null;
-
-
-
-
 
     public static string? Materialize(AssetHit hit)
     {
@@ -209,7 +164,6 @@ public static class AssetResolver
         catch (Exception ex) { DebugLog.Exception("Asset.Materialize", ex); }
         return null;
     }
-
 
     public static string ResolveText(string relPath, bool extract, int limit = 25)
     {

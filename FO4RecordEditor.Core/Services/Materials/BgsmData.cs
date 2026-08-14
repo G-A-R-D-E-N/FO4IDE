@@ -1,20 +1,9 @@
 namespace FO4RecordEditor.Services.Materials;
 
-
-
-
-
-
 public interface IMaterialData
 {
     MaterialHeader Header { get; set; }
 }
-
-
-
-
-
-
 
 public sealed class MaterialHeader
 {
@@ -49,11 +38,6 @@ public sealed class MaterialHeader
     public bool GrayscaleToPaletteColor { get; set; }
     public byte? MaskWrites { get; set; }
 }
-
-
-
-
-
 
 public sealed class BgsmData : IMaterialData
 {

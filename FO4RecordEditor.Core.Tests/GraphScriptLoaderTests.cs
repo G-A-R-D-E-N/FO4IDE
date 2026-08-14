@@ -8,14 +8,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
 public class GraphScriptLoaderTests
 {
     private const string Source = """
@@ -49,8 +41,6 @@ public class GraphScriptLoaderTests
     [Fact]
     public void A_compiled_script_becomes_the_same_graph_as_its_source()
     {
-
-
 
         var directory = Directory.CreateTempSubdirectory("fo4re-loader-pex-");
         try
@@ -86,8 +76,6 @@ public class GraphScriptLoaderTests
     public void A_script_that_refuses_to_lift_comes_back_with_the_reason_and_no_document()
     {
 
-
-
         var directory = Directory.CreateTempSubdirectory("fo4re-loader-refuse-");
         try
         {
@@ -116,8 +104,6 @@ public class GraphScriptLoaderTests
     public void A_script_is_checked_against_its_own_folder()
     {
 
-
-
         var directory = Directory.CreateTempSubdirectory("fo4re-loader-roots-");
         try
         {
@@ -137,17 +123,6 @@ public class GraphScriptLoaderTests
         }
         finally { directory.Delete(recursive: true); }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     [Fact]
     public void A_lifted_property_read_validates_against_the_pin_the_getter_declares()

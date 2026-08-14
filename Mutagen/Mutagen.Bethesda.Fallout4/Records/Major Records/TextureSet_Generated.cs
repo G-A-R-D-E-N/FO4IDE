@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -55,8 +51,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region ObjectBounds
-
-
 
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -897,8 +891,6 @@ namespace Mutagen.Bethesda.Fallout4
         ITextureSetGetter
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
         new String? Diffuse { get; set; }
         new String? NormalOrGloss { get; set; }
@@ -934,8 +926,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => TextureSet_Registration.Instance;
         #region ObjectBounds
-
-
 
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
@@ -1650,7 +1640,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return TextureSet.GetNew();
@@ -2246,7 +2235,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2279,7 +2267,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ITextureSetGetter);
-
 
         #region ObjectBounds
         private RangeInt32? _ObjectBoundsLocation;

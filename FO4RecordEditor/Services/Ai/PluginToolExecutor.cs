@@ -2,11 +2,6 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
 public sealed class PluginToolExecutor
 {
     private readonly Func<object?> _envProvider;
@@ -22,8 +17,6 @@ public sealed class PluginToolExecutor
     }
 
     public sealed record ToolSpec(string Name, string Description, object Schema);
-
-
 
     private static readonly ToolSpec[] _specs =
     [
@@ -307,7 +300,6 @@ public sealed class PluginToolExecutor
                 properties = new { },
                 required = Array.Empty<string>()
             }),
-
 
         new("open_plugin",
             "Open an existing plugin for editing so records can be added or modified. The 'plugin' arg " +
@@ -1723,15 +1715,8 @@ public sealed class PluginToolExecutor
             }),
     ];
 
-
     public static object[] ToolDefinitions() =>
         _specs.Select(t => (object)new { name = t.Name, description = t.Description, input_schema = t.Schema }).ToArray();
-
-
-
-
-
-
 
     public static object[] ToolDefinitionsCached() =>
         _specs.Select((t, i) => (object)new
@@ -1742,11 +1727,8 @@ public sealed class PluginToolExecutor
             cache_control = i == _specs.Length - 1 ? new { type = "ephemeral" } : null,
         }).ToArray();
 
-
     public static object[] McpToolDefinitions() =>
         _specs.Select(t => (object)new { name = t.Name, description = t.Description, inputSchema = t.Schema }).ToArray();
-
-
 
     public static object[] GeminiToolDefinitions() =>
         _specs.Select(t => (object)new
@@ -1755,7 +1737,6 @@ public sealed class PluginToolExecutor
             description = t.Description,
             parameters = ToGeminiSchema(t.Schema),
         }).ToArray();
-
 
     private static System.Text.Json.Nodes.JsonNode ToGeminiSchema(object schema)
     {
@@ -1778,29 +1759,16 @@ public sealed class PluginToolExecutor
         }
     }
 
-
-
     private const int MaxResultChars = 8000;
-
-
 
     public record McpToolEvent(string Tool, string Plugin, string Record, string Field, string Summary, bool IsWrite);
     public static event Action<McpToolEvent>? ToolCompleted;
-
-
-
-
-
 
     public ToolResult ExecuteWithStatus(string toolName, string inputJson)
     {
         try { return ToolError.Unwrap(ExecuteMarked(toolName, inputJson)); }
         catch (Exception ex) { return ToolResult.Fail("Tool error: " + ex.Message); }
     }
-
-
-
-
 
     public string Execute(string toolName, string inputJson) =>
         ToolError.Unwrap(ExecuteMarked(toolName, inputJson)).Text;
@@ -2074,7 +2042,6 @@ public sealed class PluginToolExecutor
                     Str("mode"), Int("max_count", 50), Bool("by_model"), Str("patch_plugin"), Bool("apply"));
             }
 
-
             case "open_plugin":
                 return WriteService.OpenPlugin(Str("plugin"), env);
             case "create_plugin":
@@ -2326,8 +2293,6 @@ public sealed class PluginToolExecutor
         }
     }
 
-
-
     private static Mutagen.Bethesda.Plugins.FormKey ResolveToFk(object? env, string id) =>
         MutagenLoader.ResolveId(env, id);
 
@@ -2359,8 +2324,6 @@ public sealed class PluginToolExecutor
 
         if (diffRows.Count > 0)
         {
-
-
 
             const int FW = 34, VW = 20, Budget = 6500;
             var head = "  " + "Field".PadRight(FW);
@@ -2464,9 +2427,6 @@ public sealed class PluginToolExecutor
         return $"Winning plugin: {winner}  (of {contexts.Count} version(s) in the load order)\n{dump}";
     }
 
-
-
-
     private static string GetScripts(object? env, string id)
     {
         var fk = ResolveToFk(env, id);
@@ -2521,8 +2481,6 @@ public sealed class PluginToolExecutor
         return $"({t.Name})";
     }
 
-
-
     private static string DiffRecords(object? env, string aId, string bId)
     {
         var fa = ResolveToFk(env, aId); if (fa.IsNull) return $"Could not resolve A '{aId}'.";
@@ -2550,7 +2508,6 @@ public sealed class PluginToolExecutor
             return "MO2 instance unknown -- load the modlist with 'Open MO2' first.";
         if (string.IsNullOrWhiteSpace(query)) return "Provide a query (a FormID, EditorID, or name).";
 
-
         var roots = new List<string>();
         var modsDir = System.IO.Path.Combine(instancePath, "mods");
         if (System.IO.Directory.Exists(modsDir))
@@ -2565,7 +2522,6 @@ public sealed class PluginToolExecutor
         var hits = new List<string>();
         foreach (var root in roots)
         {
-
 
             foreach (var ini in System.IO.Directory.EnumerateFiles(root, "*.ini*", System.IO.SearchOption.AllDirectories))
             {

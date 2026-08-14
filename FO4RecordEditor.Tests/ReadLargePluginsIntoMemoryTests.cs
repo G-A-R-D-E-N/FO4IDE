@@ -11,13 +11,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
 public class ReadLargePluginsIntoMemoryTests : IDisposable
 {
     private readonly ITestOutputHelper _out;
@@ -60,8 +53,6 @@ public class ReadLargePluginsIntoMemoryTests : IDisposable
         ToolPaths.ReadLargePluginsIntoMemory.Should().Be(expected);
     }
 
-
-
     [Fact]
     public void OverlayHoldsTheFileOpen_FullReadDoesNot()
     {
@@ -97,8 +88,6 @@ public class ReadLargePluginsIntoMemoryTests : IDisposable
             fullCount.Should().Be(overlayCount,
                 "the setting must change how the file is opened, never what is read from it");
             _out.WriteLine($"{Path.GetFileName(plugin.FullName)}: {overlayCount} records via both paths");
-
-
 
             var act = () => File.WriteAllBytes(copy, File.ReadAllBytes(copy));
             act.Should().NotThrow("nothing should be holding the loaded plugin open");

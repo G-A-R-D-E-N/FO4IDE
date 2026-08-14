@@ -10,7 +10,7 @@ internal static class InterfaceEnumerationHelper
 {
     public static bool TryEnumerateLinkRecordsFor<T>(
         GameCategory category,
-        T obj, 
+        T obj,
         Type linkInterface,
         out IEnumerable<IMajorRecordGetter> interfaces)
         where T : IMajorRecordGetterEnumerable, ILoquiObjectGetter
@@ -27,14 +27,14 @@ internal static class InterfaceEnumerationHelper
             interfaces = [];
             return true;
         }
-        
+
         interfaces = inheritingTypes.Registrations.SelectMany(t => obj.EnumerateMajorRecords(inheritingTypes.Setter ? t.SetterType : t.GetterType));
         return true;
     }
-    
+
     public static bool TryEnumerateAspectRecordsFor<T>(
         GameCategory category,
-        T obj, 
+        T obj,
         Type linkInterface,
         out IEnumerable<IMajorRecordGetter> interfaces)
         where T : IMajorRecordGetterEnumerable, ILoquiObjectGetter
@@ -51,14 +51,14 @@ internal static class InterfaceEnumerationHelper
             interfaces = [];
             return true;
         }
-        
+
         interfaces = inheritingTypes.Registrations.SelectMany(t => obj.EnumerateMajorRecords(inheritingTypes.Setter ? t.SetterType : t.GetterType, throwIfUnknown: false));
         return true;
     }
-    
+
     public static bool TryEnumerateInterfaceRecordsFor<T>(
         GameCategory category,
-        T obj, 
+        T obj,
         Type linkInterface,
         out IEnumerable<IMajorRecordGetter> interfaces)
         where T : IMajorRecordGetterEnumerable, ILoquiObjectGetter
@@ -74,14 +74,14 @@ internal static class InterfaceEnumerationHelper
             interfaces = [];
             return true;
         }
-        
+
         interfaces = inheritingTypes.Registrations.SelectMany(t => obj.EnumerateMajorRecords(inheritingTypes.Setter ? t.SetterType : t.GetterType, throwIfUnknown: false));
         return true;
     }
-    
+
     public static bool TryEnumerateLinkContextsFor<T, TMod, TModGetter>(
         GameCategory category,
-        T obj, 
+        T obj,
         Type linkInterface,
         ILinkCache linkCache,
         out IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> interfaces)
@@ -95,7 +95,7 @@ internal static class InterfaceEnumerationHelper
             interfaces = [];
             return false;
         }
-    
+
         if (inheritingTypes.Setter && !obj.Registration.SetterType.IsAssignableFrom(obj.GetType()))
         {
             interfaces = [];
@@ -106,10 +106,10 @@ internal static class InterfaceEnumerationHelper
             .SelectMany(t => obj.EnumerateMajorRecordContexts(linkCache, inheritingTypes.Setter ? t.SetterType : t.GetterType));
         return true;
     }
-    
+
     public static bool TryEnumerateAspectContextsFor<T, TMod, TModGetter>(
         GameCategory category,
-        T obj, 
+        T obj,
         Type linkInterface,
         ILinkCache linkCache,
         Func<T, IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>>> getEnumer,
@@ -124,18 +124,18 @@ internal static class InterfaceEnumerationHelper
             interfaces = [];
             return false;
         }
-    
+
         if (inheritingTypes.Setter && !obj.Registration.SetterType.IsAssignableFrom(obj.GetType()))
         {
             interfaces = [];
             return true;
         }
-        
+
         interfaces = inheritingTypes.Registrations
             .SelectMany(t => obj.EnumerateMajorRecordContexts(linkCache, inheritingTypes.Setter ? t.SetterType : t.GetterType, throwIfUnknown: false));
         return true;
     }
-    
+
     public delegate IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> ContextGetter<TMod, TModGetter>(
             ILinkCache linkCache,
             Type type,
@@ -145,7 +145,7 @@ internal static class InterfaceEnumerationHelper
 
     public static bool TryEnumerateInterfaceContextsFor<T, TMod, TModGetter>(
         GameCategory category,
-        T obj, 
+        T obj,
         Type linkInterface,
         ILinkCache linkCache,
         ContextGetter<TMod, TModGetter> getter,
@@ -159,13 +159,13 @@ internal static class InterfaceEnumerationHelper
             interfaces = [];
             return false;
         }
-    
+
         if (inheritingTypes.Setter && !obj.Registration.SetterType.IsAssignableFrom(obj.GetType()))
         {
             interfaces = [];
             return true;
         }
-        
+
         interfaces = inheritingTypes.Registrations
             .SelectMany(t => getter(linkCache, inheritingTypes.Setter ? t.SetterType : t.GetterType, throwIfUnknown: false));
         return true;
@@ -173,7 +173,7 @@ internal static class InterfaceEnumerationHelper
 
     public static bool TryEnumerateInterfaceContextsFor<T, TMod, TModGetter>(
         GameCategory category,
-        T obj, 
+        T obj,
         Type linkInterface,
         ILinkCache linkCache,
         out IEnumerable<IModContext<TMod, TModGetter, IMajorRecord, IMajorRecordGetter>> interfaces)

@@ -106,7 +106,7 @@ public sealed record FormLinkInformation(FormKey FormKey, Type Type) : IFormLink
             info = default;
             return false;
         }
-        
+
         info = new FormLinkInformation(fk, t);
         return true;
     }

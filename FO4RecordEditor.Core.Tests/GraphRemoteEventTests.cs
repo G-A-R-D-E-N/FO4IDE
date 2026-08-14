@@ -6,15 +6,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class GraphRemoteEventTests
 {
     private static string Source(GraphDocument document)
@@ -140,7 +131,6 @@ public class GraphRemoteEventTests
     public void A_local_override_and_a_remote_handler_of_the_same_event_coexist()
     {
 
-
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
 
@@ -183,7 +173,6 @@ public class GraphRemoteEventTests
     public void The_palette_shows_the_signature_the_node_actually_emits()
     {
 
-
         var palette = GraphTestEnvironment.Palette();
 
         var withParameters = palette.Search("ObjectReference.OnActivate", limit: 20).Entries
@@ -208,9 +197,6 @@ public class GraphRemoteEventTests
     [Fact]
     public void A_custom_event_handler_decompiles_back_to_its_dotted_name()
     {
-
-
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "Quest");

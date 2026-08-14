@@ -1,6 +1,4 @@
 
-
-
 const BY_TYPE: Record<string, string> = {
   int: '--chip-5',
   float: '--chip-8',
@@ -19,8 +17,6 @@ export function pinColorVar(dataType: string): string {
 
   const known = BY_TYPE[base];
   if (known) return `var(${known})`;
-
-
 
   return `var(${OBJECT_COLOR})`;
 }

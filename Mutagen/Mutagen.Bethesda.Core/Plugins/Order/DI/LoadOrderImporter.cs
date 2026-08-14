@@ -12,16 +12,12 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 public interface ILoadOrderImporter
 {
 
-
-
     ILoadOrder<IModListing<IModGetter>> Import(BinaryReadParameters? param = null);
 }
 
 public interface ILoadOrderImporter<TMod>
     where TMod : class, IModKeyed
 {
-
-
 
     ILoadOrder<IModListing<TMod>> Import(BinaryReadParameters? param = null);
 }

@@ -3,10 +3,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
 public enum PexValueType : byte { None = 0, Identifier = 1, String = 2, Integer = 3, Float = 4, Bool = 5 }
 
 public sealed class PexValue
@@ -104,14 +100,6 @@ public sealed class PexObject
     public uint UserFlags;
     public string AutoStateName = "";
 
-
-
-
-
-
-
-
-
     public bool SizeIncludesItself = true;
 
     public List<PexStruct> Structs = new();
@@ -145,8 +133,6 @@ public sealed class PexStructOrder
 public sealed partial class PexFile
 {
 
-
-
     public byte[] TrailingBytes = Array.Empty<byte>();
 
     public byte MajorVersion, MinorVersion;
@@ -161,7 +147,6 @@ public sealed partial class PexFile
     public List<PexStructOrder> StructOrders = new();
     public List<PexUserFlag> UserFlags = new();
     public List<PexObject> Objects = new();
-
 
     public static readonly (string name, int args, bool varargs)[] OpCodes =
     {
@@ -187,7 +172,6 @@ public sealed partial class PexFile
         using var r = new BinaryReader(fs, Encoding.Latin1, leaveOpen: false);
         return Read(r);
     }
-
 
     public static PexFile Read(Stream stream)
     {
@@ -217,10 +201,6 @@ public sealed partial class PexFile
             CompilationTime = r.ReadInt64(),
         };
 
-
-
-
-
         if (pex.GameId != 2)
             throw new InvalidDataException(
                 $"This .pex is for game id {pex.GameId} at format {pex.MajorVersion}.{pex.MinorVersion}; " +
@@ -230,11 +210,9 @@ public sealed partial class PexFile
         pex.UserName = ReadStr(r);
         pex.ComputerName = ReadStr(r);
 
-
         int strCount = r.ReadUInt16();
         for (int i = 0; i < strCount; i++) pex.StringTable.Add(ReadStr(r));
         string S(ushort idx) => idx < pex.StringTable.Count ? pex.StringTable[idx] : $"<str#{idx}>";
-
 
         pex.HasDebugInfo = r.ReadByte() != 0;
         if (pex.HasDebugInfo)
@@ -279,11 +257,9 @@ public sealed partial class PexFile
             }
         }
 
-
         int ufCount = r.ReadUInt16();
         for (int i = 0; i < ufCount; i++)
             pex.UserFlags.Add(new PexUserFlag { Name = S(r.ReadUInt16()), Index = r.ReadByte() });
-
 
         int objCount = r.ReadUInt16();
         for (int i = 0; i < objCount; i++)
@@ -296,7 +272,6 @@ public sealed partial class PexFile
             obj.Const = r.ReadByte() != 0;
             obj.UserFlags = r.ReadUInt32();
             obj.AutoStateName = S(r.ReadUInt16());
-
 
             int structCount = r.ReadUInt16();
             for (int s = 0; s < structCount; s++)
@@ -319,7 +294,6 @@ public sealed partial class PexFile
                 obj.Structs.Add(st);
             }
 
-
             int varCount = r.ReadUInt16();
             for (int v = 0; v < varCount; v++)
             {
@@ -332,7 +306,6 @@ public sealed partial class PexFile
                     Const = r.ReadByte() != 0,
                 });
             }
-
 
             int propCount = r.ReadUInt16();
             for (int p = 0; p < propCount; p++)
@@ -355,7 +328,6 @@ public sealed partial class PexFile
                 obj.Properties.Add(prop);
             }
 
-
             int stateCount = r.ReadUInt16();
             for (int st = 0; st < stateCount; st++)
             {
@@ -371,8 +343,6 @@ public sealed partial class PexFile
                 obj.States.Add(state);
             }
 
-
-
             if (bodyStart >= 0)
             {
                 long body = r.BaseStream.Position - bodyStart;
@@ -382,11 +352,9 @@ public sealed partial class PexFile
             pex.Objects.Add(obj);
         }
 
-
         var rest = r.BaseStream;
         if (rest.CanSeek && rest.Position < rest.Length)
             pex.TrailingBytes = r.ReadBytes((int)(rest.Length - rest.Position));
-
 
         AttachLineNumbers(pex);
         return pex;

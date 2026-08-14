@@ -7,14 +7,14 @@ public sealed class ImmutableManyListWrapper<TValue> : IReadOnlyList<TValue>
     private int _count;
     private readonly List<IReadOnlyList<TValue>> _listOfLists = new();
 
-    public static readonly ImmutableManyListWrapper<TValue> Empty = new(); 
+    public static readonly ImmutableManyListWrapper<TValue> Empty = new();
 
     public void AddList(IReadOnlyList<TValue> val)
     {
         _count += val.Count;
         _listOfLists.Add(val);
     }
-    
+
     public IEnumerator<TValue> GetEnumerator()
     {
         foreach (var list in _listOfLists)

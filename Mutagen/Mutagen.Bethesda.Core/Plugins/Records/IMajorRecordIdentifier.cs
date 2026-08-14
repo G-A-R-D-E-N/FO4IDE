@@ -3,8 +3,6 @@ namespace Mutagen.Bethesda.Plugins.Records;
 public interface IMajorRecordIdentifierGetter : IFormKeyGetter
 {
 
-
-
     string? EditorID { get; }
 }
 

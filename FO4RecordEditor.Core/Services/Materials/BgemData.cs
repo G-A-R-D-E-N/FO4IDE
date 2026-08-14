@@ -1,11 +1,5 @@
 namespace FO4RecordEditor.Services.Materials;
 
-
-
-
-
-
-
 public sealed class BgemData : IMaterialData
 {
     public MaterialHeader Header { get; set; } = new();
@@ -23,8 +17,6 @@ public sealed class BgemData : IMaterialData
     public string? GlassRoughnessScratch { get; set; }
     public string? GlassDirtOverlay { get; set; }
     public bool? GlassEnabled { get; set; }
-
-
 
     public float[]? GlassFresnelColor { get; set; }
     public float? GlassBlurScaleBase { get; set; }

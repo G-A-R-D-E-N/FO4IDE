@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -5822,9 +5818,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         uint IModGetter.NextFormID => this.ModHeader.Stats.NextFormID;
-
-
-
 
         public Fallout4Mod(
             ModKey modKey,
@@ -11744,7 +11737,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
 
         #endregion
-
 
         public object GetNew()
         {
@@ -21193,9 +21185,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
 
-
-
-
     public enum Fallout4Release
     {
         Fallout4 = 4,
@@ -24564,7 +24553,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -25329,7 +25317,6 @@ namespace Mutagen.Bethesda.Fallout4
                 fill: ret.FillRecordType);
             return ret;
         }
-
 
         public ParseResult FillRecordType(
             IBinaryReadStream stream,

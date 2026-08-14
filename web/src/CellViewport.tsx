@@ -8,39 +8,13 @@ import { billboardMatrix, vertsCentroid } from './util/billboard';
 import { cellLayerOf, MARKER_LAYER } from './util/cellLayer';
 import { makeEffectMaterial, applyVertexColors } from './util/effectMaterial';
 
-
-
-
 export type CellGeoMap = Record<string, NifGeo | { error: string }>;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type InstanceRef = {
   mesh: THREE.InstancedMesh; id: number; ref: CellPlacedReference; billboard: boolean;
 
-
-
-
-
-
   local?: THREE.Matrix4;
 };
-
-
-
 
 export type CellTextureStats = {
   ok: number;
@@ -67,13 +41,10 @@ export default function CellViewport(
     onUndo?: () => void;
     onRedo?: () => void;
 
-
-
     onMoveEnd?: (ref: CellPlacedReference) => void;
   }
 ) {
   const mountRef = useRef<HTMLDivElement>(null);
-
 
   const onSelectRef = useRef(onSelect); onSelectRef.current = onSelect;
   const onHideSelectedRef = useRef(onHideSelected); onHideSelectedRef.current = onHideSelected;
@@ -95,13 +66,9 @@ export default function CellViewport(
     setOrbitTarget: (key: string | null) => void;
   } | null>(null);
 
-
-
   const gizmoAttachRef = useRef<((key: string | null) => void) | null>(null);
 
-
   const worldCenterRef = useRef(new THREE.Vector3());
-
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -134,8 +101,6 @@ export default function CellViewport(
     const posBounds = new THREE.Box3();
     const dummy = new THREE.Object3D();
 
-
-
     const pickables: THREE.InstancedMesh[] = [];
     const meshEntries: { mesh: THREE.Object3D; recordType: string }[] = [];
     const modelBBox = new Map<string, THREE.Box3>();
@@ -154,16 +119,10 @@ export default function CellViewport(
       inst: THREE.InstancedMesh; refs: CellPlacedReference[]; centroid: THREE.Vector3; mode?: number;
     }[] = [];
 
-
     const byModel = new Map<string, CellPlacedReference[]>();
     const markers: CellPlacedReference[] = [];
 
-
     const byDecal = new Map<string, CellPlacedReference[]>();
-
-
-
-
 
     type ScolPlacement = { x: number; y: number; z: number; rx: number; ry: number; rz: number; scale: number };
     const byScolModel = new Map<string, { parent: CellPlacedReference; placement: ScolPlacement }[]>();
@@ -194,18 +153,6 @@ export default function CellViewport(
       if (!anyPartOk) markers.push(r);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     const worldCenter = posBounds.getCenter(new THREE.Vector3());
     worldCenterRef.current.copy(worldCenter);
 
@@ -214,7 +161,6 @@ export default function CellViewport(
 
     const texStats: CellTextureStats = { ok: 0, noPath: 0, resolveFail: 0, decodeFail: 0, firstFailure: null };
     let texStatsTimer: ReturnType<typeof setTimeout> | undefined;
-
 
     const reportTexStats = () => {
       if (!onTextureStats || texStatsTimer) return;
@@ -226,9 +172,6 @@ export default function CellViewport(
     const noteTexFailure = (relTexPath: string, modelPath: string) => {
       texStats.firstFailure ??= modelPath ? `${relTexPath} (nif: ${modelPath})` : relTexPath;
     };
-
-
-
 
     const buildShapeMesh = (shape: NifGeo['shapes'][number], modelPath: string) => {
       const g = new THREE.BufferGeometry();
@@ -243,18 +186,11 @@ export default function CellViewport(
       g.computeBoundingBox();
       disposables.push(g);
 
-
-
-
-
       const mat = shape.effectShader
         ? makeEffectMaterial(shape.effect, true)
         : new THREE.MeshStandardMaterial({ color: 0x9aa0aa, metalness: 0.1, roughness: 0.8, side: THREE.DoubleSide });
       applyVertexColors(g, mat, shape.vertexColors);
       disposables.push(mat);
-
-
-
 
       if (hasUV && texLoader && loadTexture && !(shape.textures?.length || shape.bgsmPath)) {
         texStats.noPath++;
@@ -277,15 +213,10 @@ export default function CellViewport(
               tex.flipY = false;
               tex.colorSpace = THREE.SRGBColorSpace;
 
-
-
               tex.wrapS = THREE.RepeatWrapping;
               tex.wrapT = THREE.RepeatWrapping;
               tex.anisotropy = 4;
               mat.map = tex;
-
-
-
 
               if (!shape.effectShader) mat.color.setHex(0xffffff);
               mat.needsUpdate = true;
@@ -334,11 +265,6 @@ export default function CellViewport(
       if (!modelBox.isEmpty()) modelBBox.set(modelPath, modelBox);
     }
 
-
-
-
-
-
     const scolBBox = new Map<string, THREE.Box3>();
     const _scolRefPos = new THREE.Vector3();
     const _scolRefQuat = new THREE.Quaternion();
@@ -370,9 +296,6 @@ export default function CellViewport(
           dummy.matrix.multiplyMatrices(_scolRefM, local);
           inst.setMatrixAt(i, dummy.matrix);
 
-
-
-
           if (g.boundingBox) {
             const box = g.boundingBox.clone().applyMatrix4(local);
             const existing = scolBBox.get(parent.formKey);
@@ -388,16 +311,6 @@ export default function CellViewport(
       }
     }
 
-
-
-
-
-
-
-
-
-
-
     const decalGeo = new THREE.PlaneGeometry(1, 1);
     disposables.push(decalGeo);
     for (const [texPath, refs] of byDecal) {
@@ -407,8 +320,6 @@ export default function CellViewport(
       disposables.push(mat);
 
       if (texLoader && loadTexture) {
-
-
 
         loadTexture('', texPath).then(url => {
           if (cancelled) return;
@@ -453,7 +364,6 @@ export default function CellViewport(
       refs.forEach((r, i) => addInstance(inst, i, r, false));
     }
 
-
     if (markers.length > 0) {
       const markerGeo = new THREE.SphereGeometry(8, 8, 6);
       disposables.push(markerGeo);
@@ -478,11 +388,9 @@ export default function CellViewport(
         pickables.push(inst);
         refs.forEach((r, i) => addInstance(inst, i, r, false));
 
-
         meshEntries.push({ mesh: inst, recordType: MARKER_LAYER });
       }
     }
-
 
     const hlGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1));
     const hlMat = new THREE.LineBasicMaterial({ color: 0x59d0ff, depthTest: false, transparent: true });
@@ -503,7 +411,6 @@ export default function CellViewport(
     const size = posBounds.getSize(new THREE.Vector3());
     const radius = Math.max(size.x, size.y, size.z, 50);
 
-
     const grid = new THREE.GridHelper(radius * 2.5, 24, 0x3a5a80, 0x2a2a30);
     grid.rotation.x = Math.PI / 2;
     grid.position.set(0, 0, posBounds.min.z - worldCenter.z);
@@ -518,22 +425,11 @@ export default function CellViewport(
     camera.updateProjectionMatrix();
     controls.update();
 
-
-
-
-
-
     const transformControls = new TransformControls(camera, renderer.domElement);
     transformControls.size = 0.9;
     scene.add(transformControls.getHelper());
     const gizmoAnchor = new THREE.Object3D();
     scene.add(gizmoAnchor);
-
-
-
-
-
-
 
     const _giCurM = new THREE.Matrix4();
     const _giCurPos = new THREE.Vector3();
@@ -554,8 +450,6 @@ export default function CellViewport(
         if (e.billboard) continue;
         if (e.local) {
 
-
-
           _giRefScale.setScalar(r.scale || 1);
           _giNewM.compose(_giNewPos, _giNewQuat, _giRefScale);
           _giNewM.multiply(e.local);
@@ -570,8 +464,6 @@ export default function CellViewport(
       for (const m of dirty) m.instanceMatrix.needsUpdate = true;
       applySelection(highlight, modelBBox, refByKey, formKey, worldCenter, scolBBox);
     };
-
-
 
     transformControls.addEventListener('objectChange', () => {
       const key = selectedKeyRef.current;
@@ -602,7 +494,6 @@ export default function CellViewport(
     };
     gizmoAttachRef.current = attachGizmoTo;
 
-
     const raycaster = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
     let downX = 0, downY = 0, downT = 0;
@@ -628,7 +519,6 @@ export default function CellViewport(
     };
     renderer.domElement.addEventListener('pointerdown', onPointerDown);
     renderer.domElement.addEventListener('pointerup', onPointerUp);
-
 
     const _v = new THREE.Vector3();
     const radiusOf = (r: CellPlacedReference) => {
@@ -656,12 +546,6 @@ export default function CellViewport(
       camera.updateProjectionMatrix(); controls.update();
     };
 
-
-
-
-
-
-
     const setOrbitTarget = (k: string | null) => {
       const r = k ? refByKey.get(k) : undefined;
       if (r) controls.target.set(r.position.x - worldCenter.x, r.position.y - worldCenter.y, r.position.z - worldCenter.z);
@@ -670,12 +554,6 @@ export default function CellViewport(
     };
     cameraApiRef.current = { focus: focusOn, topDown: topDownOn, setOrbitTarget };
     setOrbitTarget(selectedKey ?? null);
-
-
-
-
-
-
 
     const onKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName;
@@ -693,7 +571,6 @@ export default function CellViewport(
       else if (k === 'r' && !e.ctrlKey && !e.altKey) { transformControls.setMode('rotate'); e.preventDefault(); }
     };
     window.addEventListener('keydown', onKeyDown);
-
 
     applyVisibility(meshEntries, hiddenTypes);
     applySelection(highlight, modelBBox, refByKey, selectedKey ?? null, worldCenter, scolBBox);
@@ -761,11 +638,9 @@ export default function CellViewport(
     };
   }, [references, geometry, loadTexture]);
 
-
   useEffect(() => {
     applyVisibility(meshEntriesRef.current, hiddenTypes);
   }, [hiddenTypes]);
-
 
   useEffect(() => {
     if (highlightRef.current)
@@ -774,7 +649,6 @@ export default function CellViewport(
     gizmoAttachRef.current?.(selectedKey ?? null);
     cameraApiRef.current?.setOrbitTarget(selectedKey ?? null);
   }, [selectedKey]);
-
 
   useEffect(() => {
     applyHidden(keyToInstancesRef.current, hiddenRefs, worldCenterRef.current);
@@ -789,10 +663,6 @@ const _hideQuat = new THREE.Quaternion();
 const _hideScale = new THREE.Vector3();
 const _hideM = new THREE.Matrix4();
 
-
-
-
-
 function applyHidden(keyToInstances: Map<string, InstanceRef[]>, hidden: ReadonlySet<string> | undefined, worldCenter: THREE.Vector3) {
   const dirty = new Set<THREE.InstancedMesh>();
   for (const [formKey, entries] of keyToInstances) {
@@ -806,7 +676,6 @@ function applyHidden(keyToInstances: Map<string, InstanceRef[]>, hidden: Readonl
         _hideQuat.setFromEuler(new THREE.Euler(e.ref.rotation.x, e.ref.rotation.y, e.ref.rotation.z, 'XYZ'));
         _hideScale.setScalar(e.ref.scale || 1);
         _hideM.compose(_hidePos, _hideQuat, _hideScale);
-
 
         if (e.local) _hideM.multiply(e.local);
         e.mesh.setMatrixAt(e.id, _hideM);
@@ -831,11 +700,6 @@ const _selScale = new THREE.Vector3();
 const _selCenter = new THREE.Vector3();
 const _selSize = new THREE.Vector3();
 const _selLocal = new THREE.Matrix4();
-
-
-
-
-
 
 function applySelection(
   highlight: THREE.LineSegments,

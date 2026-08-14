@@ -31,7 +31,6 @@ public class ArmorResistanceCurveTests
         armor.FormVersion = checked((ushort)formVersion);
         armor.Resistances = new();
 
-
         ElementService.AddElement(plugin, editorId, "Resistances", template: null, env: null)
             .Should().Contain("Added a ArmorResistance");
         ElementService.AddElement(plugin, editorId, "Resistances", template: null, env: null)
@@ -58,11 +57,6 @@ public class ArmorResistanceCurveTests
 
             var parsed = Fallout4Mod.CreateFromBinary(ModPath.FromPath(path), Fallout4Release.Fallout4);
             AssertParsedEntries(((IArmorGetter)parsed.Armors.Single()).Resistances!, expectCurveTable);
-
-
-
-
-
 
             overlay = Fallout4Mod.CreateFromBinaryOverlay(ModPath.FromPath(path), Fallout4Release.Fallout4);
             AssertParsedEntries(overlay.Armors.Single().Resistances!, expectCurveTable);

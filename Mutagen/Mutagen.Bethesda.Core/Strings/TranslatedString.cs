@@ -4,24 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Mutagen.Bethesda.Strings;
 
-
-
-
-
 [DebuggerDisplay("{String}")]
 public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedString>, IOptionalStringsKeyGetter
 {
 
-
-
-
-
     public static bool DefaultLanguageComparisonOnly = true;
 
     private static Language _defaultLanguage;
-
-
-
 
     public static Language DefaultLanguage
     {
@@ -33,23 +22,17 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         }
     }
 
-
-
-
     public Language TargetLanguage { get; }
 
     private string? _directString;
     private readonly object _lock = new();
     internal Dictionary<Language, string?>? _localization;
 
-
-
     public uint? StringsKey { get; internal set; }
     internal IStringsFolderLookup? StringsLookup;
     internal StringsSource StringsSource;
 
     internal bool UsingLocalizationDictionary => _localization != null || StringsLookup != null;
-
 
     public string? String
     {
@@ -80,29 +63,16 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
     private static TranslatedString _empty = new(Language.English, string.Empty);
     public static ITranslatedStringGetter Empty => _empty;
 
-
-
-
-
     public TranslatedString(Language language)
     {
         TargetLanguage = language;
     }
-
-
-
-
 
     public TranslatedString(Language targetLanguage, string? directString)
     {
         _directString = directString;
         TargetLanguage = targetLanguage;
     }
-
-
-
-
-
 
     public TranslatedString(Language targetLanguage, IEnumerable<KeyValuePair<Language, string>> strs)
     {
@@ -114,17 +84,10 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         TargetLanguage = targetLanguage;
     }
 
-
-
-
-
-
-
     public TranslatedString(Language targetLanguage, params KeyValuePair<Language, string>[] strs)
         : this(targetLanguage, (IEnumerable<KeyValuePair<Language, string>>)strs)
     {
     }
-
 
     public bool TryLookup(Language language, [MaybeNullWhen(false)] out string str)
     {
@@ -165,11 +128,6 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         return false;
     }
 
-
-
-
-
-
     public void Set(Language language, string? str)
     {
         lock (_lock)
@@ -189,7 +147,6 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         }
     }
 
-
     public void RemoveNonDefault(Language language)
     {
         if (language == TargetLanguage) return;
@@ -207,7 +164,6 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
     {
         var ret = new Dictionary<Language, string?>();
 
-
         if (_directString != null)
         {
             ret[TargetLanguage] = _directString;
@@ -215,7 +171,6 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
         }
         return ret;
     }
-
 
     public void ClearNonDefault()
     {
@@ -229,7 +184,6 @@ public sealed class TranslatedString : ITranslatedString, IEquatable<TranslatedS
             _localization = null;
         }
     }
-
 
     public void Clear()
     {

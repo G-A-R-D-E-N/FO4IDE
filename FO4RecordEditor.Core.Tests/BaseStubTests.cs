@@ -5,19 +5,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class BaseStubTests
 {
     private static PapyrusCompileResult Compile(string source)
@@ -55,16 +42,6 @@ public class BaseStubTests
                 .Should().BeEmpty($"{Path.GetFileName(path)} should parse cleanly");
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     private static readonly string[] IncompleteByDesign = { "ScriptObject.psc" };
 
@@ -178,7 +155,6 @@ public class BaseStubTests
     public void Inheritance_across_three_levels_resolves()
     {
 
-
         CompileOk("""
             Scriptname Fixture
 
@@ -204,8 +180,6 @@ public class BaseStubTests
     public void The_custom_and_remote_event_keyword_types_resolve()
     {
 
-
-
         CompileOk("""
             Scriptname Fixture extends ObjectReference
 
@@ -218,7 +192,6 @@ public class BaseStubTests
     [Fact]
     public void A_missing_member_is_refused_rather_than_guessed()
     {
-
 
         var result = Compile("""
             Scriptname Fixture extends ObjectReference

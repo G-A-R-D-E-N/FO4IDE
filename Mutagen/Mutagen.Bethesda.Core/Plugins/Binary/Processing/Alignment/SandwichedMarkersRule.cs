@@ -9,7 +9,7 @@ public class SandwichedMarkersRule : AlignmentRule
     private AlignmentRule _internalRule;
     private RecordType _marker;
     private HashSet<RecordType> _internalTypes;
-    
+
     public SandwichedMarkersRule(RecordType marker, params RecordType[] recordTypes)
     {
         _marker = marker;
@@ -19,7 +19,7 @@ public class SandwichedMarkersRule : AlignmentRule
     }
 
     public override IEnumerable<RecordType> RecordTypes { get; }
-    
+
     public override ReadOnlyMemorySlice<byte> ReadBytes(IMutagenReadStream inputStream, int? lengthOverride)
     {
         if (lengthOverride != null)
@@ -30,8 +30,8 @@ public class SandwichedMarkersRule : AlignmentRule
         ReadOnlyMemorySlice<byte>? data = null;
         MutagenWriter stream;
         bool second = false;
-        while (!inputStream.Complete) 
-        { 
+        while (!inputStream.Complete)
+        {
             var frame = inputStream.GetSubrecord(readSafe: true);
             var subType = frame.RecordType;
 
@@ -63,16 +63,16 @@ public class SandwichedMarkersRule : AlignmentRule
         }
 
         if (data == null) return [];
-        
-        byte[] ret = new byte[data.Value.Length + 2 * inputStream.MetaData.Constants.SubConstants.HeaderLength]; 
+
+        byte[] ret = new byte[data.Value.Length + 2 * inputStream.MetaData.Constants.SubConstants.HeaderLength];
         stream = new MutagenWriter(new MemoryStream(ret), inputStream.MetaData.Constants);
         using (HeaderExport.Subrecord(stream, _marker))
         {
         }
-        stream.Write(data.Value); 
+        stream.Write(data.Value);
         using (HeaderExport.Subrecord(stream, _marker))
         {
         }
-        return ret; 
+        return ret;
     }
 }

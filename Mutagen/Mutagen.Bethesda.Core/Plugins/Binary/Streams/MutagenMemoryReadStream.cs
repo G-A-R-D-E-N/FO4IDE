@@ -3,22 +3,12 @@ using Noggog.Streams.Binary;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Streams;
 
-
-
-
 public sealed class MutagenMemoryReadStream : LittleEndianBinaryMemoryReadStream, IMutagenReadStream
 {
 
     public long OffsetReference { get; }
 
-
     public ParsingMeta MetaData { get; }
-
-
-
-
-
-
 
     public MutagenMemoryReadStream(
         ReadOnlyMemorySlice<byte> data,
@@ -29,14 +19,6 @@ public sealed class MutagenMemoryReadStream : LittleEndianBinaryMemoryReadStream
         MetaData = metaData;
         OffsetReference = offsetReference;
     }
-
-
-
-
-
-
-
-
 
     public IMutagenReadStream ReadAndReframe(int length)
     {

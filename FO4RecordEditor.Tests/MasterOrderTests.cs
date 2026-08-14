@@ -5,13 +5,8 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
 public class MasterOrderTests
 {
-
 
     private static (PluginToolExecutor exec, string plugin, string path) BuildMultiMasterPlugin()
     {
@@ -23,7 +18,6 @@ public class MasterOrderTests
         exec.Execute("create_record",
             $"{{\"plugin\":\"{plugin}\",\"type\":\"WEAP\",\"editorId\":\"MO_TestWeapon\"}}")
             .Should().Contain("Created WEAP");
-
 
         exec.Execute("add_list_item",
             $"{{\"plugin\":\"{plugin}\",\"record\":\"MO_TestWeapon\",\"field\":\"Keywords\"," +
@@ -53,7 +47,6 @@ public class MasterOrderTests
         finally { try { File.Delete(path); } catch { } }
     }
 
-
     [Fact]
     public void SaveWithoutEnv_WarnsThatMasterOrderWasNotSet()
     {
@@ -68,7 +61,6 @@ public class MasterOrderTests
         }
         finally { try { File.Delete(path); } catch { } }
     }
-
 
     [Fact]
     public void SingleMasterPlugin_IsNotWarnedAbout()

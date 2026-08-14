@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -54,8 +50,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -631,8 +625,6 @@ namespace Mutagen.Bethesda.Fallout4
         INamedRequired
     {
 
-
-
         new String? Name { get; set; }
         new ExtendedList<MorphPreset>? MorphPresets { get; set; }
         new MemorySlice<Byte>? UnknownMPPK { get; set; }
@@ -655,8 +647,6 @@ namespace Mutagen.Bethesda.Fallout4
         object CommonSetterTranslationInstance();
         static ILoquiRegistration StaticRegistration => MorphGroup_Registration.Instance;
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -1113,7 +1103,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return MorphGroup.GetNew();
@@ -1451,7 +1440,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

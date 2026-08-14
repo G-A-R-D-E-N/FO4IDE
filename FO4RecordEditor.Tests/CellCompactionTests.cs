@@ -6,10 +6,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
 public class CellCompactionTests
 {
     private readonly ITestOutputHelper _out;
@@ -36,8 +32,6 @@ public class CellCompactionTests
     {
         var (exec, plugin) = BuildCellFixture();
 
-
-
         exec.Execute("create_record", $"{{\"plugin\":\"{plugin}\",\"type\":\"WEAP\",\"editorId\":\"CC_Weapon\"}}");
         var renum = exec.Execute("renumber_formid",
             $"{{\"plugin\":\"{plugin}\",\"record\":\"CC_Weapon\",\"new_id\":\"001500\"}}");
@@ -46,9 +40,6 @@ public class CellCompactionTests
         var result = exec.ExecuteWithStatus("compact_to_esl", $"{{\"plugin\":\"{plugin}\"}}");
         _out.WriteLine("compact_to_esl -> isError=" + result.IsError + "\n" + result.Text);
 
-
-
-
         if (!result.IsError)
         {
             var dump = exec.Execute("list_records", $"{{\"plugin\":\"{plugin}\",\"type\":\"Weapon\"}}");
@@ -56,9 +47,6 @@ public class CellCompactionTests
             dump.Should().NotContain("001500");
         }
     }
-
-
-
 
     [Fact]
     public void RenumberFormId_OnACellPlacedRecord_FailsLoudly()
@@ -72,13 +60,9 @@ public class CellCompactionTests
         result.IsError.Should().BeTrue();
         result.Text.Should().Contain("Could not locate the group holding");
 
-
         var dump = exec.Execute("get_record", $"{{\"plugin\":\"{plugin}\",\"id\":\"CC_Marker\"}}");
         dump.Should().NotContain("000900");
     }
-
-
-
 
     [Fact]
     public void CompactToEsl_RefusesWhenAnOutOfRangeRecordIsCellPlaced()
@@ -87,8 +71,6 @@ public class CellCompactionTests
         var exec = new PluginToolExecutor(() => null);
         exec.Execute("create_plugin", $"{{\"name\":\"{plugin}\"}}");
 
-
-
         for (int i = 0; i < 0x800; i++)
             exec.Execute("create_record",
                 $"{{\"plugin\":\"{plugin}\",\"type\":\"WEAP\",\"editorId\":\"CC_Fill{i}\"}}");
@@ -96,9 +78,6 @@ public class CellCompactionTests
         exec.Execute("create_placed_object",
             $"{{\"plugin\":\"{plugin}\",\"cell\":\"CC_Cell2\",\"baseObject\":\"000010:Fallout4.esm\"," +
             "\"editorId\":\"CC_HighMarker\",\"persistent\":true}");
-
-
-
 
         for (int i = 0; i < 8; i++)
             exec.Execute("delete_record", $"{{\"plugin\":\"{plugin}\",\"id\":\"CC_Fill{i}\"}}")

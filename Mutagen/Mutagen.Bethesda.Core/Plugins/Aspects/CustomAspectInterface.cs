@@ -1,9 +1,5 @@
 ﻿namespace Mutagen.Bethesda.Plugins.Aspects;
 
-
-
-
-
 public sealed class CustomAspectInterface : Attribute
 {
     public Type[] KnownTypes;

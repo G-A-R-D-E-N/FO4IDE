@@ -2,10 +2,6 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Streams;
 
-
-
-
-
 public sealed class CompositeReadStream : Stream
 {
     private readonly Stream[] _subStreams;

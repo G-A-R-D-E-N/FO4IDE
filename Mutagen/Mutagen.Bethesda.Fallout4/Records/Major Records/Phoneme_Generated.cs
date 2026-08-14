@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -52,8 +48,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public String Name { get; set; } = string.Empty;
         #endregion
@@ -1838,8 +1832,6 @@ namespace Mutagen.Bethesda.Fallout4
         IPhonemeGetter
     {
 
-
-
         new String Name { get; set; }
         new Single IY { get; set; }
         new Single IH { get; set; }
@@ -1900,8 +1892,6 @@ namespace Mutagen.Bethesda.Fallout4
         object CommonSetterTranslationInstance();
         static ILoquiRegistration StaticRegistration => Phoneme_Registration.Instance;
         #region Name
-
-
 
         String Name { get; }
         #endregion
@@ -2836,7 +2826,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return Phoneme.GetNew();
@@ -3203,7 +3192,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

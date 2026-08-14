@@ -11,8 +11,6 @@ public class ChatHistoryService
 {
     private readonly string _dir;
 
-
-
     private readonly string _legacyDir;
 
     public ChatHistoryService()
@@ -26,8 +24,6 @@ public class ChatHistoryService
 
     public List<ChatSession> LoadAll()
     {
-
-
 
         var byId = new Dictionary<Guid, ChatSession>();
         var dirs = LegacyChatDirs().Append(_dir);
@@ -44,8 +40,6 @@ public class ChatHistoryService
         }
         return byId.Values.OrderByDescending(x => x.CreatedAt).ToList();
     }
-
-
 
     private IEnumerable<string> LegacyChatDirs()
     {
@@ -73,7 +67,6 @@ public class ChatHistoryService
 
     public void Delete(Guid id)
     {
-
 
         foreach (var dir in LegacyChatDirs().Append(_dir))
         {

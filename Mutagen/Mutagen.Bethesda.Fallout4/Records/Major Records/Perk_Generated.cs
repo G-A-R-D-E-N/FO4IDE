@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -60,8 +56,6 @@ namespace Mutagen.Bethesda.Fallout4
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private PerkAdapter? _VirtualMachineAdapter;
 
-
-
         public PerkAdapter? VirtualMachineAdapter
         {
             get => _VirtualMachineAdapter;
@@ -75,8 +69,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1145,11 +1137,7 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new PerkAdapter? VirtualMachineAdapter { get; set; }
-
-
 
         new TranslatedString? Name { get; set; }
         new TranslatedString Description { get; set; }
@@ -1194,13 +1182,9 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Perk_Registration.Instance;
         #region VirtualMachineAdapter
 
-
-
         IPerkAdapterGetter? VirtualMachineAdapter { get; }
         #endregion
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -1954,7 +1938,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Perk.GetNew();
@@ -2618,7 +2601,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

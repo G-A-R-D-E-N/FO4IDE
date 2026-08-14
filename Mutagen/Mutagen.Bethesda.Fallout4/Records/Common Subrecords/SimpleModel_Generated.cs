@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -38,8 +34,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public partial class SimpleModel :
         IEquatable<ISimpleModelGetter>,
@@ -537,8 +531,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface ISimpleModel :
         IFormLinkContainer,
         ILoquiObjectSetter<ISimpleModel>,
@@ -549,9 +541,6 @@ namespace Mutagen.Bethesda.Fallout4
         new MemorySlice<Byte>? Data { get; set; }
         new IFormLinkNullable<IMaterialSwapGetter> MaterialSwap { get; set; }
     }
-
-
-
 
     public partial interface ISimpleModelGetter :
         ILoquiObject,
@@ -1001,7 +990,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return SimpleModel.GetNew();
@@ -1280,7 +1268,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

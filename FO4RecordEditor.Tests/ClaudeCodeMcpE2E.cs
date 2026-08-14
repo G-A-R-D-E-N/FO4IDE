@@ -7,9 +7,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
 public class ClaudeCodeMcpE2E
 {
     private readonly ITestOutputHelper _out;
@@ -52,8 +49,6 @@ public class ClaudeCodeMcpE2E
 
         _out.WriteLine("STDOUT:\n" + stdout);
         _out.WriteLine("STDERR:\n" + stderr);
-
-
 
         stdout.Should().Contain("No plugins loaded");
     }

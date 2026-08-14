@@ -10,14 +10,6 @@ const setLS = (k: string, v: string) => localStorage.setItem('spreadsheet.' + k,
 interface GridRow { formKey: string; editorId: string; cells: string[]; }
 interface GridData { columns: string[]; rows: GridRow[]; total: number; offset: number; error?: string; }
 
-
-
-
-
-
-
-
-
 export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
   const backend = getBackend();
   const unavailable = !backend;
@@ -39,9 +31,6 @@ export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (!backend) return;
 
-
-
-
     const app = window.chrome?.webview?.hostObjects?.appInterop;
     void (async () => {
       const names = new Set<string>();
@@ -55,9 +44,6 @@ export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
       setPlugins([...names]);
     })();
   }, [backend]);
-
-
-
 
   useEffect(() => {
     if (!backend) return;
@@ -124,8 +110,6 @@ export default function SpreadsheetPanel({ onClose }: { onClose: () => void }) {
           failures.push(`${formKey}.${col}: ${e instanceof Error ? e.message : String(e)}`);
         }
       }
-
-
 
       let saveMsg = '';
       if (ok > 0) {

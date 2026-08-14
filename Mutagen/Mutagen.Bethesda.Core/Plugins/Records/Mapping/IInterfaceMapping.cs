@@ -3,5 +3,5 @@
 internal interface IInterfaceMapping
 {
     GameCategory GameCategory { get; }
-    IReadOnlyDictionary<Type, InterfaceMappingResult> InterfaceToObjectTypes { get; } 
+    IReadOnlyDictionary<Type, InterfaceMappingResult> InterfaceToObjectTypes { get; }
 }

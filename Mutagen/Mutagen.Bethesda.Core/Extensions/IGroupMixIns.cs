@@ -10,11 +10,6 @@ namespace Mutagen.Bethesda;
 public static class IGroupMixIns
 {
 
-
-
-
-
-
     public static TMajor AddNew<TMajor>(this IGroup<TMajor> group, FormKey formKey)
         where TMajor : IMajorRecord
     {
@@ -24,12 +19,6 @@ public static class IGroupMixIns
         group.Set(ret);
         return ret;
     }
-
-
-
-
-
-
 
     public static IMajorRecord AddNew(this IGroup group, FormKey formKey)
     {
@@ -41,12 +30,6 @@ public static class IGroupMixIns
         return ret;
     }
 
-
-
-
-
-
-
     public static TMajor AddNew<TMajor>(this IGroup<TMajor> group)
         where TMajor : IMajorRecord
     {
@@ -57,12 +40,6 @@ public static class IGroupMixIns
         return ret;
     }
 
-
-
-
-
-
-
     public static IMajorRecord AddNew(this IGroup group)
     {
         var ret = MajorRecordInstantiator.Activator(
@@ -72,13 +49,6 @@ public static class IGroupMixIns
         group.SetUntyped(ret);
         return ret;
     }
-
-
-
-
-
-
-
 
     public static TMajor AddNew<TMajor>(this IGroup<TMajor> group, string? editorID)
         where TMajor : IMajorRecord
@@ -91,13 +61,6 @@ public static class IGroupMixIns
         return ret;
     }
 
-
-
-
-
-
-
-
     public static IMajorRecord AddNew(this IGroup group, string? editorID)
     {
         var ret = MajorRecordInstantiator.Activator(
@@ -109,24 +72,12 @@ public static class IGroupMixIns
         return ret;
     }
 
-
-
-
-
-
-
     public static TMajor DuplicateInAsNewRecord<TMajor, TMajorGetter>(this IGroup<TMajor> group, TMajorGetter source)
         where TMajor : class, IMajorRecord, TMajorGetter
         where TMajorGetter : IMajorRecordGetter
     {
         return DuplicateInAsNewRecord<TMajor, TMajorGetter, TMajorGetter>(group, source);
     }
-
-
-
-
-
-
 
     public static IMajorRecord DuplicateInAsNewUntypedRecord(this IGroup group, IMajorRecord source)
     {
@@ -142,12 +93,6 @@ public static class IGroupMixIns
             throw;
         }
     }
-
-
-
-
-
-
 
     public static TMajor DuplicateInAsNewRecord<TMajor, TMajorGetter, TSharedParent>(this IGroup<TMajor> group, TMajorGetter source)
         where TMajor : class, IMajorRecord, TSharedParent
@@ -167,13 +112,6 @@ public static class IGroupMixIns
         }
     }
 
-
-
-
-
-
-
-
     public static TMajor DuplicateInAsNewRecord<TMajor, TMajorGetter>(this IGroup<TMajor> group, TMajorGetter source, string? edid, FormKey? formKey = null)
         where TMajor : IMajorRecord, TMajorGetter
         where TMajorGetter : IMajorRecordGetter
@@ -181,27 +119,12 @@ public static class IGroupMixIns
         return DuplicateInAsNewRecord<TMajor, TMajorGetter, TMajorGetter>(group, source, edid, formKey);
     }
 
-
-
-
-
-
-
-
     public static TMajor DuplicateInAsNewRecord<TMajor, TMajorGetter>(this IGroup<TMajor> group, TMajorGetter source, FormKey? formKey)
         where TMajor : IMajorRecord, TMajorGetter
         where TMajorGetter : IMajorRecordGetter
     {
         return DuplicateInAsNewRecord<TMajor, TMajorGetter, TMajorGetter>(group, source, formKey);
     }
-
-
-
-
-
-
-
-
 
     public static TMajor DuplicateInAsNewRecord<TMajor, TMajorGetter, TSharedParent>(this IGroup<TMajor> group, TMajorGetter source, string? edid, FormKey? formKey = null)
         where TMajor : IMajorRecord, TSharedParent
@@ -229,13 +152,6 @@ public static class IGroupMixIns
         }
     }
 
-
-
-
-
-
-
-
     public static TMajor DuplicateInAsNewRecord<TMajor, TMajorGetter, TSharedParent>(this IGroup<TMajor> group, TMajorGetter source, FormKey? formKey)
         where TMajor : IMajorRecord, TSharedParent
         where TMajorGetter : TSharedParent
@@ -243,14 +159,6 @@ public static class IGroupMixIns
     {
         return DuplicateInAsNewRecord<TMajor, TMajorGetter, TSharedParent>(group, source, default(string?), formKey);
     }
-
-
-
-
-
-
-
-
 
     public static IMajorRecord DuplicateInAsNewUntypedRecord(this IGroup group, IMajorRecord source, string? edid, FormKey? formKey = null)
     {
@@ -271,25 +179,10 @@ public static class IGroupMixIns
         }
     }
 
-
-
-
-
-
-
-
     public static IMajorRecord DuplicateInAsNewUntypedRecord(this IGroup group, IMajorRecord source, FormKey? formKey)
     {
         return DuplicateInAsNewUntypedRecord(group, source, default(string?), formKey);
     }
-
-
-
-
-
-
-
-
 
     public static bool TryGetValue<TMajor>(
         this IGroupGetter<TMajor> group,
@@ -299,13 +192,6 @@ public static class IGroupMixIns
     {
         return group.RecordCache.TryGetValue(formKey, out record);
     }
-
-
-
-
-
-
-
 
     public static TMajor? TryGetValue<TMajor>(
         this IGroupGetter<TMajor> group,

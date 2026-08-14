@@ -11,10 +11,6 @@ const STROKE = 14;
 const R = (SIZE - STROKE) / 2;
 const C = 2 * Math.PI * R;
 
-
-
-
-
 export default function ConflictDonut({ values, flags, formIds }: ConflictDonutProps) {
   const slices: Slice[] = [
     { label: 'Values', value: values, color: 'var(--text-secondary)' },

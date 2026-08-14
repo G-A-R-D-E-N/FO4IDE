@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -56,8 +52,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -689,8 +683,6 @@ namespace Mutagen.Bethesda.Fallout4
         ITranslatedNamedRequired
     {
 
-
-
         new TranslatedString? Name { get; set; }
         new TranslatedString? Description { get; set; }
         new TranslatedString? Abbreviation { get; set; }
@@ -719,8 +711,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => ActorValueInformation_Registration.Instance;
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -1323,7 +1313,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return ActorValueInformation.GetNew();
@@ -1781,7 +1770,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1814,7 +1802,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IActorValueInformationGetter);
-
 
         #region Name
         private int? _NameLocation;

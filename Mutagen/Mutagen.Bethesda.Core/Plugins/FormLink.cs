@@ -6,11 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Mutagen.Bethesda.Plugins;
 
-
-
-
-
-
 [DebuggerDisplay("{this.FormKey}")]
 public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
     IEquatable<FormLink<TMajorGetter>>,
@@ -22,21 +17,11 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
 {
     protected FormKey _formKey;
 
-
-
-
     public static readonly IFormLinkGetter<TMajorGetter> Null = new FormLinkGetter<TMajorGetter>();
-
-
-
 
     public FormKey FormKey => _formKey;
 
-
-
-
     public bool IsNull => FormKey.IsNull;
-
 
     public Type Type => typeof(TMajorGetter);
 
@@ -75,11 +60,6 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
         return true;
     }
 
-
-
-
-
-
     public TMajorGetter? TryResolve(ILinkCache cache)
     {
         if (this.TryResolve(cache, out var rec))
@@ -89,53 +69,20 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
         return default;
     }
 
-
-
-
-
-
     public override bool Equals(object? obj)
     {
         return IFormLinkExt.EqualsWithInheritanceConsideration(this, obj);
     }
 
-
-
-
-
-
     public bool Equals(FormLink<TMajorGetter>? other) => FormKey.Equals(other?.FormKey ?? FormKey.Null);
-
-
-
-
-
 
     public bool Equals(FormLinkNullable<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(FormKey, other?.FormKeyNullable);
 
-
-
-
-
-
     public bool Equals(IFormLinkGetter<TMajorGetter>? other) => FormKey.Equals(other?.FormKey);
-
-
-
-
-
 
     public bool Equals(IFormLinkNullableGetter<TMajorGetter>? other) => EqualityComparer<FormKey?>.Default.Equals(FormKey, other?.FormKeyNullable);
 
-
-
-
-
     public override int GetHashCode() => FormKey.GetHashCode();
-
-
-
-
 
     public override string ToString() => $"{FormKey}<{MajorRecordPrinter<TMajorGetter>.TypeString}>";
 
@@ -153,17 +100,10 @@ public class FormLinkGetter<TMajorGetter> : IFormLinkGetter<TMajorGetter>,
     public static IEqualityComparer<IFormLinkGetter<TMajorGetter>> TypelessComparer => FormLinkTypelessComparer<TMajorGetter>.Instance;
 }
 
-
-
-
-
-
 [DebuggerDisplay("{this.FormKey}")]
 public sealed class FormLink<TMajorGetter> : FormLinkGetter<TMajorGetter>, IFormLink<TMajorGetter>
     where TMajorGetter : class, IMajorRecordGetter
 {
-
-
 
     public new FormKey FormKey
     {
@@ -182,43 +122,25 @@ public sealed class FormLink<TMajorGetter> : FormLinkGetter<TMajorGetter>, IForm
     {
     }
 
-
-
-
     public FormLink(FormKey formKey)
         : base(formKey)
     {
     }
-
-
-
 
     public FormLink(TMajorGetter record)
         : base(record.FormKey)
     {
     }
 
-
-
-
-
     public void SetTo(FormKey? formKey)
     {
         FormKey = formKey ?? FormKey.Null;
     }
 
-
-
-
-
     public void SetTo(TMajorGetter? record)
     {
         FormKey = record?.FormKey ?? FormKey.Null;
     }
-
-
-
-
 
     public void SetTo(IFormLinkNullableGetter<TMajorGetter> link)
     {

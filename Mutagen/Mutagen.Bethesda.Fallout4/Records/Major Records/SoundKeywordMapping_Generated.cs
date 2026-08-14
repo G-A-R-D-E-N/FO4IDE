@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -93,8 +89,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>> _Keywords = new ExtendedList<IFormLinkGetter<IKeywordGetter>>();
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>> Keywords
         {
@@ -839,8 +833,6 @@ namespace Mutagen.Bethesda.Fallout4
         new IFormLinkNullable<ISoundDescriptorGetter> VatsDescriptor { get; set; }
         new Single? VatsThreshold { get; set; }
 
-
-
         new ExtendedList<IFormLinkGetter<IKeywordGetter>> Keywords { get; }
         new ExtendedList<MappingSound> Sounds { get; }
     }
@@ -867,8 +859,6 @@ namespace Mutagen.Bethesda.Fallout4
         IFormLinkNullableGetter<ISoundDescriptorGetter> VatsDescriptor { get; }
         Single? VatsThreshold { get; }
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>> Keywords { get; }
         #endregion
@@ -1478,7 +1468,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return SoundKeywordMapping.GetNew();
@@ -1984,7 +1973,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2018,7 +2006,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(ISoundKeywordMappingGetter);
-
 
         #region PrimaryDescriptor
         private int? _PrimaryDescriptorLocation;

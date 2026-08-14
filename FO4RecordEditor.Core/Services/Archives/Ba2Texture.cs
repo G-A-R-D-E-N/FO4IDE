@@ -2,21 +2,6 @@ using System.IO;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class Ba2Texture
 {
     private const int SplitMinPixels = 512 * 512;
@@ -42,8 +27,6 @@ public static class Ba2Texture
 
             long length = 0;
             for (int m = first; m <= last; m++) length += DdsCodec.MipSize(info.Format, info.Width >> m, info.Height >> m);
-
-
 
             if (chunks.Count == 0 && first == 0 && last == info.MipCount - 1 && info.ArraySize * Math.Max(1, info.Depth) > 1)
                 length = info.PayloadSize;
@@ -73,17 +56,9 @@ public static class Ba2Texture
         };
     }
 
-
-
-
-
     public static List<(int First, int Last)> PlanChunks(DdsInfo info)
     {
         var ranges = new List<(int, int)>();
-
-
-
-
 
         if (info.ArraySize * Math.Max(1, info.Depth) > 1)
         {

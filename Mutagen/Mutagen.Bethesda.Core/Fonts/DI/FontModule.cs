@@ -8,5 +8,5 @@ namespace Mutagen.Bethesda.Fonts.DI;
 [Register<FontProviderFactory, IFontProviderFactory>]
 internal class FontModule
 {
-    
+
 }

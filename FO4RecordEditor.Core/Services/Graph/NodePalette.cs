@@ -6,12 +6,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
 public sealed record PaletteEntry(
     string Id,
     string Title,
@@ -23,22 +17,11 @@ public sealed record PaletteEntry(
     public override string ToString() => Id;
 }
 
-
 public sealed record PaletteSearchResult(IReadOnlyList<PaletteEntry> Entries, int Total)
 {
 
     public bool Truncated => Entries.Count < Total;
 }
-
-
-
-
-
-
-
-
-
-
 
 public sealed class NodePalette
 {
@@ -54,13 +37,11 @@ public sealed class NodePalette
         _searchIndex = new Lazy<IReadOnlyList<PaletteEntry>>(BuildSearchIndex);
     }
 
-
     public IReadOnlyList<NodeDefinition> Builtins => BuiltinNodeDefinitions.All;
 
     public IReadOnlyList<string> ScriptNames => _index.ScriptNames.ToList();
 
     public WikiDocStats WikiStats => _docs.Stats;
-
 
     public NodeDefinition? Find(string? definitionId)
     {
@@ -76,10 +57,8 @@ public sealed class NodePalette
             string.Equals(d.Id, definitionId, StringComparison.OrdinalIgnoreCase));
     }
 
-
     public IReadOnlyList<NodeDefinition> ForScript(string scriptName) =>
         _byScript.GetOrAdd(scriptName, BuildForScript);
-
 
     public PaletteSearchResult Search(string? query, int limit = 50, string? scriptFilter = null)
     {
@@ -98,7 +77,6 @@ public sealed class NodePalette
                 .Where(e => e.Title.Contains(needle, StringComparison.OrdinalIgnoreCase)
                             || e.Category.Contains(needle, StringComparison.OrdinalIgnoreCase))
 
-
                 .OrderBy(e => e.Title.Equals(needle, StringComparison.OrdinalIgnoreCase) ? 0
                     : e.Title.StartsWith(needle, StringComparison.OrdinalIgnoreCase) ? 1 : 2)
                 .ThenBy(e => e.Title.Length)
@@ -108,14 +86,6 @@ public sealed class NodePalette
         var all = candidates.ToList();
         return new PaletteSearchResult(all.Take(Math.Max(0, limit)).ToList(), all.Count);
     }
-
-
-
-
-
-
-
-
 
     private IReadOnlyList<PaletteEntry> BuildSearchIndex()
     {
@@ -194,8 +164,6 @@ public sealed class NodePalette
                 _docs.Function(scriptName, declared.Name)?.Summary));
         }
 
-
-
         foreach (var declared in script.CustomEvents)
         {
             definitions.Add(RemoteEventDefinition(
@@ -262,7 +230,6 @@ public sealed class NodePalette
             MemberName = function.Name,
             IsGlobal = function.IsGlobal,
 
-
             IsPure = false,
             LocalNameHint = LocalNameHint(function.Name),
             Pins = pins,
@@ -305,20 +272,6 @@ public sealed class NodePalette
         };
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private NodeDefinition RemoteEventDefinition(
         string scriptName, string eventName, IEnumerable<PinDefinition> tail, string? summary)
     {
@@ -351,20 +304,7 @@ public sealed class NodePalette
         };
     }
 
-
     public const string RemoteSenderName = "akSender";
-
-
-
-
-
-
-
-
-
-
-
-
 
     internal static string RemoteSignature(string scriptName, string eventName, string? declaredSignature)
     {
@@ -382,7 +322,6 @@ public sealed class NodePalette
         var parameters = declared.Length == 0 ? sender : sender + ", " + declared;
         return $"Event {scriptName}.{eventName}({parameters})";
     }
-
 
     private static PinDefinition CustomEventArgsPin() => new()
     {
@@ -462,16 +401,6 @@ public sealed class NodePalette
         };
     }
 
-
-
-
-
-
-
-
-
-
-
     public static string? DefaultText(PapyrusExpression? expression) => expression switch
     {
         null => null,
@@ -498,14 +427,6 @@ public sealed class NodePalette
             ? PinTypeExpr.Concrete("None")
             : PinTypeExpr.Concrete(reference.Name, reference.IsArray);
 
-
-
-
-
-
-
-
-
     public static string LocalNameHint(string memberName)
     {
         foreach (var prefix in new[] { "Get", "Is", "Has", "Can" })
@@ -522,20 +443,16 @@ public sealed class NodePalette
             : char.ToLowerInvariant(memberName[0]) + memberName[1..];
     }
 
-
-
     public static string CallId(string script, string member, bool isGlobal) =>
         (isGlobal ? "global:" : "call:") + script + "." + member;
 
     public static string EventId(string script, string member) => "event:" + script + "." + member;
-
 
     public static string RemoteEventId(string script, string member) => "remote:" + script + "." + member;
 
     public static string PropertyGetId(string script, string member) => "prop.get:" + script + "." + member;
 
     public static string PropertySetId(string script, string member) => "prop.set:" + script + "." + member;
-
 
     public static string? OwnerScriptOf(string definitionId)
     {
@@ -546,7 +463,6 @@ public sealed class NodePalette
         int dot = body.LastIndexOf('.');
         return dot <= 0 ? null : body[..dot];
     }
-
 
     public static string? MemberNameOf(string definitionId)
     {

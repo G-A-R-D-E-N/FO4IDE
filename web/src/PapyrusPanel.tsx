@@ -13,9 +13,7 @@ import './PapyrusPanel.css';
 type Mode = 'decompile' | 'compile' | 'lookup' | 'analyze';
 type LookupKind = 'function' | 'script';
 
-
 type Engine = 'auto' | 'builtin' | 'creationkit';
-
 
 const EDITOR_LINE_HEIGHT = 19;
 
@@ -33,10 +31,8 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
   const [dragOver, setDragOver] = useState(false);
   const [lastOutDir, setLastOutDir] = useState('');
 
-
   const [assembly, setAssembly] = useState(() => LSB('assembly', false));
   const [write, setWrite] = useState(() => LSB('write', true));
-
 
   const [imports, setImports] = useState(() => LS('imports', ''));
   const [flags, setFlags] = useState(() => LS('flags', ''));
@@ -46,12 +42,9 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
   const [compilerPath, setCompilerPath] = useState(() => LS('compilerPath', ''));
   const [engine, setEngine] = useState<Engine>(() => (LS('engine', 'auto') as Engine));
 
-
   const [lookupKind, setLookupKind] = useState<LookupKind>(() => (LS('lookupKind', 'function') as LookupKind));
   const [lookupScript, setLookupScript] = useState(() => LS('lookupScript', ''));
   const [lookupFunction, setLookupFunction] = useState(() => LS('lookupFunction', ''));
-
-
 
   const [buffer, setBuffer] = useState('');
   const [bufferPath, setBufferPath] = useState('');
@@ -64,7 +57,6 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
 
   const papyrus = getPapyrus();
   const unavailable = !papyrus;
-
 
   useEffect(() => setLS('mode', mode), [mode]);
   useEffect(() => setLS('source', source), [source]);
@@ -105,9 +97,6 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     appendLog('• opened ' + baseName(path));
   }, [papyrus]);
 
-
-
-
   const onDrop = useCallback(async (e: DragEvent) => {
     e.preventDefault(); setDragOver(false);
     if (!papyrus) return;
@@ -122,7 +111,6 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
       if (path.startsWith('ERR:')) { appendLog('✗ drop failed -- ' + path); return; }
       setSource(path);
 
-
       if (mode === 'analyze' && /\.psc$/i.test(f.name)) { await loadIntoEditor(path); return; }
       if (/\.pex$/i.test(f.name)) setMode('decompile');
       else if (/\.psc$/i.test(f.name)) setMode('compile');
@@ -132,16 +120,10 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     }
   }, [papyrus, mode, loadIntoEditor]);
 
-
-
-
-
-
   useEffect(() => {
     if (mode !== 'analyze' || !papyrus) return;
     let cancelled = false;
     const timer = setTimeout(async () => {
-
 
       if (!buffer.trim()) { setAnalysis(null); return; }
       setAnalyzing(true);
@@ -165,19 +147,16 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     appendLog('✓ saved ' + baseName(bufferPath));
   };
 
-
   const revealRange = (start: number, length: number) => {
     const el = editorRef.current;
     if (!el) return;
     el.focus();
     el.setSelectionRange(start, start + Math.max(length, 0));
 
-
     const line = buffer.slice(0, start).split('\n').length;
     el.scrollTop = Math.max(0, (line - 4) * EDITOR_LINE_HEIGHT);
     if (gutterRef.current) gutterRef.current.scrollTop = el.scrollTop;
   };
-
 
   const resolveAtCaret = async () => {
     const el = editorRef.current;
@@ -194,7 +173,6 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
     if (!symbolInfo?.resolved) return;
     if (symbolInfo.sameFile) { revealRange(symbolInfo.start ?? 0, symbolInfo.length ?? 0); return; }
     if (!symbolInfo.file) return;
-
 
     if (!papyrus) return;
     const text = await papyrus.ReadScript(symbolInfo.file);
@@ -510,8 +488,6 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
                     </>
                   ) : (
 
-
-
                     <span className="papyrus-symbol-sig">
                       No declaration found for that position. Names are resolved without a type checker,
                       so a member reached through an expression (GetOwner().Foo) cannot be followed.
@@ -570,11 +546,6 @@ export default function PapyrusPanel({ onClose }: { onClose: () => void }) {
   );
 }
 
-
-
-
-
-
 function isLookupError(text: string): boolean {
   if (!text) return false;
   if (text.charCodeAt(0) === 0x91) return true;
@@ -583,7 +554,6 @@ function isLookupError(text: string): boolean {
 function makeLookupBanner(text: string): { kind: 'ok' | 'error'; text: string } {
   return isLookupError(text) ? { kind: 'error', text: 'Lookup failed -- see output' } : { kind: 'ok', text: 'Done' };
 }
-
 
 function bannerKind(text: string): 'ok' | 'warn' | 'error' {
   if (/\b0 failed\b/.test(text) || /Compilation succeeded/.test(text) || /^SAVED ->/m.test(text)) {
@@ -606,7 +576,6 @@ function makeBanner(text: string, mode: Mode): { kind: 'ok' | 'warn' | 'error'; 
   const k = bannerKind(text);
   return { kind: k, text: k === 'error' ? (mode === 'compile' ? 'Compile failed -- see output' : 'Failed -- see output') : 'Done' };
 }
-
 
 const PSC_KEYWORDS = new Set(['scriptname', 'extends', 'import', 'function', 'endfunction', 'event', 'endevent',
   'if', 'else', 'elseif', 'endif', 'while', 'endwhile', 'return', 'property', 'endproperty', 'auto', 'autoreadonly',

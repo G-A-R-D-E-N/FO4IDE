@@ -1,30 +1,10 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import type { CellGeoMap } from '../CellViewport';
 import type { CellPlacedReference } from '../backend';
 
 export const FX_LAYER = '(FX / mist)';
 export const MARKER_LAYER = '(markers)';
 export const DECAL_LAYER = '(ground decals)';
-
-
-
-
-
-
 
 function isEditorMarkerMesh(modelPath: string): boolean {
   const norm = modelPath.replace(/\\/g, '/').toLowerCase();

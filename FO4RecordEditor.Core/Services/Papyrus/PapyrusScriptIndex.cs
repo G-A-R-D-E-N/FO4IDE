@@ -5,31 +5,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class PapyrusScriptIndex
 {
     private sealed class CacheEntry
@@ -41,12 +16,7 @@ public sealed class PapyrusScriptIndex
 
     private readonly List<string> _roots = new();
 
-
-
     private readonly Dictionary<string, string> _byQualifiedName = new(StringComparer.OrdinalIgnoreCase);
-
-
-
 
     private readonly Dictionary<string, string> _byBaseName = new(StringComparer.OrdinalIgnoreCase);
 
@@ -54,22 +24,12 @@ public sealed class PapyrusScriptIndex
 
     private readonly object _lock = new();
 
-
     public IReadOnlyList<string> Roots => _roots;
-
 
     public int Count
     {
         get { lock (_lock) return _byQualifiedName.Count; }
     }
-
-
-
-
-
-
-
-
 
     public void AddRoot(string root)
     {
@@ -94,7 +54,6 @@ public sealed class PapyrusScriptIndex
         }
     }
 
-
     private static string QualifiedNameFor(string root, string file)
     {
         var relative = Path.GetRelativePath(root, file);
@@ -102,7 +61,6 @@ public sealed class PapyrusScriptIndex
         relative = relative.Substring(0, relative.Length - ".psc".Length);
         return relative.Replace(Path.DirectorySeparatorChar, ':').Replace(Path.AltDirectorySeparatorChar, ':');
     }
-
 
     public string? FindFile(string scriptName)
     {
@@ -114,7 +72,6 @@ public sealed class PapyrusScriptIndex
             return _byBaseName.TryGetValue(bare, out var fallback) ? fallback : null;
         }
     }
-
 
     public IReadOnlyList<string> ScriptNames
     {
@@ -129,13 +86,11 @@ public sealed class PapyrusScriptIndex
         }
     }
 
-
     public PapyrusScript? Resolve(string scriptName)
     {
         var file = FindFile(scriptName);
         return file == null ? null : ParseCached(file);
     }
-
 
     public PapyrusScript? ParseCached(string path)
     {
@@ -190,20 +145,10 @@ public sealed class PapyrusScriptIndex
         return script;
     }
 
-
     public void Invalidate(string path)
     {
         lock (_lock) _parsed.Remove(path);
     }
-
-
-
-
-
-
-
-
-
 
     public IReadOnlyList<PapyrusScript> BaseChain(PapyrusScript script)
     {
@@ -222,15 +167,6 @@ public sealed class PapyrusScriptIndex
         return chain;
     }
 
-
-
-
-
-
-
-
-
-
     public PapyrusDeclaration? FindMember(PapyrusScript script, string memberName, out PapyrusScript? owner)
     {
         owner = null;
@@ -248,7 +184,6 @@ public sealed class PapyrusScriptIndex
         return null;
     }
 
-
     public static PapyrusDeclaration? FindMemberOn(PapyrusScript script, string memberName)
     {
         static bool Is(string a, string b) => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
@@ -259,8 +194,6 @@ public sealed class PapyrusScriptIndex
         foreach (var e in script.Events) if (Is(e.Name, memberName)) return e;
         foreach (var s in script.Structs) if (Is(s.Name, memberName)) return s;
         foreach (var c in script.CustomEvents) if (Is(c.Name, memberName)) return c;
-
-
 
         foreach (var state in script.States)
         {

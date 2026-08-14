@@ -4,20 +4,6 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class GraphLoopExitTests
 {
     private static string Source(GraphDocument document)
@@ -59,7 +45,6 @@ public class GraphLoopExitTests
 
         var source = Source(graph.Document);
 
-
         source.Should().Contain("Return");
         source.Should().Contain("Debug.Notification(\"B\")");
         source.Split("While (").Length.Should().Be(2, "the loop should be emitted once");
@@ -72,7 +57,6 @@ public class GraphLoopExitTests
     [Fact]
     public void A_branch_arm_wired_straight_back_to_the_loop_header_compiles()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");

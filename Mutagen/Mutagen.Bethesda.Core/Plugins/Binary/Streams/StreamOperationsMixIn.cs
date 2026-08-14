@@ -8,9 +8,6 @@ namespace Mutagen.Bethesda;
 public static class StreamOperationsMixIn
 {
 
-
-
-
     public static bool TryScanToRecord<T>(this T stream, RecordType type, out SubrecordFrame foundRecord, IReadOnlyRecordCollection expectedTypes)
         where T : IMutagenReadStream
     {

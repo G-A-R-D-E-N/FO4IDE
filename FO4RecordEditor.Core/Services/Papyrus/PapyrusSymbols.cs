@@ -21,46 +21,26 @@ public enum PapyrusSymbolKind
     Import,
 }
 
-
 public sealed class PapyrusSymbol
 {
     public string Name { get; init; } = string.Empty;
 
     public PapyrusSymbolKind Kind { get; init; }
 
-
     public string Signature { get; init; } = string.Empty;
 
     public string? Documentation { get; init; }
 
-
     public string? Container { get; init; }
-
 
     public string? File { get; init; }
 
-
     public PapyrusSpan Span { get; init; }
-
 
     public PapyrusSpan NameSpan { get; init; }
 
     public override string ToString() => $"{Kind} {Name}";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public static class PapyrusSymbols
 {
@@ -133,17 +113,10 @@ public static class PapyrusSymbols
             NameSpan = decl.NameSpan,
         };
 
-
-
-
-
-
-
     public static PapyrusSymbol? FindDefinition(PapyrusScriptIndex index, PapyrusScript script, int offset)
     {
         var path = script.PathTo(offset);
         if (path.Count == 0) return null;
-
 
         for (var i = path.Count - 1; i >= 0; i--)
         {
@@ -168,9 +141,7 @@ public static class PapyrusSymbols
 
         var node = path[path.Count - 1];
 
-
         if (node is PapyrusTypeRef typeRef) return ResolveTypeName(index, script, typeRef.Name);
-
 
         if (script.Extends != null && script.ExtendsSpan.Contains(offset))
         {
@@ -181,9 +152,6 @@ public static class PapyrusSymbols
         {
             return ResolveIdentifier(index, script, path, identifier.Name, offset);
         }
-
-
-
 
         for (var i = path.Count - 1; i >= 0; i--)
         {
@@ -203,9 +171,6 @@ public static class PapyrusSymbols
                 }
             }
 
-
-
-
             var own = index.FindMember(script, member.Name, out var owner);
             if (own != null && owner != null) return Make(own, KindOf(own), owner.Name, owner.FilePath);
             return null;
@@ -213,7 +178,6 @@ public static class PapyrusSymbols
 
         return null;
     }
-
 
     public static string? Hover(PapyrusScriptIndex index, PapyrusScript script, int offset)
     {
@@ -228,7 +192,6 @@ public static class PapyrusSymbols
     {
         if (string.IsNullOrEmpty(name)) return null;
 
-
         switch (name.ToLowerInvariant())
         {
             case "int":
@@ -241,7 +204,6 @@ public static class PapyrusSymbols
             case "structvarname":
                 return null;
         }
-
 
         var colon = name.LastIndexOf(':');
         if (colon > 0)
@@ -276,14 +238,6 @@ public static class PapyrusSymbols
             NameSpan = target.NameSpan,
         };
     }
-
-
-
-
-
-
-
-
 
     private static PapyrusSymbol? ResolveIdentifier(
         PapyrusScriptIndex index,
@@ -328,7 +282,6 @@ public static class PapyrusSymbols
         var member = index.FindMember(script, name, out var owner);
         if (member != null && owner != null) return Make(member, KindOf(member), owner.Name, owner.FilePath);
 
-
         foreach (var import in script.Imports)
         {
             var imported = index.Resolve(import.Name);
@@ -336,7 +289,6 @@ public static class PapyrusSymbols
             var hit = PapyrusScriptIndex.FindMemberOn(imported, name);
             if (hit != null) return Make(hit, KindOf(hit), imported.Name, imported.FilePath);
         }
-
 
         return ResolveTypeName(index, script, name);
     }
@@ -349,7 +301,6 @@ public static class PapyrusSymbols
         }
         return null;
     }
-
 
     private static IEnumerable<PapyrusDefineStatement> Defines(IEnumerable<PapyrusStatement> body)
     {

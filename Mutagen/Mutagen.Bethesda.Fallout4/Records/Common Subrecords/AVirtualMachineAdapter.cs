@@ -316,7 +316,7 @@ partial class AVirtualMachineAdapterBinaryWriteTranslation
         WriteScripts(writer, item.ObjectFormat, item.Scripts);
     }
 }
-    
+
 partial class AVirtualMachineAdapterBinaryOverlay
 {
     public IReadOnlyList<IScriptEntryGetter> Scripts { get; private set; } = null!;

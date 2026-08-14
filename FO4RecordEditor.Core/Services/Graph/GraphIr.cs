@@ -3,23 +3,12 @@ using System.Collections.Generic;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
 public abstract record IrNode
 {
     public string? NodeId { get; init; }
 
     public string? PinId { get; init; }
 }
-
-
-
 
 public abstract record IrExpression : IrNode
 {
@@ -29,9 +18,7 @@ public abstract record IrExpression : IrNode
     public bool IsArray { get; init; }
 }
 
-
 public sealed record IrLiteral(string Text) : IrExpression;
-
 
 public sealed record IrName(string Name) : IrExpression;
 
@@ -39,15 +26,11 @@ public sealed record IrSelf : IrExpression;
 
 public sealed record IrParent : IrExpression;
 
-
 public sealed record IrMember(IrExpression Target, string Name) : IrExpression;
-
 
 public sealed record IrIndex(IrExpression Target, IrExpression Index) : IrExpression;
 
-
 public sealed record IrArgument(IrExpression Value, string? Name = null);
-
 
 public sealed record IrCall(
     IrExpression? Receiver,
@@ -59,7 +42,6 @@ public sealed record IrUnary(string Operator, IrExpression Operand) : IrExpressi
 
 public sealed record IrBinary(string Operator, IrExpression Left, IrExpression Right) : IrExpression;
 
-
 public sealed record IrCast(IrExpression Value, string TargetType, bool TargetIsArray) : IrExpression;
 
 public sealed record IrTypeCheck(IrExpression Value, string TargetType, bool TargetIsArray) : IrExpression;
@@ -68,37 +50,27 @@ public sealed record IrNewArray(string ElementType, IrExpression Size) : IrExpre
 
 public sealed record IrNewStruct(string StructName) : IrExpression;
 
-
-
 public abstract record IrStatement : IrNode;
-
 
 public sealed record IrDefine(string Name, string TypeName, bool IsArray, IrExpression? Value)
     : IrStatement;
 
 public sealed record IrAssign(IrExpression Target, IrExpression Value) : IrStatement;
 
-
 public sealed record IrExpressionStatement(IrExpression Expression) : IrStatement;
 
 public sealed record IrReturn(IrExpression? Value) : IrStatement;
 
-
 public sealed record IrBranch(IrExpression Condition, IReadOnlyList<IrStatement> Body);
-
 
 public sealed record IrIf(IReadOnlyList<IrBranch> Branches, IReadOnlyList<IrStatement>? Else)
     : IrStatement;
 
 public sealed record IrWhile(IrExpression Condition, IReadOnlyList<IrStatement> Body) : IrStatement;
 
-
-
 public sealed record IrParameter(string Name, string TypeName, bool IsArray, string? DefaultText);
 
-
 public sealed record IrLocal(string Name, string TypeName, bool IsArray);
-
 
 public sealed record IrCallable
 {
@@ -110,7 +82,6 @@ public sealed record IrCallable
 
     public bool IsGlobal { get; init; }
 
-
     public string? RemoteObjectType { get; init; }
 
     public string? StateName { get; init; }
@@ -120,15 +91,6 @@ public sealed record IrCallable
     public bool ReturnIsArray { get; init; }
 
     public IReadOnlyList<IrParameter> Parameters { get; init; } = Array.Empty<IrParameter>();
-
-
-
-
-
-
-
-
-
 
     public IReadOnlyList<IrLocal> Locals { get; init; } = Array.Empty<IrLocal>();
 
@@ -144,14 +106,6 @@ public sealed record IrVariable(
 public sealed record IrStructMember(string Name, string TypeName, bool IsArray);
 
 public sealed record IrStruct(string Name, IReadOnlyList<IrStructMember> Members);
-
-
-
-
-
-
-
-
 
 public sealed record IrScript
 {
@@ -173,9 +127,7 @@ public sealed record IrScript
 
     public IReadOnlyList<IrCallable> Callables { get; init; } = Array.Empty<IrCallable>();
 
-
     public string? AutoState { get; init; }
-
 
     public IReadOnlyList<string> CustomEvents { get; init; } = Array.Empty<string>();
 }

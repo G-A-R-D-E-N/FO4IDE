@@ -16,6 +16,6 @@ public sealed class ImplicitBaseMasterProvider : IImplicitBaseMasterProvider
     {
         _gameRelease = gameRelease;
     }
-        
+
     public IReadOnlyList<ModKey> BaseMasters => Implicits.Get(_gameRelease.Release).BaseMasters;
 }

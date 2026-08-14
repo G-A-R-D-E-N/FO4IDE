@@ -6,16 +6,8 @@ using Mutagen.Bethesda.Plugins.Binary.Headers;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Processing;
 
-
-
-
 public static class ModDecompressor
 {
-
-
-
-
-
 
     public static void Decompress(
         Func<IMutagenReadStream> streamCreator,
@@ -34,7 +26,6 @@ public static class ModDecompressor
             {
                 return majorRecord.IsCompressed;
             });
-
 
         var grupMeta = new Dictionary<long, (uint Length, long Offset)>();
         inputStream.Position = 0;
@@ -56,7 +47,6 @@ public static class ModDecompressor
             }
             inputStream.WriteTo(outputStream, (int)noRecordLength);
 
-
             if (inputStream.Complete) break;
             var majorMeta = inputStream.ReadMajorRecordHeader(readSafe: true);
             var len = majorMeta.ContentLength;
@@ -64,21 +54,17 @@ public static class ModDecompressor
                 reader: inputStream,
                 length: len);
 
-
             var decompressed = frame.Decompress();
             var decompressedLen = decompressed.TotalLength;
             var lengthDiff = decompressedLen - len;
             var majorMetaSpan = majorMeta.HeaderData.ToArray();
-
 
             var writableMajorMeta = inputStream.MetaData.Constants.MajorRecordHeaderWritable(majorMetaSpan.AsSpan());
             writableMajorMeta.ContentLength = (uint)(len + lengthDiff);
             writer.Write(majorMetaSpan);
             writer.Write(decompressed.ReadRemainingSpan(readSafe: false));
 
-
             if (lengthDiff == 0) continue;
-
 
             foreach (var grupLoc in fileLocs.GetContainingGroupLocations(nextRec.Value.FormKey))
             {

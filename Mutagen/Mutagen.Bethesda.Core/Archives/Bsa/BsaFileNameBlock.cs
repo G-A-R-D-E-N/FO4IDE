@@ -30,7 +30,6 @@ class BsaFileNameBlock
                         data = data.Slice(index + 1);
                     }
 
-
                     return names;
                 }
                 catch (Exception e)

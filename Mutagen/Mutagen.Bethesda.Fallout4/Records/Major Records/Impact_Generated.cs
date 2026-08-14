@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -1086,8 +1080,6 @@ namespace Mutagen.Bethesda.Fallout4
         IModeled
     {
 
-
-
         new Model? Model { get; set; }
         new Single Duration { get; set; }
         new Impact.OrientationType Orientation { get; set; }
@@ -1125,8 +1117,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => Impact_Registration.Instance;
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1890,7 +1880,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Impact.GetNew();
@@ -2533,7 +2522,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2567,7 +2555,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IImpactGetter);
-
 
         public IModelGetter? Model { get; private set; }
         private RangeInt32? _DATALocation;

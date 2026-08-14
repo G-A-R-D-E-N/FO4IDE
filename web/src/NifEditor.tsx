@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { Save, RotateCcw, ChevronDown, ChevronRight, FolderOpen, Undo2, Layers, Boxes, Puzzle, Info } from 'lucide-react';
 import type { NifHost } from './backend';
 
-
 const FIELD_HELP: Record<string, string> = {
   name: "This block's name. Node/shape names are just labels -- renaming is safe because other blocks reference each other by index, not name.",
   translation: 'Position offset from the parent block, in game units (X, Y, Z). NIF space is Z-up.',
@@ -56,7 +55,6 @@ const fieldHelp = (key: string, type: string): string => {
   return FIELD_HELP[key] ?? '';
 };
 
-
 export interface TreeField { key: string; label: string; type: string; value: unknown; }
 export interface TreeBlock { id: number; type: string; name: string; group: string; cat: string; fields: TreeField[]; }
 export interface NifTree { fo4: boolean; file: string; blocks: TreeBlock[]; }
@@ -64,18 +62,12 @@ export interface NifTree { fo4: boolean; file: string; blocks: TreeBlock[]; }
 const groupIcon = (g: string) =>
   g === 'Nodes' ? <Layers size={13} /> : g === 'Shapes' ? <Boxes size={13} /> : <Puzzle size={13} />;
 
-
 const toHex = (v: number[]) =>
   '#' + v.slice(0, 3).map(c => Math.round(Math.min(1, Math.max(0, c)) * 255).toString(16).padStart(2, '0')).join('');
 const fromHex = (h: string): number[] => {
   const n = parseInt(h.slice(1), 16);
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 };
-
-
-
-
-
 
 export default function NifEditor(
   { tree, nif, nifPath, onSaved, appendLog }: {
@@ -147,7 +139,6 @@ export default function NifEditor(
       appendLog('✗ save failed -- ' + (e instanceof Error ? e.message : String(e)));
     } finally { setSaving(false); }
   };
-
 
   const groups = ['Nodes', 'Shapes', 'Collision', 'Extra'];
   const byGroup = groups
@@ -222,7 +213,6 @@ function FieldRow(
   const num = (e: React.ChangeEvent<HTMLInputElement>) => (e.target.value === '' ? 0 : Number(e.target.value));
   const info = help ? <span className="nif-help" title={help}><Info size={12} /></span> : null;
 
-
   if (t === 'flags') {
     const flags = (Array.isArray(value) ? value : []) as { key: string; label: string; on: boolean }[];
     const toggle = (k: string) => onChange(flags.map(f => (f.key === k ? { ...f, on: !f.on } : f)));
@@ -285,8 +275,6 @@ function FieldRow(
   } else {
     control = <span className="nif-ro">{String(value)}</span>;
   }
-
-
 
   const stacked = t === 'string' || t === 'tex' || t === 'vec2' || t === 'vec3';
   return (

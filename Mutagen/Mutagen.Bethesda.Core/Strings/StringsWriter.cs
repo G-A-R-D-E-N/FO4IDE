@@ -8,9 +8,6 @@ using Mutagen.Bethesda.Strings.DI;
 
 namespace Mutagen.Bethesda.Strings;
 
-
-
-
 public sealed class StringsWriter : IDisposable
 {
     public DirectoryPath WriteDir { get; }
@@ -41,7 +38,6 @@ public sealed class StringsWriter : IDisposable
 
     public uint Register(ITranslatedStringGetter str, StringsSource source)
     {
-
 
         return Register(source, str);
     }

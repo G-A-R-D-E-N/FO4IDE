@@ -10,9 +10,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-
-
-
 DebugLog.Init();
 DebugLog.Info("App", "=== FO4IDE (server) launching ===",
     $"base={AppContext.BaseDirectory} cwd={Environment.CurrentDirectory}");
@@ -23,8 +20,6 @@ string? ArgValue(string name)
     return null;
 }
 bool HasFlag(string name) => Array.Exists(args, a => a == name);
-
-
 
 if (HasFlag("--mcp"))
 {
@@ -37,8 +32,6 @@ ElementRenderer.Init(MutagenLoader.FormatFormLink, MutagenLoader.FormatCondition
 
 var shell = new ShellViewModel();
 var events = new EventStream();
-
-
 
 var rpc = new RpcDispatcher();
 rpc.Register("appInterop", new AppInterop(shell, (msg, pct) =>
@@ -107,8 +100,6 @@ app.MapPost("/rpc", async (HttpContext ctx) =>
     }
 });
 
-
-
 app.MapGet("/events", async (HttpContext ctx, CancellationToken ct) =>
 {
     ctx.Response.Headers.ContentType = "text/event-stream";
@@ -129,13 +120,6 @@ app.MapGet("/events", async (HttpContext ctx, CancellationToken ct) =>
 });
 
 app.MapGet("/api/health", () => Results.Json(new { ok = true, targets = rpc.TargetNames }));
-
-
-
-
-
-
-
 
 app.MapFallback(async ctx =>
 {
@@ -167,9 +151,6 @@ else OpenNativeWindow(url);
 await app.StopAsync();
 return;
 
-
-
-
 static int FreePort(string host)
 {
     var l = new TcpListener(IPAddress.Parse(host), 0);
@@ -179,17 +160,8 @@ static int FreePort(string host)
     return port;
 }
 
-
-
-
-
-
-
-
-
 static void OpenNativeWindow(string url)
 {
-
 
     if (OperatingSystem.IsLinux() &&
         Environment.GetEnvironmentVariable("WEBKIT_DISABLE_DMABUF_RENDERER") == null)
@@ -204,10 +176,6 @@ static void OpenNativeWindow(string url)
         .Load(new Uri(url))
         .WaitForClose();
 }
-
-
-
-
 
 static void OpenInBrowser(string url)
 {

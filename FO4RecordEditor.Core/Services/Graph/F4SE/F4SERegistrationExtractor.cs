@@ -6,52 +6,23 @@ using System.Text.RegularExpressions;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
 public sealed record F4SEModuleSchema
 {
     public required string SourcePath { get; init; }
 
     public IReadOnlyList<NativeBinding> Natives { get; init; } = Array.Empty<NativeBinding>();
 
-
-
-
-
-
-
-
-
-
     public IReadOnlyList<StructBinding> Structs { get; init; } = Array.Empty<StructBinding>();
-
 
     public IReadOnlyList<string> Problems { get; init; } = Array.Empty<string>();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class F4SERegistrationExtractor
 {
-
 
     private static readonly Regex Opening = new(
         @"new\s+(?<latent>Latent)?NativeFunction(?<arity>\d+)\s*(?=<)",
         RegexOptions.Compiled);
-
 
     private static readonly Regex Constructor = new(
         @"\G\s*\(\s*""(?<fn>[^""]*)""\s*,\s*""(?<cls>[^""]*)""\s*,\s*(?<ptr>[A-Za-z_][\w:]*)",
@@ -66,24 +37,12 @@ public sealed class F4SERegistrationExtractor
         @"\bDECLARE_STRUCT\s*\(\s*(?<name>\w+)\s*,\s*""(?<owner>[^""]*)""\s*\)",
         RegexOptions.Compiled);
 
-
-
     private static readonly Regex ExternStructDeclaration = new(
         @"\bDECLARE_EXTERN_STRUCT\s*\(\s*(?<name>\w+)\s*\)",
         RegexOptions.Compiled);
 
-
     public F4SEModuleSchema ExtractFile(string path, IEnumerable<string>? knownStructs = null) =>
         Extract(File.ReadAllText(path), path, knownStructs);
-
-
-
-
-
-
-
-
-
 
     public IReadOnlyList<F4SEModuleSchema> ExtractDirectory(string directory, string pattern = "Papyrus*.cpp")
     {
@@ -97,10 +56,6 @@ public sealed class F4SERegistrationExtractor
 
         return files.Select(f => ExtractBlanked(texts[f], f, structNames)).ToList();
     }
-
-
-
-
 
     public F4SEModuleSchema Extract(
         string source, string sourcePath = "", IEnumerable<string>? knownStructs = null)
@@ -179,7 +134,6 @@ public sealed class F4SERegistrationExtractor
             if (declared != arity)
             {
 
-
                 problems.Add(
                     $"{sourcePath}({line}): NativeFunction{arity} carries {declared} parameter types");
                 continue;
@@ -202,8 +156,6 @@ public sealed class F4SERegistrationExtractor
                     ok = false;
                     break;
                 }
-
-
 
                 var unsigned = cpp!.Name == "UInt32";
                 var type = map.TryToPapyrus(cpp, out var papyrus, out _)
@@ -262,11 +214,6 @@ public sealed class F4SERegistrationExtractor
             natives[index] = natives[index] with { NoWait = true };
         }
     }
-
-
-
-
-
 
     public const string UnknownTypeName = "<unmapped>";
 }

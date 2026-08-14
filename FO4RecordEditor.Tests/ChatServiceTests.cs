@@ -43,8 +43,6 @@ public class ChatServiceTests
         var act = async () => await chat.SendAsync("hello", null, _ => { });
         await act.Should().ThrowAsync<InvalidOperationException>();
 
-
-
         chat.History.Should().HaveCount(2);
         chat.History[0].Role.Should().Be(ChatRole.User);
         chat.History[1].Role.Should().Be(ChatRole.Assistant);

@@ -17,7 +17,7 @@ public static class RecordCompactionCompatibilityDetection
     {
         return _detector.CouldBeSmallMasterCompatible(mod);
     }
-    
+
     public static bool IsMediumMasterCompatible(IModGetter mod)
     {
         return _detector.IsMediumMasterCompatible(mod);

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -39,8 +35,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public partial class ASceneActionType :
         IASceneActionType,
         IEquatable<IASceneActionTypeGetter>,
@@ -53,7 +47,6 @@ namespace Mutagen.Bethesda.Fallout4
         }
         partial void CustomCtor();
         #endregion
-
 
         #region To String
 
@@ -94,7 +87,6 @@ namespace Mutagen.Bethesda.Fallout4
             public Mask(TItem initialValue)
             {
             }
-
 
             #pragma warning disable CS8618
             protected Mask()
@@ -380,17 +372,12 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IASceneActionType :
         IASceneActionTypeGetter,
         IFormLinkContainer,
         ILoquiObjectSetter<IASceneActionType>
     {
     }
-
-
-
 
     public partial interface IASceneActionTypeGetter :
         ILoquiObject,
@@ -760,7 +747,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return ASceneActionType.GetNew();
@@ -936,7 +922,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

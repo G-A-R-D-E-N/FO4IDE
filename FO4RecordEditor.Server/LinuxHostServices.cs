@@ -3,11 +3,6 @@ using FO4RecordEditor.Services;
 
 namespace FO4RecordEditor.Server;
 
-
-
-
-
-
 public static class LinuxHostServices
 {
     private static readonly object UiLock = new();
@@ -17,7 +12,6 @@ public static class LinuxHostServices
     {
         HostServices.ShowFileDialog = Show;
         HostServices.ShowMessage = ShowMessage;
-
 
         HostServices.InvokeOnUiThread = a => { lock (UiLock) a(); };
     }
@@ -71,7 +65,6 @@ public static class LinuxHostServices
             _ => ["--title", r.Title, "--getopenfilename", start],
         };
     }
-
 
     private static IEnumerable<string> ParseFilter(string filter)
     {

@@ -10,8 +10,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
 public class ConflictDiffTests
 {
     private static object BuildEnv(out string weaponFk, string[] keywordsA, string[] keywordsB)

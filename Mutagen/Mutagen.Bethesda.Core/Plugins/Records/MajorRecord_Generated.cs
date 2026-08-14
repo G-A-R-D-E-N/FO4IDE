@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -40,8 +36,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Plugins.Records
 {
     #region Class
-
-
 
     public abstract partial class MajorRecord :
         IEquatable<IMajorRecordGetter>,
@@ -573,8 +567,6 @@ namespace Mutagen.Bethesda.Plugins.Records
 
     #region Interface
 
-
-
     public partial interface IMajorRecord :
         IAssetLinkContainer,
         IFormLinkContainer,
@@ -592,9 +584,6 @@ namespace Mutagen.Bethesda.Plugins.Records
         IMajorRecordGetter
     {
     }
-
-
-
 
     public partial interface IMajorRecordGetter :
         ILoquiObject,
@@ -1368,7 +1357,6 @@ namespace Mutagen.Bethesda.Plugins.Records
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return MajorRecord.GetNew();
@@ -1729,7 +1717,6 @@ namespace Mutagen.Bethesda.Plugins.Records
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Plugins.Records
 {
@@ -1800,7 +1787,6 @@ namespace Mutagen.Bethesda.Plugins.Records
         {
             this.CustomCtor();
         }
-
 
         public virtual ParseResult FillRecordType(
             OverlayStream stream,

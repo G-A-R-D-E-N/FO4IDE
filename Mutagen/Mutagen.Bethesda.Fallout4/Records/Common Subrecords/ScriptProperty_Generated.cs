@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -40,8 +36,6 @@ namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
 
-
-
     public partial class ScriptProperty :
         IEquatable<IScriptPropertyGetter>,
         ILoquiObjectSetter<ScriptProperty>,
@@ -56,8 +50,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public String Name { get; set; } = string.Empty;
         #endregion
@@ -457,8 +449,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IScriptProperty :
         IFormLinkContainer,
         ILoquiObjectSetter<IScriptProperty>,
@@ -466,14 +456,9 @@ namespace Mutagen.Bethesda.Fallout4
         IScriptPropertyGetter
     {
 
-
-
         new String Name { get; set; }
         new ScriptProperty.Flag Flags { get; set; }
     }
-
-
-
 
     public partial interface IScriptPropertyGetter :
         ILoquiObject,
@@ -490,8 +475,6 @@ namespace Mutagen.Bethesda.Fallout4
         object CommonSetterTranslationInstance();
         static ILoquiRegistration StaticRegistration => ScriptProperty_Registration.Instance;
         #region Name
-
-
 
         String Name { get; }
         #endregion
@@ -880,7 +863,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return ScriptProperty.GetNew();
@@ -1079,7 +1061,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

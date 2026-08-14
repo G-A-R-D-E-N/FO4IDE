@@ -5,43 +5,19 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class PapyrusService
 {
     private const string DefaultFlags = "Institute_Papyrus_Flags.flg";
-
 
     public enum Engine
     {
 
         Auto,
 
-
         BuiltIn,
-
 
         CreationKit,
     }
-
 
     public static Engine ParseEngine(string? name) => (name ?? "").Trim().ToLowerInvariant() switch
     {
@@ -67,7 +43,6 @@ public static class PapyrusService
         if (chosen == Engine.BuiltIn || (chosen == Engine.Auto && !haveCreationKit))
         {
 
-
             var result = PapyrusAnalysisService.Compile(
                 source, output, imports, release, debugInfo,
                 string.IsNullOrWhiteSpace(flags) ? null : flags.Trim().Trim('"'));
@@ -88,9 +63,6 @@ public static class PapyrusService
             return result;
         }
 
-
-
-
         if (isFile && source.EndsWith(".pas", StringComparison.OrdinalIgnoreCase))
             return "That's a Papyrus ASSEMBLY file (.pas), not source. PapyrusCompiler compiles .psc SOURCE.\n" +
                    "Fix: Decompile this script again with 'Assembly listing' UNCHECKED to get a .psc, then compile that.\n" +
@@ -102,18 +74,10 @@ public static class PapyrusService
                    "compiler_path pointing at it, or " + ToolPaths.Describe("papyrus") + ". " +
                    "Or use engine='builtin', which needs no Creation Kit.";
 
-
-
-
-
-
         string workDir, target;
         string? stagingDir = null;
         if (isDir)
         {
-
-
-
 
             stagingDir = StageNamespacedFolder(source);
             workDir = stagingDir ?? source;
@@ -125,13 +89,6 @@ public static class PapyrusService
             string fileDir = Path.GetDirectoryName(full)!;
             string objName = "";
             try { objName = ExtractScriptName(File.ReadAllText(full)); } catch { }
-
-
-
-
-
-
-
 
             var segments = objName.Split(':', StringSplitOptions.RemoveEmptyEntries);
             int depth = segments.Length - 1;
@@ -157,13 +114,6 @@ public static class PapyrusService
             }
         }
 
-
-
-
-
-
-
-
         var imp = new List<string>();
         if (!string.IsNullOrWhiteSpace(imports))
             imp.AddRange(imports.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -171,7 +121,6 @@ public static class PapyrusService
         foreach (var b in ToolPaths.PapyrusBaseImports()) imp.Add(b);
         imp.Add(workDir);
         var importArg = string.Join(";", imp.Distinct(StringComparer.OrdinalIgnoreCase));
-
 
         string outDir = !string.IsNullOrWhiteSpace(output) ? output.Trim().Trim('"') : (isDir ? source : workDir);
         try { Directory.CreateDirectory(outDir); } catch (Exception ex) { return $"Cannot create output dir '{outDir}': {ex.Message}"; }
@@ -195,11 +144,9 @@ public static class PapyrusService
         try
         {
 
-
             var run = ProcessRunner.Run(psi, TimeSpan.FromSeconds(300));
             if (!run.Started) return "Failed to start the Papyrus compiler process.";
             if (run.TimedOut) return "Papyrus compile timed out after 300s (killed).";
-
 
             var combined = (run.StdOut + "\n" + run.StdErr).Replace("\r", "");
 
@@ -241,9 +188,6 @@ public static class PapyrusService
         }
     }
 
-
-
-
     private static string? StageNamespacedFolder(string folder)
     {
         string[] files;
@@ -270,13 +214,6 @@ public static class PapyrusService
         catch { try { Directory.Delete(staging, true); } catch { } return null; }
     }
 
-
-
-
-
-
-
-
     public static string Decompile(string source, string? output, bool assembly, bool write)
     {
         if (string.IsNullOrWhiteSpace(source)) return "Provide 'source' (a .pex file or a folder of .pex).";
@@ -288,9 +225,6 @@ public static class PapyrusService
             string text;
             try { text = PapyrusDecompiler.Decompile(source, assembly); }
             catch (Exception ex) { return $"Decompile failed for {Path.GetFileName(source)}: {ex.Message}"; }
-
-
-
 
             bool doWrite = write || !string.IsNullOrWhiteSpace(output);
             if (!doWrite)
@@ -334,9 +268,6 @@ public static class PapyrusService
         return $"Source not found: {source}";
     }
 
-
-
-
     private static string NamespacedOutPath(string outDir, string text, string fallbackBaseName, string ext, bool assembly)
     {
         string rel = fallbackBaseName + ext;
@@ -351,8 +282,6 @@ public static class PapyrusService
         return full;
     }
 
-
-
     private static readonly (string match, string name, string url)[] KnownExtenders =
     {
         ("hudframework",      "HUDFramework",            "https://www.nexusmods.com/fallout4/mods/20309"),
@@ -361,9 +290,6 @@ public static class PapyrusService
         ("mcm",               "Mod Configuration Menu",  "https://www.nexusmods.com/fallout4/mods/21497"),
         ("baka",              "Baka Framework",          "https://www.nexusmods.com/fallout4/search/?gsearch=Baka+Framework&gsearchtype=mods"),
     };
-
-
-
 
     private static string DiagnoseDependencies(string compilerOutput)
     {
@@ -401,7 +327,6 @@ public static class PapyrusService
         }
         return sb.ToString();
     }
-
 
     private static string ExtractScriptName(string text)
     {

@@ -4,12 +4,10 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
 public sealed record SignatureChange(string Class, string Function, string Older, string Newer)
 {
     public override string ToString() => $"{Class}.{Function}: {Older} -> {Newer}";
 }
-
 
 public sealed record F4SEVersionDelta
 {
@@ -19,14 +17,6 @@ public sealed record F4SEVersionDelta
 
     public bool Identical => Added.Count == 0 && Removed.Count == 0 && Changed.Count == 0;
 }
-
-
-
-
-
-
-
-
 
 public static class F4SEVersionDiff
 {
@@ -64,18 +54,10 @@ public static class F4SEVersionDiff
         foreach (var binding in bindings)
         {
 
-
             map.TryAdd((binding.PapyrusClass.ToLowerInvariant(), binding.FunctionName.ToLowerInvariant()), binding);
         }
         return map;
     }
-
-
-
-
-
-
-
 
     private static string Signature(NativeBinding binding) =>
         $"{binding.ReturnType} {(binding.IsGlobal ? "global " : "")}"

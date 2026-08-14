@@ -4,30 +4,8 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
-
-
-
-
-
-
-
-
 public static class F4SECppScanner
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string BlankComments(string source)
     {
@@ -87,14 +65,6 @@ public static class F4SECppScanner
         return result.ToString();
     }
 
-
-
-
-
-
-
-
-
     public static int FindMatchingAngle(string text, int openIndex)
     {
         if (openIndex < 0 || openIndex >= text.Length || text[openIndex] != '<') return -1;
@@ -112,8 +82,6 @@ public static class F4SECppScanner
                     if (depth == 0) return i;
                     break;
 
-
-
                 case ';':
                 case '{':
                 case '}':
@@ -122,7 +90,6 @@ public static class F4SECppScanner
         }
         return -1;
     }
-
 
     public static IReadOnlyList<string> SplitTemplateArguments(string arguments)
     {
@@ -147,7 +114,6 @@ public static class F4SECppScanner
         if (last.Length > 0) parts.Add(last);
         return parts;
     }
-
 
     public static int LineAt(string text, int offset)
     {

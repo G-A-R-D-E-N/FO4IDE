@@ -7,12 +7,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class BackendInterop
@@ -21,9 +15,7 @@ public class BackendInterop
     private readonly IEnumerable<ConflictEntry>? _staticConflicts;
     private readonly object? _staticEnv;
 
-
     public BackendInterop(ShellViewModel shell) => _shell = shell;
-
 
     public BackendInterop(IEnumerable<ConflictEntry> conflicts, object? env)
     {
@@ -39,8 +31,6 @@ public class BackendInterop
             if (_staticConflicts != null) return JsonConvert.SerializeObject(_staticConflicts);
             if (Env == null) return "[]";
 
-
-
             var conflicts = await ConflictScanner.ScanAsync(Env);
             return JsonConvert.SerializeObject(conflicts);
         });
@@ -48,8 +38,6 @@ public class BackendInterop
     public string GetConflictMatrix(string formKey) =>
         DebugLog.Guard(nameof(GetConflictMatrix), () =>
             JsonConvert.SerializeObject(MutagenLoader.BuildConflictMatrix(Env, formKey)), formKey);
-
-
 
     public System.Threading.Tasks.Task<string> GetReferencedBy(string formKey) =>
         DebugLog.GuardAsync(nameof(GetReferencedBy), async () =>
@@ -59,11 +47,9 @@ public class BackendInterop
             return JsonConvert.SerializeObject(list);
         }, formKey);
 
-
     public string GetProblems(string formKey) =>
         DebugLog.Guard(nameof(GetProblems), () =>
             Env == null ? "[]" : JsonConvert.SerializeObject(MutagenLoader.GetRecordProblems(Env, formKey)), formKey);
-
 
     public System.Threading.Tasks.Task<string> SearchRecords(string query, string typeFilter) =>
         DebugLog.GuardAsync(nameof(SearchRecords), async () =>
@@ -74,13 +60,10 @@ public class BackendInterop
             return JsonConvert.SerializeObject(hits);
         }, $"{query} [{typeFilter}]");
 
-
-
     public string GetRecordTree(string plugin, string id) =>
         DebugLog.Guard(nameof(GetRecordTree), () =>
             JsonConvert.SerializeObject(MutagenLoader.BuildPopulatedFields(id, Env, plugin).Select(NodeDto).ToArray()),
             $"{plugin} {id}");
-
 
     private static object NodeDto(Models.RecordNode n) => new
     {
@@ -95,15 +78,9 @@ public class BackendInterop
         children = n.Children.Select(NodeDto).ToArray(),
     };
 
-
-
-
-
-
     public string GetActivePlugins() =>
         DebugLog.Guard(nameof(GetActivePlugins), () =>
             JsonConvert.SerializeObject(MutagenLoader.GetActivePlugins(Env)));
-
 
     public System.Threading.Tasks.Task<string> GetRecordTypeIndex() =>
         DebugLog.GuardAsync(nameof(GetRecordTypeIndex), async () =>
@@ -112,7 +89,6 @@ public class BackendInterop
             var types = await System.Threading.Tasks.Task.Run(() => MutagenLoader.GetRecordTypeIndex(Env));
             return JsonConvert.SerializeObject(types);
         });
-
 
     public System.Threading.Tasks.Task<string> GetRecordsOfType(string signature, string filter, int limit, int offset) =>
         DebugLog.GuardAsync(nameof(GetRecordsOfType), async () =>
@@ -123,23 +99,18 @@ public class BackendInterop
             return JsonConvert.SerializeObject(hits);
         }, $"{signature} [{filter}] {offset}+{limit}");
 
-
-
     public string GetRecordsGrid(string plugin, string type, int limit, int offset) =>
         DebugLog.Guard(nameof(GetRecordsGrid),
             () => MutagenLoader.GetRecordsGridJson(Env, plugin, type, limit <= 0 ? 100 : limit, offset),
             $"{plugin} {type} {offset}+{limit}");
 
-
     public string GetContainmentPath(string formKey) =>
         DebugLog.Guard(nameof(GetContainmentPath), () =>
             JsonConvert.SerializeObject(MutagenLoader.GetContainmentPath(Env, formKey)), formKey);
 
-
     public string GetRecordDetails(string formKey) =>
         DebugLog.Guard(nameof(GetRecordDetails), () =>
             JsonConvert.SerializeObject(MutagenLoader.GetRecordDetails(Env, formKey)), formKey);
-
 
     public System.Threading.Tasks.Task<string> GetRecordPluginMatrix(string formKey) =>
         DebugLog.GuardAsync(nameof(GetRecordPluginMatrix), async () =>
@@ -148,14 +119,12 @@ public class BackendInterop
             return JsonConvert.SerializeObject(rows);
         }, formKey);
 
-
     public System.Threading.Tasks.Task<string> GetDependencies(string formKey) =>
         DebugLog.GuardAsync(nameof(GetDependencies), async () =>
         {
             var deps = await System.Threading.Tasks.Task.Run(() => MutagenLoader.GetDependencies(Env, formKey));
             return JsonConvert.SerializeObject(deps);
         }, formKey);
-
 
     public System.Threading.Tasks.Task<string> GetHistory(string formKey) =>
         DebugLog.GuardAsync(nameof(GetHistory), async () =>
@@ -164,14 +133,12 @@ public class BackendInterop
             return JsonConvert.SerializeObject(entries);
         }, formKey);
 
-
     public System.Threading.Tasks.Task<string> GetLoadOrderSummary() =>
         DebugLog.GuardAsync(nameof(GetLoadOrderSummary), async () =>
         {
             var summary = await System.Threading.Tasks.Task.Run(() => MutagenLoader.GetLoadOrderSummary(Env));
             return JsonConvert.SerializeObject(summary);
         });
-
 
     public string OpenPlugin(string plugin) =>
         DebugLog.Guard(nameof(OpenPlugin), () => WriteService.OpenPlugin(plugin, Env), plugin);
@@ -195,8 +162,6 @@ public class BackendInterop
     public string DeleteRecord(string plugin, string id) =>
         DebugLog.Guard(nameof(DeleteRecord), () => WriteService.DeleteRecord(plugin, id, Env), $"{plugin} {id}");
 
-
-
     public string CopyAsOverride(string sourcePlugin, string id, string patchPlugin, bool overwrite) =>
         DebugLog.Guard(nameof(CopyAsOverride), () => WriteService.CopyAsOverride(Env, sourcePlugin, id, patchPlugin, overwrite),
             $"{id} {sourcePlugin}->{patchPlugin}");
@@ -218,7 +183,6 @@ public class BackendInterop
         DebugLog.Guard(nameof(RenumberFormId), () => WriteService.RenumberFormId(plugin, record, newId, Env),
             $"{plugin} {record}->{newId}");
 
-
     public string GetConditions(string plugin, string record) =>
         DebugLog.Guard(nameof(GetConditions), () => WriteService.GetConditionsJson(Env, plugin, record),
             $"{plugin} {record}");
@@ -232,7 +196,6 @@ public class BackendInterop
         DebugLog.Guard(nameof(GetConditionFunctions), WriteService.ConditionFunctionNames);
     public string GetConditionFunctionParams() =>
         DebugLog.Guard(nameof(GetConditionFunctionParams), ConditionFunctions.AsJson);
-
 
     public string ResolveFormKeyLabels(string formKeysCsv) =>
         DebugLog.Guard(nameof(ResolveFormKeyLabels), () =>
@@ -258,7 +221,6 @@ public class BackendInterop
         DebugLog.Guard(nameof(ChangeReferencingRecords),
             () => WriteService.ChangeReferencingRecords(Env, from, to, patchPlugin, apply),
             $"{from}->{to} patch={patchPlugin} apply={apply}");
-
 
     public string DescribeElement(string plugin, string record, string path) =>
         DebugLog.Guard(nameof(DescribeElement), () => ElementService.DescribeElement(Env, plugin, record, path),
@@ -292,7 +254,6 @@ public class BackendInterop
         DebugLog.Guard(nameof(CreateMergedPatch), () => WriteService.CreateMergedPatch(Env, plugins, patchPlugin, apply),
             $"{plugins}->{patchPlugin} apply={apply}");
 
-
     public string ResolveConflict(string formKey, string winner, string patch) =>
         DebugLog.Guard(nameof(ResolveConflict), () => WriteService.ResolveConflict(Env, formKey, winner, patch),
             $"{formKey} winner={winner} patch={patch}");
@@ -301,13 +262,6 @@ public class BackendInterop
     public string SavePlugin(string plugin, string path) =>
         DebugLog.Guard(nameof(SavePlugin), () =>
             WriteService.SavePlugin(plugin, string.IsNullOrWhiteSpace(path) ? null : path, Env), $"{plugin} {path}");
-
-
-
-
-
-
-
 
     public System.Threading.Tasks.Task<string> GetPluginRecordTypes(string plugin) =>
         DebugLog.GuardAsync(nameof(GetPluginRecordTypes), async () =>

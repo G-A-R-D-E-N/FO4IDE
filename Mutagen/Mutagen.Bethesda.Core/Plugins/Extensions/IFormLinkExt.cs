@@ -9,19 +9,9 @@ using Mutagen.Bethesda.Plugins.Records.Mapping;
 
 namespace Mutagen.Bethesda;
 
-
-
-
 public static class IFormLinkExt
 {
     #region Resolve
-
-
-
-
-
-
-
 
     public static bool TryResolve<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache, [MaybeNullWhen(false)] out TMajor majorRecord)
         where TMajor : class, IMajorRecordGetter
@@ -33,15 +23,6 @@ public static class IFormLinkExt
         }
         return cache.TryResolve<TMajor>(formKey, out majorRecord);
     }
-
-
-
-
-
-
-
-
-
 
     public static bool TryResolve<TSource, TScopedMajor>(this IFormLinkGetter<TSource> link, ILinkCache cache, [MaybeNullWhen(false)] out TScopedMajor majorRecord)
         where TSource : class, IMajorRecordGetter
@@ -55,14 +36,6 @@ public static class IFormLinkExt
         return cache.TryResolve(formKey, out majorRecord);
     }
 
-
-
-
-
-
-
-
-
     public static bool TryResolve<TMajor>(this IFormLinkGetter link, ILinkCache cache, [MaybeNullWhen(false)] out TMajor majorRecord)
         where TMajor : class, IMajorRecordGetter
     {
@@ -73,14 +46,6 @@ public static class IFormLinkExt
         }
         return cache.TryResolve(formKey, out majorRecord);
     }
-
-
-
-
-
-
-
-
 
     public static TMajor? TryResolve<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
@@ -96,14 +61,6 @@ public static class IFormLinkExt
         return null;
     }
 
-
-
-
-
-
-
-
-
     public static TScopedMajor? TryResolve<TMajor, TScopedMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
         where TScopedMajor : class, TMajor
@@ -115,13 +72,6 @@ public static class IFormLinkExt
         return null;
     }
 
-
-
-
-
-
-
-
     public static TMajor? TryResolve<TMajor>(this IFormLinkGetter link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -131,15 +81,6 @@ public static class IFormLinkExt
         }
         return null;
     }
-
-
-
-
-
-
-
-
-
 
     public static TScopedMajor Resolve<TMajor, TScopedMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
@@ -155,14 +96,6 @@ public static class IFormLinkExt
             edid: null,
             message: "Could not resolve record");
     }
-
-
-
-
-
-
-
-
 
     public static TMajor Resolve<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
@@ -182,14 +115,6 @@ public static class IFormLinkExt
             message: "Could not resolve record");
     }
 
-
-
-
-
-
-
-
-
     public static TMajor Resolve<TMajor>(this IFormLinkGetter link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -207,13 +132,6 @@ public static class IFormLinkExt
 
     #region ResolveAll
 
-
-
-
-
-
-
-
     public static IEnumerable<TMajor> ResolveAll<TMajor>(this IFormLinkGetter<TMajor> link, ILinkCache cache)
         where TMajor : class, IMajorRecordGetter
     {
@@ -223,15 +141,6 @@ public static class IFormLinkExt
         }
         return cache.ResolveAll<TMajor>(formKey);
     }
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<TScopedMajor> ResolveAll<TSource, TScopedMajor>(this IFormLinkGetter<TSource> link, ILinkCache cache)
         where TSource : class, IMajorRecordGetter
@@ -246,16 +155,6 @@ public static class IFormLinkExt
     #endregion
 
     #region Resolve Context
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryResolveContext<TMod, TModGetter, TMajor, TMajorGetter>(
         this IFormLinkGetter<TMajorGetter> link,
@@ -274,17 +173,6 @@ public static class IFormLinkExt
         return cache.TryResolveContext<TMajor, TMajorGetter>(formKey, out majorRecord);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public static IModContext<TMod, TModGetter, TMajor, TMajorGetter>? ResolveContext<TMod, TModGetter, TMajor, TMajorGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache)
@@ -299,18 +187,6 @@ public static class IFormLinkExt
         }
         return null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool TryResolveContext<TMod, TModGetter, TMajorGetter, TScopedSetter, TScopedGetter>(
         this IFormLinkGetter<TMajorGetter> link,
@@ -329,18 +205,6 @@ public static class IFormLinkExt
         }
         return cache.TryResolveContext<TScopedSetter, TScopedGetter>(formKey, out majorRecord);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static IModContext<TMod, TModGetter, TScopedSetter, TScopedGetter>? ResolveContext<TMod, TModGetter, TMajorGetter, TScopedSetter, TScopedGetter>(
         this IFormLinkGetter<TMajorGetter> link,
@@ -361,16 +225,6 @@ public static class IFormLinkExt
 
     #region ResolveAll Context
 
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> ResolveAllContexts<TMod, TModGetter, TMajor, TMajorGetter>(
         this IFormLinkGetter<TMajorGetter> link,
         ILinkCache<TMod, TModGetter> cache)
@@ -385,18 +239,6 @@ public static class IFormLinkExt
         }
         return cache.ResolveAllContexts<TMajor, TMajorGetter>(formKey);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<IModContext<TMod, TModGetter, TScopedSetter, TScopedGetter>> ResolveAllContexts<TMod, TModGetter, TMajorGetter, TScopedSetter, TScopedGetter>(
         this IFormLinkGetter<TMajorGetter> link,
@@ -417,13 +259,6 @@ public static class IFormLinkExt
 
     #region Resolve Simple Context
 
-
-
-
-
-
-
-
     public static bool TryResolveSimpleContext<TMajor>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache,
@@ -438,14 +273,6 @@ public static class IFormLinkExt
         return cache.TryResolveSimpleContext<TMajor>(formKey, out majorRecord);
     }
 
-
-
-
-
-
-
-
-
     public static IModContext<TMajor>? ResolveSimpleContext<TMajor>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache)
@@ -457,15 +284,6 @@ public static class IFormLinkExt
         }
         return null;
     }
-
-
-
-
-
-
-
-
-
 
     public static bool TryResolveSimpleContext<TMajor, TScoped>(
         this IFormLinkGetter<TMajor> link,
@@ -481,15 +299,6 @@ public static class IFormLinkExt
         }
         return cache.TryResolveSimpleContext<TScoped>(formKey, out majorRecord);
     }
-
-
-
-
-
-
-
-
-
 
     public static IModContext<TScoped>? ResolveSimpleContext<TMajor, TScoped>(
         this IFormLinkGetter<TMajor> link,
@@ -507,13 +316,6 @@ public static class IFormLinkExt
 
     #region ResolveAll Simple Context
 
-
-
-
-
-
-
-
     public static IEnumerable<IModContext<TMajor>> ResolveAllSimpleContexts<TMajor>(
         this IFormLinkGetter<TMajor> link,
         ILinkCache cache)
@@ -525,15 +327,6 @@ public static class IFormLinkExt
         }
         return cache.ResolveAllSimpleContexts<TMajor>(formKey);
     }
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<IModContext<TScoped>> ResolveAllSimpleContexts<TMajor, TScoped>(
         this IFormLinkGetter<TMajor> link,
@@ -551,23 +344,6 @@ public static class IFormLinkExt
 
     #region ResolveIdentifier
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public static bool TryResolveIdentifier(
         this IFormLinkGetter formLink,
@@ -576,22 +352,6 @@ public static class IFormLinkExt
     {
         return cache.TryResolveIdentifier(formLink.FormKey, out editorId);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     [Obsolete("This call is not as optimized as its generic typed counterpart.  Use as a last resort.")]
     public static string? ResolveIdentifier(
@@ -602,24 +362,6 @@ public static class IFormLinkExt
         return cache.ResolveIdentifier(formLink.FormKey);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryResolveIdentifier(
         this IFormLinkGetter formLink,
         Type type,
@@ -628,23 +370,6 @@ public static class IFormLinkExt
     {
         return cache.TryResolveIdentifier(formLink.FormKey, type, out editorId);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string? ResolveIdentifier(
         this IFormLinkGetter formLink,
@@ -655,23 +380,6 @@ public static class IFormLinkExt
         return cache.ResolveIdentifier(formLink.FormKey, type);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static bool TryResolveIdentifier<TMajor>(
         this IFormLinkGetter<TMajor> formLink,
         ILinkCache cache, [MaybeNullWhen(false)] out string? editorId,
@@ -680,22 +388,6 @@ public static class IFormLinkExt
     {
         return cache.TryResolveIdentifier<TMajor>(formLink.FormKey, out editorId);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static string? ResolveIdentifier<TMajor>(
         this IFormLinkGetter<TMajor> formLink,
@@ -784,17 +476,11 @@ public static class IFormLinkExt
         link.SetTo(rhs.FormKeyNullable);
     }
 
-
-
-
     public static IFormLinkNullable<TMajor> AsNullable<TMajor>(this IFormLinkGetter<TMajor> link)
         where TMajor : class, IMajorRecordGetter
     {
         return new FormLinkNullable<TMajor>(link.FormKeyNullable);
     }
-
-
-
 
     public static IFormLink<TMajor> AsSetter<TMajor>(this IFormLinkGetter<TMajor> link)
         where TMajor : class, IMajorRecordGetter

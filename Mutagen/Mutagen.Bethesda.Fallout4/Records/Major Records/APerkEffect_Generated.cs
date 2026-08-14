@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -40,8 +36,6 @@ using System.Reactive.Linq;
 namespace Mutagen.Bethesda.Fallout4
 {
     #region Class
-
-
 
     public abstract partial class APerkEffect :
         IAPerkEffect,
@@ -642,8 +636,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     #region Interface
 
-
-
     public partial interface IAPerkEffect :
         IAPerkEffectGetter,
         IFormLinkContainer,
@@ -656,9 +648,6 @@ namespace Mutagen.Bethesda.Fallout4
         new TranslatedString? ButtonLabel { get; set; }
         new APerkEffect.Flag? Flags { get; set; }
     }
-
-
-
 
     public partial interface IAPerkEffectGetter :
         ILoquiObject,
@@ -1159,7 +1148,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public virtual object GetNew()
         {
             return APerkEffect.GetNew();
@@ -1497,7 +1485,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -1573,7 +1560,6 @@ namespace Mutagen.Bethesda.Fallout4
         {
             this.CustomCtor();
         }
-
 
         public virtual ParseResult FillRecordType(
             OverlayStream stream,

@@ -10,24 +10,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class GraphBenchmarkTests
 {
     private const string BenchVariable = "FO4RE_GRAPH_BENCH";
@@ -80,7 +62,6 @@ public class GraphBenchmarkTests
         var compiler = GraphTestEnvironment.Compiler();
         int totalNodes = fixtures.Sum(f => f.Build().Nodes.Count);
 
-
         foreach (var fixture in fixtures) compiler.Compile(fixture.Build(), new GraphCompileOptions { StopAfterSource = true });
 
         var emitSamples = new List<double>();
@@ -118,8 +99,6 @@ public class GraphBenchmarkTests
         _output.WriteLine(
             $"BENCH graph.to_pex per_fixture_ms={full.Median / fixtures.Count:F3}");
 
-
-
         emit.Median.Should().BeLessThan(4000, "generating source for 24 graphs should stay well under four seconds");
         full.Median.Should().BeLessThan(20000, "compiling 24 graphs to .pex should stay well under twenty seconds");
     }
@@ -145,8 +124,6 @@ public class GraphBenchmarkTests
             if (result.Success && !result.Errors.Any()) clean++;
             else refused.Add($"{fixture.Name}: {GraphTestEnvironment.Describe(result.Errors)}");
         }
-
-
 
         _output.WriteLine($"BENCH graph.success clean={clean} attempted={attempted} refused={refused.Count}");
         foreach (var line in refused) _output.WriteLine("  REFUSED " + line);

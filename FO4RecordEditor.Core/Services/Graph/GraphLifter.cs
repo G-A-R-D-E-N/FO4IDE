@@ -5,7 +5,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
 public sealed class GraphLiftResult
 {
     public GraphDocument? Document { get; init; }
@@ -15,20 +14,6 @@ public sealed class GraphLiftResult
     public bool Success =>
         Document != null && !Diagnostics.Any(d => d.Severity == GraphSeverity.Error);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public sealed class GraphLifter
 {
@@ -71,8 +56,6 @@ public sealed class GraphLifter
 
         return new GraphLiftResult { Document = _doc, Diagnostics = _problems };
     }
-
-
 
     private void LiftHeader()
     {
@@ -144,8 +127,6 @@ public sealed class GraphLifter
         }
     }
 
-
-
     private void LiftCallable((PapyrusDeclaration Decl, string? State) callable)
     {
         _penX = 0;
@@ -207,7 +188,6 @@ public sealed class GraphLifter
         }
     }
 
-
     private string? DeclaringScriptOf(string eventName)
     {
         var current = _script;
@@ -226,19 +206,8 @@ public sealed class GraphLifter
             current = _index.Resolve(current.Extends);
         }
 
-
         return _script.Extends ?? _script.Name;
     }
-
-
-
-
-
-
-
-
-
-
 
     private List<PinRef> LiftBlock(IEnumerable<PapyrusStatement> body, List<PinRef> open)
     {
@@ -274,7 +243,6 @@ public sealed class GraphLifter
                 if (open.Count == before && ReferenceEquals(open, open))
                 {
 
-
                 }
                 return open;
             }
@@ -303,9 +271,6 @@ public sealed class GraphLifter
 
     private List<PinRef> LiftAssign(PapyrusAssignStatement assign, List<PinRef> open)
     {
-
-
-
 
         var compound = CompoundId(assign.Operator);
         if (compound != null && assign.Target is not PapyrusIdentifierExpression)
@@ -419,9 +384,6 @@ public sealed class GraphLifter
     private List<PinRef> LiftWhile(PapyrusWhileStatement loop, List<PinRef> open)
     {
 
-
-
-
         if (ContainsCall(loop.Condition))
         {
             Refuse("This loop's condition calls a function. The graph would evaluate it once "
@@ -444,9 +406,6 @@ public sealed class GraphLifter
 
     private static bool ContainsCall(PapyrusNode node) =>
         node is PapyrusCallExpression || node.Children.Any(ContainsCall);
-
-
-
 
     private sealed record Value(PinRef? Pin, GraphPinValue? Literal);
 
@@ -616,9 +575,6 @@ public sealed class GraphLifter
                 GraphNodeKind.PropertyGet);
             if (target != null) Attach(target, new PinRef(node, PinIds.Self));
 
-
-
-
             return new Value(new PinRef(node, PinIds.Value), null);
         }
 
@@ -641,7 +597,6 @@ public sealed class GraphLifter
 
         var id = NodePalette.CallId(binding.Owner.Name, binding.Name, isGlobal);
         var node = Node(id, isGlobal ? GraphNodeKind.Call : GraphNodeKind.Call);
-
 
         if (!isGlobal && call.Callee is PapyrusMemberExpression receiver)
         {
@@ -666,14 +621,11 @@ public sealed class GraphLifter
             if (value != null) Attach(value, new PinRef(node, PinIds.Argument(parameterName)));
         }
 
-
         Enter(open, node);
         open = new List<PinRef> { new(node, PinIds.Then) };
 
         return new Value(new PinRef(node, PinIds.Return), null);
     }
-
-
 
     private string Node(string definitionId, GraphNodeKind kind)
     {
@@ -697,7 +649,6 @@ public sealed class GraphLifter
         _doc.Node(nodeId)!.Config[key] = value;
     }
 
-
     private void Enter(List<PinRef> open, string nodeId)
     {
         foreach (var end in open) Wire(end, new PinRef(nodeId, PinIds.Exec));
@@ -715,8 +666,6 @@ public sealed class GraphLifter
         if (value.Pin != null) { Wire(value.Pin.Value, target); return; }
         if (value.Literal != null) _doc.Node(target.Node)!.PinValues[target.Pin] = value.Literal;
     }
-
-
 
     private void Refuse(string message, PapyrusSpan span = default) =>
         _problems.Add(new GraphDiagnostic
@@ -740,14 +689,6 @@ public sealed class GraphLifter
     private static string? Text(PapyrusExpression? expression) =>
         expression is PapyrusLiteralExpression literal ? literal.Text : null;
 
-
-
-
-
-
-
-
-
     private static string LiteralText(PapyrusLiteralExpression literal) =>
         literal.Kind == PapyrusLiteralKind.String
             ? "\"" + literal.Text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""
@@ -761,7 +702,6 @@ public sealed class GraphLifter
         PapyrusLiteralKind.Bool => "bool",
         _ => "int",
     };
-
 
     private static string? CompoundId(PapyrusTokenKind op) => op switch
     {

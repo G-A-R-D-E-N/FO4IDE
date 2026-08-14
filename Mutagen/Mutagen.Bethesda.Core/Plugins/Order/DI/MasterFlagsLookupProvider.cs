@@ -44,7 +44,7 @@ public class MasterFlagsLookupProvider : IMasterFlagsLookupProvider
                 return null;
             })
             .ToArray();
-        
+
         var cache = new Cache<IModMasterStyledGetter, ModKey>(x => x.ModKey);
         foreach (var style in keyedMasterStyles)
         {

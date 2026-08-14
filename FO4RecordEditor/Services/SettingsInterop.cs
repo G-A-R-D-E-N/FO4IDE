@@ -7,10 +7,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class SettingsInterop
@@ -18,8 +14,6 @@ public class SettingsInterop
     private readonly ShellViewModel _shell;
 
     public SettingsInterop(ShellViewModel shell) => _shell = shell;
-
-
 
     public string GetSettings()
     {
@@ -50,7 +44,6 @@ public class SettingsInterop
             s.ReadLargePluginsIntoMemory,
         });
     }
-
 
     public string SaveSettings(string json)
     {
@@ -84,8 +77,6 @@ public class SettingsInterop
             _shell.Settings.Save();
             _shell.RebuildProvider();
 
-
-
             ToolPaths.Invalidate();
             return "Settings saved.";
         }
@@ -96,14 +87,11 @@ public class SettingsInterop
         }
     }
 
-
     public string BrowseFolder(string title, string current)
     {
         var seed = !string.IsNullOrWhiteSpace(current) && System.IO.Directory.Exists(current) ? current : "";
         return HostServices.PickFolder(string.IsNullOrWhiteSpace(title) ? "Choose a folder" : title, seed);
     }
-
-
 
     public string BrowseFile(string title, string filter, string current)
     {
@@ -111,7 +99,6 @@ public class SettingsInterop
             ? System.IO.Path.GetDirectoryName(current) ?? "" : "";
         return HostServices.PickFile(title, filter, seed);
     }
-
 
     public async Task<string> TestClaude(string path)
     {
@@ -122,9 +109,6 @@ public class SettingsInterop
             psi.ArgumentList.Add("/c");
             psi.ArgumentList.Add(path);
             psi.ArgumentList.Add("--version");
-
-
-
 
             var run = await ProcessRunner.RunAsync(psi, TimeSpan.FromSeconds(30));
 

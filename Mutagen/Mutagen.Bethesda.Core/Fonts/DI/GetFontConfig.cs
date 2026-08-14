@@ -6,16 +6,7 @@ namespace Mutagen.Bethesda.Fonts.DI;
 public interface IGetFontConfig
 {
 
-
-
-
-
 	DataRelativePath GetAssetPath(Language language);
-
-
-
-
-
 
 	Stream GetStream(Language language);
 }
@@ -37,12 +28,10 @@ public class GetFontConfig : IGetFontConfig
 	{
 		var iniFontConfig = _iniListings.Get();
 
-
 		if (iniFontConfig is {} configAssetPath && _assetProvider.Exists(configAssetPath))
 		{
 			return configAssetPath;
 		}
-
 
 		var isoLanguageString = StringsUtility.GetIsoLanguageString(language);
 		var languageAssetPath = new DataRelativePath($"Interface/FontConfig_{isoLanguageString}.txt");
@@ -50,7 +39,6 @@ public class GetFontConfig : IGetFontConfig
 		{
 			return languageAssetPath;
 		}
-
 
 		var defaultAssetPath = new DataRelativePath("Interface/FontConfig.txt");
 		if (_assetProvider.Exists(defaultAssetPath))

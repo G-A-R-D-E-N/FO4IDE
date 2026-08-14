@@ -1,9 +1,5 @@
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 public static class WpfHostServices
 {
     public static void Install()

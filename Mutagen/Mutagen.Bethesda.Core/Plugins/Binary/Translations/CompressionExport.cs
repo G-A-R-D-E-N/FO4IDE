@@ -10,13 +10,7 @@ public readonly struct CompressionExport : IDisposable
 {
     private readonly MemoryTributary _tributary = new();
 
-
-
-
     public readonly MutagenWriter OriginalWriter;
-
-
-
 
     public MutagenWriter CompressionWriter { get; }
 

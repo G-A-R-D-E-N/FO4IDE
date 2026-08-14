@@ -9,11 +9,6 @@ using FileMode = System.IO.FileMode;
 
 namespace Mutagen.Bethesda.Plugins.Allocators;
 
-
-
-
-
-
 public sealed class TextFileFormKeyAllocator : BasePersistentFormKeyAllocator
 {
     private readonly object _lock = new();
@@ -75,13 +70,6 @@ public sealed class TextFileFormKeyAllocator : BasePersistentFormKeyAllocator
         }
         return ret;
     }
-
-
-
-
-
-
-
 
     public override FormKey GetNextFormKey()
     {

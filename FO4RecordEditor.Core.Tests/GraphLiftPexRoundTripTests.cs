@@ -9,30 +9,11 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class GraphLiftPexRoundTripTests
 {
     private readonly ITestOutputHelper _output;
 
     public GraphLiftPexRoundTripTests(ITestOutputHelper output) => _output = output;
-
 
     private enum Stage
     {
@@ -59,7 +40,6 @@ public class GraphLiftPexRoundTripTests
             : decompiled;
     }
 
-
     private static Outcome RunOne(GraphFixture fixture)
     {
         var root = Directory.CreateTempSubdirectory("fo4re-lift-pex-");
@@ -75,7 +55,6 @@ public class GraphLiftPexRoundTripTests
                 return new Outcome(fixture.Name, Stage.ReferenceDidNotCompile,
                     string.Join(" | ", original.Diagnostics.Select(d => $"{d.Code} {d.Message}")));
             }
-
 
             var pexPath = Path.Combine(root.FullName, "Fixture.pex");
             original.Pex.WriteFile(pexPath);
@@ -94,7 +73,6 @@ public class GraphLiftPexRoundTripTests
                 return new Outcome(fixture.Name, Stage.DecompiledSourceDidNotParse,
                     string.Join(" | ", parseErrors.Select(d => $"{d.Code} {d.Message}")));
             }
-
 
             File.WriteAllText(Path.Combine(root.FullName, "Fixture.psc"), text);
             var lifted = new GraphLifter(Index(root.FullName)).Lift(parsed);
@@ -145,16 +123,6 @@ public class GraphLiftPexRoundTripTests
             "the .pex round trip is pinned to its measured value, so a regression fails here; "
             + "raising the baseline is the only way to record an improvement");
     }
-
-
-
-
-
-
-
-
-
-
 
     private const int PexRoundTripBaseline = 28;
 }

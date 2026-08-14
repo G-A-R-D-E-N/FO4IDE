@@ -4,18 +4,8 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph.F4SE;
 
-
-
-
-
-
-
-
-
-
 public static class F4SEBindingValidator
 {
-
 
     public const int MaximumArity = 10;
 
@@ -91,7 +81,6 @@ public static class F4SEBindingValidator
                     && !scriptNames.Contains(declared.OwnerScript))
                 {
 
-
                     problems.Add(GraphDiagnostic.Error(
                         GraphDiagnosticCodes.StructOwnerMismatch,
                         $"Struct '{declared.Name}' names owner '{declared.OwnerScript}', "
@@ -113,7 +102,6 @@ public static class F4SEBindingValidator
             .GroupBy(s => s.Name, StringComparer.Ordinal)
             .Where(g => g.Count() > 1))
         {
-
 
             problems.Add(GraphDiagnostic.Error(
                 GraphDiagnosticCodes.DuplicateDeclaration,
@@ -177,8 +165,6 @@ public static class F4SEBindingValidator
                     + $"'{parameter.Type}', which cannot cross the boundary: {refusal}"));
             }
 
-
-
             int firstOptional = -1;
             for (int i = 0; i < native.Parameters.Count; i++)
             {
@@ -202,7 +188,6 @@ public static class F4SEBindingValidator
         !string.IsNullOrEmpty(text)
         && (char.IsLetter(text[0]) || text[0] == '_')
         && text.All(c => char.IsLetterOrDigit(c) || c == '_');
-
 
     private static bool IsScriptName(string? text) =>
         !string.IsNullOrEmpty(text)

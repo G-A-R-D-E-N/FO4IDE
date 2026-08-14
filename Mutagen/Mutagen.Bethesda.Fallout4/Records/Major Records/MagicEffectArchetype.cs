@@ -60,6 +60,6 @@ public partial class MagicEffectArchetype
     {
         this.Type = type;
     }
-    
+
     public override IFormLinkIdentifier AssociationKey => Association;
 }

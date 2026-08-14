@@ -1,7 +1,6 @@
 using Mutagen.Bethesda.Plugins.Implicit;
 using Noggog;
 
-
 namespace Mutagen.Bethesda.Plugins;
 
 public static class Implicits
@@ -90,25 +89,18 @@ public static class Implicits
                 skyrimModKey.MakeFormKey(0x648),
                 skyrimModKey.MakeFormKey(0x649),
 
-
                 skyrimModKey.MakeFormKey(0x1C),
-
 
                 skyrimModKey.MakeFormKey(0x1A),
 
-
                 skyrimModKey.MakeFormKey(0x63),
-
 
                 skyrimModKey.MakeFormKey(0x164),
                 skyrimModKey.MakeFormKey(0x166),
 
-
                 skyrimModKey.MakeFormKey(0x276),
 
-
                 skyrimModKey.MakeFormKey(0x14),
-
 
                 skyrimModKey.MakeFormKey(0x28),
             });

@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -55,8 +51,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
 
         #region Name
-
-
 
         public String? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1781,8 +1775,6 @@ namespace Mutagen.Bethesda.Fallout4
         INamedRequired
     {
 
-
-
         new String? Name { get; set; }
         new Single LeftStanding { get; set; }
         new Single LeftWalk { get; set; }
@@ -1836,8 +1828,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         static new ILoquiRegistration StaticRegistration => MovementType_Registration.Instance;
         #region Name
-
-
 
         String? Name { get; }
         #endregion
@@ -2790,7 +2780,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return MovementType.GetNew();
@@ -3588,7 +3577,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -3621,7 +3609,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IMovementTypeGetter);
-
 
         #region Name
         private int? _NameLocation;

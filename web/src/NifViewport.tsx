@@ -18,14 +18,9 @@ export interface NifShapeGeo {
   effectShader?: boolean;
   bgsmPath?: string;
 
-
-
-
   effect?: NifEffectParams;
   vertexColors?: number[];
 }
-
-
 
 export interface NifEffectParams {
   baseColor: [number, number, number, number];
@@ -43,14 +38,7 @@ export interface NifEffectParams {
 }
 export interface NifGeo { fo4: boolean; shapes: NifShapeGeo[]; }
 
-
-
-
 type ShapeMat = THREE.MeshStandardMaterial | THREE.MeshBasicMaterial;
-
-
-
-
 
 export default function NifViewport(
   { data, wireframe, textured, loadTexture }: {
@@ -62,7 +50,6 @@ export default function NifViewport(
 ) {
   const mountRef = useRef<HTMLDivElement>(null);
   const matsRef = useRef<ShapeMat[]>([]);
-
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -114,9 +101,6 @@ export default function NifViewport(
       g.computeBoundingBox();
       if (g.boundingBox) box.union(g.boundingBox);
 
-
-
-
       const mat: ShapeMat = shape.effectShader
         ? makeEffectMaterial(shape.effect, true)
         : new THREE.MeshStandardMaterial({
@@ -138,7 +122,6 @@ export default function NifViewport(
     scene.add(group);
     matsRef.current = mats;
 
-
     if (textured && loadTexture) {
       const texLoader = new THREE.TextureLoader();
       const applyUrl = (url: string): Promise<THREE.Texture | null> =>
@@ -149,10 +132,8 @@ export default function NifViewport(
       for (const { mat, shape, hasUV } of pairs) {
         if (!hasUV || !(shape.textures?.length || shape.bgsmPath)) continue;
 
-
         const diffuse = shape.textures?.find(t => t.slot === 0)
           ?? (shape.bgsmPath ? { slot: 0, path: shape.bgsmPath } : undefined);
-
 
         const normal = shape.effectShader ? undefined : shape.textures?.find(t => t.slot === 1);
         if (diffuse) {
@@ -160,12 +141,9 @@ export default function NifViewport(
             if (cancelled || !tex) return;
             tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;
 
-
             tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
             tex.anisotropy = 4;
             mat.map = tex;
-
-
 
             if (!shape.effectShader) mat.color.setHex(0xffffff);
             mat.needsUpdate = true;
@@ -187,7 +165,6 @@ export default function NifViewport(
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const radius = Math.max(size.x, size.y, size.z, 1e-3);
-
 
     const grid = new THREE.GridHelper(radius * 4, 24, 0x3a5a80, 0x2a2a30);
     grid.rotation.x = Math.PI / 2;
@@ -235,7 +212,6 @@ export default function NifViewport(
       matsRef.current = [];
     };
   }, [data, textured, loadTexture]);
-
 
   useEffect(() => {
     for (const m of matsRef.current) m.wireframe = wireframe;

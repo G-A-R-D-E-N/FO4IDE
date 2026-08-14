@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -26,7 +24,6 @@
     <PackageReference Include="Photino.NET" Version="4.0.16" />
   </ItemGroup>
 
-
   <ItemGroup>
     <Compile Include="..\FO4RecordEditor\Services\**\*.cs"
              Exclude="..\FO4RecordEditor\Services\WpfHostServices.cs"
@@ -36,7 +33,6 @@
     <Compile Include="..\FO4RecordEditor\ViewModels\**\*.cs"
              Link="Shared\ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-
 
   <ItemGroup>
     <Content Include="..\web\dist\**\*.*">

@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 
-
-
-
-
-
 set -euo pipefail
 
 VERSION="${1:-1.0.0}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 OUT="$HERE/out"
-
 
 STAGE_ROOT="$(mktemp -d)"
 STAGE="$STAGE_ROOT/fo4recordeditor_${VERSION}_amd64"

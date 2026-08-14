@@ -3,42 +3,19 @@ namespace Mutagen.Bethesda.Plugins.Records;
 public interface IModFlagsGetter : IModMasterStyledGetter
 {
 
-
-
     bool CanUseLocalization { get; }
-
-
-
 
     bool UsingLocalization { get; }
 
-
-
-
     bool CanBeSmallMaster { get; }
-
-
-
 
     bool IsSmallMaster { get; }
 
-
-
-
     bool CanBeMediumMaster { get; }
-
-
-
 
     bool IsMediumMaster { get; }
 
-
-
-
     bool IsMaster { get; }
-
-
-
 
     bool ListsOverriddenForms { get; }
 }

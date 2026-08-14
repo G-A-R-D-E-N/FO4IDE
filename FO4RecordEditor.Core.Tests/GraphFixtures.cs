@@ -4,23 +4,10 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
 internal sealed record GraphFixture(string Name, Func<GraphDocument> Build, string Reference)
 {
     public override string ToString() => Name;
 }
-
-
-
-
-
-
-
 
 internal static class GraphFixtures
 {
@@ -37,7 +24,6 @@ internal static class GraphFixtures
                 () => build(new GraphBuilder("Fixture", "ObjectReference")),
                 reference));
 
-
         Add("01_OnActivateNotify", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnActivate");
@@ -53,7 +39,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("02_EventParameterFlows", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnActivate");
@@ -68,7 +53,6 @@ internal static class GraphFixtures
                 GetDistance(akActionRef)
             EndEvent
             """);
-
 
         Add("03_BranchRejoins", graph =>
         {
@@ -106,7 +90,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("04_BranchNoElse", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -130,7 +113,6 @@ internal static class GraphFixtures
                 EndIf
             EndEvent
             """);
-
 
         Add("05_WhileLoop", graph =>
         {
@@ -163,7 +145,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("06_TrailingOptionalOmitted", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -179,7 +160,6 @@ internal static class GraphFixtures
                 AddItem(None)
             EndEvent
             """);
-
 
         Add("07_NamedArgumentAfterSkip", graph =>
         {
@@ -197,7 +177,6 @@ internal static class GraphFixtures
                 AddItem(None, abSilent = true)
             EndEvent
             """);
-
 
         Add("08_SharedCallBindsOneLocal", graph =>
         {
@@ -223,7 +202,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("09_ArithmeticInlines", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -246,7 +224,6 @@ internal static class GraphFixtures
                 Utility.Wait(1.5 + 2.5)
             EndEvent
             """);
-
 
         Add("10_ComparisonBranch", graph =>
         {
@@ -278,7 +255,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("11_VariableRoundTrip", graph =>
         {
             graph.Variable("Counter", "int");
@@ -305,7 +281,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("12_AutoProperty", graph =>
         {
             graph.Variable("Target", "ObjectReference", isProperty: true);
@@ -323,7 +298,6 @@ internal static class GraphFixtures
                 Debug.Notification("ready")
             EndEvent
             """);
-
 
         Add("13_ReceiverFromPin", graph =>
         {
@@ -350,7 +324,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("14_InheritedCallNoReceiver", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -364,7 +337,6 @@ internal static class GraphFixtures
                 Disable()
             EndEvent
             """);
-
 
         Add("15_ExplicitCast", graph =>
         {
@@ -388,7 +360,6 @@ internal static class GraphFixtures
                 Debug.Trace(level)
             EndEvent
             """);
-
 
         Add("16_NotOperator", graph =>
         {
@@ -415,7 +386,6 @@ internal static class GraphFixtures
                 EndIf
             EndEvent
             """);
-
 
         Add("17_ShortCircuit", graph =>
         {
@@ -453,7 +423,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("18_FunctionReturnsOnBothArms", graph =>
         {
             var entry = graph.Node(palette, BuiltinNodeDefinitions.FunctionEntry,
@@ -489,7 +458,6 @@ internal static class GraphFixtures
             EndFunction
             """);
 
-
         Add("19_VoidFunction", graph =>
         {
             var entry = graph.Node(palette, BuiltinNodeDefinitions.FunctionEntry, ("name", "Reset"));
@@ -506,7 +474,6 @@ internal static class GraphFixtures
                 Enable()
             EndFunction
             """);
-
 
         Add("20_TwoEntries", graph =>
         {
@@ -532,7 +499,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("21_SelfAsArgument", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -548,7 +514,6 @@ internal static class GraphFixtures
                 Activate(Self)
             EndEvent
             """);
-
 
         fixtures.Add(new GraphFixture("22_GlobalUtilityScript", () =>
         {
@@ -569,7 +534,6 @@ internal static class GraphFixtures
                 Return 84
             EndFunction
             """));
-
 
         Add("23_NestedBranch", graph =>
         {
@@ -609,7 +573,6 @@ internal static class GraphFixtures
             EndEvent
             """);
 
-
         Add("24_HexFormId", graph =>
         {
             var entry = graph.Node(palette, "event:ObjectReference.OnLoad");
@@ -631,8 +594,6 @@ internal static class GraphFixtures
                 AddItem(formFromFile)
             EndEvent
             """);
-
-
 
         Add("25_AutoStateMachine", graph =>
         {
@@ -670,9 +631,6 @@ internal static class GraphFixtures
             EndState
             """);
 
-
-
-
         Add("26_RemoteAndCustomEvents", graph =>
         {
             graph.CustomEvent("Ready");
@@ -700,7 +658,6 @@ internal static class GraphFixtures
                 Debug.Notification("affinity")
             EndEvent
             """);
-
 
         Add("27_BreakLeavesTheLoop", graph =>
         {
@@ -747,8 +704,6 @@ internal static class GraphFixtures
                 Debug.Notification("after")
             EndEvent
             """);
-
-
 
         Add("28_ContinueSkipsThePass", graph =>
         {

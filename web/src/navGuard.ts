@@ -1,16 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
 function isInSpaOrHarmless(a: HTMLAnchorElement): boolean {
   if (a.hasAttribute('download')) return true;
   if (a.target === '_blank') return true;

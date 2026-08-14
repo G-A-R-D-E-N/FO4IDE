@@ -34,18 +34,6 @@ public class CachedArchiveListingDetailsProvider : IArchiveListingDetailsProvide
         {
             var ini = new List<FileName>(_getArchiveIniListings.TryGet().EmptyIfNull());
 
-
-
-
-
-
-
-
-
-
-
-
-
             List<FileName> listed;
             try
             {
@@ -105,7 +93,6 @@ public class CachedArchiveListingDetailsProvider : IArchiveListingDetailsProvide
         return new FileName(fileName.String.Substring(0, lastIndexOfDelim));
     }
 
-
     private class Comparer : IComparer<FileName>
     {
         private readonly ModKey? _modKey;
@@ -138,12 +125,6 @@ public class CachedArchiveListingDetailsProvider : IArchiveListingDetailsProvide
                 return int.MaxValue;
             }
 
-
-
-
-
-
-
             if (_d._payload.Value.ListedPriority.TryGetValue(strippedFileName, out var fallback))
             {
                 return fallback;
@@ -172,9 +153,6 @@ public class CachedArchiveListingDetailsProvider : IArchiveListingDetailsProvide
             {
                 return listedY.CompareTo(listedX);
             }
-
-
-
 
             if (suffixX == suffixY)
             {

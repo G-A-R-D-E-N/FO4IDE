@@ -4,15 +4,6 @@ using FO4RecordEditor.Services.Graph;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class GraphNegativeTests
 {
     private static GraphDiagnostic Refused(GraphDocument document, string expectedCode)
@@ -167,7 +158,6 @@ public class GraphNegativeTests
     [Fact]
     public void A_node_whose_definition_is_not_on_the_palette_is_refused_rather_than_guessed()
     {
-
 
         var palette = GraphTestEnvironment.Palette();
         var graph = new GraphBuilder("Fixture", "ObjectReference");
@@ -334,7 +324,6 @@ public class GraphNegativeTests
     [Fact]
     public void Every_refusal_names_a_node_or_says_why_it_cannot()
     {
-
 
         var documentLevel = new[]
         {

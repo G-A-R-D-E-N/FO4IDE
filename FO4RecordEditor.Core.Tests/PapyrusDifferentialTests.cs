@@ -8,40 +8,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class PapyrusDifferentialTests
 {
     private readonly ITestOutputHelper _output;
@@ -51,17 +17,7 @@ public class PapyrusDifferentialTests
     private const string PexCorpusVariable = "FO4RE_PEX_CORPUS";
     private const string ExtraRootsVariable = "FO4RE_PSC_ROOTS";
 
-
     private const string ReleaseVariable = "FO4RE_PEX_RELEASE";
-
-
-
-
-
-
-
-
-
 
     private const double MinimumIdenticalFraction = 0.95;
 
@@ -73,10 +29,6 @@ public class PapyrusDifferentialTests
             .Where(Directory.Exists)
             .ToList();
     }
-
-
-
-
 
     private static IReadOnlyList<(string Pex, string Psc)> Pairs()
     {
@@ -96,15 +48,6 @@ public class PapyrusDifferentialTests
         }
         return pairs;
     }
-
-
-
-
-
-
-
-
-
 
     private static string? SourceFor(string pex)
     {
@@ -149,7 +92,6 @@ public class PapyrusDifferentialTests
         }
     }
 
-
     private static IEnumerable<string> RootsFor(string psc)
     {
         var directory = Path.GetDirectoryName(psc)!;
@@ -181,12 +123,6 @@ public class PapyrusDifferentialTests
         var refusals = new List<string>();
         var differences = new List<string>();
 
-
-
-
-
-
-
         var release = Environment.GetEnvironmentVariable(ReleaseVariable) == "1";
         var options = new PapyrusCompileOptions
         {
@@ -202,7 +138,6 @@ public class PapyrusDifferentialTests
 
             if (!result.Success)
             {
-
 
                 var first = result.Errors.FirstOrDefault();
                 refusals.Add($"{Path.GetFileName(psc)} complete={result.SourcesComplete} {first?.Code}");
@@ -228,7 +163,5 @@ public class PapyrusDifferentialTests
             MinimumIdenticalFraction,
             "the emitted instruction sequences should still match the Creation Kit's");
     }
-
-
 
 }

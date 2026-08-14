@@ -18,12 +18,6 @@ public static class AssetProviderMixIn
         return assetProvider.TryGetStream(assetPath.DataRelativePath, out stream);
     }
 
-
-
-
-
-
-
     public static Stream GetStream(this IAssetProvider assetProvider, DataRelativePath assetPath)
     {
         return assetProvider.TryGetStream(assetPath, out var stream)
@@ -40,12 +34,6 @@ public static class AssetProviderMixIn
     {
         return assetProvider.TryGetSize(assetPath.DataRelativePath, out size);
     }
-
-
-
-
-
-
 
     public static uint GetSize(this IAssetProvider assetProvider, DataRelativePath assetPath)
     {

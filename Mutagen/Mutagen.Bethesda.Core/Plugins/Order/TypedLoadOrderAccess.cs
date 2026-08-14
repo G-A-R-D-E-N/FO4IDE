@@ -20,22 +20,7 @@ public readonly struct TypedLoadOrderAccess<TMod, TModGetter, TMajor, TMajorGett
         _winningContextOverrides = winningContextOverrides;
     }
 
-
-
-
-
-
     public IEnumerable<TMajorGetter> WinningOverrides(bool includeDeletedRecords = false) => _winningOverrides(includeDeletedRecords);
-
-
-
-
-
-
-
-
-
-
 
     public IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> WinningContextOverrides(ILinkCache linkCache, bool includeDeletedRecords = false) => _winningContextOverrides(linkCache, includeDeletedRecords);
 }
@@ -57,21 +42,7 @@ public readonly struct TopLevelTypedLoadOrderAccess<TMod, TModGetter, TMajor, TM
         _winningContextOverrides = winningContextOverrides;
     }
 
-
-
-
-
-
     public IEnumerable<TMajorGetter> WinningOverrides(bool includeDeletedRecords = false) => _winningOverrides(includeDeletedRecords);
-
-
-
-
-
-
-
-
-
 
     public IEnumerable<IModContext<TMod, TModGetter, TMajor, TMajorGetter>> WinningContextOverrides(bool includeDeletedRecords = false)
         => _winningContextOverrides(

@@ -9,7 +9,6 @@ namespace FO4RecordEditor;
 public partial class App : Application
 {
 
-
     private static readonly string[] LogCandidates =
     {
         Path.Combine(AppContext.BaseDirectory, "FO4RecordEditor.startup.log"),
@@ -22,7 +21,6 @@ public partial class App : Application
 
     static App()
     {
-
 
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
             LogCrash("AppDomain", e.ExceptionObject as Exception);
@@ -43,8 +41,6 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
 
-
-
         if (Array.Exists(e.Args, a => a == "--mcp"))
         {
             RunMcpHeadless(e.Args);
@@ -59,7 +55,6 @@ public partial class App : Application
         base.OnStartup(e);
         Trace("base.OnStartup done");
 
-
         ApplicationThemeManager.Apply(
             ApplicationTheme.Dark,
             Wpf.Ui.Controls.WindowBackdropType.Mica,
@@ -73,24 +68,6 @@ public partial class App : Application
             Services.MutagenLoader.FormatFormLink,
             Services.MutagenLoader.FormatCondition);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static void RunMcpHeadless(string[] args)
     {
@@ -123,14 +100,11 @@ public partial class App : Application
             return env;
         };
 
-
-
         var executor = new Services.PluginToolExecutor(envProvider, () => mo2Instance, () => ckWikiPath ?? Services.ToolPaths.CkWiki());
         try { Services.StdioMcpServer.Run(executor); }
         catch (Exception ex) { Trace($"--mcp loop ended with error: {ex.Message}"); }
         Environment.Exit(0);
     }
-
 
     private static string? ArgValue(string[] args, string name)
     {
@@ -138,7 +112,6 @@ public partial class App : Application
             if (args[i] == name) return args[i + 1];
         return null;
     }
-
 
     internal static void Trace(string message)
     {

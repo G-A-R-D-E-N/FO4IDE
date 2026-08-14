@@ -2,14 +2,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
-
-
-
-
-
 public static class Ba2Hash
 {
     private static readonly uint[] Table = BuildTable();
@@ -33,14 +25,11 @@ public static class Ba2Hash
         return crc;
     }
 
-
-
     public static string Normalize(string path)
     {
         var p = (path ?? "").Replace('/', '\\').ToLowerInvariant().Trim('\\');
         return p.Length == 0 || p.Length >= 260 ? "." : p;
     }
-
 
     public static (uint Name, uint Extension, uint Directory) Compute(string path)
     {

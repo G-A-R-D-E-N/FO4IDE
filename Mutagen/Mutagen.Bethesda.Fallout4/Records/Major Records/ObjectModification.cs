@@ -162,7 +162,7 @@ partial class AObjectModificationBinaryWriteTranslation
             case IArmorModificationGetter armorMod:
                 properties = armorMod.Properties;
                 type = RecordTypes.ARMO;
-                export = (subFrame, item, _) => 
+                export = (subFrame, item, _) =>
                     ObjectTemplateBinaryWriteTranslation.WriteProperty<Armor.Property>(
                         writer,
                         (IAObjectModPropertyGetter<Armor.Property>)item);
@@ -170,7 +170,7 @@ partial class AObjectModificationBinaryWriteTranslation
             case INpcModificationGetter npcMod:
                 properties = npcMod.Properties;
                 type = RecordTypes.NPC_;
-                export = (subFrame, item, _) => 
+                export = (subFrame, item, _) =>
                     ObjectTemplateBinaryWriteTranslation.WriteProperty<Npc.Property>(
                         writer,
                         (IAObjectModPropertyGetter<Npc.Property>)item);
@@ -178,7 +178,7 @@ partial class AObjectModificationBinaryWriteTranslation
             case IWeaponModificationGetter weaponMod:
                 properties = weaponMod.Properties;
                 type = RecordTypes.WEAP;
-                export = (subFrame, item, _) => 
+                export = (subFrame, item, _) =>
                     ObjectTemplateBinaryWriteTranslation.WriteProperty<Weapon.Property>(
                         writer,
                         (IAObjectModPropertyGetter<Weapon.Property>)item);
@@ -186,7 +186,7 @@ partial class AObjectModificationBinaryWriteTranslation
             case IObjectModificationGetter objMod:
                 properties = objMod.Properties;
                 type = RecordTypes.NONE;
-                export = (subFrame, item, _) => 
+                export = (subFrame, item, _) =>
                     ObjectTemplateBinaryWriteTranslation.WriteProperty<AObjectModification.NoneProperty>(
                         writer,
                         (IAObjectModPropertyGetter<AObjectModification.NoneProperty>)item);
@@ -194,7 +194,7 @@ partial class AObjectModificationBinaryWriteTranslation
             case IUnknownObjectModificationGetter objMod:
                 properties = objMod.Properties;
                 type = objMod.ModificationType;
-                export = (subFrame, item, _) => 
+                export = (subFrame, item, _) =>
                     ObjectTemplateBinaryWriteTranslation.WriteProperty<AObjectModification.NoneProperty>(
                         writer,
                         (IAObjectModPropertyGetter<AObjectModification.NoneProperty>)item);
@@ -289,10 +289,10 @@ partial class AObjectModificationBinaryOverlay
             (s, p) => ObjectModItemBinaryOverlay.ObjectModItemFactory(s, p));
         var itemsEndingPos = attachParentSlotsEndingPos + 4 + Items.Count * 8;
         Includes = BinaryOverlayList.FactoryByCount<IObjectModIncludeGetter>(
-            _dataBytes.Slice(itemsEndingPos, checked((int)(7 * includeCount))), 
-            _package, 
+            _dataBytes.Slice(itemsEndingPos, checked((int)(7 * includeCount))),
+            _package,
             itemLength: 7,
-            count: includeCount, 
+            count: includeCount,
             (s, p) => ObjectModIncludeBinaryOverlay.ObjectModIncludeFactory(s, p));
         var includesEndingPos = itemsEndingPos + Includes.Count * 7;
 
@@ -399,6 +399,6 @@ partial class ObjectModificationBinaryOverlay
 partial class UnknownObjectModificationBinaryOverlay
 {
     public IReadOnlyList<IAObjectModPropertyGetter<AObjectModification.NoneProperty>> Properties { get; internal set; } = Array.Empty<IAObjectModPropertyGetter<AObjectModification.NoneProperty>>();
-    
+
     public RecordType ModificationType { get; set; }
 }

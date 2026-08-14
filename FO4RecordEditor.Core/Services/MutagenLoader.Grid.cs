@@ -3,20 +3,8 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 public static partial class MutagenLoader
 {
-
-
-
-
-
-
 
     public static string GetRecordsGridJson(object? envObj, string plugin, string sig, int limit, int offset = 0)
     {
@@ -57,11 +45,6 @@ public static partial class MutagenLoader
         return JsonSerializer.Serialize(new { columns, rows, total = recs.Count, offset });
     }
 
-
-
-
-
-
     private static string SummarizeEnumerable(IEnumerable ie)
     {
         const int show = 3;
@@ -79,7 +62,6 @@ public static partial class MutagenLoader
                 else
                 {
                     text = item.ToString() ?? "";
-
 
                     var t = item.GetType();
                     if (text.Length == 0 || text == t.FullName || text == t.ToString()) continue;

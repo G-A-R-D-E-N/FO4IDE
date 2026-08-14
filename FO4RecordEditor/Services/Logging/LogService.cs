@@ -8,10 +8,6 @@ public sealed class LogService
     public ObservableCollection<LogEntry> Entries { get; } = [];
     public event Action<LogEntry>? EntryAdded;
 
-
-
-
-
     public void Log(LogCategory cat, LogLevel level, string message, string? detail = null)
     {
         var entry = new LogEntry(DateTime.Now, level, cat, message, detail);

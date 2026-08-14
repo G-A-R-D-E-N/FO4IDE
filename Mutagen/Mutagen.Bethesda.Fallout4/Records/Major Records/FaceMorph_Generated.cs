@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -58,8 +54,6 @@ namespace Mutagen.Bethesda.Fallout4
         UInt32? IFaceMorphGetter.Index => this.Index;
         #endregion
         #region Name
-
-
 
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -489,8 +483,6 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new UInt32? Index { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
     }
 
@@ -512,8 +504,6 @@ namespace Mutagen.Bethesda.Fallout4
         static ILoquiRegistration StaticRegistration => FaceMorph_Registration.Instance;
         UInt32? Index { get; }
         #region Name
-
-
 
         ITranslatedStringGetter? Name { get; }
         #endregion
@@ -917,7 +907,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew()
         {
             return FaceMorph.GetNew();
@@ -1158,7 +1147,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

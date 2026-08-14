@@ -28,7 +28,7 @@ public static class AssetLinkRemappingMixIn
         }
         return link;
     }
-    
+
     public static void RemapListedAssetLinks<TLinkType, TAssetType>(this IList<TLinkType> linkList, IReadOnlyDictionary<IAssetLinkGetter, string> mapping)
         where TLinkType : IAssetLink<TLinkType, TAssetType>, new()
         where TAssetType : IAssetType
@@ -38,7 +38,7 @@ public static class AssetLinkRemappingMixIn
             linkList[i] = linkList[i].RelinkToNew<TLinkType, TAssetType>(mapping);
         }
     }
-    
+
     public static void RemapAssetLinks<TItem>(this IList<IAssetLinkContainer> linkList, IReadOnlyDictionary<IAssetLinkGetter, string> mapping, AssetLinkQuery query, IAssetLinkCache? linkCache)
     {
         foreach (var item in linkList)
@@ -46,7 +46,7 @@ public static class AssetLinkRemappingMixIn
             item.RemapAssetLinks(mapping, query, linkCache);
         }
     }
-    
+
     public static void RemapAssetLinks<TItem>(this IGenderedItemGetter<TItem?> gendered, IReadOnlyDictionary<IAssetLinkGetter, string> mapping, AssetLinkQuery query, IAssetLinkCache? linkCache)
         where TItem : class, IAssetLinkContainer
     {

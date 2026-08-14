@@ -11,15 +11,6 @@ public interface IModImporter
 
     IModGetter Import(ModPath modPath, BinaryReadParameters? param = null);
 
-
-
-
-
-
-
-
-
-
     TMod ImportMultiFile<TMod>(
         ModKey targetModKey,
         IEnumerable<ModPath> splitFiles,

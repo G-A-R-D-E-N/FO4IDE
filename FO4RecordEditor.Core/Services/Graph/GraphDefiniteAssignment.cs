@@ -4,27 +4,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class GraphDefiniteAssignment
 {
     public static IReadOnlyList<GraphDiagnostic> Check(
@@ -38,7 +17,6 @@ public static class GraphDefiniteAssignment
         {
             var consumer = document.Node(consumerId);
             if (consumer == null || !definitions.TryGetValue(consumerId, out var consumerDefinition)) continue;
-
 
             if (consumerDefinition.Kind is GraphNodeKind.EventEntry or GraphNodeKind.FunctionEntry) continue;
 
@@ -92,14 +70,6 @@ public static class GraphDefiniteAssignment
         };
     }
 
-
-
-
-
-
-
-
-
     private static IEnumerable<(string Producer, PinRef Pin)> Sources(
         GraphDocument document,
         IReadOnlyDictionary<string, NodeDefinition> definitions,
@@ -131,8 +101,6 @@ public static class GraphDefiniteAssignment
                     found.Add((sourceId, reportAt));
                     continue;
                 }
-
-
 
                 if (!visited.Add(sourceId)) continue;
 

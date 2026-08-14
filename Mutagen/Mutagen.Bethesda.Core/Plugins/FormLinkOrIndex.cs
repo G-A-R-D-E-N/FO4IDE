@@ -24,7 +24,7 @@ public class FormLinkOrIndexGetter<TMajorGetter> : IFormLinkOrIndexGetter<TMajor
         Index = default;
         Link = new FormLinkNullable<TMajorGetter>(key);
     }
-    
+
     [MemberNotNullWhen(false, nameof(Index))]
     public bool UsesLink()
     {
@@ -73,7 +73,7 @@ public class FormLinkOrIndex<TMajorGetter> : IFormLinkOrIndex<TMajorGetter>
     where TMajorGetter : class, IMajorRecordGetter
 {
     private readonly IFormLinkOrIndexFlagGetter _parent;
-    
+
     IFormLinkNullableGetter<TMajorGetter> IFormLinkOrIndexGetter<TMajorGetter>.Link => Link;
 
     public IFormLinkNullable<TMajorGetter> Link { get; }
@@ -143,7 +143,7 @@ public class FormLinkOrIndex<TMajorGetter> : IFormLinkOrIndex<TMajorGetter>
             Link.Relink(mapping);
         }
     }
-    
+
     public void Clear()
     {
         Link.Clear();

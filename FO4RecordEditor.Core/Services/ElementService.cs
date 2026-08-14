@@ -6,37 +6,8 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class ElementService
 {
-
-
-
-
-
-
-
 
     public static string DescribeElement(object? env, string plugin, string recordId, string path)
     {
@@ -68,8 +39,6 @@ public static class ElementService
         public int Count;
         public bool IsList;
     }
-
-
 
     private static bool TryDescribe(IMajorRecordGetter rec, string path, out Described d, out string error)
     {
@@ -107,13 +76,11 @@ public static class ElementService
                 curType = elem;
                 curVal = ItemAt(curVal, i);
 
-
                 if (curVal != null) curType = curVal.GetType();
             }
         }
         return true;
     }
-
 
     private static Type? SequenceElementType(Type t)
     {
@@ -142,11 +109,6 @@ public static class ElementService
         if (v is IEnumerable e) return e.Cast<object?>().Skip(i).FirstOrDefault();
         return null;
     }
-
-
-
-
-
 
     public static string AddElement(string plugin, string recordId, string path, string? template, object? env)
     {
@@ -177,7 +139,6 @@ public static class ElementService
                $"(now {list.Count}). Edit its fields in the grid, then save_plugin.";
     }
 
-
     public static string RemoveElement(string plugin, string recordId, string path, object? env)
     {
         var mod = WriteService.GetMutableFor(plugin, env, out var openMsg);
@@ -196,8 +157,6 @@ public static class ElementService
         MutagenLoader.InvalidateModIndex(name); WriteService.RaiseChanged(name);
         return $"Removed {path} from {recordId} in {name} (now {list.Count}). save_plugin to persist.";
     }
-
-
 
     public static string MoveElement(string plugin, string recordId, string path, int delta, object? env)
     {
@@ -222,7 +181,6 @@ public static class ElementService
         return $"Moved {path} to index {to} on {recordId} in {name}. save_plugin to persist.";
     }
 
-
     public static string ClearElement(string plugin, string recordId, string path, object? env)
     {
         var mod = WriteService.GetMutableFor(plugin, env, out var openMsg);
@@ -242,8 +200,6 @@ public static class ElementService
         return $"Cleared {path} on {recordId} in {name} ({had} item(s) removed). save_plugin to persist.";
     }
 
-
-
     private readonly struct Resolved
     {
         public Resolved(IList? targetList, int index, bool isList) { TargetList = targetList; Index = index; IsList = isList; }
@@ -254,8 +210,6 @@ public static class ElementService
 
         public bool IsList { get; }
     }
-
-
 
     private static bool TryResolve(object record, string path, out Resolved resolved, out string error)
     {
@@ -307,8 +261,6 @@ public static class ElementService
         return br > 0 ? path[..br] : path;
     }
 
-
-
     private static Type ElementTypeOf(IList list)
     {
         foreach (var iface in list.GetType().GetInterfaces())
@@ -316,12 +268,6 @@ public static class ElementService
                 return iface.GetGenericArguments()[0];
         return typeof(object);
     }
-
-
-
-
-
-
 
     private static string[] TemplatesFor(Type elemType)
     {
@@ -362,9 +308,6 @@ public static class ElementService
         return match;
     }
 
-
-
-
     private static bool IsFormLink(Type t)
     {
         if (!t.IsGenericType) return false;
@@ -393,8 +336,6 @@ public static class ElementService
         var bare = t.Name.Split('`')[0];
         return $"{bare}<{arg.Name}>";
     }
-
-
 
     private static IMajorRecordGetter? FindRecordForRead(object? env, string plugin, string recordId)
     {

@@ -5,10 +5,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
 public class PapyrusWikiServiceTests
 {
     private static string FunctionPageHtml() => """

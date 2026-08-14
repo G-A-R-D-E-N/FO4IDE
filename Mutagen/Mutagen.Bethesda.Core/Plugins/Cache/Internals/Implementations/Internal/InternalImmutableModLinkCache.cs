@@ -25,7 +25,7 @@ internal sealed class InternalImmutableModLinkCache
         Category = sourceMod.GameRelease.ToCategory();
         _simple = (prefs ?? LinkCachePreferences.Default).Retention == LinkCachePreferences.RetentionType.OnlyIdentifiers;
         _formKeyCache = new ImmutableModLinkCacheCategory<FormKey>(
-            this, 
+            this,
             prefs?.MetaInterfaceMapGetterOverride ?? MetaInterfaceMapping.Instance,
             x => TryGet<FormKey>.Succeed(x.FormKey),
             x => x.IsNull,
@@ -54,14 +54,14 @@ internal sealed class InternalImmutableModLinkCache
             majorRec = default;
             return false;
         }
-            
+
         if (target == ResolveTarget.Origin
             && formKey.ModKey != _sourceMod.ModKey)
         {
             majorRec = default;
             return false;
         }
-            
+
         if (_formKeyCache._untypedMajorRecords.Value.TryGetValue(formKey, out var item))
         {
             majorRec = item.Record;
@@ -97,7 +97,7 @@ internal sealed class InternalImmutableModLinkCache
             majorRec = default;
             return false;
         }
-            
+
         if (_formKeyCache.TryResolve(formKey, typeof(TMajor), out var item))
         {
             majorRec = item.Record as TMajor;
@@ -233,7 +233,7 @@ internal sealed class InternalImmutableModLinkCache
             matchedType = default;
             return false;
         }
-            
+
         foreach (var type in types)
         {
             if (TryResolve(formKey, type, out majorRec, target))
@@ -295,14 +295,14 @@ internal sealed class InternalImmutableModLinkCache
             editorId = default;
             return false;
         }
-            
+
         if (target == ResolveTarget.Origin
             && formKey.ModKey != _sourceMod.ModKey)
         {
             editorId = default;
             return false;
         }
-            
+
         if (_formKeyCache._untypedMajorRecords.Value.TryGetValue(formKey, out var item))
         {
             editorId = item.EditorID;
@@ -336,7 +336,7 @@ internal sealed class InternalImmutableModLinkCache
             editorId = default;
             return false;
         }
-            
+
         if (_formKeyCache.TryResolve(formKey, type, out var item))
         {
             editorId = item.EditorID;
@@ -366,7 +366,7 @@ internal sealed class InternalImmutableModLinkCache
             editorId = default;
             return false;
         }
-            
+
         if (_formKeyCache.TryResolve(formKey, typeof(TMajor), out var item))
         {
             editorId = item.EditorID;

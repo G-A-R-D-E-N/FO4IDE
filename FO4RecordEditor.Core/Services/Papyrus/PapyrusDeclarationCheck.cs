@@ -4,27 +4,6 @@ using System.Linq;
 
 namespace FO4RecordEditor.Services.Papyrus;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class PapyrusDeclarationCheck
 {
     public static IReadOnlyList<PapyrusDiagnostic> Check(PapyrusScript script)
@@ -32,7 +11,6 @@ public static class PapyrusDeclarationCheck
         if (script == null) throw new ArgumentNullException(nameof(script));
 
         var problems = new List<PapyrusDiagnostic>();
-
 
         Unique(script.Functions.Cast<PapyrusDeclaration>().Concat(script.Events),
             "function or event", "the empty state", problems);
@@ -51,13 +29,6 @@ public static class PapyrusDeclarationCheck
 
         return problems;
     }
-
-
-
-
-
-
-
 
     private static void Unique(
         IEnumerable<PapyrusDeclaration> declarations,
@@ -87,16 +58,6 @@ public static class PapyrusDeclarationCheck
             seen[key] = declaration;
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     private static string KeyOf(PapyrusDeclaration declaration) =>
         declaration is PapyrusEventDecl { RemoteObjectType: { Length: > 0 } owner }

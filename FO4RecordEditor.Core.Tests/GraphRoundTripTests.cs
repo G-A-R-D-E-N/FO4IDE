@@ -9,21 +9,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class GraphRoundTripTests
 {
     private readonly ITestOutputHelper _output;
@@ -39,11 +24,8 @@ public class GraphRoundTripTests
     private static PapyrusCompiler TextCompiler() =>
         new(PapyrusCompiler.IndexFor(new[] { TestRoots.BaseStubs, TestRoots.GraphScripts }));
 
-
     private static PexFile CompileReference(GraphFixture fixture)
     {
-
-
 
         var root = Directory.CreateTempSubdirectory("fo4re-reference-");
         try
@@ -64,8 +46,6 @@ public class GraphRoundTripTests
         }
     }
 
-
-
     [Theory]
     [MemberData(nameof(Fixtures))]
     public void Every_fixture_graph_compiles_clean(string name)
@@ -83,7 +63,6 @@ public class GraphRoundTripTests
     public void Generated_source_always_reparses_clean(string name)
     {
 
-
         var result = GraphTestEnvironment.Compile(Fixture(name).Build());
 
         PapyrusParser.Parse(result.Source!, "Fixture.psc")
@@ -91,26 +70,10 @@ public class GraphRoundTripTests
             .Should().BeEmpty();
     }
 
-
-
     [Theory]
     [MemberData(nameof(Fixtures))]
     public void Oracle1_the_compiled_object_decompiles_to_source_that_recompiles(string name)
     {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         var fixture = Fixture(name);
         var first = GraphTestEnvironment.Compile(fixture.Build());
@@ -136,10 +99,7 @@ public class GraphRoundTripTests
 
             reparsed.Name.Should().BeEquivalentTo(first.Ir!.Name);
 
-
-
             (reparsed.Extends ?? "").Should().BeOneOf(first.Ir.Extends ?? "", "ScriptObject");
-
 
             reparsed.Events.Concat(reparsed.States.SelectMany(s => s.Events))
                 .Select(e => e.Name).OrderBy(n => n)
@@ -149,9 +109,6 @@ public class GraphRoundTripTests
                 .Select(f => f.Name).OrderBy(n => n)
                 .Should().BeEquivalentTo(
                     first.Ir.Callables.Where(c => !c.IsEvent).Select(c => c.Name).OrderBy(n => n));
-
-
-
 
             File.WriteAllText(Path.Combine(directory.FullName, "Fixture.psc"), body);
             var index = PapyrusCompiler.IndexFor(
@@ -168,14 +125,10 @@ public class GraphRoundTripTests
         }
     }
 
-
-
     [Theory]
     [MemberData(nameof(Fixtures))]
     public void Oracle2_the_graph_produces_what_a_person_would_have_written(string name)
     {
-
-
 
         var fixture = Fixture(name);
         var generated = GraphTestEnvironment.Compile(fixture.Build());
@@ -195,14 +148,10 @@ public class GraphRoundTripTests
         difference.Should().BeNull($"{name} should compile to what the hand-written script does");
     }
 
-
-
     [Theory]
     [MemberData(nameof(Fixtures))]
     public void Oracle3_the_generated_script_has_the_same_shape_as_the_reference(string name)
     {
-
-
 
         var fixture = Fixture(name);
         var generated = GraphTestEnvironment.Compile(fixture.Build());
@@ -223,8 +172,6 @@ public class GraphRoundTripTests
         mine.Variables.Select(v => v.Name).OrderBy(n => n)
             .Should().BeEquivalentTo(theirs.Variables.Select(v => v.Name).OrderBy(n => n));
     }
-
-
 
     [Fact]
     public void The_whole_fixture_suite_reports_its_own_numbers()
@@ -259,8 +206,6 @@ public class GraphRoundTripTests
         oracle1.Should().Be(attempted, "every object should decompile to source that recompiles");
     }
 
-
-
     private static bool DecompilesAndRecompiles(GraphCompileResult result)
     {
         var directory = Directory.CreateTempSubdirectory("fo4re-summary-");
@@ -274,7 +219,6 @@ public class GraphRoundTripTests
 
             var reparsed = PapyrusParser.Parse(body, "Fixture.psc");
             if (reparsed.Diagnostics.Any(d => d.Severity == PapyrusSeverity.Error)) return false;
-
 
             File.WriteAllText(Path.Combine(directory.FullName, "Fixture.psc"), body);
             var index = PapyrusCompiler.IndexFor(

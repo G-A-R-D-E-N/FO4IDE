@@ -11,12 +11,6 @@ namespace Mutagen.Bethesda;
 public static class ListsModsMixIn
 {
 
-
-
-
-
-
-
     public static bool ListsMod(this IEnumerable<ILoadOrderListingGetter> listings, ModKey modKey, bool? enabled = null)
     {
         foreach (var listing in listings)
@@ -30,16 +24,6 @@ public static class ListsModsMixIn
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
     public static void AssertListsMod(this IEnumerable<ILoadOrderListingGetter> listings, ModKey modKey, bool? enabled = null, string? message = null)
     {
         if (!ListsMod(listings, modKey, enabled))
@@ -48,75 +32,30 @@ public static class ListsModsMixIn
         }
     }
 
-
-
-
-
-
-
     public static bool ListsMods(this IEnumerable<ILoadOrderListingGetter> listings, params ModKey[] modKeys)
     {
         return ListsMods(listings.Select(x => x.ModKey), modKeys);
     }
-
-
-
-
-
-
-
-
 
     public static void AssertListsMods(this IEnumerable<ILoadOrderListingGetter> listings, params ModKey[] modKeys)
     {
         AssertListsMods(listings, message: null, modKeys);
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this IEnumerable<ILoadOrderListingGetter> listings, string? message, params ModKey[] modKeys)
     {
         AssertListsMods(listings.Select(x => x.ModKey), message, modKeys);
     }
-
-
-
-
-
-
 
     public static bool ListsMods(this IEnumerable<ILoadOrderListingGetter> listings, IEnumerable<ModKey> modKeys)
     {
         return ListsMods(listings, modKeys.ToArray());
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this IEnumerable<ILoadOrderListingGetter> listings, IEnumerable<ModKey> modKeys, string? message = null)
     {
         AssertListsMods(listings, message, modKeys.ToArray());
     }
-
-
-
-
-
-
-
 
     public static bool ListsMods(this IEnumerable<ILoadOrderListingGetter> listings, bool enabled, params ModKey[] modKeys)
     {
@@ -135,29 +74,10 @@ public static class ListsModsMixIn
         return false;
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this IEnumerable<ILoadOrderListingGetter> listings, bool enabled, params ModKey[] modKeys)
     {
         AssertListsMods(listings, enabled, message: null, modKeys: modKeys);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMods(this IEnumerable<ILoadOrderListingGetter> listings, bool enabled, string? message, params ModKey[] modKeys)
     {
@@ -183,52 +103,20 @@ public static class ListsModsMixIn
         }
     }
 
-
-
-
-
-
-
-
     public static bool ListsMods(this IEnumerable<ILoadOrderListingGetter> listings, bool enabled, IEnumerable<ModKey> modKeys)
     {
         return ListsMods(listings, enabled, modKeys.ToArray());
     }
-
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMods(this IEnumerable<ILoadOrderListingGetter> listings, bool enabled, IEnumerable<ModKey> modKeys, string? message = null)
     {
         AssertListsMods(listings, enabled, message: message, modKeys: modKeys.ToArray());
     }
 
-
-
-
-
-
-
     public static bool ListsMod(this IEnumerable<ModKey> keys, ModKey modKey)
     {
         return keys.Contains(modKey);
     }
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMod(this IEnumerable<ModKey> keys, ModKey modKey, string? message = null)
     {
@@ -238,12 +126,6 @@ public static class ListsModsMixIn
             throw new MissingModException(modKeys, message: message);
         }
     }
-
-
-
-
-
-
 
     public static bool ListsMods(this IEnumerable<ModKey> keys, params ModKey[] modKeys)
     {
@@ -261,27 +143,10 @@ public static class ListsModsMixIn
         return false;
     }
 
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this IEnumerable<ModKey> keys, params ModKey[] modKeys)
     {
         AssertListsMods(keys, message: null, modKeys);
     }
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMods(this IEnumerable<ModKey> keys, string? message, params ModKey[] modKeys)
     {
@@ -306,37 +171,15 @@ public static class ListsModsMixIn
         }
     }
 
-
-
-
-
-
-
     public static bool ListsMods(this IEnumerable<ModKey> keys, IEnumerable<ModKey> modKeys)
     {
         return ListsMods(keys, modKeys.ToArray());
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this IEnumerable<ModKey> keys, IEnumerable<ModKey> modKeys, string? message = null)
     {
         AssertListsMods(keys, message: message, modKeys: modKeys.ToArray());
     }
-
-
-
-
-
-
-
 
     public static bool ListsMod(this ILoadOrderGetter<ILoadOrderListingGetter> loadOrder, ModKey modKey, bool? enabled = null)
     {
@@ -347,16 +190,6 @@ public static class ListsModsMixIn
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
     public static void AssertListsMod(this ILoadOrderGetter<ILoadOrderListingGetter> loadOrder, ModKey modKey, bool? enabled = null, string? message = null)
     {
         if (!ListsMod(loadOrder, modKey, enabled))
@@ -365,25 +198,10 @@ public static class ListsModsMixIn
         }
     }
 
-
-
-
-
-
-
     public static bool ListsMod(this ILoadOrderGetter loadOrder, ModKey modKey)
     {
         return loadOrder.ContainsKey(modKey);
     }
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMod(this ILoadOrderGetter loadOrder, ModKey modKey, string? message = null)
     {
@@ -392,12 +210,6 @@ public static class ListsModsMixIn
             throw new MissingModException(loadOrder.ListedOrder, message: message);
         }
     }
-
-
-
-
-
-
 
     public static bool ListsMods(this ILoadOrderGetter loadOrder, params ModKey[] modKeys)
     {
@@ -408,38 +220,15 @@ public static class ListsModsMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this ILoadOrderGetter loadOrder, params ModKey[] modKeys)
     {
         AssertListsMods(loadOrder, message: null, modKeys);
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this ILoadOrderGetter loadOrder, string? message, params ModKey[] modKeys)
     {
         AssertListsMods(loadOrder.ListedOrder, message, modKeys);
     }
-
-
-
-
-
-
 
     public static bool ListsMods(this ILoadOrderGetter loadOrder, IEnumerable<ModKey> modKeys)
     {
@@ -450,26 +239,10 @@ public static class ListsModsMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this ILoadOrderGetter loadOrder, IEnumerable<ModKey> modKeys, string? message = null)
     {
         AssertListsMods(loadOrder, message: message, modKeys: modKeys.ToArray());
     }
-
-
-
-
-
-
-
 
     public static bool ListsMod(this ILoadOrderGetter<IModListingGetter> loadOrder, ModKey modKey, bool? enabled = null)
     {
@@ -481,16 +254,6 @@ public static class ListsModsMixIn
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
     public static void AssertListsMod(this ILoadOrderGetter<IModListingGetter> loadOrder, ModKey modKey, bool? enabled = null, string? message = null)
     {
         if (!ListsMod(loadOrder, modKey, enabled))
@@ -498,12 +261,6 @@ public static class ListsModsMixIn
             throw new MissingModException(modKey, message: message);
         }
     }
-
-
-
-
-
-
 
     public static bool ListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, params ModKey[] modKeys)
     {
@@ -515,64 +272,25 @@ public static class ListsModsMixIn
         return true;
     }
 
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, params ModKey[] modKeys)
     {
         AssertListsMods(loadOrder, message: null, modKeys);
     }
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, string? message, params ModKey[] modKeys)
     {
         AssertListsMods(loadOrder.ListedOrder.Select(x => x.ModKey), message, modKeys);
     }
 
-
-
-
-
-
-
     public static bool ListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, IEnumerable<ModKey> modKeys)
     {
         return ListsMods(loadOrder, modKeys.ToArray());
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, IEnumerable<ModKey> modKeys, string? message = null)
     {
         AssertListsMods(loadOrder, message, modKeys.ToArray());
     }
-
-
-
-
-
-
-
 
     public static bool ListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, bool enabled, params ModKey[] modKeys)
     {
@@ -591,29 +309,10 @@ public static class ListsModsMixIn
         return false;
     }
 
-
-
-
-
-
-
-
-
-
     public static void AssertListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, bool enabled, params ModKey[] modKeys)
     {
         AssertListsMods(loadOrder, enabled, message: null, modKeys: modKeys);
     }
-
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, bool enabled, string? message, params ModKey[] modKeys)
     {
@@ -635,27 +334,10 @@ public static class ListsModsMixIn
         }
     }
 
-
-
-
-
-
-
-
     public static bool ListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, bool enabled, IEnumerable<ModKey> modKeys)
     {
         return ListsMods(loadOrder, enabled, modKeys.ToArray());
     }
-
-
-
-
-
-
-
-
-
-
 
     public static void AssertListsMods(this ILoadOrderGetter<IModListingGetter> loadOrder, bool enabled, IEnumerable<ModKey> modKeys, string? message = null)
     {

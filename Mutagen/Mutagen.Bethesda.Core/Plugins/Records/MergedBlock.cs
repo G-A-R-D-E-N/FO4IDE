@@ -8,20 +8,12 @@ using Noggog.StructuredStrings;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-
-
-
 public interface IMergeableBlockWithSubBlocks<out TSubBlock> : IMergeableBlock
     where TSubBlock : ILoquiObject
 {
 
-
-
     IReadOnlyList<TSubBlock> SubBlocks { get; }
 }
-
-
-
 
 public class MergedBlock<TBlock, TSubBlock> : ILoquiObject, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
     where TBlock : class, ILoquiObject, IBinaryItem, IFormLinkContainerGetter, IAssetLinkContainerGetter, IMajorRecordGetterEnumerable
@@ -32,12 +24,6 @@ public class MergedBlock<TBlock, TSubBlock> : ILoquiObject, IBinaryItem, IFormLi
     private readonly Func<TBlock, IReadOnlyList<TSubBlock>> _getSubBlocksFunc;
     private List<TSubBlock>? _mergedSubBlocks;
     private readonly object _mergeLock = new object();
-
-
-
-
-
-
 
     public MergedBlock(
         int blockNumber,
@@ -61,7 +47,6 @@ public class MergedBlock<TBlock, TSubBlock> : ILoquiObject, IBinaryItem, IFormLi
             {
                 if (_mergedSubBlocks != null) return _mergedSubBlocks;
 
-
                 var allSubBlocks = new List<TSubBlock>();
                 foreach (var block in _sourceBlocks)
                 {
@@ -74,14 +59,12 @@ public class MergedBlock<TBlock, TSubBlock> : ILoquiObject, IBinaryItem, IFormLi
         }
     }
 
-
     ILoquiRegistration ILoquiObject.Registration => null!;
 
     public void Print(StructuredStringBuilder sb, string? name = null)
     {
         sb.AppendLine($"Merged Block {BlockNumber} ({SubBlocks.Count} sub-blocks from {_sourceBlocks.Count} source blocks)");
     }
-
 
     public IEnumerable<IAssetLinkGetter> EnumerateAssetLinks(AssetLinkQuery queryCategories = AssetLinkQuery.Listed, IAssetLinkCache? linkCache = null, Type? assetType = null)
     {
@@ -93,7 +76,6 @@ public class MergedBlock<TBlock, TSubBlock> : ILoquiObject, IBinaryItem, IFormLi
             }
         }
     }
-
 
     void IBinaryItem.WriteToBinary(MutagenWriter writer, TypedWriteParams translationParams)
     {
@@ -108,7 +90,6 @@ public class MergedBlock<TBlock, TSubBlock> : ILoquiObject, IBinaryItem, IFormLi
 
     object IBinaryItem.BinaryWriteTranslator => this;
 
-
     public IEnumerable<IFormLinkGetter> EnumerateFormLinks(bool iterateNestedRecords = true)
     {
         foreach (var block in _sourceBlocks)
@@ -119,7 +100,6 @@ public class MergedBlock<TBlock, TSubBlock> : ILoquiObject, IBinaryItem, IFormLi
             }
         }
     }
-
 
     public IEnumerable<IMajorRecordGetter> EnumerateMajorRecords()
     {

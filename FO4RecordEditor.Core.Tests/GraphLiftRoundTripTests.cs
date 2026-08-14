@@ -9,21 +9,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class GraphLiftRoundTripTests
 {
     private readonly ITestOutputHelper _output;
@@ -35,7 +20,6 @@ public class GraphLiftRoundTripTests
 
     private static PapyrusScriptIndex Index(string extraRoot) =>
         PapyrusCompiler.IndexFor(new[] { extraRoot, TestRoots.BaseStubs, TestRoots.GraphScripts });
-
 
     private static (PexFile? Pex, string Diagnostics) CompileText(string text)
     {
@@ -55,7 +39,6 @@ public class GraphLiftRoundTripTests
             root.Delete(recursive: true);
         }
     }
-
 
     private (PexFile? Pex, string Report) ThroughGraph(string text)
     {
@@ -112,8 +95,6 @@ public class GraphLiftRoundTripTests
     [Fact]
     public void A_source_the_lifter_cannot_express_is_refused_rather_than_mangled()
     {
-
-
 
         var text = """
             Scriptname Fixture extends ObjectReference

@@ -8,5 +8,5 @@ namespace Mutagen.Bethesda.Plugins.Masters.DI;
 [Register<KeyedMasterStyleReader, IKeyedMasterStyleReader>]
 internal class MastersModule
 {
-    
+
 }

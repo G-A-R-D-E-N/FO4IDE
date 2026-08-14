@@ -2,24 +2,12 @@ using Mutagen.Bethesda.Plugins.Binary.Translations;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Streams;
 
-
-
-
 public sealed class RecordTypeConverter
 {
 
-
-
     public Dictionary<RecordType, RecordType> FromConversions = new Dictionary<RecordType, RecordType>();
 
-
-
-
     public Dictionary<RecordType, RecordType> ToConversions = new Dictionary<RecordType, RecordType>();
-
-
-
-
 
     public RecordTypeConverter(params KeyValuePair<RecordType, RecordType>[] conversions)
     {
@@ -33,12 +21,6 @@ public sealed class RecordTypeConverter
 
 public static class RecordTypeConverterExt
 {
-
-
-
-
-
-
 
     public static RecordType ConvertToCustom(this RecordTypeConverter? converter, RecordType rec)
     {
@@ -54,13 +36,6 @@ public static class RecordTypeConverterExt
         return rec;
     }
 
-
-
-
-
-
-
-
     public static RecordType ConvertToStandard(this RecordTypeConverter? converter, RecordType rec)
     {
         if (converter == null) return rec;
@@ -74,9 +49,6 @@ public static class RecordTypeConverterExt
         }
         return rec;
     }
-
-
-
 
     public static RecordTypeConverter? Combine(this RecordTypeConverter? lhs, RecordTypeConverter? rhs)
     {

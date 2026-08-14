@@ -39,10 +39,6 @@ public class PapyrusAnalysisServiceTests
         result.Should().StartWith("RESULT: 1 clean, 0 with syntax errors, 0 with name or type errors");
     }
 
-
-
-
-
     [Fact]
     public void Check_without_the_semantic_pass_still_says_it_only_parsed()
     {
@@ -64,10 +60,6 @@ public class PapyrusAnalysisServiceTests
         result.Should().Contain("1 with name or type errors");
         result.Should().Contain(PapyrusDiagnosticCodes.UnresolvedName);
     }
-
-
-
-
 
     [Fact]
     public void Check_counts_files_whose_sources_were_incomplete_separately()
@@ -147,7 +139,6 @@ public class PapyrusAnalysisServiceTests
         root.Write("Parent.psc", "ScriptName Parent\nFunction DoStuff()\n{Parent version}\nEndFunction\n");
         var child = root.Write("Child.psc", "ScriptName Child extends Parent\nFunction F()\n  DoStuff()\nEndFunction\n");
 
-
         var result = PapyrusAnalysisService.Definition(child, 3, 3);
 
         result.Should().Contain("RESULT: Function DoStuff");
@@ -176,15 +167,10 @@ public class PapyrusAnalysisServiceTests
         PapyrusAnalysisService.Definition(file, 99, 1).Should().Contain("outside");
     }
 
-
-
-
-
     [Fact]
     public void Analyze_returns_diagnostics_and_outline_from_buffer_text_not_from_disk()
     {
         using var root = new SourceRoot();
-
 
         var file = root.Write("A.psc", "ScriptName A\nint Property Health auto\n");
         var buffer = "ScriptName A\nint Property Health auto\nFunction F(\nEndFunction\n";
@@ -259,7 +245,6 @@ public class PapyrusAnalysisServiceTests
     [Fact]
     public void Symbol_at_works_on_an_unsaved_buffer_with_no_path()
     {
-
 
         var text = "ScriptName A\nint Property Health auto\nFunction F()\n  Health = 1\nEndFunction\n";
         var json = JObject.Parse(PapyrusAnalysisService.SymbolAtJson(text, null, text.IndexOf("Health = 1", StringComparison.Ordinal)));

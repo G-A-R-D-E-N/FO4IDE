@@ -7,17 +7,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
 public class PrecombinePlanTests
 {
     private readonly ITestOutputHelper _out;
@@ -57,9 +46,6 @@ public class PrecombinePlanTests
         var eligible = plan["eligibleReferences"]!.Value<int>();
         var skippedByRule = plan["skipped"]!.Sum(s => s["count"]!.Value<int>());
 
-
-
-
         var belowThreshold = considered - eligible - skippedByRule;
         belowThreshold.Should().BeGreaterThanOrEqualTo(0,
             "a reference cannot be counted as both eligible and skipped");
@@ -94,8 +80,6 @@ public class PrecombinePlanTests
                 "the eligible total covers every group, including any not shown");
     }
 
-
-
     [Fact]
     public void RejectionsAreReportedWithReasonsAndExamples()
     {
@@ -115,8 +99,6 @@ public class PrecombinePlanTests
         foreach (var s in skipped) _out.WriteLine($"{s["count"]} -- {s["reason"]}");
     }
 
-
-
     [Fact]
     public void ExteriorCellsAreRefused()
     {
@@ -126,8 +108,6 @@ public class PrecombinePlanTests
         plan!["error"]!.Value<string>().Should().Contain("exterior");
         plan["groups"].Should().BeNull();
     }
-
-
 
     [Fact]
     public void OutputStaysBoundedOnALargeCell()

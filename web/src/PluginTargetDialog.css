@@ -1,6 +1,4 @@
 
-
-
 .ptd-overlay {
   position: fixed;
   inset: 0;
@@ -145,7 +143,6 @@
 .ptd-btn-primary { background: #0e639c; color: #fff; }
 .ptd-btn-primary:hover { background: #1177bb; }
 .ptd-btn-primary:disabled { background: #2d4a5e; color: #8899a4; cursor: not-allowed; }
-
 
 .ptd-idx {
   font-family: var(--mono, ui-monospace, monospace);

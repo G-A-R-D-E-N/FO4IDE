@@ -86,10 +86,6 @@ public partial class Furniture
     }
 }
 
-
-
-
-
 partial class FurnitureBinaryCreateTranslation
 {
     public const uint UpperFlagsMask = 0xFFC0_0000;
@@ -105,7 +101,6 @@ partial class FurnitureBinaryCreateTranslation
     public static partial ParseResult FillBinaryFlags2Custom(MutagenFrame frame, IFurnitureInternal item, PreviousParse lastParsed)
     {
 
-
         item.MarkerParameters = null;
         item.Flags = FillBinaryFlags2(frame, (i) => GetNthMarker(item, i), item.Flags);
         return null;
@@ -116,14 +111,11 @@ partial class FurnitureBinaryCreateTranslation
         var subFrame = stream.ReadSubrecord();
         uint raw = BinaryPrimitives.ReadUInt32LittleEndian(subFrame.Content);
 
-
         var curFlags = (uint)(existingFlag ?? 0);
         curFlags &= ~UpperFlagsMask;
 
-
         uint upperFlags = raw & UpperFlagsMask;
         var ret = (Furniture.Flag)(curFlags | upperFlags);
-
 
         uint markers = raw & 0x003F_FFFF;
         uint indexToCheck = 1;
@@ -227,7 +219,6 @@ partial class FurnitureBinaryWriteTranslation
             }
         }
 
-
         using (HeaderExport.Subrecord(writer, RecordTypes.MNAM))
         {
             writer.Write(exportFlags);
@@ -251,7 +242,6 @@ partial class FurnitureBinaryWriteTranslation
                 2);
         }
     }
-
 
     public static partial void WriteBinaryMarkerParametersCustom(MutagenWriter writer, IFurnitureGetter item)
     {
@@ -277,7 +267,6 @@ partial class FurnitureBinaryOverlay
 
     private ExtendedList<FurnitureMarkerParameters>? _markers;
     public IReadOnlyList<IFurnitureMarkerParametersGetter>? MarkerParameters => _markers;
-
 
     private Furniture.EntryPointType? _enabledEntryPoints;
 

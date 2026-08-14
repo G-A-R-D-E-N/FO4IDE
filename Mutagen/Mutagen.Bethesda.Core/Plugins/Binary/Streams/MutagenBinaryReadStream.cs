@@ -6,25 +6,13 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Streams;
 
-
-
-
 public sealed class MutagenBinaryReadStream : BinaryReadStream, IMutagenReadStream
 {
     private readonly FilePath _path;
 
-
     public long OffsetReference { get; }
 
-
     public ParsingMeta MetaData { get; }
-
-
-
-
-
-
-
 
     public MutagenBinaryReadStream(
         FilePath path,
@@ -37,15 +25,6 @@ public sealed class MutagenBinaryReadStream : BinaryReadStream, IMutagenReadStre
         MetaData = metaData;
         OffsetReference = offsetReference;
     }
-
-
-
-
-
-
-
-
-
 
     public MutagenBinaryReadStream(
         ModPath path,
@@ -63,14 +42,6 @@ public sealed class MutagenBinaryReadStream : BinaryReadStream, IMutagenReadStre
         OffsetReference = offsetReference;
     }
 
-
-
-
-
-
-
-
-
     public MutagenBinaryReadStream(
         Stream stream,
         ParsingMeta metaData,
@@ -82,14 +53,6 @@ public sealed class MutagenBinaryReadStream : BinaryReadStream, IMutagenReadStre
         MetaData = metaData;
         OffsetReference = offsetReference;
     }
-
-
-
-
-
-
-
-
 
     public IMutagenReadStream ReadAndReframe(int length)
     {

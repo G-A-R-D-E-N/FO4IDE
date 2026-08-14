@@ -6,9 +6,6 @@ namespace Mutagen.Bethesda.Plugins.Order.DI;
 public interface ICreationClubListingsPathProvider
 {
 
-
-
-
     FilePath? Path { get; }
 }
 
@@ -27,7 +24,6 @@ public sealed class CreationClubListingsPathProvider : ICreationClubListingsPath
         IsUsed = isUsed;
         DirectoryProvider = gameDirectoryProvider;
     }
-
 
     public FilePath? Path
     {

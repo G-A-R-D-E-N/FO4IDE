@@ -66,7 +66,7 @@ public static class MutagenEncoding
             _utf8,
             _1256);
     }
-    
+
     public static IMutagenEncoding GetEncoding(GameRelease release, Language language)
     {
         switch (release)

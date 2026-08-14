@@ -5,10 +5,6 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
 public class SaveSelectedPluginTests
 {
     [Fact]
@@ -33,7 +29,6 @@ public class SaveSelectedPluginTests
         var result = shell.SaveSelectedPlugin();
 
         result.Should().Contain("not supported");
-
 
         result.Should().Contain("Save action").And.Contain("save_plugin");
         result.Should().NotContain("Saved ");

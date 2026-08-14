@@ -6,22 +6,8 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 public static partial class WriteService
 {
-
-
-
-
-
-
-
-
-
-
 
     public static string AddMasters(string plugin, string[] masters, object? env)
     {
@@ -39,9 +25,6 @@ public static partial class WriteService
         var added = new List<string>();
         var already = new List<string>();
         var unknown = new List<string>();
-
-
-
 
         var loaded = new HashSet<string>(LoadOrderMods(env).Select(m => m.name), StringComparer.OrdinalIgnoreCase);
 
@@ -71,16 +54,6 @@ public static partial class WriteService
         return $"{name} masters: {string.Join("; ", parts)}. Now [{string.Join(", ", mod.MasterReferences.Select(m => m.Master.FileName.String))}]. " +
                "save_plugin re-derives the master list from actual references, so write the reference before saving.";
     }
-
-
-
-
-
-
-
-
-
-
 
     public static string RenumberPluginFormIds(string plugin, string startHex, bool apply, object? env)
     {
@@ -132,23 +105,6 @@ public static partial class WriteService
                "in-plugin reference. References from other plugins into this one now dangle. save_plugin to persist.";
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static string CreateSeqFile(object? env, string plugin, string? outputDir)
     {
         var (name, _) = NormalizePlugin(plugin);
@@ -164,8 +120,6 @@ public static partial class WriteService
         foreach (var q in mod.Quests)
         {
             if (q.Data is not { } data || !data.Flags.HasFlag(Quest.Flag.StartGameEnabled)) continue;
-
-
 
             var contexts = MutagenLoader.GetRecordContexts(env, q.FormKey);
             int mine = contexts.FindIndex(c => string.Equals(c.plugin, name, StringComparison.OrdinalIgnoreCase));
@@ -198,18 +152,9 @@ public static partial class WriteService
                "\nDeploy it as Data/Seq/" + Path.ChangeExtension(name, ".seq") + " alongside the plugin.";
     }
 
-
-
-
-
-
-
-
-
     public static string CheckCircularLeveledLists(object? env, string plugin, int limit = 200)
     {
         var (filterName, _) = string.IsNullOrWhiteSpace(plugin) ? ("", (string?)null) : NormalizePlugin(plugin);
-
 
         var edges = new Dictionary<FormKey, List<FormKey>>();
         var owner = new Dictionary<FormKey, (string plugin, string edid, string type)>();
@@ -235,7 +180,6 @@ public static partial class WriteService
         }
 
         if (edges.Count == 0) return "No leveled lists found in the load order.";
-
 
         var state = new Dictionary<FormKey, int>();
         var cycles = new List<string>();
@@ -294,7 +238,6 @@ public static partial class WriteService
         return $"{cycles.Count} circular leveled list(s) found across {edges.Count} checked. Each of these " +
                "hangs or crashes the engine when it resolves:\n  " + string.Join("\n  ", cycles.Take(limit));
     }
-
 
     public static string CheckCircularLeveledListsJson(object? env, string plugin, int limit = 200) =>
         JsonSerializer.Serialize(new { report = CheckCircularLeveledLists(env, plugin, limit) });

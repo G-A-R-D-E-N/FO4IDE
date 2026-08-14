@@ -7,10 +7,6 @@ public partial class PexObject
         var ret = new PexObject();
         ret.Name = parse.ReadString();
 
-
-
-
-
         var size = parse.Reader.ReadUInt32() - sizeof(uint);
         var currentPos = parse.Reader.Position;
 
@@ -66,7 +62,6 @@ public partial class PexObject
     {
         write.WriteString(Name);
 
-
         var currentPos = write.Writer.BaseStream.Position;
         write.Writer.Write(sizeof(uint));
 
@@ -107,7 +102,6 @@ public partial class PexObject
         {
             objectState.Write(write);
         }
-
 
         var newPos = write.Writer.BaseStream.Position;
         write.Writer.BaseStream.Position = currentPos;
@@ -455,10 +449,6 @@ public partial class PexObjectFunctionInstruction
 
                     break;
                 }
-
-
-
-
 
                 case 'u' when argument.VariableType != VariableType.Integer:
                     throw new InvalidDataException($"Argument is unsigned integer but Variable Type is not integer: {argument.VariableType}");

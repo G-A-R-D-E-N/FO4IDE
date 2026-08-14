@@ -3,15 +3,6 @@ using System.Text;
 
 namespace FO4RecordEditor.Services.Archives;
 
-
-
-
-
-
-
-
-
-
 public static class Ba2TextureCorpus
 {
     public sealed record Report(
@@ -101,15 +92,6 @@ public static class Ba2TextureCorpus
                (Problems.Count == 0 ? "" : "\n  " + string.Join("\n  ", Problems.Take(10)));
     }
 
-
-
-
-
-
-
-
-
-
     public static RoundTripReport RoundTrip(string archivePath, int limit = int.MaxValue)
     {
         var archive = Ba2Codec.Read(archivePath);
@@ -165,11 +147,6 @@ public static class Ba2TextureCorpus
 
         return new RoundTripReport(entries, rebuilt, multiSurface, problems);
     }
-
-
-
-
-
 
     public static (int Parsed, int Exact, List<string> Problems) CheckLooseTextures(string folder, int limit = int.MaxValue)
     {

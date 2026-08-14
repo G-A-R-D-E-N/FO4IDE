@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -57,8 +53,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #region ObjectBounds
 
-
-
         public ObjectBounds ObjectBounds { get; set; } = new ObjectBounds();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IObjectBoundsGetter IGrassGetter.ObjectBounds => ObjectBounds;
@@ -78,8 +72,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Model
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Model? _Model;
-
-
 
         public Model? Model
         {
@@ -995,11 +987,7 @@ namespace Mutagen.Bethesda.Fallout4
         IObjectBounded
     {
 
-
-
         new ObjectBounds ObjectBounds { get; set; }
-
-
 
         new Model? Model { get; set; }
         new Byte Density { get; set; }
@@ -1038,13 +1026,9 @@ namespace Mutagen.Bethesda.Fallout4
         static new ILoquiRegistration StaticRegistration => Grass_Registration.Instance;
         #region ObjectBounds
 
-
-
         IObjectBoundsGetter ObjectBounds { get; }
         #endregion
         #region Model
-
-
 
         IModelGetter? Model { get; }
         #endregion
@@ -1756,7 +1740,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public override object GetNew()
         {
             return Grass.GetNew();
@@ -2304,7 +2287,6 @@ namespace Mutagen.Bethesda.Fallout4
     }
     #endregion
 
-
 }
 namespace Mutagen.Bethesda.Fallout4
 {
@@ -2338,7 +2320,6 @@ namespace Mutagen.Bethesda.Fallout4
                 translationParams: translationParams);
         }
         protected override Type LinkType => typeof(IGrassGetter);
-
 
         #region ObjectBounds
         private RangeInt32? _ObjectBoundsLocation;

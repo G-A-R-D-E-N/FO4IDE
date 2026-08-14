@@ -6,38 +6,13 @@ using System.Threading.Tasks;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class AudioService
 {
     private static bool IsExt(string path, string ext) =>
         string.Equals(Path.GetExtension(path), ext, StringComparison.OrdinalIgnoreCase);
 
-
-
     private static readonly HashSet<string> BatchExtensions = new(StringComparer.OrdinalIgnoreCase)
         { ".wav", ".mp3", ".flac", ".ogg", ".oga", ".m4a", ".wma", ".aif", ".aiff", ".mp4", ".avi" };
-
-
-
-
-
-
-
 
     public static string ConvertToXwm(string source, string? output, int? bitrateBps)
     {
@@ -48,8 +23,6 @@ public static class AudioService
         if (!File.Exists(source)) return ToolError.Fail($"Source not found: {source}");
         return ConvertOneToXwm(source, output, bitrateBps);
     }
-
-
 
     private static string ConvertFolderToXwm(string sourceDir, string? outputDir, int? bitrateBps)
     {
@@ -75,7 +48,6 @@ public static class AudioService
             else
             {
 
-
                 var clean = ToolError.IsMarked(result) ? result[1..] : result;
                 failures.Add($"{rel}: {clean.Split('\n')[0]}");
             }
@@ -87,11 +59,6 @@ public static class AudioService
             msg += $"\n{failures.Count} FAILED:\n  " + string.Join("\n  ", failures.OrderBy(f => f, StringComparer.OrdinalIgnoreCase).Take(20));
         return msg;
     }
-
-
-
-
-
 
     public static string ConvertOneToXwm(string source, string? output, int? bitrateBps)
     {
@@ -137,10 +104,6 @@ public static class AudioService
         finally { if (tempWav != null) TryDelete(tempWav); }
     }
 
-
-
-
-
     public static string ConvertFromXwm(string source, string? output, string? targetExt)
     {
         if (string.IsNullOrWhiteSpace(source)) return ToolError.Fail("Provide 'source' (a .xwm file).");
@@ -157,8 +120,6 @@ public static class AudioService
             : output.Trim().Trim('"');
         try { Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(finalOut)) ?? "."); }
         catch (Exception ex) { return ToolError.Fail($"Cannot create output dir for '{finalOut}': {ex.Message}"); }
-
-
 
         var wantsWav = targetExt == "wav";
         var wavOut = wantsWav ? finalOut : Path.Combine(Path.GetTempPath(),
@@ -187,11 +148,6 @@ public static class AudioService
         }
         finally { if (!wantsWav) TryDelete(wavOut); }
     }
-
-
-
-
-
 
     public static string MakeFuz(string audioSource, string? lipPath, string fuzOutput, bool noLip)
     {
@@ -239,8 +195,6 @@ public static class AudioService
         finally { if (tempXwm != null) TryDelete(tempXwm); }
     }
 
-
-
     public static string ExtractFuz(string fuzPath, string? xwmOutput, string? lipOutput, bool alsoWav)
     {
         if (string.IsNullOrWhiteSpace(fuzPath)) return ToolError.Fail("Provide 'fuz_path'.");
@@ -275,11 +229,6 @@ public static class AudioService
         return msg.ToString();
     }
 
-
-
-
-
-
     private static bool IsPcmWav(string path)
     {
         if (!IsExt(path, ".wav")) return false;
@@ -309,7 +258,6 @@ public static class AudioService
         catch {  }
         return false;
     }
-
 
     private static (string? wavPath, string? error) NormalizeToPcmWav(string source)
     {

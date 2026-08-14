@@ -18,13 +18,7 @@ public sealed class ChatService
         _history.AddRange(history);
     }
 
-
     public int TurnCount => _history.Count;
-
-
-
-
-
 
     public async Task<string> SummarizeTextAsync(string transcript, string instruction, CancellationToken ct = default)
     {
@@ -39,9 +33,6 @@ public sealed class ChatService
             sb.Append(token);
         return sb.ToString().Trim();
     }
-
-
-
 
     public async Task StreamOneShot(IReadOnlyList<ChatMessage> messages, Action<string> onToken, CancellationToken ct = default)
     {
@@ -71,8 +62,6 @@ public sealed class ChatService
         }
         finally
         {
-
-
 
             _history.Add(new ChatMessage(ChatRole.Assistant, full.ToString()));
         }

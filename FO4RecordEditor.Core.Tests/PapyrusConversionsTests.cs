@@ -3,15 +3,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
 public class PapyrusConversionsTests
 {
 
@@ -27,7 +18,6 @@ public class PapyrusConversionsTests
     private static readonly PapyrusType Actor = PapyrusType.Object("Actor");
     private static readonly PapyrusType ObjectRef = PapyrusType.Object("ObjectReference");
     private static readonly PapyrusType Form = PapyrusType.Object("Form");
-
 
     [Theory]
     [InlineData(PapyrusTypeKind.Int)]
@@ -46,7 +36,6 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.ArrayOf(PapyrusType.Int), PapyrusType.Bool).Should().BeTrue();
     }
 
-
     [Fact]
     public void Anything_implicitly_becomes_a_string()
     {
@@ -55,14 +44,12 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.ArrayOf(PapyrusType.Int), PapyrusType.String).Should().BeTrue();
     }
 
-
     [Fact]
     public void Int_implicitly_becomes_a_float_but_nothing_else_does()
     {
         PapyrusConversions.IsImplicit(PapyrusType.Int, PapyrusType.Float).Should().BeTrue();
         PapyrusConversions.IsImplicit(PapyrusType.String, PapyrusType.Float).Should().BeFalse();
     }
-
 
     [Fact]
     public void Nothing_implicitly_becomes_an_int_but_float_and_string_cast_explicitly()
@@ -73,7 +60,6 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsExplicit(PapyrusType.String, PapyrusType.Int).Should().BeTrue();
     }
 
-
     [Fact]
     public void An_object_implicitly_becomes_its_parent_but_not_its_child()
     {
@@ -81,8 +67,6 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(Actor, Form, Inherits).Should().BeTrue("and transitively a Form");
         PapyrusConversions.IsImplicit(Form, Actor, Inherits).Should().BeFalse("not every Form is an Actor");
     }
-
-
 
     [Fact]
     public void A_downcast_is_explicit_only()
@@ -98,7 +82,6 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsExplicit(Actor, keyword, Inherits).Should().BeFalse();
     }
 
-
     [Fact]
     public void Everything_but_an_array_implicitly_becomes_a_var()
     {
@@ -106,8 +89,6 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(Actor, PapyrusType.Var, Inherits).Should().BeTrue();
         PapyrusConversions.IsImplicit(PapyrusType.ArrayOf(PapyrusType.Int), PapyrusType.Var).Should().BeFalse();
     }
-
-
 
     [Fact]
     public void Arrays_cast_to_arrays_only_explicitly_and_only_when_the_elements_do()
@@ -122,7 +103,6 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsExplicit(actors, forms, Inherits).Should().BeTrue();
     }
 
-
     [Fact]
     public void Nothing_casts_to_a_struct()
     {
@@ -132,7 +112,6 @@ public class PapyrusConversionsTests
         point.Equals(PapyrusType.StructOf("A", "Point")).Should().BeTrue("a struct still equals itself");
     }
 
-
     [Fact]
     public void None_is_assignable_to_every_reference_type()
     {
@@ -140,7 +119,6 @@ public class PapyrusConversionsTests
         PapyrusConversions.IsImplicit(PapyrusType.None, PapyrusType.ArrayOf(PapyrusType.Int)).Should().BeTrue();
         PapyrusConversions.IsImplicit(PapyrusType.None, PapyrusType.StructOf("A", "Point")).Should().BeTrue();
     }
-
 
     [Fact]
     public void The_error_type_converts_both_ways_so_one_failure_does_not_cascade()

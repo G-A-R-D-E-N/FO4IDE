@@ -11,29 +11,10 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class Ba2NextGenDecompressionTests
 {
     private readonly ITestOutputHelper _out;
     public Ba2NextGenDecompressionTests(ITestOutputHelper o) => _out = o;
-
 
     private bool TryFixture(string fileName, out string path)
     {
@@ -80,8 +61,6 @@ public class Ba2NextGenDecompressionTests
     {
         if (!TryFixture("Fallout4 - Interface.ba2", out var archive)) return;
 
-
-
         var act = () => ReadEntry(archive, f => f.Path.EndsWith("Fallout4_en.STRINGS", StringComparison.OrdinalIgnoreCase));
         var bytes = act.Should().NotThrow("a stored entry must be read raw, not inflated").Subject;
         bytes.Length.Should().BeGreaterThan(0);
@@ -97,7 +76,6 @@ public class Ba2NextGenDecompressionTests
         _out.WriteLine($"{files.Count} entries");
 
         files.Should().NotBeEmpty();
-
 
         files.Should().OnlyContain(f => f.Path.EndsWith(".fuz", StringComparison.OrdinalIgnoreCase),
             "this archive is all voice .fuz files -- any other extension means the entry stride drifted");

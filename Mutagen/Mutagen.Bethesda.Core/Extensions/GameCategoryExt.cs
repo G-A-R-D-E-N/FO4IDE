@@ -71,7 +71,7 @@ public static class GameCategoryExt
                 return true;
         }
     }
-    
+
     internal static (string TypeName, string AssemblyName) GetMultiFileOverlayTypeInfo(this GameCategory category)
     {
         return category switch
@@ -123,7 +123,7 @@ internal static class ToModRegistrationHelper
             var modType = Type.GetType(
                 $"Mutagen.Bethesda.{category}.{category}Mod, Mutagen.Bethesda.{category}");
             if (modType == null) continue;
-            var regisProp = modType.GetProperty("StaticRegistration", 
+            var regisProp = modType.GetProperty("StaticRegistration",
                 System.Reflection.BindingFlags.Static
                 | System.Reflection.BindingFlags.NonPublic
                 | System.Reflection.BindingFlags.Public);

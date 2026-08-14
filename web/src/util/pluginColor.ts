@@ -9,15 +9,12 @@ function hashString(s: string): number {
   return Math.abs(h);
 }
 
-
 export function pluginColorVar(name: string): string {
-
 
   let h = hashString(name.toLowerCase());
   h = (h ^ (h >>> 16)) >>> 0;
   return `var(--chip-${(h % CHIP_COUNT) + 1})`;
 }
-
 
 export function pluginBadge(name: string): string {
   const m = name.match(/[a-z0-9]/i);

@@ -266,7 +266,6 @@ partial class WeatherBinaryWriteTranslation
                 }
             }
 
-
             using (HeaderExport.Subrecord(writer, RecordTypes.QNAM))
             {
                 for (int i = 0; i < xSpeeds.Length; i++)
@@ -277,7 +276,6 @@ partial class WeatherBinaryWriteTranslation
         }
 
         var numLayers = WeatherBinaryCreateTranslation.NumLayers(item.FormVersion);
-
 
         if (colors.Any(a => a != null))
         {
@@ -304,7 +302,6 @@ partial class WeatherBinaryWriteTranslation
                 }
             }
         }
-
 
         if (alphas.Any(a => a != null))
         {
@@ -333,7 +330,6 @@ partial class WeatherBinaryWriteTranslation
         }
 
     }
-
 
     #region Unused
     public static partial void WriteBinaryCloudAlphasCustom(MutagenWriter writer, IWeatherGetter item)

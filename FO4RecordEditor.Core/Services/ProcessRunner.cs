@@ -3,28 +3,14 @@ using System.IO;
 
 namespace FO4RecordEditor.Services;
 
-
 public readonly record struct ProcessResult(bool Started, bool TimedOut, int ExitCode, string StdOut, string StdErr)
 {
 
     public string Combined => (StdOut + "\n" + StdErr).Replace("\r", "").Trim();
 }
 
-
-
-
-
-
-
-
-
-
 public static class ProcessRunner
 {
-
-
-
-
 
     public static ProcessResult Run(ProcessStartInfo psi, TimeSpan timeout)
     {
@@ -32,7 +18,6 @@ public static class ProcessRunner
 
         using var p = Process.Start(psi);
         if (p == null) return new ProcessResult(false, false, -1, "", "");
-
 
         var so = p.StandardOutput.ReadToEndAsync();
         var se = p.StandardError.ReadToEndAsync();
@@ -47,7 +32,6 @@ public static class ProcessRunner
         DrainRemaining(so, se);
         return new ProcessResult(true, false, p.ExitCode, TextOf(so), TextOf(se));
     }
-
 
     public static async Task<ProcessResult> RunAsync(
         ProcessStartInfo psi, TimeSpan timeout, CancellationToken ct = default)
@@ -77,14 +61,6 @@ public static class ProcessRunner
         return new ProcessResult(true, false, p.ExitCode, TextOf(so), TextOf(se));
     }
 
-
-
-
-
-
-
-
-
     private static void ShimWindowsExe(ProcessStartInfo psi)
     {
         if (OperatingSystem.IsWindows()) return;
@@ -93,8 +69,6 @@ public static class ProcessRunner
         var wine = Environment.GetEnvironmentVariable("FO4RE_WINE");
         if (wine != null && wine.Length == 0) return;
         if (string.IsNullOrWhiteSpace(wine)) wine = "wine";
-
-
 
         if (!string.IsNullOrEmpty(psi.Arguments))
             psi.Arguments = Quote(psi.FileName) + " " + psi.Arguments;
@@ -116,8 +90,6 @@ public static class ProcessRunner
         psi.UseShellExecute = false;
         psi.CreateNoWindow = true;
     }
-
-
 
     private static void DrainRemaining(Task<string> so, Task<string> se)
     {

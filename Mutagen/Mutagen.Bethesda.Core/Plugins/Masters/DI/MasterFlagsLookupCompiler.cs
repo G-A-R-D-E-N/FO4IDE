@@ -16,7 +16,7 @@ public class MasterFlagsLookupCompiler : IMasterFlagsLookupCompiler
     private readonly IFileSystem _fileSystem;
     private readonly IGameReleaseContext _gameReleaseContext;
     private readonly IDataDirectoryProvider _dataDirectoryProvider;
-    
+
     public MasterFlagsLookupCompiler(
         IFileSystem fileSystem,
         IGameReleaseContext gameReleaseContext,

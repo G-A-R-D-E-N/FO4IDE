@@ -8,26 +8,11 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class BaseStubFidelityTests
 {
     private readonly ITestOutputHelper _output;
 
     public BaseStubFidelityTests(ITestOutputHelper output) => _output = output;
-
 
     private readonly record struct MemberShape(
         string Kind, string Name, string ReturnType, string Parameters, bool IsGlobal);
@@ -55,7 +40,6 @@ public class BaseStubFidelityTests
         }
         return shapes;
     }
-
 
     private static IEnumerable<(string Name, PapyrusScript Stub, PapyrusScript Real)> Pairs(
         IReadOnlyList<string> realRoots)
@@ -103,8 +87,6 @@ public class BaseStubFidelityTests
                     continue;
                 }
 
-
-
                 if (stubShape.ReturnType != realShape.ReturnType)
                     mismatched.Add($"{name}: {stubShape.Name} returns {stubShape.ReturnType} vs real {realShape.ReturnType}");
                 else if (stubShape.Parameters != realShape.Parameters)
@@ -133,10 +115,6 @@ public class BaseStubFidelityTests
                 $"{TestRoots.RealScriptRootsVariable} is not set to a real base script root; nothing to compare.");
             return;
         }
-
-
-
-
 
         var realIndex = PapyrusCompiler.IndexFor(roots);
         var real = realIndex.Resolve("ScriptObject");

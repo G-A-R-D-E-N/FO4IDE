@@ -509,8 +509,6 @@ internal sealed class ListBinaryTranslation<T> : ListBinaryTranslation<MutagenWr
     {
         if (amount == 0 && nullIfZero) return [];
 
-
-
         var subHeader = reader.GetSubrecordHeader();
         if (subHeader.RecordType != triggeringRecord)
         {
@@ -597,7 +595,6 @@ internal sealed class ListBinaryTranslation<T> : ListBinaryTranslation<MutagenWr
             var subHeader = reader.GetSubrecordHeader();
             if (subHeader.RecordType != triggeringRecord)
             {
-
 
                 break;
             }
@@ -1456,7 +1453,6 @@ internal static class ListBinaryTranslationExt
         BinarySubParseDelegate<MutagenFrame, T> transl)
         where T : IMajorRecordGetter
     {
-
 
         foreach (var entry in translation.Parse(
                      reader,

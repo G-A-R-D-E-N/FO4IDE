@@ -129,12 +129,10 @@
 .audio-run:hover:not(:disabled) { background: rgba(78, 201, 176, 0.24); }
 .audio-run:disabled { opacity: 0.5; cursor: default; }
 
-
 .audio-drop { border: 1px dashed transparent; border-radius: 6px; transition: border-color .12s, background .12s; }
 .audio-drop.over { border-color: var(--accent-color, #4ec9b0); background: rgba(78, 201, 176, 0.08); }
 
 .audio-output { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
-
 
 .audio-banner {
   display: flex; align-items: center; gap: 8px;

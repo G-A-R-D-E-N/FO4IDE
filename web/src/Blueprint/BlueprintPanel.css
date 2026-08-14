@@ -1,14 +1,10 @@
 
-
-
 .bp-body {
   flex: 1;
   display: grid;
   grid-template-columns: 264px 1fr 320px;
   min-height: 0;
 }
-
-
 
 .bp-palette {
   display: flex;
@@ -66,10 +62,7 @@
   font-size: 11px;
 }
 
-
-
 .bp-stage { position: relative; min-width: 0; overflow: hidden; }
-
 
 .bp-stage.bp-gate-error { box-shadow: inset 0 0 0 2px var(--status-changed); }
 
@@ -127,8 +120,6 @@
   font-size: 11px;
   pointer-events: none;
 }
-
-
 
 .bp-node {
   position: absolute;
@@ -226,8 +217,6 @@
   padding: 1px 4px;
 }
 
-
-
 .bp-side {
   display: flex;
   flex-direction: column;
@@ -287,8 +276,6 @@
   font-size: 11px;
 }
 
-
-
 .bp-actions { display: flex; gap: 6px; margin-left: auto; }
 
 .bp-gate {
@@ -306,8 +293,6 @@
 .bp-gate-bad { color: var(--status-changed); }
 
 .bp-source { flex: 1; overflow: auto; margin: 0; padding: 12px; }
-
-
 
 .bp-popover {
   position: absolute;
@@ -360,8 +345,6 @@
 
 .bp-popover-list button:hover { background: var(--bg-hover); }
 .bp-popover-list span { color: var(--text-muted); font-size: 11px; }
-
-
 
 .bp-menu-backdrop {
   position: fixed;
@@ -417,8 +400,6 @@
   margin: 4px 6px;
   background: var(--border-color);
 }
-
-
 
 .bp-minimap {
   position: absolute;

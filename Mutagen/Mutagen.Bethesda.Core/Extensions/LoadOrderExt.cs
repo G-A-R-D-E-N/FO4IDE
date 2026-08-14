@@ -10,20 +10,11 @@ namespace Mutagen.Bethesda;
 public static class LoadOrderExt
 {
 
-
-
-
-
     public static IEnumerable<TListing> OnlyEnabled<TListing>(this IEnumerable<TListing> loadOrder)
         where TListing : ILoadOrderListingGetter
     {
         return loadOrder.Where(x => x.Enabled);
     }
-
-
-
-
-
 
     public static IEnumerable<TListing> OnlyExisting<TListing, TMod>(this IEnumerable<TListing> loadOrder)
         where TListing : IModListingGetter
@@ -33,11 +24,6 @@ public static class LoadOrderExt
             .Where(x => x.ModExists);
     }
 
-
-
-
-
-
     public static IEnumerable<TListing> OnlyEnabledAndExisting<TListing>(this IEnumerable<TListing> loadOrder)
         where TListing : IModListingGetter
     {
@@ -45,24 +31,12 @@ public static class LoadOrderExt
             .Where(x => x.Enabled && x.ModExists);
     }
 
-
-
-
-
-
-
     [Obsolete("Use ResolveAllModsExist instead")]
     public static IEnumerable<TMod> Resolve<TMod>(this IEnumerable<IModListingGetter<TMod>> loadOrder)
         where TMod : class, IModGetter
     {
         return ResolveAllModsExist(loadOrder);
     }
-
-
-
-
-
-
 
     public static IEnumerable<TModItem> ResolveAllModsExist<TModItem>(this IEnumerable<IModListingGetter<TModItem>> loadOrder)
         where TModItem : class, IModKeyed
@@ -79,13 +53,6 @@ public static class LoadOrderExt
         return loadOrder.Select(x => x.Mod!);
     }
 
-
-
-
-
-
-
-
     public static TModItem ResolveMod<TModItem>(
         this ILoadOrderGetter<IModListingGetter<TModItem>> loadOrder,
         ModKey modKey)
@@ -100,11 +67,6 @@ public static class LoadOrderExt
         return listing.Mod;
     }
 
-
-
-
-
-
     public static IEnumerable<TModItem> ResolveExistingMods<TModItem>(this IEnumerable<IModListingGetter<TModItem>> loadOrder)
         where TModItem : class, IModKeyed
     {
@@ -112,12 +74,6 @@ public static class LoadOrderExt
             .Select(x => x.Mod)
             .WhereNotNull();
     }
-
-
-
-
-
-
 
     public static LoadOrder<TModItem> ResolveAllModsExist<TModItem>(
         this ILoadOrderGetter<IModListingGetter<TModItem>> loadOrder,
@@ -127,11 +83,6 @@ public static class LoadOrderExt
         return new LoadOrder<TModItem>(ResolveAllModsExist<TModItem>(loadOrder.ListedOrder), disposeItems: disposeItems ?? loadOrder.DisposingItems);
     }
 
-
-
-
-
-
     public static LoadOrder<TModItem> ResolveExistingMods<TModItem>(
         this ILoadOrderGetter<IModListingGetter<TModItem>> loadOrder,
         bool? disposeItems = null)
@@ -140,23 +91,10 @@ public static class LoadOrderExt
         return new LoadOrder<TModItem>(ResolveExistingMods<TModItem>(loadOrder.ListedOrder), disposeItems: disposeItems ?? loadOrder.DisposingItems);
     }
 
-
-
-
-
-
-
     public static IEnumerable<ILoadOrderListingGetter> ToLoadOrderListings(this IEnumerable<ModKey> loadOrder, bool markEnabled = true)
     {
         return loadOrder.Select(x => new LoadOrderListing(x, markEnabled));
     }
-
-
-
-
-
-
-
 
     public static IEnumerable<IModListingGetter> ToModListings(this IEnumerable<ModKey> loadOrder, bool modExists, bool markEnabled = true)
     {

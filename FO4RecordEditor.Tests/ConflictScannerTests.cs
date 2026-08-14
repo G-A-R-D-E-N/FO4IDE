@@ -10,18 +10,12 @@ using Xunit;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
 public class ConflictScannerTests
 {
 
     private static object BuildEnv(out FormKey fk, string editorIdA, string[] keywordsA,
                                                    string editorIdB, string[] keywordsB)
     {
-
-
 
         MutagenLoader.EditableMods.Clear();
         ConflictScanner.InvalidateCache();

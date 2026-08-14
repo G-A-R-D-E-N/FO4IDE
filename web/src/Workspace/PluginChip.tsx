@@ -6,7 +6,6 @@ interface PluginChipProps {
   onClick?: () => void;
 }
 
-
 export default function PluginChip({ name, onClick }: PluginChipProps) {
   return (
     <div

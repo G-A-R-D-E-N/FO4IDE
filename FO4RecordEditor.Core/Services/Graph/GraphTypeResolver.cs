@@ -5,7 +5,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
 public sealed class GenericBinding
 {
     private readonly Dictionary<string, (string TypeName, bool IsArray)> _bound = new(StringComparer.Ordinal);
@@ -26,20 +25,11 @@ public sealed class GenericBinding
     public void Bind(string variable, string typeName, bool isArray)
     {
 
-
         if (!_bound.ContainsKey(variable)) _bound[variable] = (typeName, isArray);
     }
 
     public bool IsBound(string variable) => _bound.ContainsKey(variable);
 }
-
-
-
-
-
-
-
-
 
 public sealed class GraphTypeResolver
 {
@@ -48,10 +38,6 @@ public sealed class GraphTypeResolver
     private readonly string? _selfExtends;
     private readonly Dictionary<(string, string), bool> _inherits = new();
 
-
-
-
-
     public GraphTypeResolver(PapyrusScriptIndex index, string selfType, string? selfExtends = null)
     {
         _index = index ?? throw new ArgumentNullException(nameof(index));
@@ -59,22 +45,11 @@ public sealed class GraphTypeResolver
         _selfExtends = selfExtends;
     }
 
-
     public bool SourcesComplete { get; private set; } = true;
-
-
-
-
-
-
-
 
     public bool InheritsFrom(string child, string ancestor)
     {
         if (string.Equals(child, ancestor, StringComparison.OrdinalIgnoreCase)) return true;
-
-
-
 
         if (string.Equals(child, _selfType, StringComparison.OrdinalIgnoreCase))
         {
@@ -100,7 +75,6 @@ public sealed class GraphTypeResolver
         _inherits[key] = result;
         return result;
     }
-
 
     public (string TypeName, bool IsArray) TypeOf(PinTypeExpr? type, GenericBinding generics)
     {
@@ -137,7 +111,6 @@ public sealed class GraphTypeResolver
         }
     }
 
-
     public PapyrusType? Resolve(string typeName, bool isArray, PapyrusScript? relativeTo)
     {
         if (string.IsNullOrEmpty(typeName)) return null;
@@ -162,35 +135,21 @@ public sealed class GraphTypeResolver
         return isArray ? PapyrusType.ArrayOf(element) : element;
     }
 
-
     public enum WireVerdict
     {
 
         Implicit,
 
-
         NeedsCast,
 
-
         Incompatible,
-
 
         Unknown,
     }
 
-
-
-
-
-
-
-
-
-
     public WireVerdict Judge(
         string fromType, bool fromArray, string toType, bool toArray, PapyrusScript? relativeTo)
     {
-
 
         var from = Resolve(fromType, fromArray, relativeTo);
         var to = Resolve(toType, toArray, relativeTo);
@@ -202,13 +161,6 @@ public sealed class GraphTypeResolver
         if (PapyrusConversions.IsExplicit(from, to, inherits)) return WireVerdict.NeedsCast;
         return WireVerdict.Incompatible;
     }
-
-
-
-
-
-
-
 
     public GenericBinding SolveGenerics(
         GraphNode node,

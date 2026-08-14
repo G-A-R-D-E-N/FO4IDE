@@ -59,11 +59,6 @@ public static class Archive
         return cont.Resolve().Value;
     }
 
-
-
-
-
-
     public static string GetExtension(GameRelease release)
     {
         switch (release.ToCategory())
@@ -79,12 +74,6 @@ public static class Archive
         }
     }
 
-
-
-
-
-
-
     public static IArchiveReader CreateReader(GameRelease release, FilePath path, IFileSystem? fileSystem = null)
     {
         return new ArchiveReaderProvider(
@@ -92,14 +81,6 @@ public static class Archive
                 new GameReleaseInjection(release))
             .Create(path);
     }
-
-
-
-
-
-
-
-
 
     public static IEnumerable<FilePath> GetApplicableArchivePaths(
         GameRelease release, DirectoryPath dataFolderPath, IFileSystem? fileSystem = null,
@@ -109,33 +90,12 @@ public static class Archive
             .Get();
     }
 
-
-
-
-
-
-
-
-
-
-
     public static IEnumerable<FilePath> GetApplicableArchivePaths(GameRelease release, DirectoryPath dataFolderPath,
         ModKey modKey, IFileSystem? fileSystem = null, bool returnEmptyIfMissing = true)
     {
         return GetApplicableArchivePathsDi(release, dataFolderPath, fileSystem: fileSystem)
             .Get(modKey);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static bool IsApplicable(GameRelease release, ModKey modKey, FileName archiveFileName)
     {
@@ -145,12 +105,6 @@ public static class Archive
             .IsApplicable(modKey, archiveFileName);
     }
 
-
-
-
-
-
-
     public static IEnumerable<FileName> GetIniListings(GameRelease release, IFileSystem? fileSystem = null)
     {
         return new GetArchiveIniListingsContainer(fileSystem, release)
@@ -158,26 +112,12 @@ public static class Archive
             .Get();
     }
 
-
-
-
-
-
-
-
     public static IEnumerable<FileName> GetIniListings(GameRelease release, FilePath path, IFileSystem? fileSystem = null)
     {
         return new GetArchiveIniListingsContainer(fileSystem, release)
             .Resolve().Value
             .Get(path);
     }
-
-
-
-
-
-
-
 
     public static IEnumerable<FileName> GetIniListings(GameRelease release, Stream iniStream, IFileSystem? fileSystem = null)
     {

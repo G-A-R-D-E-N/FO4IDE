@@ -5,18 +5,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
-
-
-
-
 public sealed class GraphNameTable
 {
     private readonly HashSet<string> _taken = new(StringComparer.OrdinalIgnoreCase);
@@ -35,20 +23,12 @@ public sealed class GraphNameTable
         }
     }
 
-
     public void Reserve(string? name)
     {
         if (!string.IsNullOrWhiteSpace(name)) _taken.Add(name);
     }
 
     public bool IsReserved(string? name) => !string.IsNullOrEmpty(name) && _taken.Contains(name);
-
-
-
-
-
-
-
 
     public string Allocate(string? hint)
     {

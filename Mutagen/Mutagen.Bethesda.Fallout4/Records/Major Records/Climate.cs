@@ -32,7 +32,7 @@ partial class ClimateBinaryCreateTranslation
             item.Moons |= Climate.Moon.Secunda;
         }
     }
-    
+
     private static bool GetTime(byte b, out TimeOnly date)
     {
         if (b > 144)
@@ -102,7 +102,7 @@ partial class ClimateBinaryWriteTranslation
         }
         writer.Write(raw);
     }
-    
+
     private static byte GetByte(TimeOnly d)
     {
         var mins = d.Hour * 60 + d.Minute;

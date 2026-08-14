@@ -7,16 +7,11 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class AppInterop
 {
     private readonly ShellViewModel _shell;
-
 
     private readonly Action<string, double?>? _onProgress;
 
@@ -26,14 +21,10 @@ public class AppInterop
         _onProgress = onProgress;
     }
 
-
-
     private IProgress<(string message, double? percent)>? MakeProgress() =>
         _onProgress == null
             ? null
             : new Progress<(string message, double? percent)>(p => _onProgress(p.message, p.percent));
-
-
 
     public string BrowseForMo2Folder()
     {
@@ -53,8 +44,6 @@ public class AppInterop
         return instance;
     }
 
-
-
     public async System.Threading.Tasks.Task OpenMo2Profile(string instancePath)
     {
         DebugLog.Interop(nameof(OpenMo2Profile), instancePath);
@@ -70,8 +59,6 @@ public class AppInterop
         catch (Exception ex) { DebugLog.Exception("LoadEnvironment", ex); throw; }
         finally { _onProgress?.Invoke("", -1); }
     }
-
-
 
     public async System.Threading.Tasks.Task<string> ScanConflicts()
     {
@@ -107,8 +94,6 @@ public class AppInterop
         }
         finally { _onProgress?.Invoke("", -1); }
     }
-
-
 
     public string RefreshTree()
     {
@@ -147,11 +132,6 @@ public class AppInterop
         DebugLog.Interop(nameof(GetChildren), path);
         var node = FindNode(path);
         if (node == null) { DebugLog.Debug("Interop", $"GetChildren: node not found for {path}"); return "[]"; }
-
-
-
-
-
 
         var dummy = node.GetChild("Loading...");
         if (dummy != null)
@@ -197,8 +177,6 @@ public class AppInterop
         });
         return JsonConvert.SerializeObject(data);
     }
-
-
 
     public string OpenRecord(string path)
     {

@@ -6,15 +6,6 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
-
 public static class GraphScriptLoader
 {
 
@@ -24,22 +15,10 @@ public static class GraphScriptLoader
         public bool Success => Document != null;
     }
 
-
     public static bool IsScript(string path) =>
         Path.GetExtension(path) is { } extension
         && (extension.Equals(".psc", StringComparison.OrdinalIgnoreCase)
             || extension.Equals(".pex", StringComparison.OrdinalIgnoreCase));
-
-
-
-
-
-
-
-
-
-
-
 
     public static Result Load(string path, IEnumerable<string> roots)
     {
@@ -56,9 +35,6 @@ public static class GraphScriptLoader
             {
                 return Failed(Path.GetFileName(path) + " could not be decompiled: " + e.Message);
             }
-
-
-
 
             if (text.Contains(".code", StringComparison.OrdinalIgnoreCase))
             {
@@ -82,14 +58,6 @@ public static class GraphScriptLoader
         return new Result(lifted.Success ? lifted.Document : null, lifted.Diagnostics, null);
     }
 
-
-
-
-
-
-
-
-
     private static IReadOnlyList<string> RootsFor(string path, IEnumerable<string> roots)
     {
         var list = roots.Where(Directory.Exists).ToList();
@@ -100,7 +68,6 @@ public static class GraphScriptLoader
 
     private static Result Failed(string message) =>
         new(null, Array.Empty<GraphDiagnostic>(), message);
-
 
     private static string StripResultLine(string decompiled)
     {

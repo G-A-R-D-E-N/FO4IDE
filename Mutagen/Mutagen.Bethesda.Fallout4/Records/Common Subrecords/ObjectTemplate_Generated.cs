@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -60,8 +56,6 @@ namespace Mutagen.Bethesda.Fallout4
         #endregion
         #region Name
 
-
-
         public TranslatedString? Name { get; set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ITranslatedStringGetter? IObjectTemplateGetter<T>.Name => this.Name;
@@ -110,8 +104,6 @@ namespace Mutagen.Bethesda.Fallout4
         #region Keywords
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ExtendedList<IFormLinkGetter<IKeywordGetter>> _Keywords = new ExtendedList<IFormLinkGetter<IKeywordGetter>>();
-
-
 
         public ExtendedList<IFormLinkGetter<IKeywordGetter>> Keywords
         {
@@ -274,15 +266,11 @@ namespace Mutagen.Bethesda.Fallout4
     {
         new Boolean IsEditorOnly { get; set; }
 
-
-
         new TranslatedString? Name { get; set; }
         new Int16 AddonIndex { get; set; }
         new Byte LevelMin { get; set; }
         new Byte LevelMax { get; set; }
         new Boolean Default { get; set; }
-
-
 
         new ExtendedList<IFormLinkGetter<IKeywordGetter>> Keywords { get; }
         new Byte MinLevelForRanks { get; set; }
@@ -313,8 +301,6 @@ namespace Mutagen.Bethesda.Fallout4
         Boolean IsEditorOnly { get; }
         #region Name
 
-
-
         ITranslatedStringGetter? Name { get; }
         #endregion
         Int16 AddonIndex { get; }
@@ -322,8 +308,6 @@ namespace Mutagen.Bethesda.Fallout4
         Byte LevelMax { get; }
         Boolean Default { get; }
         #region Keywords
-
-
 
         IReadOnlyList<IFormLinkGetter<IKeywordGetter>> Keywords { get; }
         #endregion
@@ -912,7 +896,6 @@ namespace Mutagen.Bethesda.Fallout4
 
         #endregion
 
-
         public object GetNew<T_Setter>()
             where T_Setter : struct, Enum
         {
@@ -1310,7 +1293,6 @@ namespace Mutagen.Bethesda.Fallout4
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Fallout4

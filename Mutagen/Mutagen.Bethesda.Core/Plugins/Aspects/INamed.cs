@@ -6,23 +6,14 @@ namespace Mutagen.Bethesda
     namespace Plugins.Aspects
     {
 
-
-
         public interface INamed : INamedGetter, INamedRequired
         {
-
-
 
             new String? Name { get; set; }
         }
 
-
-
-
         public interface INamedGetter : INamedRequiredGetter
         {
-
-
 
             new String? Name { get; }
         }
@@ -31,11 +22,6 @@ namespace Mutagen.Bethesda
     public static class INamedExt
     {
 
-
-
-
-
-
         public static bool NamedFieldsContain<TMajor>(this TMajor named, string str)
             where TMajor : INamedGetter, IMajorRecordGetter
         {
@@ -43,13 +29,6 @@ namespace Mutagen.Bethesda
             if (named.Name?.Contains(str) ?? false) return true;
             return false;
         }
-
-
-
-
-
-
-
 
         public static bool NamedFieldsContain<TMajor>(this TMajor named, string str, StringComparison stringComparison)
             where TMajor : INamedGetter, IMajorRecordGetter

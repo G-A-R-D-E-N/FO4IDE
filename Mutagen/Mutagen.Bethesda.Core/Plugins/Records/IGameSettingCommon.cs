@@ -6,9 +6,6 @@ using Mutagen.Bethesda.Strings.DI;
 
 namespace Mutagen.Bethesda.Plugins.Records;
 
-
-
-
 public enum GameSettingType
 {
     Float,
@@ -18,59 +15,30 @@ public enum GameSettingType
     UInt
 }
 
-
-
-
 public interface IGameSettingCommon : IMajorRecord
 {
-
-
 
     GameSettingType SettingType { get; }
 }
 
-
-
-
 public interface IGameSettingNumeric : IGameSettingCommon
 {
-
-
 
     float? RawData { get; set; }
 }
 
-
-
-
 public static class GameSettingUtility
 {
 
-
-
     public const char IntChar = 'i';
-
-
 
     public const char FloatChar = 'f';
 
-
-
     public const char StringChar = 's';
-
-
 
     public const char BoolChar = 'b';
 
-
-
     public const char UIntChar = 'u';
-
-
-
-
-
-
 
     public static bool TryGetGameSettingType(char c, out GameSettingType type)
     {
@@ -97,11 +65,6 @@ public static class GameSettingUtility
         }
     }
 
-
-
-
-
-
     public static char GetChar(this GameSettingType type)
     {
         switch (type)
@@ -121,13 +84,6 @@ public static class GameSettingUtility
         }
     }
 
-
-
-
-
-
-
-
     public static string CorrectEDID(string input, GameSettingType type)
     {
         char triggerChar = type.GetChar();
@@ -142,13 +98,6 @@ public static class GameSettingUtility
         }
         return input;
     }
-
-
-
-
-
-
-
 
     public static GetResponse<GameSettingType> GetGameSettingType(ReadOnlyMemorySlice<byte> span, GameConstants meta)
     {

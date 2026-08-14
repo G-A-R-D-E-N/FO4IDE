@@ -9,19 +9,6 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Core.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class VanillaSweep
 {
     private readonly ITestOutputHelper _output;
@@ -57,7 +44,6 @@ public class VanillaSweep
             catch (Exception e)
             {
 
-
                 unparseable++;
                 _output.WriteLine($"UNPARSEABLE {Path.GetFileName(path)}: {e.GetType().Name}");
                 continue;
@@ -79,15 +65,6 @@ public class VanillaSweep
         offenders.Should().BeEmpty(
             "a shipped script the Creation Kit compiles must not be refused here");
     }
-
-
-
-
-
-
-
-
-
 
     [Fact]
     public void How_much_of_the_corpus_lifts_into_a_graph()
@@ -141,7 +118,6 @@ public class VanillaSweep
 
     private static void Count(Dictionary<string, int> into, string key) =>
         into[key] = into.TryGetValue(key, out var n) ? n + 1 : 1;
-
 
     private static string Summarise(string message)
     {

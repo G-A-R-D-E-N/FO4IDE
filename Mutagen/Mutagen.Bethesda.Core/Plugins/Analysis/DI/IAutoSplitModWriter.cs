@@ -5,18 +5,8 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Analysis.DI;
 
-
-
-
 public interface IAutoSplitModWriter
 {
-
-
-
-
-
-
-
 
     void Write<TMod, TModGetter>(
         TModGetter mod,

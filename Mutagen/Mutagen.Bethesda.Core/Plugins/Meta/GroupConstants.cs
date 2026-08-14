@@ -9,16 +9,6 @@ public sealed record GroupWorldConstants(int TopGroupType, int[] CellGroupTypes,
 public sealed record GroupTopicConstants(int TopGroupType);
 public sealed record GroupQuestConstants(int TopGroupType);
 
-
-
-
-
-
-
-
-
-
-
 public sealed record GroupNesting(RecordType? ParentRecordType, int GroupType, params GroupNesting[] Underneath)
 {
     public bool HasTopLevelRecordType { get; init; }
@@ -51,12 +41,6 @@ public sealed record GroupConstants : RecordHeaderConstants
     public IReadOnlyCollection<int> HasParentFormId { get; }
     private readonly GroupNesting[] _nesting;
 
-
-
-
-
-
-
     public IReadOnlySet<RecordType> ParentRecordTypes { get; }
 
     public GroupConstants(
@@ -88,11 +72,6 @@ public sealed record GroupConstants : RecordHeaderConstants
         }
         ParentRecordTypes = ComputeParentRecordTypes(nesting);
     }
-
-
-
-
-
 
     private static IReadOnlySet<RecordType> ComputeParentRecordTypes(GroupNesting[] nestings)
     {

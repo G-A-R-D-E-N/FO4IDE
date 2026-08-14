@@ -1,8 +1,4 @@
 
-
-
-
-
 #region Usings
 using Loqui;
 using Loqui.Interfaces;
@@ -865,7 +861,6 @@ namespace Mutagen.Bethesda.Plugins.Records
 
         #endregion
 
-
         public object GetNew()
         {
             return MasterReference.GetNew();
@@ -1098,7 +1093,6 @@ namespace Mutagen.Bethesda.Plugins.Records
 
     }
     #endregion
-
 
 }
 namespace Mutagen.Bethesda.Plugins.Records

@@ -21,7 +21,7 @@ public sealed class CreationClubLiveLoadOrderProvider : ICreationClubLiveLoadOrd
         FileReader = fileReader;
         FolderWatcher = folderWatcher;
     }
-    
+
     public IObservable<IChangeSet<ILoadOrderListingGetter>> Get(
         out IObservable<ErrorResponse> state,
         IScheduler? scheduler = null)

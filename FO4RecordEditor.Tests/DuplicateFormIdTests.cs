@@ -80,8 +80,6 @@ public class DuplicateFormIdTests
     {
         var plugin = $"DuplicateEnvPath_{Guid.NewGuid():N}.esp";
 
-
-
         var envDir = Path.Combine(Path.GetTempPath(), $"envdir_{Guid.NewGuid():N}");
         var looseDir = Path.Combine(Path.GetTempPath(), $"loosedir_{Guid.NewGuid():N}");
         Directory.CreateDirectory(envDir);

@@ -6,27 +6,10 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class Ba2WriterTests
 {
     private readonly ITestOutputHelper _out;
     public Ba2WriterTests(ITestOutputHelper o) => _out = o;
-
-
-
 
     [Theory]
     [InlineData(@"Meshes\Weapons\HandMade\Muzzles\HandMadeMuzzleParentObject.nif", 0x9B990F90u, 0xFF78256Eu, 0x0066696Eu)]
@@ -39,8 +22,6 @@ public class Ba2WriterTests
         h.Directory.Should().Be(directory);
         h.Extension.Should().Be(extension);
     }
-
-
 
     [Fact]
     public void HashNormalizesSlashesEvenWhenTheStoredNameDoesNot()
@@ -87,8 +68,6 @@ public class Ba2WriterTests
         Ba2Codec.Decompress(read.Entries[0].Chunks[0]).Should().Equal(payload);
     }
 
-
-
     [Fact]
     public void IncompressibleDataIsStoredRaw()
     {
@@ -117,11 +96,9 @@ public class Ba2WriterTests
         Ba2Codec.Decompress(read.Entries[0].Chunks[0]).Should().BeEmpty();
     }
 
-
     [Fact]
     public void NonUtf8NamesSurviveARewrite()
     {
-
 
         var prefix = System.Text.Encoding.ASCII.GetBytes(@"Sound\Voice\Fallout4.esm\RobotMrHandy\Mar");
         var suffix = System.Text.Encoding.ASCII.GetBytes("a_F.fuz");
@@ -208,8 +185,6 @@ public class Ba2WriterTests
             try { Directory.Delete(dir, recursive: true); } catch { }
         }
     }
-
-
 
     [Fact]
     public void RealArchivesRewriteByteForByte()

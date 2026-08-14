@@ -5,19 +5,8 @@ using Mutagen.Bethesda.Plugins.Records;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
-
-
-
 public static partial class WriteService
 {
-
-
-
-
-
 
     public static string GetConditionsJson(object? env, string plugin, string recordId)
     {
@@ -49,10 +38,8 @@ public static partial class WriteService
         return JsonSerializer.Serialize(outp);
     }
 
-
     public static string ConditionFunctionNames() =>
         JsonSerializer.Serialize(Enum.GetNames<Condition.Function>().OrderBy(n => n, StringComparer.OrdinalIgnoreCase).ToArray());
-
 
     public static string ConditionRunOnNames() =>
         JsonSerializer.Serialize(Enum.GetNames<Condition.RunOnType>());
@@ -84,8 +71,6 @@ public static partial class WriteService
         if (cond.Flags != default) d["flags"] = cond.Flags.ToString();
         return d;
     }
-
-
 
     private static string OperatorToString(CompareOperator op) => op switch
     {

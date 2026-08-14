@@ -157,8 +157,6 @@ public sealed class EnumBinaryTranslation<TEnum, TReader, TWriter>
         long length)
     {
 
-
-
         WriteValue(writer, item ?? default(TEnum), length);
     }
 

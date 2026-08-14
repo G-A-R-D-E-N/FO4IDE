@@ -7,18 +7,10 @@ using Xunit.Abstractions;
 
 namespace FO4RecordEditor.Tests;
 
-
-
-
-
-
 public class AudioServiceSmokeTests
 {
     private readonly ITestOutputHelper _out;
     public AudioServiceSmokeTests(ITestOutputHelper o) => _out = o;
-
-
-
 
     private static string WriteSampleWav(string path)
     {

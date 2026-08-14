@@ -7,7 +7,6 @@ namespace FO4RecordEditor.Tests;
 public class PluginToolExecutorTests
 {
 
-
     [Fact]
     public void ListPlugins_NoneLoaded_ReturnsFriendlyMessage()
     {
@@ -36,7 +35,6 @@ public class PluginToolExecutorTests
         exec.Execute("list_record_types", "{\"plugin\":\"Missing.esp\"}")
             .Should().Contain("not loaded");
 
-
         exec.Execute("get_record", "{\"plugin\":\"Missing.esp\",\"id\":\"001234:Missing.esp\"}")
             .Should().Contain("not found").And.Contain("Loaded plugins: none");
     }
@@ -44,8 +42,6 @@ public class PluginToolExecutorTests
     [Fact]
     public void ToolDefinitions_ExposesReadAndWriteTools()
     {
-
-
 
         var expected = new[]
         {

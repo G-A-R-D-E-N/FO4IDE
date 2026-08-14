@@ -6,9 +6,6 @@ using Newtonsoft.Json;
 
 namespace FO4RecordEditor.Services;
 
-
-
-
 [ClassInterface(ClassInterfaceType.AutoDual)]
 [ComVisible(true)]
 public class ArchiveInterop
@@ -28,8 +25,6 @@ public class ArchiveInterop
         return HostServices.PickSavePath(title, filter);
     }
 
-
-
     public Task<string> List(string archivePath, string filter, int limit, string filterMode) =>
         Task.Run(() =>
         {
@@ -47,7 +42,6 @@ public class ArchiveInterop
             try { return ArchiveService.ExtractFile(archivePath, innerPath, outPath); }
             catch (Exception ex) { DebugLog.Exception("Archive.ExtractFile", ex); return "Error: " + ex.Message; }
         });
-
 
     public Task<string> ExtractSelected(string archivePath, string innerPathsJson, string outDir) =>
         Task.Run(() =>
@@ -67,8 +61,6 @@ public class ArchiveInterop
             catch (Exception ex) { DebugLog.Exception("Archive.ExtractAll", ex); return "Error: " + ex.Message; }
         });
 
-
-
     public Task<string> Compare(string archivePathA, string archivePathB) =>
         Task.Run(() =>
         {
@@ -80,10 +72,6 @@ public class ArchiveInterop
             }
         });
 
-
-
-
-
     public Task<string> Pack(string sourcePathsJson, string outputBa2, string format, string rootDir, bool compress) =>
         Task.Run(() =>
         {
@@ -94,7 +82,6 @@ public class ArchiveInterop
             }
             catch (Exception ex) { DebugLog.Exception("Archive.Pack", ex); return "Error: " + ex.Message; }
         });
-
 
     public string OpenFolder(string path)
     {

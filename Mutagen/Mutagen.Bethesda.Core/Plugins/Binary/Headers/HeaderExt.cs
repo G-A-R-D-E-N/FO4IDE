@@ -12,16 +12,8 @@ using Mutagen.Bethesda.Strings;
 
 namespace Mutagen.Bethesda;
 
-
-
-
 public static class HeaderExt
 {
-
-
-
-
-
 
     public static void AssertLength(this SubrecordFrame frame, int len)
     {
@@ -33,22 +25,11 @@ public static class HeaderExt
 
     #region Primitive Extraction
 
-
-
-
-
-
     public static byte AsUInt8(this SubrecordFrame frame)
     {
         frame.AssertLength(1);
         return frame.Content[0];
     }
-
-
-
-
-
-
 
     public static sbyte AsInt8(this SubrecordFrame frame)
     {
@@ -56,23 +37,11 @@ public static class HeaderExt
         return (sbyte)frame.Content[0];
     }
 
-
-
-
-
-
-
     public static ushort AsUInt16(this SubrecordFrame frame)
     {
         frame.AssertLength(2);
         return BinaryPrimitives.ReadUInt16LittleEndian(frame.Content);
     }
-
-
-
-
-
-
 
     public static short AsInt16(this SubrecordFrame frame)
     {
@@ -80,23 +49,11 @@ public static class HeaderExt
         return BinaryPrimitives.ReadInt16LittleEndian(frame.Content);
     }
 
-
-
-
-
-
-
     public static uint AsUInt32(this SubrecordFrame frame)
     {
         frame.AssertLength(4);
         return BinaryPrimitives.ReadUInt32LittleEndian(frame.Content);
     }
-
-
-
-
-
-
 
     public static int AsInt32(this SubrecordFrame frame)
     {
@@ -104,23 +61,11 @@ public static class HeaderExt
         return BinaryPrimitives.ReadInt32LittleEndian(frame.Content);
     }
 
-
-
-
-
-
-
     public static ulong AsUInt64(this SubrecordFrame frame)
     {
         frame.AssertLength(8);
         return BinaryPrimitives.ReadUInt64LittleEndian(frame.Content);
     }
-
-
-
-
-
-
 
     public static long AsInt64(this SubrecordFrame frame)
     {
@@ -128,35 +73,17 @@ public static class HeaderExt
         return BinaryPrimitives.ReadInt64LittleEndian(frame.Content);
     }
 
-
-
-
-
-
-
     public static float AsFloat(this SubrecordFrame frame)
     {
         frame.AssertLength(4);
         return frame.Content.Float();
     }
 
-
-
-
-
-
-
     public static double AsDouble(this SubrecordFrame frame)
     {
         frame.AssertLength(8);
         return frame.Content.Double();
     }
-
-
-
-
-
-
 
     public static string AsString(this SubrecordFrame frame, IMutagenEncoding encoding)
     {
@@ -165,98 +92,27 @@ public static class HeaderExt
 
     #region Pin Forwarding
 
-
-
-
-
-
     public static byte AsUInt8(this SubrecordPinFrame pin) => pin.Frame.AsUInt8();
-
-
-
-
-
-
 
     public static sbyte AsInt8(this SubrecordPinFrame pin) => pin.Frame.AsInt8();
 
-
-
-
-
-
-
     public static ushort AsUInt16(this SubrecordPinFrame pin) => pin.Frame.AsUInt16();
-
-
-
-
-
-
 
     public static short AsInt16(this SubrecordPinFrame pin) => pin.Frame.AsInt16();
 
-
-
-
-
-
-
     public static uint AsUInt32(this SubrecordPinFrame pin) => pin.Frame.AsUInt32();
-
-
-
-
-
-
 
     public static int AsInt32(this SubrecordPinFrame pin) => pin.Frame.AsInt32();
 
-
-
-
-
-
-
     public static ulong AsUInt64(this SubrecordPinFrame pin) => pin.Frame.AsUInt64();
-
-
-
-
-
-
 
     public static long AsInt64(this SubrecordPinFrame pin) => pin.Frame.AsInt64();
 
-
-
-
-
-
-
     public static float AsFloat(this SubrecordPinFrame pin) => pin.Frame.AsFloat();
-
-
-
-
-
-
 
     public static double AsDouble(this SubrecordPinFrame pin) => pin.Frame.AsDouble();
 
-
-
-
-
-
-
     public static string AsString(this SubrecordPinFrame pin, IMutagenEncoding encoding) => pin.Frame.AsString(encoding);
-
-
-
-
-
-
 
     public static FormID AsFormID(this SubrecordPinFrame pin)
     {
@@ -266,12 +122,6 @@ public static class HeaderExt
     #endregion
 
     #region Find
-
-
-
-
-
-
 
     public static bool TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, out SubrecordPinHeader header)
     {
@@ -285,12 +135,6 @@ public static class HeaderExt
         return true;
     }
 
-
-
-
-
-
-
     public static SubrecordPinHeader? TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (majorFrame.TryFindSubrecordHeader(type, out var header))
@@ -300,14 +144,6 @@ public static class HeaderExt
 
         return default;
     }
-
-
-
-
-
-
-
-
 
     public static bool TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, int offset, out SubrecordPinHeader header)
     {
@@ -321,13 +157,6 @@ public static class HeaderExt
         return true;
     }
 
-
-
-
-
-
-
-
     public static SubrecordPinHeader? TryFindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
         if (TryFindSubrecordHeader(majorFrame, type, offset, out var header))
@@ -337,13 +166,6 @@ public static class HeaderExt
 
         return default;
     }
-
-
-
-
-
-
-
 
     public static bool TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type, out SubrecordPinFrame pin)
     {
@@ -357,12 +179,6 @@ public static class HeaderExt
         return true;
     }
 
-
-
-
-
-
-
     public static SubrecordPinFrame? TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (TryFindSubrecord(majorFrame, type, out var frame))
@@ -372,12 +188,6 @@ public static class HeaderExt
 
         return default;
     }
-
-
-
-
-
-
 
     public static SubrecordPinFrame? TryFindSubrecord(this MajorRecordFrame majorFrame, params RecordType[] type)
     {
@@ -389,13 +199,6 @@ public static class HeaderExt
         return find.Value.Frame.Pin(find.Value.Location + majorFrame.HeaderLength);
     }
 
-
-
-
-
-
-
-
     public static SubrecordPinFrame? TryFindSubrecordAfter(this MajorRecordFrame majorFrame, SubrecordPinFrame afterSubrecord, params RecordType[] type)
     {
         var spanToSearch = majorFrame.HeaderAndContentData.Slice(afterSubrecord.EndLocation);
@@ -406,14 +209,6 @@ public static class HeaderExt
         }
         return find.Value.Frame.Pin(find.Value.Location + afterSubrecord.EndLocation);
     }
-
-
-
-
-
-
-
-
 
     public static bool TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type, int offset, out SubrecordPinFrame pin)
     {
@@ -427,13 +222,6 @@ public static class HeaderExt
         return true;
     }
 
-
-
-
-
-
-
-
     public static SubrecordPinFrame? TryFindSubrecord(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
         if (TryFindSubrecord(majorFrame, type, offset, out var frame))
@@ -444,13 +232,6 @@ public static class HeaderExt
         return default;
     }
 
-
-
-
-
-
-
-
     public static SubrecordPinHeader FindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (!TryFindSubrecordHeader(majorFrame, type, out var header))
@@ -459,14 +240,6 @@ public static class HeaderExt
         }
         return header;
     }
-
-
-
-
-
-
-
-
 
     public static SubrecordPinHeader FindSubrecordHeader(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
@@ -477,13 +250,6 @@ public static class HeaderExt
         return header;
     }
 
-
-
-
-
-
-
-
     public static SubrecordPinFrame FindSubrecord(this MajorRecordFrame majorFrame, RecordType type)
     {
         if (!TryFindSubrecord(majorFrame, type, out var pin))
@@ -492,14 +258,6 @@ public static class HeaderExt
         }
         return pin;
     }
-
-
-
-
-
-
-
-
 
     public static SubrecordPinFrame FindSubrecord(this MajorRecordFrame majorFrame, RecordType type, int offset)
     {
@@ -512,15 +270,6 @@ public static class HeaderExt
     #endregion
 
     #region Iterate
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<SubrecordPinFrame> FindEnumerateSubrecords(this MajorRecordFrame majorFrame, RecordType type, bool onlyFirstSet = false)
     {
@@ -538,17 +287,6 @@ public static class HeaderExt
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static IEnumerable<SubrecordPinFrame> FindEnumerateSubrecordsAfter(this MajorRecordFrame majorFrame, RecordType type, SubrecordPinFrame afterSubrecord, bool onlyFirstSet = false)
     {
@@ -568,12 +306,6 @@ public static class HeaderExt
         }
     }
 
-
-
-
-
-
-
     public static IEnumerable<SubrecordPinFrame> FindEnumerateSubrecords(this MajorRecordFrame majorFrame, IReadOnlyCollection<RecordType> recordTypes)
     {
         foreach (var subrecord in majorFrame)
@@ -585,21 +317,10 @@ public static class HeaderExt
         }
     }
 
-
-
-
-
-
-
     public static IEnumerable<SubrecordPinFrame> EnumerateSubrecords(this MajorRecordFrame majorFrame)
     {
         return RecordSpanExtensions.EnumerateSubrecords(majorFrame.HeaderAndContentData, majorFrame.Meta, majorFrame.HeaderLength);
     }
-
-
-
-
-
 
     public static IEnumerable<SubrecordPinFrame> EnumerateSubrecords(this ModHeaderFrame modHeader)
     {
@@ -637,11 +358,6 @@ public static class HeaderExt
     {
         return MasterReferenceCollection.FromModHeader(modKey, modHeader);
     }
-
-
-
-
-
 
     public static IEnumerable<VariablePinHeader> EnumerateRecords(GroupFrame group)
     {

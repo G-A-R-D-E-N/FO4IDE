@@ -2,9 +2,6 @@ using Noggog;
 
 namespace Mutagen.Bethesda.Plugins.Binary.Processing;
 
-
-
-
 public sealed class BinaryFileProcessor : Stream
 {
     #region Config
@@ -15,9 +12,6 @@ public sealed class BinaryFileProcessor : Stream
         internal readonly RangeCollection _moveRanges = new RangeCollection();
         internal readonly Dictionary<RangeInt64, long> _moves = new Dictionary<RangeInt64, long>();
         internal readonly Dictionary<long, List<RangeInt64>> _sameLocMoves = new Dictionary<long, List<RangeInt64>>();
-
-
-
 
         public bool HasProcessing => _moves?.Count > 0
                                      || _substitutions?.Count > 0;
@@ -231,7 +225,6 @@ public sealed class BinaryFileProcessor : Stream
                 var moveLocBufStart = moveRange.Min - _position - moveDeletions;
                 int len = (int)Math.Min(bufferEnd - moveLocBufStart, moveRange.Width);
 
-
                 byte[] moveContents = new byte[moveRange.Width];
                 CopyOver(
                     sourceIndex: (int)moveLocBufStart,
@@ -249,7 +242,6 @@ public sealed class BinaryFileProcessor : Stream
                 {
                     PreSortedListExt.Set<long>(moveToKeys, moveLoc);
                 }
-
 
                 if (len == moveRange.Width)
                 {

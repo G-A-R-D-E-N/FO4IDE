@@ -6,30 +6,8 @@ using Newtonsoft.Json.Serialization;
 
 namespace FO4RecordEditor.Services.Graph;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public static class GraphDocumentJson
 {
-
-
-
-
-
-
-
-
 
     private sealed class TolerantStringEnumConverter : StringEnumConverter
     {
@@ -65,14 +43,6 @@ public static class GraphDocumentJson
 
     public static string Serialize(GraphDocument document, bool indented = true) =>
         JsonConvert.SerializeObject(document, indented ? Settings : Compact);
-
-
-
-
-
-
-
-
 
     public static bool TryDeserialize(string? json, out GraphDocument? document, out GraphDiagnostic? error)
     {

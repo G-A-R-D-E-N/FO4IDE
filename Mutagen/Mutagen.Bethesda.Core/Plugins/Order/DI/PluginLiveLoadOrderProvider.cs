@@ -26,7 +26,7 @@ public sealed class PluginLiveLoadOrderProvider : IPluginLiveLoadOrderProvider
         _listingsProvider = listingsProvider;
         _pluginListingsFilePath = pluginListingsFilePath;
     }
-        
+
     public IObservable<IChangeSet<ILoadOrderListingGetter>> Get(out IObservable<ErrorResponse> state, IScheduler? scheduler = null)
     {
         var results = ObservableExt.WatchFile(_pluginListingsFilePath.Path, fileWatcherFactory: _fileSystem.FileSystemWatcher)
