@@ -1,5 +1,7 @@
 # FO4IDE
 
+[Discord](https://discord.gg/cPmT8SmW4D)
+
 FO4IDE is a Fallout 4 plugin IDE that reads and writes real `.esp`/`.esm`/`.esl` files. Two things
 live in one executable:
 
