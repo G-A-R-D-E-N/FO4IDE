@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 import unittest
 
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "tools" / "check-source-policy.py"
 SPEC = importlib.util.spec_from_file_location("check_source_policy", MODULE_PATH)
@@ -11,6 +12,7 @@ if SPEC is None or SPEC.loader is None:
     raise RuntimeError("Unable to load source policy checker")
 POLICY = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(POLICY)
+
 
 class SourcePolicyTests(unittest.TestCase):
     def setUp(self):
@@ -66,13 +68,11 @@ class SourcePolicyTests(unittest.TestCase):
         self.assertEqual(4, len(violations))
         self.assertTrue(all(violation.kind == "comment" for violation in violations))
 
-    def test_scans_vendored_csharp_tree(self):
+    def test_ignores_excluded_vendor_tree(self):
         self.write("Mutagen/Generated.cs", "class Generated { } " + "/" + "/ retained\n")
 
-        violations = self.violations()
+        self.assertEqual([], self.violations())
 
-        self.assertEqual(1, len(violations))
-        self.assertEqual("comment", violations[0].kind)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -5,8 +5,23 @@ using Noggog;
 
 namespace FO4RecordEditor.Services;
 
+
+
+
+
+
+
+
+
+
+
+
 public static partial class WriteService
 {
+
+
+
+
 
     public static string CreateCell(string plugin, string editorId, string? name, object? env)
     {
@@ -35,9 +50,27 @@ public static partial class WriteService
                $"Add references to it with create_placed_object, then save_plugin.";
     }
 
+
+
+
+
+
     public static string CreatePlacedObject(
         string plugin, string cellId, string baseId, string? editorId,
         float x, float y, float z, float rotZ,
+        bool persistent, bool initiallyDisabled,
+        string? mapMarkerName, string? mapMarkerType, bool mapMarkerVisible,
+        object? env) =>
+        CreatePlacedObject(
+            plugin, cellId, baseId, editorId,
+            x, y, z, 0f, 0f, rotZ,
+            persistent, initiallyDisabled,
+            mapMarkerName, mapMarkerType, mapMarkerVisible,
+            env);
+
+    public static string CreatePlacedObject(
+        string plugin, string cellId, string baseId, string? editorId,
+        float x, float y, float z, float rotX, float rotY, float rotZ,
         bool persistent, bool initiallyDisabled,
         string? mapMarkerName, string? mapMarkerType, bool mapMarkerVisible,
         object? env)
@@ -46,6 +79,14 @@ public static partial class WriteService
         if (mod == null) return openMsg;
 
         ICell? cell = FindCellInMod(mod, cellId);
+
+
+
+
+
+
+
+
 
         if (cell == null)
         {
@@ -88,7 +129,7 @@ public static partial class WriteService
         var refr = new PlacedObject(fk.Value, Fallout4Release.Fallout4)
         {
             Position = new P3Float(x, y, z),
-            Rotation = new P3Float(0f, 0f, rotZ),
+            Rotation = new P3Float(rotX, rotY, rotZ),
             MapMarker = marker,
         };
         if (!string.IsNullOrWhiteSpace(editorId)) refr.EditorID = editorId;
@@ -98,6 +139,8 @@ public static partial class WriteService
         if (persistent) flags |= (int)PlacedObject.DefaultMajorFlag.Persistent;
         if (initiallyDisabled) flags |= (int)PlacedObject.DefaultMajorFlag.InitiallyDisabled;
         refr.MajorRecordFlagsRaw = flags;
+
+
 
         if (persistent) cell.Persistent.Add(refr);
         else cell.Temporary.Add(refr);
@@ -128,6 +171,11 @@ public static partial class WriteService
                 }
         return null;
     }
+
+
+
+
+
 
     private static void AttachCellToBlocks(IFallout4Mod mod, Cell cell)
     {

@@ -39,6 +39,9 @@ export default function ConflictResolver() {
   const [editablePlugins, setEditablePlugins] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
 
+
+
+
   const copyReport = async () => {
     if (!matrix) return;
     const lines: string[] = [
@@ -64,6 +67,7 @@ export default function ConflictResolver() {
 
   const [status, setStatus] = useState('');
 
+
   useEffect(() => {
     const init = async () => {
 
@@ -79,6 +83,7 @@ export default function ConflictResolver() {
     };
     init();
   }, []);
+
 
   useEffect(() => {
     const loadMatrix = async () => {
@@ -125,6 +130,7 @@ export default function ConflictResolver() {
     if (me.length === 0) return 'var(--conflict-empty)';
     if (present.length === 1) return 'var(--conflict-yellow)';
 
+
     let winner = -1;
     for (let i = vals.length - 1; i >= 0; i--) {
       if (vals[i].length > 0) { winner = i; break; }
@@ -137,7 +143,7 @@ export default function ConflictResolver() {
 
   return (
     <div className="cr-container animate-fade-in">
-      {}
+      { }
       <div className="cr-sidebar">
         <div className="cr-sidebar-header">
           <h2><ShieldAlert size={18} /> Conflicts</h2>
@@ -168,7 +174,7 @@ export default function ConflictResolver() {
         </div>
       </div>
 
-      {}
+      { }
       <div className="cr-main">
         {matrix ? (
           <>
@@ -245,9 +251,7 @@ export default function ConflictResolver() {
               <div className="cr-actions-row">
                 <span className="cr-status">{status}</span>
                 <div className="cr-actions-right">
-                  {
-
-}
+                  { }
                   <button className="button" onClick={copyReport} title="Copy this conflict as text">
                     <Copy size={14} /> {copied ? 'Copied' : 'Copy Report'}
                   </button>

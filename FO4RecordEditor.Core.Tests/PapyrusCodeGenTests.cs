@@ -7,6 +7,20 @@ using FO4RecordEditor.Services.Papyrus;
 
 namespace FO4RecordEditor.Core.Tests;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class PapyrusCodeGenTests : IDisposable
 {
     private readonly string _root;
@@ -15,6 +29,8 @@ public class PapyrusCodeGenTests : IDisposable
     {
         _root = Path.Combine(Path.GetTempPath(), "fo4re-codegen-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_root);
+
+
 
         Write("ScriptObject", "Scriptname ScriptObject Native Hidden\n");
     }
@@ -52,6 +68,7 @@ public class PapyrusCodeGenTests : IDisposable
         obj.States.Single(s => s.Name == state).Functions
             .Single(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
+
     private static string[] Listing(PexFunction fn) =>
         fn.Instructions.Select(i => i.Mnemonic + " " + string.Join(" ", i.Args.Select(Operand))).ToArray();
 
@@ -64,6 +81,8 @@ public class PapyrusCodeGenTests : IDisposable
         PexValueType.Bool => v.Bool ? "true" : "false",
         _ => "None",
     };
+
+
 
     [Fact]
     public void A_script_that_extends_nothing_still_names_ScriptObject_as_its_parent()
@@ -105,6 +124,10 @@ public class PapyrusCodeGenTests : IDisposable
         backing.Type.Should().Be("Int");
         backing.DefaultValue!.Int.Should().Be(3);
     }
+
+
+
+
 
     [Fact]
     public void An_auto_read_only_property_becomes_a_getter_returning_the_constant()
@@ -193,6 +216,12 @@ public class PapyrusCodeGenTests : IDisposable
         obj.States.Single(s => s.Name == "Idle").Functions.Single().Name.Should().Be("Poke");
     }
 
+
+
+
+
+
+
     [Fact]
     public void A_lone_if_emits_a_trailing_jump_to_the_end()
     {
@@ -209,6 +238,7 @@ public class PapyrusCodeGenTests : IDisposable
             "callmethod Go self ::nonevar false",
             "jmp 1");
     }
+
 
     [Fact]
     public void An_if_else_jumps_over_the_else_and_the_else_falls_through()
@@ -250,6 +280,10 @@ public class PapyrusCodeGenTests : IDisposable
             "jmp -3");
     }
 
+
+
+
+
     [Fact]
     public void And_short_circuits_through_one_shared_slot()
     {
@@ -284,6 +318,9 @@ public class PapyrusCodeGenTests : IDisposable
         Listing(Function(CompileObject("Logic2"), "Go"))[1].Should().Be("jmpt T 2");
     }
 
+
+
+
     [Fact]
     public void Inequality_is_equality_followed_by_not()
     {
@@ -298,6 +335,7 @@ public class PapyrusCodeGenTests : IDisposable
             "not b b");
     }
 
+
     [Fact]
     public void A_mixed_comparison_promotes_the_int_side_to_float()
     {
@@ -311,6 +349,7 @@ public class PapyrusCodeGenTests : IDisposable
             "cast T aiOther",
             "cmp_gt b afValue T");
     }
+
 
     [Fact]
     public void An_int_literal_in_a_float_slot_is_folded()
@@ -423,6 +462,12 @@ public class PapyrusCodeGenTests : IDisposable
         Listing(Function(CompileObject("Check"), "Go")).Should().Equal("is b akThing Other");
     }
 
+
+
+
+
+
+
     [Fact]
     public void Optional_arguments_are_filled_in_from_the_declaration()
     {
@@ -452,6 +497,7 @@ public class PapyrusCodeGenTests : IDisposable
         Listing(Function(CompileObject("Named"), "Go")).Should().Equal(
             "callmethod Target self ::nonevar 1 9");
     }
+
 
     [Fact]
     public void A_bare_call_to_an_own_global_is_a_static_call_on_this_script()
@@ -497,6 +543,10 @@ public class PapyrusCodeGenTests : IDisposable
             "callparent Poke ::nonevar");
     }
 
+
+
+
+
     [Fact]
     public void A_method_calls_receiver_is_evaluated_before_its_arguments()
     {
@@ -519,6 +569,10 @@ public class PapyrusCodeGenTests : IDisposable
             "callstatic Order Second T",
             "callmethod Take T ::nonevar T");
     }
+
+
+
+
 
     [Fact]
     public void An_own_auto_property_is_read_and_written_through_its_backing_variable()
@@ -546,11 +600,16 @@ public class PapyrusCodeGenTests : IDisposable
             EndFunction
             """);
 
+
+
+
+
         Listing(Function(CompileObject("User"), "Go")).Should().Equal(
             "assign T 5",
             "propset Count akHolder T",
             "propget Count akHolder n");
     }
+
 
     [Fact]
     public void A_remote_event_handler_is_named_after_its_type_and_event()
@@ -587,6 +646,12 @@ public class PapyrusCodeGenTests : IDisposable
         fn.Locals.Should().Contain(l => l.Name == "::nonevar" && l.Type == "None");
     }
 
+
+
+
+
+
+
     [Fact]
     public void A_call_into_a_script_that_is_not_on_the_roots_is_refused_rather_than_guessed()
     {
@@ -602,6 +667,12 @@ public class PapyrusCodeGenTests : IDisposable
         result.SourcesComplete.Should().BeFalse();
         result.Pex.Should().BeNull();
     }
+
+
+
+
+
+
 
     [Theory]
     [InlineData("xs.Add()")]
@@ -647,6 +718,10 @@ public class PapyrusCodeGenTests : IDisposable
         Compile("GoodArray").Success.Should().BeTrue();
     }
 
+
+
+
+
     [Fact]
     public void An_array_builtin_with_no_opcode_is_refused_by_name()
     {
@@ -677,6 +752,12 @@ public class PapyrusCodeGenTests : IDisposable
         result.Errors.Should().Contain(
             d => d.Code == PapyrusDiagnosticCodes.NonConstantInitializer);
     }
+
+
+
+
+
+
 
     [Fact]
     public void A_generated_file_writes_and_reads_back_identically()
@@ -719,6 +800,7 @@ public class PapyrusCodeGenTests : IDisposable
         reread.DebugFunctions.Should().Contain(d => d.FunctionName == "OnInit");
     }
 
+
     [Fact]
     public void Debug_line_numbers_are_recorded_one_per_instruction()
     {
@@ -734,6 +816,11 @@ public class PapyrusCodeGenTests : IDisposable
 
         debug.LineNumbers.Should().Equal(3, 4);
     }
+
+
+
+
+
 
     [Fact]
     public void A_debug_only_call_is_dropped_only_when_asked_for()
@@ -759,6 +846,13 @@ public class PapyrusCodeGenTests : IDisposable
         Listing(Function(stripped.Pex!.Objects.Single(), "Go")).Should().BeEmpty();
     }
 }
+
+
+
+
+
+
+
 
 public class PapyrusCompileServiceTests : IDisposable
 {
@@ -807,6 +901,7 @@ public class PapyrusCompileServiceTests : IDisposable
         pex.Objects.Single().States.Single().Functions.Single().Name.Should().Be("Bump");
     }
 
+
     [Fact]
     public void A_namespaced_script_is_written_into_namespace_folders()
     {
@@ -815,6 +910,10 @@ public class PapyrusCompileServiceTests : IDisposable
         PapyrusAnalysisService.Compile(file, _out).Should().StartWith("RESULT: 1 succeeded");
         File.Exists(Path.Combine(_out, "MyNS", "Inner.pex")).Should().BeTrue();
     }
+
+
+
+
 
     [Fact]
     public void A_missing_import_root_is_reported_as_a_missing_import_root()
@@ -845,6 +944,12 @@ public class PapyrusCompileServiceTests : IDisposable
         File.Exists(Path.Combine(_out, "Two.pex")).Should().BeTrue();
     }
 
+
+
+
+
+
+
     [Fact]
     public void A_folder_compile_sees_scripts_under_a_dotted_or_hidden_directory()
     {
@@ -859,8 +964,13 @@ public class PapyrusCompileServiceTests : IDisposable
         PapyrusAnalysisService.Compile(_root, _out).Should().StartWith("RESULT: 2 succeeded, 0 failed");
         File.Exists(Path.Combine(_out, "Tucked.pex")).Should().BeTrue();
 
+
         PapyrusAnalysisService.Check(_root, semantic: false).Should().Contain("of 2 file(s)");
     }
+
+
+
+
 
     [Fact]
     public void A_script_under_a_Source_User_tree_resolves_its_siblings_without_extra_roots()
@@ -877,6 +987,7 @@ public class PapyrusCompileServiceTests : IDisposable
         PapyrusAnalysisService.Compile(caller, _out).Should().StartWith("RESULT: 1 succeeded");
         File.Exists(Path.Combine(_out, "Alpha", "Caller.pex")).Should().BeTrue();
     }
+
 
     [Fact]
     public void Natural_roots_are_normalised_so_a_trailing_separator_does_not_duplicate_one()
@@ -895,6 +1006,10 @@ public class PapyrusCompileServiceTests : IDisposable
 
         PapyrusAnalysisService.Compile(pas, _out).Should().Contain("Compile the .psc instead");
     }
+
+
+
+
 
     [Fact]
     public void Release_strips_debug_only_calls()
@@ -920,6 +1035,7 @@ public class PapyrusCompileServiceTests : IDisposable
                 .Functions.Single(f => f.Name == "Go").Instructions.Count;
     }
 }
+
 
 public class PapyrusUserFlagTableTests
 {
@@ -953,15 +1069,14 @@ public class PapyrusUserFlagTableTests
     [Fact]
     public void Comments_and_the_allowed_kinds_list_are_ignored()
     {
-        var table = PapyrusUserFlagTable.Parse("""
-            /* header
-               comment */
-            // Flag NotReal 9
-            Flag Mandatory 5
-            {
-                Property
-            }
-            """);
+        var table = PapyrusUserFlagTable.Parse(
+            "/" + "* header\n"
+            + "   comment *" + "/\n"
+            + "/" + "/ Flag NotReal 9\n"
+            + "Flag Mandatory 5\n"
+            + "{\n"
+            + "    Property\n"
+            + "}\n");
 
         table.MaskFor("Mandatory").Should().Be(32u);
         table.Knows("NotReal").Should().BeFalse();

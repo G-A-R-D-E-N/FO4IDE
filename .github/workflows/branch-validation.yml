@@ -18,8 +18,7 @@ concurrency:
 jobs:
   portable-core-and-web:
     name: Portable core, server, and web
-
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 40
     steps:
       - name: Check out repository
@@ -33,7 +32,6 @@ jobs:
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-
           dotnet-version: 10.0.x
 
       - name: Set up Node.js
@@ -74,9 +72,11 @@ jobs:
         run: dotnet build FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj --configuration Release --no-restore -p:EnableWindowsTargeting=true
 
   windows-compile:
-    name: Windows compile
-
-    runs-on: windows-latest
+    name: Windows compile (self-hosted)
+    runs-on: [self-hosted, Linux, X64, wine, msvc]
+    concurrency:
+      group: plugin-edit-tool-wine-build
+      cancel-in-progress: false
     timeout-minutes: 40
     steps:
       - name: Check out repository
@@ -112,7 +112,6 @@ jobs:
 
   windows-tests:
     name: Windows integration tests
-
     if: vars.RUN_WINDOWS_TESTS == 'true'
     runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 50
@@ -125,7 +124,6 @@ jobs:
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-
           dotnet-version: |
             10.0.x
             9.0.x
@@ -153,6 +151,5 @@ jobs:
 
       - name: Run Windows integration test suite
         env:
-
           FO4RE_TEST_DATA: ${{ vars.FO4RE_TEST_DATA }}
         run: dotnet test FO4RecordEditor.Tests/FO4RecordEditor.Tests.csproj --configuration Release --no-build --logger "console;verbosity=normal"

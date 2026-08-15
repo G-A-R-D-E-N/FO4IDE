@@ -92,7 +92,8 @@ record at all on Linux, so a clean upstream Mutagen is **not** a drop-in replace
   guessed at a sentinel-based compressed-flag rule for the newer format (`_realSize != 0xBAADF00D`)
   that never actually holds on real archives; fixed to use the same `size != 0` rule version 1
   already uses, which is empirically correct for Next-Gen too (confirmed identical in upstream
-  Mutagen's own `dev` branch before this fix -- not a stale-fork issue).
+  Mutagen's own `dev` branch before this fix -- not a stale-fork issue). See
+  `docs/Code Notes/FO4RecordEditor.md` for the verification.
 - `Mutagen.Bethesda.Core/Archives/Ba2/Ba2Reader.cs` (`Ba2Reader`, `BA2FileEntry`, `BA2DX10Entry`,
   `BA2TextureChunk`) -- fixes the BA2 **version-7** entry layout, for BOTH the GNRL (general) and DX10
   (texture) archive classes. v7 is the classic v1 layout in both, but Mutagen read phantom `uint32`s
@@ -102,6 +103,7 @@ record at all on Linux, so a clean upstream Mutagen is **not** a drop-in replace
   overflow on every vanilla texture (all of which live in the v7 `Fallout4 - Textures*.ba2`) -- i.e.
   the Cell Viewer showed no textures at all. Hex-verified against both `DLCRobot - Voices_en.ba2` and
   `Fallout4 - Textures1.ba2`. Scoped strictly to v7 (v8 already handled above, v8 DX10 left untouched).
+  See `docs/Code Notes/FO4RecordEditor.md` for the full byte-level verification.
 
 - `Mutagen.Bethesda.Core/Archives/DI/IArchiveListingDetailsProvider.cs` (`Comparer`) -- an archive
   whose owning plugin is not in the load order threw `KeyNotFoundException` from an unguarded

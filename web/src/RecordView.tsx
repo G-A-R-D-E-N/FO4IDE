@@ -59,6 +59,7 @@ const LEVEL_BADGES: Record<string, { label: string; cls: string }> = {
   onlyone:    { label: 'Single Record', cls: 'rv-lvl-onlyone' },
 };
 
+
 const LEGEND_ROWS: { cls: string; label: string }[] = [
   { cls: 'rv-s-none', label: 'No conflict' },
   { cls: 'rv-s-benign', label: 'Benign conflict' },
@@ -66,6 +67,7 @@ const LEGEND_ROWS: { cls: string; label: string }[] = [
   { cls: 'rv-s-conflict', label: 'Conflict' },
   { cls: 'rv-s-critical', label: 'Critical conflict' },
 ];
+
 
 const LEGEND_CELLS: { cls: string; label: string }[] = [
   { cls: 'rv-c-notdefined', label: 'Not defined' },
@@ -122,6 +124,8 @@ export default function RecordView(
   const [editVal, setEditVal] = useState('');
   const [picker, setPicker] = useState<{ row: ConflictFieldRow; col: number } | null>(null);
 
+
+
   const { confirm: askConfirm, prompt: askPrompt, pickPlugin: askForTarget } = useDialogs();
   const [conditions, setConditions] = useState<{ plugin: string; path: string; label: string } | null>(null);
   const [status, setStatus] = useState('');
@@ -130,6 +134,17 @@ export default function RecordView(
 
   const [collapsedGroups, setCollapsedGroups] = useState<Record<number, boolean>>({});
 
+
+
+
+
+
+
+
+
+
+
+
   type ColumnWidthMode = 'standard' | 'fitAll' | 'fitText' | 'fitSmart';
   const [columnWidthMode, setColumnWidthMode] = useState<ColumnWidthMode>(
     () => (localStorage.getItem('rvColumnWidthMode') as ColumnWidthMode) || 'fitAll');
@@ -137,6 +152,7 @@ export default function RecordView(
     setColumnWidthMode(m);
     localStorage.setItem('rvColumnWidthMode', m);
   };
+
 
   const [flashedField, setFlashedField] = useState('');
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -147,10 +163,17 @@ export default function RecordView(
   const [deps, setDeps] = useState<Dependency[] | null>(null);
   const [history, setHistory] = useState<HistoryEntry[] | null>(null);
 
+
   const [scanErrors, setScanErrors] = useState<Record<string, string>>({});
+
 
   const [anchors, setAnchors] = useState<[string, string] | null>(null);
   const [compareOnly, setCompareOnly] = useState(false);
+
+
+
+
+
 
   const visibleCols = useMemo(() => {
     const all = matrix.Plugins.map((_, i) => i);
@@ -183,6 +206,10 @@ export default function RecordView(
     setScanErrors({});
     (async () => {
 
+
+
+
+
       const fail = (k: string, e: unknown) =>
         setScanErrors(prev => ({ ...prev, [k]: e instanceof Error ? e.message : String(e) }));
       try { setProblems(JSON.parse(await b.GetProblems(matrix.FormKey))); }
@@ -195,6 +222,7 @@ export default function RecordView(
       catch (e) { setHistory([]); fail('history', e); }
     })();
   }, [matrix.FormKey]);
+
 
   useEffect(() => {
     if (!highlightField) return;
@@ -216,6 +244,7 @@ export default function RecordView(
 
   const f = filter.trim().toLowerCase();
   const vf = valueFilter.trim().toLowerCase();
+
 
   const filtering = f.length > 0 || vf.length > 0;
 
@@ -241,6 +270,9 @@ export default function RecordView(
 
   }, [matched, ov, filtering]);
 
+
+
+
   const isGenuineConflict = (r: ConflictFieldRow) => {
     if (!r.Differs || r.HasChildren) return false;
     const nonEmpty = r.Values.filter(v => v !== '' && v != null);
@@ -253,6 +285,7 @@ export default function RecordView(
 
     [matrix.Rows]
   );
+
 
   const conflictGroups = useMemo(() => {
     type CGroup = { label: string; rows: ConflictFieldRow[]; severity: string };
@@ -273,6 +306,7 @@ export default function RecordView(
     if (cur && cur.rows.length > 0) groups.push(cur);
     return groups;
   }, [matrix.Rows]);
+
 
   const startEdit = (r: ConflictFieldRow, col: number) => {
     setMenu(null);
@@ -307,7 +341,10 @@ export default function RecordView(
       } catch { setElementActions(null); }
     })();
 
+
   }, [menu]);
+
+
 
   const copyAsOverrideInto = async (col: number) => {
     setMenu(null);
@@ -327,6 +364,7 @@ export default function RecordView(
     try {
       let msg = await b.CopyAsOverride(matrix.Plugins[col], matrix.FormKey, target, false);
 
+
       if (msg.startsWith('EXISTS:')) {
         const proceed = await askConfirm({
           title: 'Record already exists in target plugin',
@@ -338,6 +376,7 @@ export default function RecordView(
         msg = await b.CopyAsOverride(matrix.Plugins[col], matrix.FormKey, target, true);
       }
       setStatus(msg);
+
 
       await onReload();
       onPluginsChanged?.();
@@ -405,6 +444,7 @@ export default function RecordView(
     try { setStatus(await b.CleanPlugin(matrix.Plugins[col])); await onReload(); }
     catch (e: any) { setStatus('Clean failed: ' + (e?.message || e)); }
   };
+
 
   const copyAsNewRecord = async (col: number) => {
     setMenu(null);
@@ -498,6 +538,8 @@ export default function RecordView(
     } catch (e: any) { setStatus('Change referencing records failed: ' + (e?.message || e)); }
   };
 
+
+
   const removeItm = async (col: number) => {
     setMenu(null);
     const b = back();
@@ -530,6 +572,8 @@ export default function RecordView(
     try { setStatus(await b.AddMasters(plug, list)); await onReload(); }
     catch (e: any) { setStatus('Add masters failed: ' + (e?.message || e)); }
   };
+
+
 
   const renumberPlugin = async (col: number) => {
     setMenu(null);
@@ -576,7 +620,14 @@ export default function RecordView(
     setStatus(`Copied ${what}: ${text}`);
   };
 
+
+
+
+
   const conditionsPathOf = (field: string) => (/(^|\.)Conditions(\[|$)/.test(field) ? field : null);
+
+
+
 
   const elementAction = async (
     kind: 'add' | 'remove' | 'up' | 'down' | 'clear',
@@ -603,6 +654,8 @@ export default function RecordView(
     } catch (e: any) { setStatus('Failed: ' + (e?.message || e)); }
   };
 
+
+
   const winnerCol = Math.max(0, matrix.Plugins.lastIndexOf(matrix.Winner));
   const headerActions = useMemo(() => buildActions({
     copyAsOverride: () => {
@@ -620,6 +673,8 @@ export default function RecordView(
     compactToEsl: () => void compactEsl(winnerCol),
     cleanUdr: () => void cleanPlugin(winnerCol),
     deleteRecord: () => void deleteRecord(winnerCol),
+
+
 
   }), [matrix.FormKey, matrix.Winner, editablePlugins]);
 
@@ -662,6 +717,7 @@ export default function RecordView(
         }} />
     );
   };
+
 
   const renderGrid = (gridRows: ConflictFieldRow[]) => (
     <table
@@ -726,7 +782,7 @@ export default function RecordView(
   return (
     <div className="rv-container">
 
-      {}
+      { }
       <div className="rv-tab-bar">
         <TabBtn id="grid" current={recordTab} set={setRecordTab}>Record View</TabBtn>
         <TabBtn id="fields" current={recordTab} set={setRecordTab} count={matrix.Rows.length}>Field View</TabBtn>
@@ -742,7 +798,7 @@ export default function RecordView(
         </TabBtn>
       </div>
 
-      {}
+      { }
       <WorkspaceHeader
         matrix={matrix}
         anchors={anchors}
@@ -754,7 +810,7 @@ export default function RecordView(
         onOpenRecord={(fk, pl) => onOpenRecord?.(fk, pl)}
       />
 
-      {}
+      { }
       {recordTab === 'grid' && (
         <>
           <div className="rv-toolbar">
@@ -829,7 +885,7 @@ export default function RecordView(
         </>
       )}
 
-      {}
+      { }
       {recordTab === 'conflicts' && (
         <ConflictsView
           matrix={matrix}
@@ -839,7 +895,7 @@ export default function RecordView(
           anchors={anchors}
           matrixView={
             <div className="rv-conflicts-tab">
-              {}
+              { }
               <div className="rv-conflict-groups">
                 <table className="rv-grid rv-cg-table" style={{ minWidth: 280 + visibleCols.length * 200 }}>
                   <thead>
@@ -908,7 +964,7 @@ export default function RecordView(
         />
       )}
 
-      {}
+      { }
       {recordTab === 'references' && (
         <div className="rv-references-tab">
           {refBy === null ? (
@@ -942,7 +998,7 @@ export default function RecordView(
         </div>
       )}
 
-      {}
+      { }
       {recordTab === 'fields' && (
         <div className="rv-list-tab">
           <div className="rv-tab-note">
@@ -967,7 +1023,7 @@ export default function RecordView(
         </div>
       )}
 
-      {}
+      { }
       {recordTab === 'history' && (
         <div className="rv-list-tab">
           {history === null ? (
@@ -976,8 +1032,7 @@ export default function RecordView(
             <div className="rv-tab-empty">No plugin carries this record.</div>
           ) : (
             <>
-              {
-}
+              { }
               <div className="rv-tab-note">
                 Override chain in load order. Plugin files carry no edit history, so this is who
                 touched the record, not when it was changed.
@@ -1003,7 +1058,7 @@ export default function RecordView(
         </div>
       )}
 
-      {}
+      { }
       {recordTab === 'dependencies' && (
         <div className="rv-list-tab">
           {deps === null ? (
@@ -1048,7 +1103,7 @@ export default function RecordView(
         </div>
       )}
 
-      {}
+      { }
       <div className={`rv-drawer ${drawerOpen ? 'open' : 'closed'}`}>
         <div className="rv-drawer-tabs">
           <button className="on">
@@ -1075,14 +1130,14 @@ export default function RecordView(
         )}
       </div>
 
-      {}
+      { }
       {menu && (
         <div className="rv-context" style={{ left: menu.x, top: menu.y }} onClick={e => e.stopPropagation()}>
           {!menu.row.HasChildren && (
             <button onClick={() => startEdit(menu.row, menu.col)}><Pencil size={13} /> Edit value <span className="rv-key">F2</span></button>
           )}
 
-          {}
+          { }
           {conditionsPathOf(menu.row.Field) && (
             <button onClick={() => {
               const plug = matrix.Plugins[menu.col];
@@ -1091,8 +1146,7 @@ export default function RecordView(
               setConditions({ plugin: plug, path: p, label: matrix.EditorID || matrix.FormKey });
             }}><ListFilter size={13} /> Edit conditions…</button>
           )}
-          {
-}
+          { }
           {elementActions?.canAdd && elementActions.templates.length === 1 && (
             <button onClick={() => elementAction('add', menu.row, menu.col, elementActions.templates[0])}>
               <Plus size={13} /> Add "{elementActions.templates[0]}"
@@ -1128,7 +1182,7 @@ export default function RecordView(
           )}
 
           <div className="rv-context-sep" />
-          {}
+          { }
           <button onClick={() => copyAsOverrideInto(menu.col)}><Copy size={13} /> Copy as override into...</button>
           <button onClick={() => copyAsNewRecord(menu.col)}><FilePlus2 size={13} /> Copy as new record into...</button>
           <button onClick={() => deepCopyAsOverride(menu.col)}><FilePlus2 size={13} /> Deep copy as override into...</button>
@@ -1165,7 +1219,7 @@ export default function RecordView(
         </div>
       )}
 
-      {}
+      { }
       {picker && (
         <RecordPicker
           title={picker.row.DisplayLabel}
@@ -1176,7 +1230,7 @@ export default function RecordView(
         />
       )}
 
-      {}
+      { }
       {conditions && (
         <ConditionsEditor
           plugin={conditions.plugin}

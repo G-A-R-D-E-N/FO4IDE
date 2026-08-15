@@ -56,6 +56,7 @@ const ExplorerTree = ({ path, node, backend, onOpenRecord }: { path: string, nod
       if (node.HasChildren && children.length === 0) {
         setLoading(true);
 
+
         try {
           const json = await backend.GetChildren(path);
           setChildren(JSON.parse(json));
@@ -108,6 +109,7 @@ const ExplorerTree = ({ path, node, backend, onOpenRecord }: { path: string, nod
 export default function MainShell() {
   const [activeTab, setActiveTab] = useState('explorer');
 
+
   const [treeMode, setTreeMode] = useState<'files' | 'conflicts'>(
     () => (localStorage.getItem('treeMode') as 'files' | 'conflicts') || 'files');
   useEffect(() => { localStorage.setItem('treeMode', treeMode); }, [treeMode]);
@@ -123,6 +125,7 @@ export default function MainShell() {
   const [showHelp, setShowHelp] = useState(false);
 
   const { pickPlugin: askForTarget, confirm: askConfirm } = useDialogs();
+
 
   const [shellTab, setShellTab] = useState<ShellTab>('home');
   const [railVisible, setRailVisible] = useState(true);
@@ -150,6 +153,8 @@ export default function MainShell() {
     document.body.style.userSelect = 'none';
   }, [chatWidth]);
 
+
+
   const [sidebarWidth, setSidebarWidth] = useState(() => Number(localStorage.getItem('sidebarWidth') || 280));
 
   const onSidebarResizeStart = useCallback((e: React.MouseEvent) => {
@@ -173,11 +178,13 @@ export default function MainShell() {
     document.body.style.userSelect = 'none';
   }, [sidebarWidth]);
 
+
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }, [isDark]);
+
 
   const [recordTab, setRecordTab] = useState<RecordTab>('grid');
   const [plugins, setPlugins] = useState<RecordNode[]>([]);
@@ -186,7 +193,11 @@ export default function MainShell() {
   const [status, setStatus] = useState<string>("");
   const [progress, setProgress] = useState<number | null>(null);
 
+
+
   const [envLoading, setEnvLoading] = useState(false);
+
+
 
   const [favourites, setFavourites] = useState(readFavourites);
   const [favouritesOpen, setFavouritesOpen] = useState(
@@ -198,12 +209,20 @@ export default function MainShell() {
     return () => window.removeEventListener(FAVOURITES_CHANGED, sync);
   }, []);
 
+
+
+
   interface OpenRec { title: string; plugin: string; matrix: ConflictMatrix }
   const [openRecords, setOpenRecords] = useState<OpenRec[]>([]);
   const [activeKey, setActiveKey] = useState<string>('');
   const [recordLoading, setRecordLoading] = useState(false);
 
+
+
+
+
   const openRecord = openRecords.find(r => r.matrix?.FormKey === activeKey) ?? null;
+
 
   const putRecord = useCallback((rec: OpenRec) => {
     if (!rec.matrix?.FormKey) return;
@@ -228,6 +247,7 @@ export default function MainShell() {
     });
   }, []);
 
+
   const [mcpFeed, setMcpFeed] = useState<McpLiveMsg[]>([]);
   const [mcpActive, setMcpActive] = useState(false);
   const mcpActiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -235,14 +255,20 @@ export default function MainShell() {
   const [aiHighlightField, setAiHighlightField] = useState('');
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+
+
   const openRecordRef = useRef(openRecord);
   openRecordRef.current = openRecord;
+
 
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState<SearchHit[] | null>(null);
 
+
+
   const [recordTypes, setRecordTypes] = useState<RecordTypeEntry[]>([]);
   const [loadOrderSummary, setLoadOrderSummary] = useState<LoadOrderSummary | null>(null);
+
 
   const refreshNavigator = useCallback(async () => {
     const b = window.chrome?.webview?.hostObjects?.backend;
@@ -273,6 +299,8 @@ export default function MainShell() {
       setErrorStr(msg);
     };
     window.addEventListener('unhandledrejection', handleRejection);
+
+
 
     const onMessage = (e: any) => {
       const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
@@ -315,6 +343,9 @@ export default function MainShell() {
 
           const b = window.chrome.webview.hostObjects.appInterop;
 
+
+
+
           setBackend(() => b);
           await refreshPlugins();
         }
@@ -331,6 +362,7 @@ export default function MainShell() {
       window.chrome?.webview?.removeEventListener('message', onMessage);
     };
   }, []);
+
 
   const refreshPlugins = async () => {
     const b = window.chrome?.webview?.hostObjects?.appInterop;
@@ -373,6 +405,8 @@ export default function MainShell() {
       setEnvLoading(false);
     }
   };
+
+
 
   const handleRefresh = async () => {
     const b = window.chrome?.webview?.hostObjects?.appInterop;
@@ -422,6 +456,7 @@ export default function MainShell() {
     }
   };
 
+
   const openRecordInView = async (path: string, node: RecordNode) => {
     const app = window.chrome?.webview?.hostObjects?.appInterop;
     const back = window.chrome?.webview?.hostObjects?.backend;
@@ -432,9 +467,16 @@ export default function MainShell() {
       if (!formKey) { setErrorStr(`Couldn't resolve a FormKey for ${node.Key}.`); return; }
       const plugin = path.split(/[\\/]/)[0];
 
+
+
+
+
       const raw = await back.GetConflictMatrix(formKey);
       const matrix: ConflictMatrix | null = raw ? JSON.parse(raw) : null;
       if (!matrix) {
+
+
+
 
         setErrorStr(`Couldn't build a view of ${node.Key} (${formKey}). The environment may still be `
           + `loading or was just reloaded -- try again, or reload it with Open MO2.`);
@@ -448,6 +490,7 @@ export default function MainShell() {
     }
   };
 
+
   useEffect(() => {
     const q = search.trim();
     if (q.length < 2) { setSearchResults(null); return; }
@@ -460,6 +503,7 @@ export default function MainShell() {
     return () => clearTimeout(t);
   }, [search]);
 
+
   const [conflicts, setConflicts] = useState<ConflictEntry[] | null>(null);
   const [conflictSel, setConflictSel] = useState<Record<string, boolean>>({});
   const [conflictBusy, setConflictBusy] = useState(false);
@@ -471,6 +515,7 @@ export default function MainShell() {
     try { setConflicts(JSON.parse(await b.GetConflicts())); }
     catch (e: any) { setErrorStr(e?.message || String(e)); setConflicts([]); }
   };
+
 
   useEffect(() => {
     if (activeTab === 'explorer' && treeMode === 'conflicts' && conflicts === null) loadConflicts();
@@ -523,6 +568,7 @@ export default function MainShell() {
     } finally { setConflictBusy(false); }
   };
 
+
   const openHit = async (hit: SearchHit) => {
     const back = window.chrome?.webview?.hostObjects?.backend;
     if (!back) return;
@@ -538,6 +584,7 @@ export default function MainShell() {
       setRecordLoading(false);
     }
   };
+
 
   const openByFormKey = async (formKey: string, pluginName: string) => {
     const b = window.chrome?.webview?.hostObjects?.backend;
@@ -555,6 +602,7 @@ export default function MainShell() {
     }
   };
 
+
   const reloadMatrix = async () => {
     const b = window.chrome?.webview?.hostObjects?.backend;
     if (!b || !openRecord) return;
@@ -569,14 +617,18 @@ export default function MainShell() {
     }
   };
 
+
+
   const reloadMatrixRef = useRef(reloadMatrix);
   reloadMatrixRef.current = reloadMatrix;
   const openByFormKeyRef = useRef(openByFormKey);
   openByFormKeyRef.current = openByFormKey;
 
+
   useEffect(() => {
     if (openRecord) { setShellTab('record'); setRecordTab('grid'); }
   }, [openRecord?.matrix?.FormKey]);
+
 
   const commandSearch = useCallback(async (q: string): Promise<SearchHit[]> => {
     const back = window.chrome?.webview?.hostObjects?.backend;
@@ -584,6 +636,7 @@ export default function MainShell() {
     try { return JSON.parse(await back.SearchRecords(q, '')); }
     catch { return []; }
   }, []);
+
 
   const closeRecord = () => {
     if (!openRecord) { setShellTab('home'); return; }
@@ -596,9 +649,7 @@ export default function MainShell() {
     <div
       className={`shell-container animate-fade-in ${railVisible ? 'rail-on' : 'rail-off'} ${chatVisible ? 'chat-on' : 'chat-off'}`}
     >
-      {
-
-}
+      { }
       {envLoading && (
         <div className="env-loading-overlay" role="alertdialog" aria-busy="true" aria-live="polite">
           <div className="env-loading-box">
@@ -633,7 +684,7 @@ export default function MainShell() {
         onOpenHit={openHit}
       />
 
-      {}
+      { }
       <div className="shell-left">
       <div className="activity-bar">
         <div className="activity-top">
@@ -667,7 +718,7 @@ export default function MainShell() {
         </div>
       </div>
 
-      {}
+      { }
       <div className="sidebar" style={{ width: sidebarWidth }}>
         <div className="sidebar-header">
           <h2>EXPLORER</h2>
@@ -721,9 +772,7 @@ export default function MainShell() {
           </div>
         )}
 
-        {
-
-}
+        { }
         {activeTab === 'explorer' && treeMode === 'files' && favourites.length > 0 && (
           <div className="sidebar-favourites">
             <button
@@ -766,14 +815,14 @@ export default function MainShell() {
             </div>
           ) : (
             <>
-              {}
+              { }
               {plugins
                 .filter(p => !search.trim() || p.Key.toLowerCase().includes(search.trim().toLowerCase()))
                 .map((p, i) => (
                   <ExplorerTree key={`${p.Key}:${i}`} path={p.Key} node={p} backend={backend} onOpenRecord={openRecordInView} />
                 ))}
 
-              {}
+              { }
               {search.trim().length >= 2 && (
                 <div className="sidebar-results">
                   <div className="sidebar-results-head">
@@ -832,9 +881,9 @@ export default function MainShell() {
         )}
       </div>
       <div className="sidebar-resizer" onMouseDown={onSidebarResizeStart} />
-      </div>{}
+      </div>{ }
 
-      {}
+      { }
       <div className="main-area">
         {shellTab === 'home' ? (
           <div className="home-view">
@@ -924,7 +973,7 @@ export default function MainShell() {
         )}
       </div>
 
-      {}
+      { }
       {railVisible && (
         <DetailRail
           matrix={openRecord?.matrix ?? null}
@@ -938,13 +987,13 @@ export default function MainShell() {
         />
       )}
 
-      {}
+      { }
       <div className="shell-chat" style={{ display: chatVisible ? undefined : 'none', width: chatVisible ? chatWidth : undefined }}>
         <div className="chat-resizer" onMouseDown={onChatResizeStart} />
         <ChatPanel />
       </div>
 
-      {}
+      { }
       <StatusBar
         status={status}
         progress={progress}
@@ -978,9 +1027,8 @@ export default function MainShell() {
         </div>
       )}
 
-      {
+      { }
 
-}
 
       {showHelp && (
 

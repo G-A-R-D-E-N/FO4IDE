@@ -127,6 +127,6 @@ jobs:
                   FO4RecordEditor.Tests/PluginToolExecutorTests.cs \
                   FO4RecordEditor.Tests/AiGuidanceTests.cs \
                   FO4RecordEditor/Services/Ai/AiGuidance.cs \
-                  README.md
+                  README.md docs/MCP_SETUP.md docs/internal/KNOWLEDGE.md
           git commit -m "fix(formids): encode ESL references in light slots"
           git push origin HEAD:fix/esl-formid-encoding

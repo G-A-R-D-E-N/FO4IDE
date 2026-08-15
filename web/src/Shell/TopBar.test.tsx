@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import TopBar from './TopBar';
 
+
 describe('TopBar', () => {
   it('identifies the application as FO4IDE', () => {
     render(
@@ -24,9 +25,7 @@ describe('TopBar', () => {
       />,
     );
 
-    const retiredBrand = 'Nexus' + 'Edit';
-
     expect(screen.getByText('FO4IDE')).toBeTruthy();
-    expect(screen.queryByText(retiredBrand)).toBeNull();
+    expect(screen.queryByText('NexusEdit')).toBeNull();
   });
 });

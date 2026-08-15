@@ -2,6 +2,11 @@ using System.Text.Json;
 
 namespace FO4RecordEditor.Services;
 
+
+
+
+
+
 public sealed class PluginToolExecutor
 {
     private readonly Func<object?> _envProvider;
@@ -17,6 +22,8 @@ public sealed class PluginToolExecutor
     }
 
     public sealed record ToolSpec(string Name, string Description, object Schema);
+
+
 
     private static readonly ToolSpec[] _specs =
     [
@@ -239,11 +246,11 @@ public sealed class PluginToolExecutor
             "List every declared ModGroup and its plugins.",
             new { type = "object", properties = new { }, required = Array.Empty<string>() }),
         new("resolve_asset",
-            "Which loose file or BA2 actually serves a game-relative asset path (xEdit's ResourceExists/" +
-            "ResourceContainerList). Answers 'does Meshes\\Weapons\\x.nif exist anywhere in this load " +
-            "order, and where' WITHOUT you having to already know which archive to look in. Searches " +
-            "every mod folder in MO2 priority order plus the game Data folder, loose files before that " +
-            "root's archives. Use this to VERIFY a MODL/texture path instead of guessing one.",
+            "Resolve a game-relative asset across the full MO2 data-root order. Reports the winning loose/BA2 " +
+            "source plus every lower-priority contending mod in resolver order, with an explicit distinct-mod " +
+            "provider count and ambiguity flag. A mod that contains both a loose and packed copy counts once; " +
+            "the source that actually wins inside that mod is reported. Use this to verify MODL/texture paths " +
+            "and to detect asset conflicts instead of guessing which mod or archive serves them.",
             new
             {
                 type = "object",
@@ -251,7 +258,7 @@ public sealed class PluginToolExecutor
                 {
                     path = new { type = "string", description = @"Game-relative path, e.g. 'Meshes\Clutter\Rock01.nif' or 'Textures\Sky\Clouds_d.dds'." },
                     extract = new { type = "boolean", description = "Also materialize the winning copy as a real file on disk (extracting it from its BA2 if needed) and report the path -- so you can hand it to nif_inspect/bgsm_inspect. Default false." },
-                    limit = new { type = "integer", description = "Max providers to list (default 25)." }
+                    limit = new { type = "integer", description = "Max distinct providing mods to list (default 25)." }
                 },
                 required = new[] { "path" }
             }),
@@ -300,6 +307,7 @@ public sealed class PluginToolExecutor
                 properties = new { },
                 required = Array.Empty<string>()
             }),
+
 
         new("open_plugin",
             "Open an existing plugin for editing so records can be added or modified. The 'plugin' arg " +
@@ -370,7 +378,9 @@ public sealed class PluginToolExecutor
                     x = new { type = "number" },
                     y = new { type = "number" },
                     z = new { type = "number" },
-                    rotZ = new { type = "number", description = "Z rotation in radians." },
+                    rotX = new { type = "number", description = "X rotation in radians. Default 0." },
+                    rotY = new { type = "number", description = "Y rotation in radians. Default 0." },
+                    rotZ = new { type = "number", description = "Z rotation in radians. Default 0." },
                     persistent = new { type = "boolean", description = "Default true. Persistent refs go in the cell's Persistent list and can be reached by script from anywhere." },
                     initiallyDisabled = new { type = "boolean", description = "Default false." },
                     mapMarkerName = new { type = "string", description = "Set to attach map-marker data (turns the ref into a real map marker)." },
@@ -1715,8 +1725,15 @@ public sealed class PluginToolExecutor
             }),
     ];
 
+
     public static object[] ToolDefinitions() =>
         _specs.Select(t => (object)new { name = t.Name, description = t.Description, input_schema = t.Schema }).ToArray();
+
+
+
+
+
+
 
     public static object[] ToolDefinitionsCached() =>
         _specs.Select((t, i) => (object)new
@@ -1727,8 +1744,11 @@ public sealed class PluginToolExecutor
             cache_control = i == _specs.Length - 1 ? new { type = "ephemeral" } : null,
         }).ToArray();
 
+
     public static object[] McpToolDefinitions() =>
         _specs.Select(t => (object)new { name = t.Name, description = t.Description, inputSchema = t.Schema }).ToArray();
+
+
 
     public static object[] GeminiToolDefinitions() =>
         _specs.Select(t => (object)new
@@ -1737,6 +1757,7 @@ public sealed class PluginToolExecutor
             description = t.Description,
             parameters = ToGeminiSchema(t.Schema),
         }).ToArray();
+
 
     private static System.Text.Json.Nodes.JsonNode ToGeminiSchema(object schema)
     {
@@ -1759,16 +1780,29 @@ public sealed class PluginToolExecutor
         }
     }
 
+
+
     private const int MaxResultChars = 8000;
+
+
 
     public record McpToolEvent(string Tool, string Plugin, string Record, string Field, string Summary, bool IsWrite);
     public static event Action<McpToolEvent>? ToolCompleted;
+
+
+
+
+
 
     public ToolResult ExecuteWithStatus(string toolName, string inputJson)
     {
         try { return ToolError.Unwrap(ExecuteMarked(toolName, inputJson)); }
         catch (Exception ex) { return ToolResult.Fail("Tool error: " + ex.Message); }
     }
+
+
+
+
 
     public string Execute(string toolName, string inputJson) =>
         ToolError.Unwrap(ExecuteMarked(toolName, inputJson)).Text;
@@ -2053,7 +2087,8 @@ public sealed class PluginToolExecutor
             case "create_placed_object":
                 return WriteService.CreatePlacedObject(
                     Str("plugin"), Str("cell"), Str("baseObject"), StrOrNull("editorId"),
-                    Flt("x", 0f), Flt("y", 0f), Flt("z", 0f), Flt("rotZ", 0f),
+                    Flt("x", 0f), Flt("y", 0f), Flt("z", 0f),
+                    Flt("rotX", 0f), Flt("rotY", 0f), Flt("rotZ", 0f),
                     BoolOr("persistent", true), BoolOr("initiallyDisabled", false),
                     StrOrNull("mapMarkerName"), StrOrNull("mapMarkerType"), BoolOr("mapMarkerVisible", false),
                     env);
@@ -2324,7 +2359,6 @@ public sealed class PluginToolExecutor
 
         if (diffRows.Count > 0)
         {
-
             const int FW = 34, VW = 20, Budget = 6500;
             var head = "  " + "Field".PadRight(FW);
             foreach (var p in matrix.Plugins) head += " | " + Trunc(p, VW).PadRight(VW);
@@ -2508,6 +2542,7 @@ public sealed class PluginToolExecutor
             return "MO2 instance unknown -- load the modlist with 'Open MO2' first.";
         if (string.IsNullOrWhiteSpace(query)) return "Provide a query (a FormID, EditorID, or name).";
 
+
         var roots = new List<string>();
         var modsDir = System.IO.Path.Combine(instancePath, "mods");
         if (System.IO.Directory.Exists(modsDir))
@@ -2522,6 +2557,7 @@ public sealed class PluginToolExecutor
         var hits = new List<string>();
         foreach (var root in roots)
         {
+
 
             foreach (var ini in System.IO.Directory.EnumerateFiles(root, "*.ini*", System.IO.SearchOption.AllDirectories))
             {

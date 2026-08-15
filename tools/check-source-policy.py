@@ -4,8 +4,10 @@ import re
 import subprocess
 import sys
 
+
 EXCLUDED_PARTS = {
     ".git",
+    "Mutagen",
     "TES5Edit-dev-4.1.6",
     "bin",
     "dist",
@@ -49,11 +51,13 @@ AI_PATTERNS = (
     re.compile(r"\bco-authored-by:\s*" + ACTOR + r"\b", re.IGNORECASE),
 )
 
+
 @dataclasses.dataclass(frozen=True)
 class Violation:
     path: pathlib.Path
     line: int
     kind: str
+
 
 def tracked_files(root):
     result = subprocess.run(
@@ -67,8 +71,10 @@ def tracked_files(root):
         if item:
             yield pathlib.Path(item.decode("utf-8"))
 
+
 def is_first_party(path):
     return not any(part in EXCLUDED_PARTS for part in path.parts)
+
 
 def scan_c_style(path, text):
     violations = []
@@ -136,6 +142,7 @@ def scan_c_style(path, text):
             index += 1
     return violations
 
+
 def scan_markup(path, text):
     marker = "<" + "!--"
     return [
@@ -143,6 +150,7 @@ def scan_markup(path, text):
         for line_number, line in enumerate(text.splitlines(), start=1)
         if marker in line
     ]
+
 
 def scan_hash(path, text):
     violations = []
@@ -152,6 +160,7 @@ def scan_hash(path, text):
             violations.append(Violation(path, line_number, "comment"))
     return violations
 
+
 def scan_papyrus(path, text):
     return [
         Violation(path, line_number, "comment")
@@ -159,12 +168,14 @@ def scan_papyrus(path, text):
         if line.lstrip().startswith(";")
     ]
 
+
 def scan_ai_attribution(path, text):
     violations = []
     for line_number, line in enumerate(text.splitlines(), start=1):
         if any(pattern.search(line) for pattern in AI_PATTERNS):
             violations.append(Violation(path, line_number, "ai-attribution"))
     return violations
+
 
 def collect_violations(root):
     root = pathlib.Path(root).resolve()
@@ -185,11 +196,13 @@ def collect_violations(root):
         violations.extend(scan_ai_attribution(relative_path, text))
     return sorted(violations, key=lambda item: (str(item.path), item.line, item.kind))
 
+
 def main(root):
     violations = collect_violations(root)
     for violation in violations:
         print(f"{violation.path}:{violation.line}: {violation.kind}")
     return 1 if violations else 0
+
 
 if __name__ == "__main__":
     target = pathlib.Path(sys.argv[1]) if len(sys.argv) == 2 else pathlib.Path.cwd()
