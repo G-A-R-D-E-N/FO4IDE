@@ -23,8 +23,12 @@ public sealed class ShellViewModel
 
     public object? GameEnvironment { get; set; }
 
+
+
     public PluginToolExecutor ToolExecutor { get; }
     public AnthropicAgent? Agent { get; private set; }
+
+
 
     public PluginMcpServer McpServer { get; }
 
@@ -39,11 +43,12 @@ public sealed class ShellViewModel
         Chat = new ChatService(CreateProvider());
         BuildAgent();
 
+
         WriteService.PluginChanged += OnWritePluginChanged;
         WriteService.OutputFolderOverride = Settings.Current.OutputFolder;
         UpdateOverwriteFolder(Settings.Current.Mo2InstancePath);
         Log.Log(LogCategory.App, LogLevel.Info,
-            $"FO4IDE started. Plugin MCP server: {(McpServer.IsRunning ? McpServer.Url : "unavailable")}");
+            $"FO4RecordEditor started. Plugin MCP server: {(McpServer.IsRunning ? McpServer.Url : "unavailable")}");
     }
 
     public void RebuildProvider()
@@ -64,6 +69,9 @@ public sealed class ShellViewModel
         return AiProviderFactory.Create(s);
     }
 
+
+
+
     private void OnWritePluginChanged(string name)
     {
         ConflictScanner.InvalidateCache();
@@ -80,6 +88,7 @@ public sealed class ShellViewModel
                     node = Plugins.FirstOrDefault(p => string.Equals(p.Key, name, StringComparison.OrdinalIgnoreCase))!;
                     if (node == null) { node = new RecordNode { Key = name }; Plugins.Add(node); }
                 });
+
 
                 var groups = MutagenLoader.GetGroups(name, env, node, null);
 
@@ -129,12 +138,19 @@ public sealed class ShellViewModel
         }
     }
 
+
+
+
+
+
+
     private static void UpdateOverwriteFolder(string? instancePath)
     {
         WriteService.Mo2OverwriteFolder =
             string.IsNullOrWhiteSpace(instancePath) ? null
             : Mo2ProfileLoader.ResolveOverwriteFolder(instancePath);
     }
+
 
     private IReadOnlyList<string> _lastPlugins = System.Array.Empty<string>();
 
@@ -146,6 +162,9 @@ public sealed class ShellViewModel
         foreach (var name in plugins)
             Plugins.Add(MutagenLoader.MakeLazyNode(name));
     }
+
+
+
 
     public void RefreshPluginTree()
     {
@@ -177,6 +196,7 @@ public sealed class ShellViewModel
         {
             Log.Log(LogCategory.App, LogLevel.Error, $"Environment load failed: {ex.Message}");
 
+
             throw;
         }
         finally
@@ -184,6 +204,8 @@ public sealed class ShellViewModel
             _isLoadingEsp = false;
         }
     }
+
+
 
     public async Task<List<string>> LoadMo2ProfileAsync(
         string instancePath, IProgress<(string message, double? percent)>? progress = null)
@@ -235,6 +257,12 @@ public sealed class ShellViewModel
         }
     }
 
+
+
+
+
+
+
     public string SaveSelectedPlugin()
     {
         if (SelectedNode == null)
@@ -256,6 +284,10 @@ public sealed class ShellViewModel
         }
 
         Log.Log(LogCategory.App, LogLevel.Info, $"Saving {root.Key}...");
+
+
+
+
 
         var refuse = $"Saving from the tree is not supported. Use the editor's Save action, " +
                      "or call the save_plugin tool.";

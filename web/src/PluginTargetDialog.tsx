@@ -1,4 +1,13 @@
 
+
+
+
+
+
+
+
+
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { X, Check } from 'lucide-react';
 import type { ActivePlugin } from './backend';
@@ -14,6 +23,7 @@ export interface TargetRequest {
 }
 
 export interface TargetResult { target: string; extra: string }
+
 
 type NewKind = 'esp' | 'esl';
 const NEW_ROWS: { kind: NewKind; label: string; hint: string }[] = [
@@ -82,7 +92,6 @@ export default function PluginTargetDialog(
         className="ptd-modal glass-panel"
         onClick={e => e.stopPropagation()}
         onKeyDown={e => {
-
           if (e.key === 'Escape') { e.stopPropagation(); onResolve(null); }
           if (e.key === 'Enter' && canConfirm) { e.preventDefault(); confirm(); }
         }}
@@ -103,7 +112,6 @@ export default function PluginTargetDialog(
         />
 
         <div className="ptd-list">
-          {}
           {NEW_ROWS.map(r => (
             <button
               key={r.kind}

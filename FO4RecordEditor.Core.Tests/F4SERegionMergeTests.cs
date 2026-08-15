@@ -5,6 +5,15 @@ using FO4RecordEditor.Services.Graph.F4SE;
 
 namespace FO4RecordEditor.Core.Tests;
 
+
+
+
+
+
+
+
+
+
 public class F4SERegionMergeTests
 {
     private static string Generated(string name, string stub = "\t\tSTUB;") =>
@@ -16,6 +25,26 @@ public class F4SERegionMergeTests
         		{{F4SERegionMerge.End(name)}}
         }
         """;
+
+    [Fact]
+    public void New_body_markers_are_preprocessor_directives()
+    {
+        F4SERegionMerge.Begin("Alpha").Should().Be("#pragma region FO4IDE_BODY Alpha");
+        F4SERegionMerge.End("Alpha").Should().Be("#pragma endregion FO4IDE_BODY Alpha");
+    }
+
+    [Fact]
+    public void A_legacy_comment_marked_body_survives_regeneration()
+    {
+        var prefix = "/" + "/";
+        var previous = "void Alpha(StaticFunctionTag * base)\n{\n\t\t"
+                       + prefix + " >>> body: Alpha\n\t\tkept();\n\t\t"
+                       + prefix + " <<< body: Alpha\n}\n";
+
+        var merged = F4SERegionMerge.Merge(Generated("Alpha"), previous);
+
+        merged.Should().Contain("kept();");
+    }
 
     [Fact]
     public void A_first_emit_with_no_previous_file_is_unchanged()
@@ -38,9 +67,10 @@ public class F4SERegionMergeTests
     [Fact]
     public void Everything_outside_a_region_is_machine_owned_and_overwritten()
     {
+        var prefix = "/" + "/";
         var previous = "void Alpha(int oldSignature)\n{\n\t\t"
                        + F4SERegionMerge.Begin("Alpha") + "\n\t\tkept();\n\t\t"
-                       + F4SERegionMerge.End("Alpha") + "\n}\n// a stale trailing comment\n";
+                       + F4SERegionMerge.End("Alpha") + "\n}\n" + prefix + " a stale trailing comment\n";
 
         var merged = F4SERegionMerge.Merge(Generated("Alpha"), previous);
 

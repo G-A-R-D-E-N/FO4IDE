@@ -43,6 +43,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
   const canvasApi = useRef<CanvasApi | null>(null);
   const { dirty, markSaved } = useSavedDoc(state.doc);
 
+
+
   const signature = useCallback(async (type: string): Promise<BpNodeDef | null> => {
     if (defs[type]) return defs[type];
     if (!graph) return null;
@@ -52,6 +54,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
     setDefs((current) => ({ ...current, [parsed.type]: parsed }));
     return parsed;
   }, [defs, graph]);
+
+
 
   const searchSeq = useRef(0);
   useEffect(() => {
@@ -70,6 +74,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
     }, 200);
     return () => clearTimeout(timer);
   }, [search, graph]);
+
+
 
   const validateSeq = useRef(0);
   useEffect(() => {
@@ -117,6 +123,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
     state.doc !== validatedDoc ? 'stale'
       : errorCount > 0 ? 'error'
         : warningCount > 0 ? 'warn' : 'ok';
+
+
 
   const createNode = useCallback(async (
     type: string, x: number, y: number, from?: { node: string; pin: string },
@@ -192,6 +200,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
       const parsed = JSON.parse(raw) as
         { ok: boolean; document: BpDocument | null; diagnostics: BpDiagnostic[] };
 
+
+
       setValidation({ diagnostics: parsed.diagnostics });
       if (!parsed.ok || !parsed.document) {
         setStatus('Could not read that script into a graph. See the problems list.');
@@ -203,6 +213,8 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
       if (raw.startsWith('Error:')) { setStatus(raw); return; }
       doc = JSON.parse(raw) as BpDocument;
     }
+
+
 
     const loaded: Record<string, BpNodeDef> = { ...defs };
     for (const node of doc.nodes) {
@@ -217,6 +229,7 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
       const positions = autoLayout(doc, loaded);
       if (Object.keys(positions).length > 0) dispatch({ type: 'SET_POSITIONS', positions });
 
+
       setStatus(`Opened ${path.split(/[\\/]/).pop()} as a graph.`);
     } else {
       markSaved(doc);
@@ -224,13 +237,19 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
     }
   });
 
+
+
+
   const clipboard = useGraphClipboard(state, dispatch);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+
 
   const tidy = useCallback(() => {
     const positions = autoLayout(state.doc, defs);
     if (Object.keys(positions).length > 0) dispatch({ type: 'SET_POSITIONS', positions });
   }, [state.doc, defs]);
+
+
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -258,9 +277,11 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
 
   useEffect(() => setLS('scriptName', state.doc.header.scriptName), [state.doc.header.scriptName]);
 
+
+
   return (
     <div className="papyrus-overlay">
-      {}
+      { }
       <div className="papyrus-modal glass-panel nif-modal-wide" onClick={(e) => e.stopPropagation()}>
         <div className="papyrus-header">
           <div className="papyrus-title">Blueprint</div>
@@ -349,8 +370,7 @@ export default function BlueprintPanel({ onClose }: { onClose: () => void }) {
 
             {menu && (
               <>
-                {
-}
+                { }
                 <div className="bp-menu-backdrop" onPointerDown={() => setMenu(null)} />
                 <div className="bp-menu" style={{ left: menu.x, top: menu.y }}>
                   <button disabled={state.selection.nodes.length === 0}

@@ -9,6 +9,7 @@ namespace FO4RecordEditor;
 public partial class App : Application
 {
 
+
     private static readonly string[] LogCandidates =
     {
         Path.Combine(AppContext.BaseDirectory, "FO4RecordEditor.startup.log"),
@@ -22,12 +23,13 @@ public partial class App : Application
     static App()
     {
 
+
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
             LogCrash("AppDomain", e.ExceptionObject as Exception);
         Services.DebugLog.Init();
-        Services.DebugLog.Info("App", "=== FO4IDE launching ===",
+        Services.DebugLog.Info("App", "=== FO4RecordEditor launching ===",
             $"base={AppContext.BaseDirectory} cwd={Environment.CurrentDirectory}");
-        Trace("=== FO4IDE launching ===");
+        Trace("=== FO4RecordEditor launching ===");
         Trace($"BaseDirectory: {AppContext.BaseDirectory}");
         Trace($"WorkingDirectory: {Environment.CurrentDirectory}");
         Trace($"Debug log: {Services.DebugLog.Path}");
@@ -40,6 +42,8 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+
+
 
         if (Array.Exists(e.Args, a => a == "--mcp"))
         {
@@ -55,6 +59,7 @@ public partial class App : Application
         base.OnStartup(e);
         Trace("base.OnStartup done");
 
+
         ApplicationThemeManager.Apply(
             ApplicationTheme.Dark,
             Wpf.Ui.Controls.WindowBackdropType.Mica,
@@ -68,6 +73,24 @@ public partial class App : Application
             Services.MutagenLoader.FormatFormLink,
             Services.MutagenLoader.FormatCondition);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private static void RunMcpHeadless(string[] args)
     {
@@ -100,11 +123,14 @@ public partial class App : Application
             return env;
         };
 
+
+
         var executor = new Services.PluginToolExecutor(envProvider, () => mo2Instance, () => ckWikiPath ?? Services.ToolPaths.CkWiki());
         try { Services.StdioMcpServer.Run(executor); }
         catch (Exception ex) { Trace($"--mcp loop ended with error: {ex.Message}"); }
         Environment.Exit(0);
     }
+
 
     private static string? ArgValue(string[] args, string name)
     {
@@ -112,6 +138,7 @@ public partial class App : Application
             if (args[i] == name) return args[i + 1];
         return null;
     }
+
 
     internal static void Trace(string message)
     {
@@ -138,9 +165,9 @@ public partial class App : Application
         try
         {
             MessageBox.Show(
-                $"FO4IDE hit an unhandled error.\n\n{ex?.Message}\n\n" +
+                $"FO4RecordEditor hit an unhandled error.\n\n{ex?.Message}\n\n" +
                 $"Details written to:\n{_logPath ?? "(could not write log)"}",
-                "FO4IDE crash", MessageBoxButton.OK, MessageBoxImage.Error);
+                "FO4RecordEditor -- Crash", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         catch {  }
     }

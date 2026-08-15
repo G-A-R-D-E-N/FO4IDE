@@ -8,7 +8,6 @@ namespace FO4RecordEditor.Services;
 
 public static class ElementService
 {
-
     public static string DescribeElement(object? env, string plugin, string recordId, string path)
     {
         var rec = FindRecordForRead(env, plugin, recordId);
@@ -75,7 +74,6 @@ public static class ElementService
                 d.IsList = false;
                 curType = elem;
                 curVal = ItemAt(curVal, i);
-
                 if (curVal != null) curType = curVal.GetType();
             }
         }
@@ -117,7 +115,7 @@ public static class ElementService
         var rec = WriteService.FindRecordIn(mod, recordId);
         if (rec == null) return ToolError.Fail($"Record '{recordId}' not found in {plugin}.");
 
-        if (!TryResolve(rec, path, out var r, out var err)) return ToolError.Fail(err);
+        if (!TryResolve(rec, path, initializeNullLists: true, out var r, out var err)) return ToolError.Fail(err);
         if (r.TargetList is not { } list) return ToolError.Fail($"'{path}' is not inside a list, so there is nothing to add to.");
 
         var elemType = ElementTypeOf(list);
@@ -146,7 +144,7 @@ public static class ElementService
         var rec = WriteService.FindRecordIn(mod, recordId);
         if (rec == null) return ToolError.Fail($"Record '{recordId}' not found in {plugin}.");
 
-        if (!TryResolve(rec, path, out var r, out var err)) return ToolError.Fail(err);
+        if (!TryResolve(rec, path, initializeNullLists: false, out var r, out var err)) return ToolError.Fail(err);
         if (r.TargetList is not { } list || r.Index < 0)
             return ToolError.Fail($"'{path}' is not a list entry. Right-click the entry itself (e.g. Condition [1]) to remove it.");
 
@@ -165,7 +163,7 @@ public static class ElementService
         var rec = WriteService.FindRecordIn(mod, recordId);
         if (rec == null) return ToolError.Fail($"Record '{recordId}' not found in {plugin}.");
 
-        if (!TryResolve(rec, path, out var r, out var err)) return ToolError.Fail(err);
+        if (!TryResolve(rec, path, initializeNullLists: false, out var r, out var err)) return ToolError.Fail(err);
         if (r.TargetList is not { } list || r.Index < 0)
             return ToolError.Fail($"'{path}' is not a list entry, so it cannot be moved.");
 
@@ -188,7 +186,7 @@ public static class ElementService
         var rec = WriteService.FindRecordIn(mod, recordId);
         if (rec == null) return ToolError.Fail($"Record '{recordId}' not found in {plugin}.");
 
-        if (!TryResolve(rec, path, out var r, out var err)) return ToolError.Fail(err);
+        if (!TryResolve(rec, path, initializeNullLists: false, out var r, out var err)) return ToolError.Fail(err);
         if (!r.IsList || r.TargetList is not { } list)
             return ToolError.Fail($"'{path}' is not a list, so there is nothing to clear.");
 
@@ -203,15 +201,17 @@ public static class ElementService
     private readonly struct Resolved
     {
         public Resolved(IList? targetList, int index, bool isList) { TargetList = targetList; Index = index; IsList = isList; }
-
         public IList? TargetList { get; }
-
         public int Index { get; }
-
         public bool IsList { get; }
     }
 
-    private static bool TryResolve(object record, string path, out Resolved resolved, out string error)
+    private static bool TryResolve(
+        object record,
+        string path,
+        bool initializeNullLists,
+        out Resolved resolved,
+        out string error)
     {
         resolved = default; error = "";
         object? cur = record;
@@ -223,10 +223,20 @@ public static class ElementService
         {
             if (cur == null) { error = $"'{path}' does not resolve on {record.GetType().Name}."; return false; }
 
-            var prop = cur.GetType().GetProperty(name,
+            var owner = cur;
+            var prop = owner.GetType().GetProperty(name,
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            if (prop == null) { error = $"No field '{name}' on {cur.GetType().Name} (path '{path}')."; return false; }
-            cur = prop.GetValue(cur);
+            if (prop == null) { error = $"No field '{name}' on {owner.GetType().Name} (path '{path}')."; return false; }
+
+            cur = prop.GetValue(owner);
+            if (cur == null && initializeNullLists && SequenceElementType(prop.PropertyType) != null)
+            {
+                if (!TryInitializeList(owner, prop, out cur, out var initError))
+                {
+                    error = $"Could not initialize list field '{name}' on {owner.GetType().Name} (path '{path}'): {initError}";
+                    return false;
+                }
+            }
 
             if (cur is IList asList) { lastList = asList; lastIndex = -1; endedOnList = true; }
             else endedOnList = false;
@@ -242,6 +252,60 @@ public static class ElementService
 
         resolved = new Resolved(lastList, lastIndex, endedOnList);
         return true;
+    }
+
+    private static bool TryInitializeList(object owner, PropertyInfo prop, out object? value, out string error)
+    {
+        value = null;
+        error = "";
+
+        if (!prop.CanWrite)
+        {
+            error = "the property is read-only.";
+            return false;
+        }
+
+        var listType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+        var elementType = SequenceElementType(listType);
+        if (elementType == null)
+        {
+            error = $"{listType.Name} is not list-shaped.";
+            return false;
+        }
+
+        try
+        {
+            object? instance;
+            if (!listType.IsInterface && !listType.IsAbstract)
+            {
+                instance = Activator.CreateInstance(listType);
+            }
+            else
+            {
+                var concrete = typeof(List<>).MakeGenericType(elementType);
+                if (!listType.IsAssignableFrom(concrete))
+                {
+                    error = $"no constructible list type can be assigned to {listType.Name}.";
+                    return false;
+                }
+                instance = Activator.CreateInstance(concrete);
+            }
+
+            if (instance is not IList)
+            {
+                error = $"constructed {instance?.GetType().Name ?? listType.Name} does not implement IList.";
+                return false;
+            }
+
+            prop.SetValue(owner, instance);
+            value = instance;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            return false;
+        }
     }
 
     private static IEnumerable<(string name, int? index)> SplitPath(string path)
@@ -295,7 +359,6 @@ public static class ElementService
         }
 
         if (IsFormLink(elemType)) return elemType;
-
         if (!elemType.IsAbstract && !elemType.IsInterface && options.Length == 1) return elemType;
 
         var want = string.IsNullOrWhiteSpace(requested) ? options[0] : requested!.Trim();
