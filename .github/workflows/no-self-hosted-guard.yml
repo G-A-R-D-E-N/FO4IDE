@@ -1,0 +1,30 @@
+name: Guard - no self-hosted runners
+
+# Public repos must NEVER run jobs on self-hosted runners: anyone can fork
+# and open a PR, and a self-hosted job would execute that untrusted fork code
+# on our own machine. GitHub-hosted runners are free/unlimited on public repos.
+# This guard fails CI if any workflow (e.g. from a blind private->public sync)
+# reintroduces a self-hosted runner.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  no-self-hosted:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Fail if any workflow targets a self-hosted runner
+        run: |
+          if grep -rnE 'runs-on:.*self-hosted' .github/workflows; then
+            echo "::error::A workflow above targets a self-hosted runner. Public repos must use GitHub-hosted runners only (fork PRs run untrusted code on the runner host). Change runs-on to ubuntu-latest / windows-latest."
+            exit 1
+          fi
+          echo "OK: every workflow uses a GitHub-hosted runner."
