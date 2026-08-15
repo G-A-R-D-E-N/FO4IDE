@@ -1,6 +1,7 @@
 #!/bin/sh
+
 set -e
-APP_DIR=/opt/fo4recordeditor
+APP_DIR=/opt/fo4ide
 
 unset DOTNET_ROOT
 

@@ -1,8 +1,8 @@
-
 [CmdletBinding()]
 param(
     [string] $Version = (Get-Date -Format 'yyyy.MM.dd'),
     [switch] $SkipWeb,
+    [switch] $SkipPublish,
     [switch] $SkipCkWiki,
     [switch] $SkipAudioTools,
     [switch] $IncludeBaseScripts
@@ -15,8 +15,8 @@ $Root      = $PSScriptRoot
 $Csproj    = Join-Path $Root 'FO4RecordEditor\FO4RecordEditor.csproj'
 $WebDir    = Join-Path $Root 'web'
 $PublishIn = Join-Path $Root 'FO4RecordEditor\bin\Release\net9.0-windows\win-x64\publish'
-$Staging   = Join-Path $Root "dist\FO4RecordEditor-$Version"
-$ZipPath   = Join-Path $Root "dist\FO4RecordEditor-$Version.zip"
+$Staging   = Join-Path $Root "dist\FO4IDE-$Version-windows-x64"
+$ZipPath   = Join-Path $Root "dist\FO4IDE-$Version-windows-x64.zip"
 
 $Niftool   = Join-Path $Root '..\tools\niftool\build\windows\x64\release\niftool.exe'
 $Texconv   = Join-Path $Root 'TES5Edit-dev-4.1.6\Build\Edit Scripts\Texconvx64.exe'
@@ -48,10 +48,18 @@ if (-not (Test-Path (Join-Path $WebDir 'dist'))) {
     throw "web\dist\ does not exist. Run without -SkipWeb — the exe will not render its UI without it."
 }
 
-Step 'Publishing (framework-dependent, x64)'
-dotnet publish $Csproj -c Release -r win-x64 --self-contained false `
-    -p:PublishSingleFile=false -p:DebugType=none
-if ($LASTEXITCODE -ne 0) { throw 'dotnet publish failed. Scroll up for the error.' }
+if (-not $SkipPublish) {
+    Step 'Publishing (framework-dependent, x64)'
+    dotnet publish $Csproj -c Release -r win-x64 --self-contained false `
+        -p:PublishSingleFile=false -p:DebugType=none
+    if ($LASTEXITCODE -ne 0) { throw 'dotnet publish failed. Scroll up for the error.' }
+} else {
+    Warn 'Skipping the publish step (-SkipPublish). The release output had better be current.'
+}
+
+if (-not (Test-Path $PublishIn)) {
+    throw "publish output does not exist at $PublishIn. Run without -SkipPublish."
+}
 
 Step 'Staging the package'
 if (Test-Path $Staging) { Remove-Item $Staging -Recurse -Force }
@@ -124,17 +132,9 @@ if ($IncludeBaseScripts) {
     }
 }
 
-Step 'Adding docs and the sample MCP config'
+Step 'Adding release files and the sample MCP config'
 foreach ($f in 'README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md') {
     Copy-Item (Join-Path $Root $f) $Staging -Force
-}
-
-$ShippedDocs = 'MCP_SETUP.md'
-$DocsDest = New-Item -ItemType Directory -Path (Join-Path $Staging 'docs') -Force
-foreach ($d in $ShippedDocs) {
-    $src = Join-Path $Root "docs\$d"
-    if (-not (Test-Path $src)) { throw "Shipped doc missing: $src" }
-    Copy-Item $src $DocsDest -Force
 }
 
 @'
