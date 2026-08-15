@@ -132,7 +132,7 @@ jobs:
                   FO4RecordEditor.Tests/PluginToolExecutorTests.cs \
                   FO4RecordEditor.Tests/WriteToolsTests.cs \
                   Mutagen/Mutagen.Bethesda.Core/Plugins/Records/AGroup.cs \
-                  README.md docs/MCP_SETUP.md docs/internal/KNOWLEDGE.md \
+                  README.md \
                   web/src/MainShell.tsx web/src/RecordView.tsx web/src/backend.ts
           git commit -m "fix(integrity): protect overrides and report duplicate FormIDs"
           git push origin HEAD:fix/override-and-duplicate-integrity
